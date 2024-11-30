@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "BokslHome Application",
+      "request": "launch",
+      "mainClass": "com.setvect.bokslhome.BokslHomeApplicationKt",
+      "vmArgs": "",
+      "cwd": "${workspaceFolder}/backend",
+      "classPaths": ["${workspaceFolder}/backend/build/classes/kotlin/main"]
+    }
+  ]
+}
