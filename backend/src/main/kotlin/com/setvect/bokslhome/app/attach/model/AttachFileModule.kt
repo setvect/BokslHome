@@ -1,5 +1,5 @@
-package com.setvect.bokslhome.app.attach.model;
+package com.setvect.bokslhome.app.attach.model
 
-public enum AttachFileModule {
-  BOARD, NOTE, KNOWLEDGE, IMAGE
+enum class AttachFileModule {
+    BOARD, NOTE, KNOWLEDGE, IMAGE
 }
