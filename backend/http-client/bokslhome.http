@@ -1,2 +1,6 @@
 ###
 GET http://localhost:8080/hello/echo?message=Boksl
+
+### 로또 번호 생성
+GET http://localhost:8080/luck/lotto
+Accept: application/json
