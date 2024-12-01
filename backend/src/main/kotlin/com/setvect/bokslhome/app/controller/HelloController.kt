@@ -1,4 +1,4 @@
-package com.setvect.bokslhome.hello.controller
+package com.setvect.bokslhome.app.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

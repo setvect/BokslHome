@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: BokslHome
+
+  # H2 데이터베이스 설정
+  datasource:
+    url: jdbc:h2:file:./db/BokslHome_db
+    username: sa
+    password: 1122aabb$$
+    driver-class-name: org.h2.Driver
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# 서버 포트 설정
+server:
+  port: 8080
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    com.setvect.bokslhome: INFO
