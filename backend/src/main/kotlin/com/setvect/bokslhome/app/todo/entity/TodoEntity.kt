@@ -12,45 +12,32 @@ import java.util.*
  */
 @Entity
 @Table(name = "TBHA_TODO")
-class TodoEntity {
-    /**
-     * 일련번호
-     */
+data class TodoEntity(
     @Id
     @Column(name = "TODO_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var todoSeq = 0
+    val todoSeq: Int = 0,
 
-    /**
-     * 내용
-     */
     @Column(name = "CONTENT", nullable = false, length = 1000)
-    private var content: String? = null
+    val content: String,
 
-    /**
-     * 체크 유형
-     */
     @Column(name = "STATUS_TYPE", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private var statusType: StatusType? = null
+    val statusType: StatusType,
 
-    /**
-     * 체크일
-     */
     @Column(name = "CHECK_DATE", nullable = true)
-    private var checkDate: Date? = null
+    val checkDate: Date? = null,
 
-    /**
-     * 등록일
-     */
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date(),
 
-    /**
-     * 삭제여부
-     */
     @Column(name = "DELETE_F", nullable = false)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var deleteF = false
+    val deleteF: Boolean = false
+) {
+    protected constructor() : this(
+        content = "",
+        statusType = StatusType.PLAN
+    )
 }

@@ -12,44 +12,44 @@ import java.util.*
  */
 @Entity
 @Table(name = "TBBB_BOARD_ARTICLE")
-class BoardArticleEntity {
+data class BoardArticleEntity(
     @Id
     @Column(name = "ARTICLE_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var boardArticleSeq = 0
+    val boardArticleSeq: Int = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_CODE", nullable = false)
-    private val boardManager: BoardManagerEntity? = null
+    val boardManager: BoardManagerEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
-    private val user: UserEntity? = null
+    val user: UserEntity,
 
     /**
      * 제목
      */
     @Column(name = "TITLE", nullable = false, length = 200)
-    private var title: String? = null
+    val title: String,
 
     /**
      * 본문
      */
     @Column(name = "CONTENT", nullable = false)
     @Lob
-    private var content: String? = null
+    val content: String,
 
     /**
      * 아이피
      */
     @Column(name = "IP", nullable = false, length = 20)
-    private var ip: String? = null
+    val ip: String,
 
     /**
      * 조회수
      */
     @Column(name = "HIT_COUNT", nullable = false)
-    private var hitCount = 0
+    val hitCount: Int = 0,
 
     /**
      * 암호화된 글 여부
@@ -57,13 +57,13 @@ class BoardArticleEntity {
     @Column(name = "ENCRYPT_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var encryptF = false
+    val encryptF: Boolean = false,
 
     /**
-     *
+     * 등록일
      */
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date(),
 
     /**
      * 게시물 삭제 여부
@@ -71,6 +71,14 @@ class BoardArticleEntity {
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var deleteF = false
-
+    val deleteF: Boolean = false
+) {
+    // JPA를 위한 no-args 생성자
+    protected constructor() : this(
+        boardManager = BoardManagerEntity("", ""),
+        user = UserEntity("","",""),
+        title = "",
+        content = "",
+        ip = ""
+    )
 }

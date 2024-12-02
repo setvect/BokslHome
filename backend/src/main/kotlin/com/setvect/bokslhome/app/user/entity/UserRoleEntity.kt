@@ -8,26 +8,22 @@ import jakarta.persistence.*
  */
 @Entity
 @Table(name = "TBAB_ROLE")
-class UserRoleEntity {
-    /**
-     * 일련번호
-     */
+data class UserRoleEntity(
     @Id
     @Column(name = "ROLE_SEQ")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var roleSeq = 0
+    val roleSeq: Int = 0,
 
-    /**
-     * 사용자
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false)
-    private val user: UserEntity? = null
+    val user: UserEntity,
 
-    /**
-     * 권한 이름
-     */
     @Column(name = "ROLE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private var roleName: RoleName? = null
+    val roleName: RoleName
+) {
+    protected constructor() : this(
+        user = UserEntity("","",""),
+        roleName = RoleName.ROLE_USER
+    )
 }

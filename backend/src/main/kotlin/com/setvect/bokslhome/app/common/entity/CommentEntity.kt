@@ -10,44 +10,33 @@ import java.util.*
  */
 @Entity
 @Table(name = "TBYB_COMMENT")
-class CommentEntity {
-    /**
-     * 일련번호
-     */
+data class CommentEntity(
     @Id
     @Column(name = "COMMENT_SEQ")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var commentSeq = 0
+    val commentSeq: Int = 0,
 
-    /**
-     * 모듈이름
-     */
     @Column(name = "MODULE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private var moduleName: CommentModule? = null
+    val moduleName: CommentModule,
 
-    /**
-     * 모듈 아이디
-     */
     @Column(name = "MODULE_ID", nullable = false, length = 50)
-    private var moduleId: String? = null
+    val moduleId: String,
 
-    /**
-     * 아이디
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER", nullable = false)
-    private val user: UserEntity? = null
+    val user: UserEntity,
 
-    /**
-     * 내용
-     */
     @Column(name = "CONTENT", nullable = false, length = 4000)
-    private var content: String? = null
+    val content: String,
 
-    /**
-     * 등록일
-     */
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date()
+) {
+    protected constructor() : this(
+        moduleName = CommentModule.BOARD,
+        moduleId = "",
+        user = UserEntity("","",""),
+        content = ""
+    )
 }

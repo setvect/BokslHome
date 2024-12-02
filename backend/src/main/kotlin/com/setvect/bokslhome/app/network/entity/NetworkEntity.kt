@@ -8,28 +8,33 @@ import java.util.*
 
 @Entity
 @Table(name = "TBFA_NETWORK")
-class NetworkEntity {
+data class NetworkEntity(
     @Id
     @Column(name = "NETWORK_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var networkSeq = 0
+    val networkSeq: Int = 0,
 
     @Column(name = "TITLE", nullable = false, length = 200)
-    private var title: String? = null
+    val title: String,
 
     @Column(name = "CONTENT", nullable = false)
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private var content: String? = null
+    val content: String,
 
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date(),
 
     @Column(name = "EDIT_DATE", nullable = false)
-    private var editDate: Date? = null
+    val editDate: Date = Date(),
 
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var deleteF = false
+    val deleteF: Boolean = false
+) {
+    protected constructor() : this(
+        title = "",
+        content = ""
+    )
 }

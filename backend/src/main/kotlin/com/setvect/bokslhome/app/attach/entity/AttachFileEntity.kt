@@ -9,49 +9,35 @@ import java.util.*
  */
 @Entity
 @Table(name = "TBYA_ATTACH_FILE")
-class AttachFileEntity {
-    /**
-     * 일련번호
-     */
+data class AttachFileEntity(
     @Id
     @Column(name = "ATTACH_FIlE_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var attachFileSeq = 0
+    val attachFileSeq: Int = 0,
 
-    /**
-     * 모듈이름
-     */
     @Column(name = "MODULE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private var moduleName: AttachFileModule? = null
+    val moduleName: AttachFileModule,
 
-    /**
-     * 모듈내 항목 번호
-     */
     @Column(name = "MODULE_ID", nullable = false, length = 50)
-    private var moduleId: String? = null
+    val moduleId: String,
 
-    /**
-     * 원본파일명
-     */
     @Column(name = "ORIGINAL_NAME", nullable = false, length = 250)
-    private var originalName: String? = null
+    val originalName: String,
 
-    /**
-     * 저장파일명
-     */
     @Column(name = "SAVE_NAME", nullable = false, length = 250)
-    private var saveName: String? = null
+    val saveName: String,
 
-    /**
-     * 파일 사이즈
-     */
     @Column(name = "SIZE", nullable = false)
-    private var size = 0
+    val size: Int = 0,
 
-    /**
-     * 등록일
-     */
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date()
+) {
+    protected constructor() : this(
+        moduleName = AttachFileModule.BOARD,
+        moduleId = "",
+        originalName = "",
+        saveName = ""
+    )
 }

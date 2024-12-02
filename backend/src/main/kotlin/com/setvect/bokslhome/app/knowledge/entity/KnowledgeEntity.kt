@@ -11,46 +11,33 @@ import java.util.*
  */
 @Entity
 @Table(name = "TBEA_KNOWLEDGE")
-class KnowledgeEntity {
-    /**
-     * key
-     */
+data class KnowledgeEntity(
     @Id
     @Column(name = "KNOWLEDGE_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private var knowledgeSeq = 0
+    val knowledgeSeq: Int = 0,
 
-    /**
-     * 분류 코드
-     */
     @Column(name = "CLASSIFY_C", nullable = false, length = 20)
-    private var classifyC: String? = null
+    val classifyC: String,
 
-    /**
-     * 문제
-     */
     @Column(name = "PROBLEM", nullable = false)
     @Lob
-    private var problem: String? = null
+    val problem: String,
 
-    /**
-     * 해법
-     */
     @Column(name = "SOLUTION", nullable = true)
     @Lob
-    private var solution: String? = null
+    val solution: String? = null,
 
-    /**
-     * 등록일
-     */
     @Column(name = "REG_DATE", nullable = false)
-    private var regDate: Date? = null
+    val regDate: Date = Date(),
 
-    /**
-     * 삭제여부
-     */
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var deleteF = false
+    val deleteF: Boolean = false
+) {
+    protected constructor() : this(
+        classifyC = "",
+        problem = ""
+    )
 }

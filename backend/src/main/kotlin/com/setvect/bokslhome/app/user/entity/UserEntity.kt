@@ -11,41 +11,29 @@ import java.sql.Types
  */
 @Entity
 @Table(name = "TBAA_USER")
-class UserEntity {
-    /**
-     * 사용자 아이디
-     */
+data class UserEntity(
     @Id
     @Column(name = "USER_ID", unique = true, nullable = false, length = 20)
-    var username: String? = null
+    val username: String,
 
-    /**
-     * 이름
-     */
     @Column(name = "NAME", nullable = false, length = 50)
-    private var name: String? = null
+    val name: String,
 
-    /**
-     * @return 비밀번호
-     */
-    /**
-     * 비밀번호
-     */
     @Column(name = "PASSWD", nullable = false, length = 60)
     @JsonIgnore
-    var password: String? = null
+    val password: String,
 
-    /**
-     * 삭제 여부
-     */
     @Column(name = "DELETE_FLAG", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    private var deleteFlag = false
+    val deleteFlag: Boolean = false,
 
-    /**
-     * 보유 권한
-     */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL])
-    private val userRole: Set<UserRoleEntity>? = null
+    val userRole: Set<UserRoleEntity> = emptySet()
+) {
+    protected constructor() : this(
+        username = "",
+        name = "",
+        password = ""
+    )
 }
