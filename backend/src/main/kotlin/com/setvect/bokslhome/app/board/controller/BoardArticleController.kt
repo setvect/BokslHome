@@ -4,9 +4,12 @@ import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleDto
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
 import com.setvect.bokslhome.app.board.service.BoardArticleService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,8 +22,12 @@ class BoardArticleController(
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: BoardArticleCreateRequest): BoardArticleDto {
-        return boardArticleService.create(request)
+    fun create(
+        @RequestBody request: BoardArticleCreateRequest,
+        httpRequest: HttpServletRequest
+    ): BoardArticleDto {
+        val clientIp = httpRequest.remoteAddr
+        return boardArticleService.create(request, clientIp, "setvect")
     }
 
     /**
@@ -29,9 +36,12 @@ class BoardArticleController(
     @PutMapping("/{boardArticleSeq}")
     fun update(
         @PathVariable boardArticleSeq: Int,
-        @RequestBody request: BoardArticleCreateRequest
+        @RequestBody request: BoardArticleCreateRequest,
+        httpRequest: HttpServletRequest,
+        @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleDto {
-        return boardArticleService.update(boardArticleSeq, request)
+        val clientIp = httpRequest.getRemoteAddr()
+        return boardArticleService.update(boardArticleSeq, request, userDetails.username, clientIp)
     }
 
     /**
@@ -61,4 +71,4 @@ class BoardArticleController(
     ): Page<BoardArticleDto> {
         return boardArticleService.list(search, pageable)
     }
-} 
+}

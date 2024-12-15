@@ -15,7 +15,7 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
         FROM BoardArticleEntity a
         WHERE a.boardManager.boardCode = :boardCode
         AND (:title IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :title, '%')))
-        AND (:content IS NULL OR LOWER(a.content) LIKE LOWER(CONCAT('%', :content, '%')))
+        AND (:content IS NULL OR a.content LIKE CONCAT('%', :content, '%'))
         AND a.deleteF = false
     """)
     fun findBySearch(
