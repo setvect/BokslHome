@@ -53,21 +53,13 @@ class BoardManagerController(
     }
 
     /**
-     * 게시판 전체 목록
-     */
-    @GetMapping("/list")
-    fun getAll(): List<BoardManagerDto> {
-        return boardManagerService.getAll()
-    }
-
-    /**
      * 게시판 페이징 목록 조회
      */
-    @GetMapping("/page")
-    fun getPageList(
+    @GetMapping("/list")
+    fun list(
         search: BoardManagerSearch,
         pageable: Pageable
     ): Page<BoardManagerDto> {
-        return boardManagerService.getPageList(search, pageable)
+        return boardManagerService.list(search, pageable)
     }
-} 
+}

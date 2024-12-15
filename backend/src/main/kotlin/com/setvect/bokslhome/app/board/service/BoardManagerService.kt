@@ -58,7 +58,7 @@ class BoardManagerService(
     /**
      * 검색 조건에 따른 게시판 목록 조회
      */
-    fun getPageList(search: BoardManagerSearch, pageable: Pageable): Page<BoardManagerDto> {
+    fun list(search: BoardManagerSearch, pageable: Pageable): Page<BoardManagerDto> {
         return boardManagerRepository.findBySearch(
             boardCode = search.boardCode,
             name = search.name,

@@ -14,7 +14,7 @@ import java.sql.Types
 data class UserEntity(
     @Id
     @Column(name = "USER_ID", unique = true, nullable = false, length = 20)
-    val username: String,
+    val userId: String,
 
     @Column(name = "NAME", nullable = false, length = 50)
     val name: String,
@@ -32,7 +32,7 @@ data class UserEntity(
     val userRole: Set<UserRoleEntity> = emptySet()
 ) {
     protected constructor() : this(
-        username = "",
+        userId = "",
         name = "",
         password = ""
     )
