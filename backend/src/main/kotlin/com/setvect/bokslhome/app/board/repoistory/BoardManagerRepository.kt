@@ -10,15 +10,17 @@ import org.springframework.data.jpa.repository.Query
  * 게시판 관리
  */
 interface BoardManagerRepository : JpaRepository<BoardManagerEntity, String> {
-    @Query("""
+    @Query(
+        """
         SELECT b 
         FROM BoardManagerEntity b
         WHERE (:boardCode IS NULL OR LOWER(b.boardCode) LIKE LOWER(CONCAT('%', :boardCode, '%')))
         AND (:name IS NULL OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%')))
-    """)
+    """,
+    )
     fun findBySearch(
         boardCode: String?,
         name: String?,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<BoardManagerEntity>
 }

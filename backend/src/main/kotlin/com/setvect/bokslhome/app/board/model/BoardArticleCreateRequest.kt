@@ -8,14 +8,18 @@ data class BoardArticleCreateRequest(
     val boardCode: String,
     val title: String,
     val content: String,
-    val encryptF: Boolean = false
+    val encryptF: Boolean = false,
 ) {
-    fun toEntity(boardManager: BoardManagerEntity, ip: String, user: UserEntity) = BoardArticleEntity(
+    fun toEntity(
+        boardManager: BoardManagerEntity,
+        ip: String,
+        user: UserEntity,
+    ) = BoardArticleEntity(
         boardManager = boardManager,
         user = user,
         title = title,
         content = content,
         ip = ip,
-        encryptF = encryptF
+        encryptF = encryptF,
     )
 }

@@ -22,7 +22,7 @@ data class BoardManagerDto(
                 commentF = entity.commentF,
                 attachF = entity.attachF,
                 encryptF = entity.encryptF,
-                deleteF = entity.deleteF
+                deleteF = entity.deleteF,
             )
         }
     }
@@ -36,7 +36,7 @@ data class BoardManagerDto(
             commentF = commentF,
             attachF = attachF,
             encryptF = encryptF,
-            deleteF = deleteF
+            deleteF = deleteF,
         )
     }
-} 
+}

@@ -7,19 +7,29 @@ import com.setvect.bokslhome.app.board.service.BoardManagerService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/board-manager")
 class BoardManagerController(
-    private val boardManagerService: BoardManagerService
+    private val boardManagerService: BoardManagerService,
 ) {
     /**
      * 게시판 생성
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: BoardManagerCreateRequest): BoardManagerDto {
+    fun create(
+        @RequestBody request: BoardManagerCreateRequest,
+    ): BoardManagerDto {
         return boardManagerService.create(request)
     }
 
@@ -29,7 +39,7 @@ class BoardManagerController(
     @PutMapping("/{boardCode}")
     fun update(
         @PathVariable boardCode: String,
-        @RequestBody request: BoardManagerCreateRequest
+        @RequestBody request: BoardManagerCreateRequest,
     ): BoardManagerDto {
         require(boardCode == request.boardCode) { "게시판 코드가 일치하지 않습니다." }
         return boardManagerService.update(request)
@@ -40,7 +50,9 @@ class BoardManagerController(
      */
     @DeleteMapping("/{boardCode}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable boardCode: String) {
+    fun delete(
+        @PathVariable boardCode: String,
+    ) {
         boardManagerService.delete(boardCode)
     }
 
@@ -48,7 +60,9 @@ class BoardManagerController(
      * 게시판 단건 조회
      */
     @GetMapping("/{boardCode}")
-    fun get(@PathVariable boardCode: String): BoardManagerDto {
+    fun get(
+        @PathVariable boardCode: String,
+    ): BoardManagerDto {
         return boardManagerService.get(boardCode)
     }
 
@@ -58,7 +72,7 @@ class BoardManagerController(
     @GetMapping("/list")
     fun list(
         search: BoardManagerSearch,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<BoardManagerDto> {
         return boardManagerService.list(search, pageable)
     }

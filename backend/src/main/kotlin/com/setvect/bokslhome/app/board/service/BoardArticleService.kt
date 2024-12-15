@@ -17,19 +17,25 @@ import org.springframework.transaction.annotation.Transactional
 class BoardArticleService(
     private val boardArticleRepository: BoardArticleRepository,
     private val boardManagerRepository: BoardManagerRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
     /**
      * 게시물 생성
      */
     @Transactional
-    fun create(request: BoardArticleCreateRequest, ip: String, userId: String): BoardArticleDto {
-        val boardManager = boardManagerRepository.findById(request.boardCode)
-            .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
-        val user = Optional.ofNullable(userId).map {
-            userRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") }
-        }.get()
+    fun create(
+        request: BoardArticleCreateRequest,
+        ip: String,
+        userId: String,
+    ): BoardArticleDto {
+        val boardManager =
+            boardManagerRepository.findById(request.boardCode)
+                .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
+        val user =
+            Optional.ofNullable(userId).map {
+                userRepository.findById(it)
+                    .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") }
+            }.get()
 
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
@@ -40,8 +46,9 @@ class BoardArticleService(
      * 게시물 조회
      */
     fun get(boardArticleSeq: Int): BoardArticleDto {
-        val entity = boardArticleRepository.findById(boardArticleSeq)
-            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
+        val entity =
+            boardArticleRepository.findById(boardArticleSeq)
+                .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
         return BoardArticleDto.from(entity)
     }
 
@@ -49,23 +56,32 @@ class BoardArticleService(
      * 게시물 수정
      */
     @Transactional
-    fun update(boardArticleSeq: Int, request: BoardArticleCreateRequest, userId: String, ip: String): BoardArticleDto {
-        val existingArticle = boardArticleRepository.findById(boardArticleSeq)
-            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
-        val boardManager = boardManagerRepository.findById(request.boardCode)
-            .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
-        val user = userRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $userId") }
+    fun update(
+        boardArticleSeq: Int,
+        request: BoardArticleCreateRequest,
+        userId: String,
+        ip: String,
+    ): BoardArticleDto {
+        val existingArticle =
+            boardArticleRepository.findById(boardArticleSeq)
+                .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
+        val boardManager =
+            boardManagerRepository.findById(request.boardCode)
+                .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
+        val user =
+            userRepository.findById(userId)
+                .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $userId") }
 
-        val entity = BoardArticleEntity(
-            boardArticleSeq = existingArticle.boardArticleSeq,
-            boardManager = boardManager,
-            user = user,
-            title = request.title,
-            content = request.content,
-            ip = ip,
-            encryptF = request.encryptF
-        )
+        val entity =
+            BoardArticleEntity(
+                boardArticleSeq = existingArticle.boardArticleSeq,
+                boardManager = boardManager,
+                user = user,
+                title = request.title,
+                content = request.content,
+                ip = ip,
+                encryptF = request.encryptF,
+            )
         val savedEntity = boardArticleRepository.save(entity)
         return BoardArticleDto.from(savedEntity)
     }
@@ -81,12 +97,15 @@ class BoardArticleService(
     /**
      * 검색 조건에 따른 게시물 목록 조회
      */
-    fun list(search: BoardArticleSearch, pageable: Pageable): Page<BoardArticleDto> {
+    fun list(
+        search: BoardArticleSearch,
+        pageable: Pageable,
+    ): Page<BoardArticleDto> {
         return boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
             title = search.title,
             content = search.content,
-            pageable = pageable
+            pageable = pageable,
         ).map { BoardArticleDto.from(it) }
     }
 }

@@ -1,0 +1,38 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[{*.kt,*.kts}]
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+
+#  Disable wildcard imports entirely
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+ij_kotlin_packages_to_use_import_on_demand = unset
+
+# 패키지 네이밍 비활성화
+ktlint_standard_package-name = disabled
+
+# mutliline-expresion-wrapping 비활성화
+ktlint_standard_string-template-indent = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+
+# Ko-test 에서 indent 스타일 체크 비활성화
+[src/test/kotlin/**.{kt,kts}]
+ktlint_standard_indent = disabled
+ktlint_standard_string-template-indent = disabled
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{json,jsonc}]
+indent_size = 2
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false

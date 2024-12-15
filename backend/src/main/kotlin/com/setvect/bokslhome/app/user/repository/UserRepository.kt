@@ -10,17 +10,19 @@ import org.springframework.data.jpa.repository.Query
  * 사용자 관리
  */
 interface UserRepository : JpaRepository<UserEntity, String> {
-    @Query("""
+    @Query(
+        """
         SELECT u 
         FROM UserEntity u
         WHERE (:userId IS NULL OR LOWER(u.userId) LIKE LOWER(CONCAT('%', :userId, '%')))
         AND (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
-    """)
+    """,
+    )
     fun findBySearch(
         userId: String?,
         name: String?,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<UserEntity>
 
     fun findByUserId(userId: String): UserEntity?
-} 
+}

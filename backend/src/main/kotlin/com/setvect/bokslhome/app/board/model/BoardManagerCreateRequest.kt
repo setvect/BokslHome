@@ -21,7 +21,7 @@ data class BoardManagerCreateRequest(
             commentF = commentF,
             attachF = attachF,
             encryptF = encryptF,
-            deleteF = deleteF
+            deleteF = deleteF,
         )
     }
-} 
+}

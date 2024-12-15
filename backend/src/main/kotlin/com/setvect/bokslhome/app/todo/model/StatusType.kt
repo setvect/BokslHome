@@ -6,5 +6,5 @@ package com.setvect.bokslhome.app.todo.model
 enum class StatusType {
     PLAN,
     GIVEUP,
-    COMPLETE
+    COMPLETE,
 }

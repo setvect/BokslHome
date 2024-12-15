@@ -12,4 +12,4 @@ class BooleanToYNConverter : AttributeConverter<Boolean, String> {
     override fun convertToEntityAttribute(dbData: String?): Boolean {
         return "Y" == dbData
     }
-} 
+}

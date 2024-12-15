@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class BokslHomeApplication
 
 fun main(args: Array<String>) {
-	runApplication<BokslHomeApplication>(*args)
+    runApplication<BokslHomeApplication>(*args)
 }
