@@ -19,61 +19,32 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/board-manager")
-class BoardManagerController(
-    private val boardManagerService: BoardManagerService,
-) {
-    /**
-     * 게시판 생성
-     */
+class BoardManagerController(private val boardManagerService: BoardManagerService) {
+    /** 게시판 생성 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(
-        @RequestBody request: BoardManagerCreateRequest,
-    ): BoardManagerDto {
-        return boardManagerService.create(request)
-    }
+    fun create(@RequestBody request: BoardManagerCreateRequest): BoardManagerDto =
+        boardManagerService.create(request)
 
-    /**
-     * 게시판 수정
-     */
+    /** 게시판 수정 */
     @PutMapping("/{boardCode}")
-    fun update(
-        @PathVariable boardCode: String,
-        @RequestBody request: BoardManagerCreateRequest,
-    ): BoardManagerDto {
-        require(boardCode == request.boardCode) { "게시판 코드가 일치하지 않습니다." }
-        return boardManagerService.update(request)
+    fun update(@PathVariable boardCode: String, @RequestBody request: BoardManagerCreateRequest): BoardManagerDto {
+        require(boardCode == request.boardCode) { "게시판 코드가 일치하지 않습니다." }; return boardManagerService.update(request)
     }
 
-    /**
-     * 게시판 삭제
-     */
+    /** 게시판 삭제 */
     @DeleteMapping("/{boardCode}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(
-        @PathVariable boardCode: String,
-    ) {
+    fun delete(@PathVariable boardCode: String) =
         boardManagerService.delete(boardCode)
-    }
 
-    /**
-     * 게시판 단건 조회
-     */
+    /** 게시판 단건 조회 */
     @GetMapping("/{boardCode}")
-    fun get(
-        @PathVariable boardCode: String,
-    ): BoardManagerDto {
-        return boardManagerService.get(boardCode)
-    }
+    fun get(@PathVariable boardCode: String): BoardManagerDto =
+        boardManagerService.get(boardCode)
 
-    /**
-     * 게시판 페이징 목록 조회
-     */
+    /** 게시판 페이징 목록 조회 */
     @GetMapping("/list")
-    fun list(
-        search: BoardManagerSearch,
-        pageable: Pageable,
-    ): Page<BoardManagerDto> {
-        return boardManagerService.list(search, pageable)
-    }
+    fun list(search: BoardManagerSearch, pageable: Pageable): Page<BoardManagerDto> =
+        boardManagerService.list(search, pageable)
 }

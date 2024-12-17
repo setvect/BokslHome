@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.Modifying
 
 /**
  * 게시물 관리
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.repository.Query
 interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
     @Query(
         """
-        SELECT a 
+        SELECT a
         FROM BoardArticleEntity a
         WHERE a.boardManager.boardCode = :boardCode
         AND (:title IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :title, '%')))
@@ -29,7 +30,7 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
 
     @Query(
         """
-        SELECT a 
+        SELECT a
         FROM BoardArticleEntity a
         WHERE a.boardManager.boardCode = :boardCode
         AND a.user.userId = :userId
@@ -44,11 +45,15 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
 
     @Query(
         """
-        SELECT COUNT(a) 
+        SELECT COUNT(a)
         FROM BoardArticleEntity a
         WHERE a.boardManager.boardCode = :boardCode
         AND a.deleteF = false
     """,
     )
     fun countByBoardCode(boardCode: String): Long
+
+    @Modifying
+    @Query("update BoardArticleEntity set deleteF = 'Y' where boardArticleSeq = :boardArticleSeq")
+    fun deleteUpdate(boardArticleSeq: Int)
 }

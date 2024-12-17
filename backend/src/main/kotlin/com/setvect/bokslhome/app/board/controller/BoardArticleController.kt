@@ -22,65 +22,43 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/board-article")
-class BoardArticleController(
-    private val boardArticleService: BoardArticleService,
-) {
-    /**
-     * 게시물 생성
-     */
+class BoardArticleController(private val boardArticleService: BoardArticleService) {
+    /** 게시물 생성 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(
-        @RequestBody request: BoardArticleCreateRequest,
-        httpRequest: HttpServletRequest,
-    ): BoardArticleDto {
-        val clientIp = httpRequest.remoteAddr
-        return boardArticleService.create(request, clientIp, "setvect")
+    fun create(@RequestBody request: BoardArticleCreateRequest, httpRequest: HttpServletRequest): BoardArticleDto {
+        val clientIp = httpRequest.remoteAddr; return boardArticleService.create(request, clientIp, "setvect")
     }
 
-    /**
-     * 게시물 수정
-     */
+    /** 게시물 수정 */
     @PutMapping("/{boardArticleSeq}")
     fun update(
         @PathVariable boardArticleSeq: Int,
         @RequestBody request: BoardArticleCreateRequest,
         httpRequest: HttpServletRequest,
-        @AuthenticationPrincipal userDetails: UserDetails,
+        @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleDto {
-        val clientIp = httpRequest.getRemoteAddr()
-        return boardArticleService.update(boardArticleSeq, request, userDetails.username, clientIp)
+        val clientIp = httpRequest.getRemoteAddr(); return boardArticleService.update(
+            boardArticleSeq,
+            request,
+            userDetails.username,
+            clientIp
+        )
     }
 
-    /**
-     * 게시물 삭제
-     */
+    /** 게시물 삭제 */
     @DeleteMapping("/{boardArticleSeq}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(
-        @PathVariable boardArticleSeq: Int,
-    ) {
+    fun delete(@PathVariable boardArticleSeq: Int) =
         boardArticleService.delete(boardArticleSeq)
-    }
 
-    /**
-     * 게시물 단건 조회
-     */
+    /** 게시물 단건 조회 */
     @GetMapping("/{boardArticleSeq}")
-    fun get(
-        @PathVariable boardArticleSeq: Int,
-    ): BoardArticleDto {
-        return boardArticleService.get(boardArticleSeq)
-    }
+    fun get(@PathVariable boardArticleSeq: Int): BoardArticleDto =
+        boardArticleService.get(boardArticleSeq)
 
-    /**
-     * 게시물 페이징 목록 조회
-     */
+    /** 게시물 페이징 목록 조회 */
     @GetMapping("/list")
-    fun list(
-        search: BoardArticleSearch,
-        pageable: Pageable,
-    ): Page<BoardArticleDto> {
-        return boardArticleService.list(search, pageable)
-    }
+    fun list(search: BoardArticleSearch, pageable: Pageable): Page<BoardArticleDto> =
+        boardArticleService.list(search, pageable)
 }
