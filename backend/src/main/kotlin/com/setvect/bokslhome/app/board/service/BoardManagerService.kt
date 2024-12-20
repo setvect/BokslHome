@@ -34,7 +34,6 @@ class BoardManagerService(private val boardManagerRepository: BoardManagerReposi
         return BoardManagerDto.from(savedEntity)
     }
 
-
     fun delete(boardCode: String) =
         boardManagerRepository.deleteUpdate(boardCode)
 

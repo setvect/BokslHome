@@ -30,7 +30,6 @@ class BoardArticleService(
         return BoardArticleDto.from(savedEntity)
     }
 
-    /** 게시물 조회 */
     fun get(boardArticleSeq: Int): BoardArticleDto {
         val entity = boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
@@ -61,12 +60,10 @@ class BoardArticleService(
         return BoardArticleDto.from(savedEntity)
     }
 
-    /** 게시물 삭제 */
     fun delete(boardArticleSeq: Int) {
         boardArticleRepository.deleteUpdate(boardArticleSeq)
     }
 
-    /** 검색 조건에 따른 게시물 목록 조회 */
     fun list(search: BoardArticleSearch, pageable: Pageable): Page<BoardArticleDto> =
         boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
