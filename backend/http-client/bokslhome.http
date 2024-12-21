@@ -87,6 +87,6 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "username": "admin",
-  "password": "password"
+  "username": "setvect",
+  "password": "12341"
 }

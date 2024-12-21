@@ -60,8 +60,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     /** 게시물 페이징 목록 조회 */
     @GetMapping("/list")
     fun list(
-        search: BoardArticleSearch,
-        pageable: Pageable,
+        search: BoardArticleSearch, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
     ): Page<BoardArticleDto> {
         // userDetails?.username으로 로그인한 사용자 ID 접근 가능
