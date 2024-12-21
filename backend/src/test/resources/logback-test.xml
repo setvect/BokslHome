@@ -21,10 +21,10 @@
 
     <!-- 로그 레벨 설정 -->
     <logger name="com.setvect.bokslhome" level="DEBUG"/>
-    
+
     <!-- 스프링 프레임워크 로그 레벨 설정 -->
     <logger name="org.springframework" level="INFO"/>
-    
+
     <!-- 하이버네이트 로그 레벨 설정 -->
     <logger name="org.hibernate" level="INFO"/>
 
@@ -32,4 +32,4 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
-</configuration> 
+</configuration>

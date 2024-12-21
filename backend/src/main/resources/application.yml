@@ -27,3 +27,9 @@ logging:
   level:
     root: INFO
     com.setvect.bokslhome: INFO
+
+# JWT 설정
+jwt:
+  secret-key: vR3ck9ZwXy1aB2cD4eF5gH7iJ8kL0mN3pQ6sT8uV2wY4z
+  expiration-time: 864000000  # 10일
+  encryption-key: A76B23CDC9F43E5A1B4D8E2F31C7A95E

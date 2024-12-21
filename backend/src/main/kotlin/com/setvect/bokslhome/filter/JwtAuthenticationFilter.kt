@@ -10,7 +10,9 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 
-class JwtAuthenticationFilter : OncePerRequestFilter() {
+class JwtAuthenticationFilter(
+    private val jwtUtil: JwtUtil
+) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -20,7 +22,7 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
         val header = request.getHeader("Authorization")
         if (header != null && header.startsWith("Bearer ")) {
             val token = header.substring(7)
-            val claims: Claims? = JwtUtil.parseToken(token)
+            val claims: Claims? = jwtUtil.parseToken(token)
             if (claims != null) {
                 val auth = UsernamePasswordAuthenticationToken(claims.subject, null, emptyList())
                 auth.details = WebAuthenticationDetailsSource().buildDetails(request)
