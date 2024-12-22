@@ -6,6 +6,7 @@ import com.setvect.bokslhome.app.board.model.BoardArticleDto
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
 import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
+import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
 import java.util.Optional
 import org.springframework.data.domain.Page
@@ -37,13 +38,14 @@ class BoardArticleService(
         userDetails: UserDetails,
     ): BoardArticleDto {
         val existingArticle = boardArticleRepository.findById(boardArticleSeq)
-            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
-        val boardManager = boardManagerRepository.findById(request.boardCode)
-            .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
-        val user = userRepository.findById(userDetails.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: ${userDetails.username}") }
+            .orElseThrow { UserGuideException("게시물을 찾을 수 없습니다") }
+        if (existingArticle.deleteF) {
+            throw UserGuideException("삭제된 게시물입니다")
+        }
+        val user = userRepository.findById(userDetails.username).orElseThrow { UserGuideException("로그인정보가 없습니다.") }
         val entity = BoardArticleEntity(
             boardArticleSeq = existingArticle.boardArticleSeq,
-            boardManager = boardManager,
+            boardManager = existingArticle.boardManager,
             user = user,
             title = request.title,
             content = request.content,
@@ -59,9 +61,14 @@ class BoardArticleService(
     }
 
     fun get(boardArticleSeq: Int): BoardArticleDto {
-        val entity = boardArticleRepository.findById(boardArticleSeq)
-            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
-        return BoardArticleDto.from(entity)
+        val boardArticle = boardArticleRepository.findById(boardArticleSeq)
+            .orElseThrow { UserGuideException("게시물을 찾을 수 없습니다") }
+
+        if (boardArticle.deleteF) {
+            throw UserGuideException("삭제된 게시물입니다")
+        }
+
+        return BoardArticleDto.from(boardArticle)
     }
 
     fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleDto> =

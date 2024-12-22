@@ -5,6 +5,7 @@ import com.setvect.bokslhome.util.JwtUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -16,6 +17,7 @@ class JwtAuthenticationFilter(
     private val jwtUtil: JwtUtil,
     private val userService: UserService
 ) : OncePerRequestFilter() {
+    private val log = LoggerFactory.getLogger(javaClass)
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val token = extractToken(request)
@@ -26,11 +28,18 @@ class JwtAuthenticationFilter(
                 val user = userService.findById(userId)
                 val authorities = user.role.map { SimpleGrantedAuthority(it.name) }
 
+                val userDetails = org.springframework.security.core.userdetails.User
+                    .withUsername(user.userId)
+                    .password("")
+                    .authorities(authorities)
+                    .build()
+
                 val authentication = UsernamePasswordAuthenticationToken(
-                    userId,
+                    userDetails,
                     null,
                     authorities
                 )
+
                 SecurityContextHolder.getContext().authentication = authentication
             }
         }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.Modifying
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * 게시물 관리
@@ -54,6 +55,7 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
     fun countByBoardCode(boardCode: String): Long
 
     @Modifying
+    @Transactional
     @Query("update BoardArticleEntity set deleteF = 'Y' where boardArticleSeq = :boardArticleSeq")
     fun deleteUpdate(boardArticleSeq: Int)
 }

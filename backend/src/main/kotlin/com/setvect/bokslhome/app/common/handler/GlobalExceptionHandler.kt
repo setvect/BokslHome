@@ -12,11 +12,11 @@ import org.springframework.web.context.request.ServletRequestAttributes
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(UserGuideException::class)
     fun handleAuthenticationException(ex: UserGuideException): ResponseEntity<ErrorResponse> {
-        logger.warn("AuthenticationException 발생", ex)
+        log.warn("AuthenticationException 발생", ex)
         val errorResponse = ErrorResponse(
             timestamp = LocalDateTime.now(),
             status = ex.code.httpStatus.value(),
@@ -29,7 +29,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions(ex: Exception): ResponseEntity<ErrorResponse> {
-        logger.error("Exception 발생: ${ex.message}", ex)
+        log.error("Exception 발생: ${ex.message}", ex)
         val errorResponse = ErrorResponse(
             timestamp = LocalDateTime.now(),
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
