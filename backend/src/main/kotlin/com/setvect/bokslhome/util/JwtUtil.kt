@@ -1,36 +1,29 @@
 package com.setvect.bokslhome.util
 
+import com.setvect.bokslhome.config.BokslProperties
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 import java.security.Key
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 import java.util.Base64
 import java.util.Date
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+import org.springframework.stereotype.Component
 
 @Component
 class JwtUtil(
-    @Value("\${jwt.secret-key}")
-    private val secretKey: String,
-
-    @Value("\${jwt.expiration-time}")
-    private val expirationTime: Long,
-
-    @Value("\${jwt.encryption-key}")
-    private val encryptionKey: String
+    private val bokslProperties: BokslProperties
 ) {
-    private val key: Key = SecretKeySpec(secretKey.toByteArray(), SignatureAlgorithm.HS512.jcaName)
-    private val encryptionKeySpec = SecretKeySpec(encryptionKey.toByteArray(), "AES")
+    private val key: Key = SecretKeySpec(bokslProperties.jwt.secretKey.toByteArray(), SignatureAlgorithm.HS512.jcaName)
+    private val encryptionKeySpec = SecretKeySpec(bokslProperties.jwt.encryptionKey.toByteArray(), "AES")
 
     fun generateToken(userId: String): String {
         val encryptedUserId = encryptUserId(userId)
 
         return Jwts.builder()
             .setSubject(encryptedUserId)
-            .setExpiration(Date(System.currentTimeMillis() + expirationTime))
+            .setExpiration(Date(System.currentTimeMillis() + bokslProperties.jwt.expirationTime))
             .signWith(key)
             .compact()
     }

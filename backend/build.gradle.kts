@@ -60,6 +60,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     testImplementation("org.assertj:assertj-core:3.25.3")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 allOpen {
