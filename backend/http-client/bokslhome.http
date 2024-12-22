@@ -35,6 +35,8 @@ GET http://localhost:8080/api/board-manager/NOTICE
 
 ### 게시판 페이징 목록 조회
 GET http://localhost:8080/api/board-manager/list?page=0&size=10&word=공지&searchType=NAME
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3MzU2ODY0MTZ9.lyi3bH1yXTsJVNEHhMUxTJdhV1nJV1LzE1Uyx9wO2eE
+Content-Type: application/json
 
 # board-article
 
@@ -80,7 +82,7 @@ GET http://localhost:8080/api/board-article/1
 
 ### 게시물 페이징 목록 조회
 GET http://localhost:8080/api/board-article/list?page=0&size=10&boardCode=NOTICE&word=공지&searchType=TITLE
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJOL2ZJVEg3WXVuU0hGa3p6eHFpNE5RPT0iLCJleHAiOjE3MzU2MTQ5NDV9.JQEn4OIbZiArB4EAkvdvmc1THT1nHsyKL22i4lvwwEA
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3MzU2ODY0MTZ9.lyi3bH1yXTsJVNEHhMUxTJdhV1nJV1LzE1Uyx9wO2eE
 
 ### 로그인 요청
 POST http://localhost:8080/api/login
@@ -88,5 +90,5 @@ Content-Type: application/json
 
 {
   "username": "setvect",
-  "password": "12341"
+  "password": "1234"
 }

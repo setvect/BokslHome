@@ -26,8 +26,12 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     /** 게시물 생성 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: BoardArticleCreateRequest, httpRequest: HttpServletRequest): BoardArticleDto {
-        val clientIp = httpRequest.remoteAddr; return boardArticleService.create(request, clientIp, "setvect")
+    fun create(
+        @RequestBody request: BoardArticleCreateRequest,
+        httpRequest: HttpServletRequest,
+        @AuthenticationPrincipal userDetails: UserDetails
+    ): BoardArticleDto {
+        val clientIp = httpRequest.remoteAddr; return boardArticleService.create(request, clientIp, userDetails)
     }
 
     /** 게시물 수정 */
@@ -41,20 +45,26 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         val clientIp = httpRequest.getRemoteAddr(); return boardArticleService.update(
             boardArticleSeq,
             request,
-            userDetails.username,
-            clientIp
+            clientIp,
+            userDetails
         )
     }
 
     /** 게시물 삭제 */
     @DeleteMapping("/{boardArticleSeq}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable boardArticleSeq: Int) =
-        boardArticleService.delete(boardArticleSeq)
+    fun delete(
+        @PathVariable boardArticleSeq: Int,
+        @AuthenticationPrincipal userDetails: UserDetails
+    ) =
+        boardArticleService.delete(boardArticleSeq, userDetails)
 
     /** 게시물 단건 조회 */
     @GetMapping("/{boardArticleSeq}")
-    fun get(@PathVariable boardArticleSeq: Int): BoardArticleDto =
+    fun get(
+        @PathVariable boardArticleSeq: Int,
+        @AuthenticationPrincipal userDetails: UserDetails?
+    ): BoardArticleDto =
         boardArticleService.get(boardArticleSeq)
 
     /** 게시물 페이징 목록 조회 */
@@ -63,7 +73,6 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         search: BoardArticleSearch, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
     ): Page<BoardArticleDto> {
-        // userDetails?.username으로 로그인한 사용자 ID 접근 가능
-        return boardArticleService.list(search, pageable)
+        return boardArticleService.list(search, pageable, userDetails)
     }
 }

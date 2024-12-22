@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import jakarta.persistence.JoinColumn
 import java.sql.Types
 import org.hibernate.annotations.JdbcTypeCode
 
@@ -31,7 +32,8 @@ data class UserEntity(
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
     val deleteFlag: Boolean = false,
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "username")
     val userRole: Set<UserRoleEntity> = emptySet(),
 ) {
     protected constructor() : this(

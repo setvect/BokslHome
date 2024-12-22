@@ -10,8 +10,8 @@ import com.setvect.bokslhome.app.user.repository.UserRepository
 import java.util.Optional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BoardArticleService(
@@ -20,33 +20,27 @@ class BoardArticleService(
     private val userRepository: UserRepository,
 ) {
 
-    fun create(request: BoardArticleCreateRequest, ip: String, userId: String): BoardArticleDto {
+    fun create(request: BoardArticleCreateRequest, ip: String, userDetails: UserDetails): BoardArticleDto {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
-        val user = Optional.ofNullable(userId)
-            .map { userRepository.findById(it).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") } }.get()
+        val user = Optional.ofNullable(userDetails)
+            .map { userRepository.findById(it.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") } }.get()
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
         return BoardArticleDto.from(savedEntity)
     }
 
-    fun get(boardArticleSeq: Int): BoardArticleDto {
-        val entity = boardArticleRepository.findById(boardArticleSeq)
-            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
-        return BoardArticleDto.from(entity)
-    }
-
     fun update(
         boardArticleSeq: Int,
         request: BoardArticleCreateRequest,
-        userId: String,
         ip: String,
+        userDetails: UserDetails,
     ): BoardArticleDto {
         val existingArticle = boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
-        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $userId") }
+        val user = userRepository.findById(userDetails.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: ${userDetails.username}") }
         val entity = BoardArticleEntity(
             boardArticleSeq = existingArticle.boardArticleSeq,
             boardManager = boardManager,
@@ -60,11 +54,17 @@ class BoardArticleService(
         return BoardArticleDto.from(savedEntity)
     }
 
-    fun delete(boardArticleSeq: Int) {
+    fun delete(boardArticleSeq: Int, userDetails: UserDetails) {
         boardArticleRepository.deleteUpdate(boardArticleSeq)
     }
 
-    fun list(search: BoardArticleSearch, pageable: Pageable): Page<BoardArticleDto> =
+    fun get(boardArticleSeq: Int): BoardArticleDto {
+        val entity = boardArticleRepository.findById(boardArticleSeq)
+            .orElseThrow { IllegalArgumentException("게시물을 찾을 수 없습니다: $boardArticleSeq") }
+        return BoardArticleDto.from(entity)
+    }
+
+    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleDto> =
         boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
             title = search.title,

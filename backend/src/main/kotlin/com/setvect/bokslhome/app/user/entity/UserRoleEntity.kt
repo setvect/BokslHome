@@ -23,15 +23,11 @@ data class UserRoleEntity(
     @Column(name = "ROLE_SEQ")
     @GeneratedValue(strategy = GenerationType.AUTO)
     val roleSeq: Int = 0,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username", nullable = false)
-    val user: UserEntity,
     @Column(name = "ROLE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     val roleName: RoleName,
 ) {
     protected constructor() : this(
-        user = UserEntity("", "", ""),
         roleName = RoleName.ROLE_USER,
     )
 }

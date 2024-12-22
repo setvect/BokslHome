@@ -1,31 +1,34 @@
 package com.setvect.bokslhome.config
 
 import com.setvect.bokslhome.filter.JwtAuthenticationFilter
-import com.setvect.bokslhome.util.JwtUtil
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtUtil: JwtUtil
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
-
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .cors { it.configure(http) }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.anyRequest().permitAll()
+                it
+                    .requestMatchers("/api/board-manager/**").hasAuthority("ROLE_ADMIN")
+                    .anyRequest().permitAll()
             }
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter::class.java
+            )
 
         return http.build()
     }

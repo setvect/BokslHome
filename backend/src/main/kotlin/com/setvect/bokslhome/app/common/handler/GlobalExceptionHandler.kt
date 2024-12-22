@@ -19,12 +19,12 @@ class GlobalExceptionHandler {
         logger.warn("AuthenticationException 발생", ex)
         val errorResponse = ErrorResponse(
             timestamp = LocalDateTime.now(),
-            status = HttpStatus.UNAUTHORIZED.value(),
-            error = HttpStatus.UNAUTHORIZED.reasonPhrase,
+            status = ex.code.httpStatus.value(),
+            error = ex.code.httpStatus.reasonPhrase,
             message = ex.message,
             path = getCurrentRequestPath()
         )
-        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)

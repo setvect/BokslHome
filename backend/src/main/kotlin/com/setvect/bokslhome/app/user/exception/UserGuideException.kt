@@ -1,3 +1,10 @@
 package com.setvect.bokslhome.app.user.exception
 
-class UserGuideException(override val message: String) : RuntimeException(message)
+import org.springframework.http.HttpStatus
+
+class UserGuideException(override val message: String, val code: UserGuideCode) : RuntimeException(message)
+
+enum class UserGuideCode(val httpStatus: HttpStatus) {
+    LoginFailed(HttpStatus.UNAUTHORIZED),
+    CommonError(HttpStatus.INTERNAL_SERVER_ERROR)
+}

@@ -27,6 +27,7 @@ logging:
   level:
     root: INFO
     com.setvect.bokslhome: INFO
+    org.springframework.security: DEBUG
 
 # JWT 설정
 jwt:
