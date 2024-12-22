@@ -11,6 +11,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 import java.sql.Types
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
@@ -23,7 +24,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class MemoEntity(
     @Id
     @Column(name = "MEMO_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memo_seq")
+    @SequenceGenerator(
+        name = "memo_seq",
+        sequenceName = "TBCB_MEMO_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val memoSeq: Int = 0,
     @Column(name = "CONTENT", nullable = false, length = 4000)
     val content: String,

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import lombok.Getter
 import lombok.Setter
@@ -22,7 +23,13 @@ class MemoCategoryEntity {
      */
     @Id
     @Column(name = "CATEGORY_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memo_category_seq")
+    @SequenceGenerator(
+        name = "memo_category_seq",
+        sequenceName = "TBCA_MEMO_CATEGORY_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     private var categorySeq = 0
 
     /**

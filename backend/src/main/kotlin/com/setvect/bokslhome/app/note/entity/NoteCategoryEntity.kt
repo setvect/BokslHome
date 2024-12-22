@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 import java.sql.Types
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
@@ -24,7 +25,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class NoteCategoryEntity(
     @Id
     @Column(name = "CATEGORY_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "note_category_seq")
+    @SequenceGenerator(
+        name = "note_category_seq",
+        sequenceName = "TBDA_NOTE_CATEGORY_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val categorySeq: Int = 0,
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", nullable = false)

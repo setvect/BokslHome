@@ -13,6 +13,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 import java.util.Date
 
 /**
@@ -23,7 +24,13 @@ import java.util.Date
 data class CommentEntity(
     @Id
     @Column(name = "COMMENT_SEQ")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_seq")
+    @SequenceGenerator(
+        name = "comment_seq",
+        sequenceName = "TBYB_COMMENT_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val commentSeq: Int = 0,
     @Column(name = "MODULE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)

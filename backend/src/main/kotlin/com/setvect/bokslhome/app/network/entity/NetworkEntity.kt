@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Lob
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 import java.sql.Types
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
@@ -20,7 +21,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class NetworkEntity(
     @Id
     @Column(name = "NETWORK_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "network_seq")
+    @SequenceGenerator(
+        name = "network_seq",
+        sequenceName = "TBFA_NETWORK_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val networkSeq: Int = 0,
     @Column(name = "TITLE", nullable = false, length = 200)
     val title: String,

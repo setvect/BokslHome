@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 
 /**
  * 코드
@@ -15,7 +16,13 @@ import jakarta.persistence.Table
 data class CodeEntity(
     @Id
     @Column(name = "CODE_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "code_seq")
+    @SequenceGenerator(
+        name = "code_seq",
+        sequenceName = "TBYC_CODE_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val codeSeq: Int = 0,
     @Column(name = "MAJOR_CODE", nullable = false, length = 20)
     val majorCode: String,

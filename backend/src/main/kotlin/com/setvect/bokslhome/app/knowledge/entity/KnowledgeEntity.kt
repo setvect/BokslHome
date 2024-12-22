@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Lob
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
 import java.util.Date
@@ -21,7 +22,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class KnowledgeEntity(
     @Id
     @Column(name = "KNOWLEDGE_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "knowledge_seq")
+    @SequenceGenerator(
+        name = "knowledge_seq",
+        sequenceName = "TBEA_KNOWLEDGE_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val knowledgeSeq: Int = 0,
     @Column(name = "CLASSIFY_C", nullable = false, length = 20)
     val classifyC: String,

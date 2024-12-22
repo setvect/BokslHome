@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.SequenceGenerator
 import java.sql.Types
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
@@ -23,7 +24,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class TodoEntity(
     @Id
     @Column(name = "TODO_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "todo_seq")
+    @SequenceGenerator(
+        name = "todo_seq",
+        sequenceName = "TBHA_TODO_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val todoSeq: Int = 0,
     @Column(name = "CONTENT", nullable = false, length = 1000)
     val content: String,
