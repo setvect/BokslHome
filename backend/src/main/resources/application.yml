@@ -24,6 +24,7 @@ server:
 
 bokslhome:
   home: "./"
+  attach-file-path: "${bokslhome.home}/attach"
   # JWT 설정
   jwt:
     secret-key: vR3ck9ZwXy1aB2cD4eF5gH7iJ8kL0mN3pQ6sT8uV2wY4z

@@ -4,10 +4,13 @@ import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleDto
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
+import com.setvect.bokslhome.app.board.model.FileData
 import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
+import com.setvect.bokslhome.app.attach.service.AttachFileService
+import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import java.util.Optional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,15 +22,16 @@ class BoardArticleService(
     private val boardArticleRepository: BoardArticleRepository,
     private val boardManagerRepository: BoardManagerRepository,
     private val userRepository: UserRepository,
+    private val attachFileService: AttachFileService
 ) {
-
-    fun create(request: BoardArticleCreateRequest, ip: String, userDetails: UserDetails): BoardArticleDto {
+    fun create(request: BoardArticleCreateRequest, fileDataList: List<FileData>, ip: String, userDetails: UserDetails): BoardArticleDto {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
         val user = Optional.ofNullable(userDetails)
             .map { userRepository.findById(it.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") } }.get()
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
+        attachFileService.storeAttach(fileDataList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
         return BoardArticleDto.from(savedEntity)
     }
 

@@ -12,6 +12,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
 import java.util.Date
@@ -25,7 +26,13 @@ import org.hibernate.annotations.JdbcTypeCode
 data class BoardArticleEntity(
     @Id
     @Column(name = "ARTICLE_SEQ", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "board_article_seq")
+    @SequenceGenerator(
+        name = "board_article_seq",
+        sequenceName = "TBBB_BOARD_ARTICLE_SEQ",
+        initialValue = 10000,
+        allocationSize = 50
+    )
     val boardArticleSeq: Int = 0,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_CODE", nullable = false)

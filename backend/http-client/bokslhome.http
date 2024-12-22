@@ -46,23 +46,37 @@ Content-Type: application/json
 
 # board-article
 
-### 게시물 생성
+### 게시물 생성 (첨부파일 포함)
 POST http://localhost:8080/api/board-article
 Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="request"
 Content-Type: application/json
 
 {
   "boardCode": "NOTICE",
-  "title": "첫 번째 공지사항",
-  "content": "공지사항 내용입니다.",
-  "attachFileList": [
-    {
-      "fileName": "sample.txt",
-      "savePath": "/upload/2024/01/sample.txt",
-      "size": 1024
-    }
-  ]
+  "title": "첫부파일이 있는 게시물",
+  "content": "첨부파일 테스트입니다."
 }
+
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="test.txt"
+Content-Type: text/plain
+
+이것은 테스트 파일의 내용입니다.
+여러 줄로 작성할 수 있습니다.
+한글도 잘 들어갑니다.
+
+--WebAppBoundary
+Content-Disposition: form-data; name="files"; filename="memo.txt"
+Content-Type: text/plain
+
+두 번째 파일입니다.
+이렇게 여러 파일을 추가할 수 있습니다.
+
+--WebAppBoundary--
 
 ### 게시물 수정
 PUT http://localhost:8080/api/board-article/2

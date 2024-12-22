@@ -4,6 +4,7 @@ import com.setvect.bokslhome.app.board.model.BoardManagerCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardManagerDto
 import com.setvect.bokslhome.app.board.model.BoardManagerSearch
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
+import com.setvect.bokslhome.app.user.exception.UserGuideException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -19,7 +20,7 @@ class BoardManagerService(private val boardManagerRepository: BoardManagerReposi
 
     fun get(boardCode: String): BoardManagerDto {
         val entity = boardManagerRepository.findById(boardCode)
-            .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: $boardCode") }
+            .orElseThrow { UserGuideException("게시판을 찾을 수 없습니다: $boardCode") }
         return BoardManagerDto.from(entity)
     }
 
