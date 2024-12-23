@@ -1,8 +1,8 @@
 package com.setvect.bokslhome.app.board.controller
 
 import com.setvect.bokslhome.app.board.model.BoardManagerCreateRequest
-import com.setvect.bokslhome.app.board.model.BoardManagerDto
-import com.setvect.bokslhome.app.board.model.BoardManagerSearch
+import com.setvect.bokslhome.app.board.model.BoardManagerResponse
+import com.setvect.bokslhome.app.board.model.BoardManagerSearchRequest
 import com.setvect.bokslhome.app.board.service.BoardManagerService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -23,12 +23,12 @@ class BoardManagerController(private val boardManagerService: BoardManagerServic
     /** 게시판 생성 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: BoardManagerCreateRequest): BoardManagerDto =
+    fun create(@RequestBody request: BoardManagerCreateRequest): BoardManagerResponse =
         boardManagerService.create(request)
 
     /** 게시판 수정 */
     @PutMapping("/{boardCode}")
-    fun update(@PathVariable boardCode: String, @RequestBody request: BoardManagerCreateRequest): BoardManagerDto {
+    fun update(@PathVariable boardCode: String, @RequestBody request: BoardManagerCreateRequest): BoardManagerResponse {
         require(boardCode == request.boardCode) { "게시판 코드가 일치하지 않습니다." }; return boardManagerService.update(request)
     }
 
@@ -40,11 +40,11 @@ class BoardManagerController(private val boardManagerService: BoardManagerServic
 
     /** 게시판 단건 조회 */
     @GetMapping("/{boardCode}")
-    fun get(@PathVariable boardCode: String): BoardManagerDto =
+    fun get(@PathVariable boardCode: String): BoardManagerResponse =
         boardManagerService.get(boardCode)
 
     /** 게시판 페이징 목록 조회 */
     @GetMapping("/list")
-    fun list(search: BoardManagerSearch, pageable: Pageable): Page<BoardManagerDto> =
+    fun list(search: BoardManagerSearchRequest, pageable: Pageable): Page<BoardManagerResponse> =
         boardManagerService.list(search, pageable)
 }

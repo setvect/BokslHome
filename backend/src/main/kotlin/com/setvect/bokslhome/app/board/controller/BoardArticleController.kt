@@ -1,9 +1,9 @@
 package com.setvect.bokslhome.app.board.controller
 
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
-import com.setvect.bokslhome.app.board.model.BoardArticleDto
+import com.setvect.bokslhome.app.board.model.BoardArticleResponse
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
-import com.setvect.bokslhome.app.board.model.FileData
+import com.setvect.bokslhome.app.board.model.FileDataDto
 import com.setvect.bokslhome.app.board.service.BoardArticleService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
@@ -34,12 +34,12 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         @RequestPart("files", required = false) multipartFiles: List<MultipartFile>?,
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
-    ): BoardArticleDto {
+    ): BoardArticleResponse {
         val clientIp = httpRequest.remoteAddr
 
         // 스트림으로 파일 처리
-        val fileDataList = multipartFiles?.map { file ->
-            FileData(
+        val fileDataDtoList = multipartFiles?.map { file ->
+            FileDataDto(
                 originalName = file.originalFilename ?: "",
                 contentType = file.contentType ?: "",
                 inputStream = file.inputStream,
@@ -47,7 +47,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
             )
         } ?: emptyList()
 
-        return boardArticleService.create(request, fileDataList, clientIp, userDetails)
+        return boardArticleService.create(request, fileDataDtoList, clientIp, userDetails)
     }
 
     /** 게시물 수정 */
@@ -57,7 +57,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         @RequestBody request: BoardArticleCreateRequest,
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
-    ): BoardArticleDto {
+    ): BoardArticleResponse {
         val clientIp = httpRequest.getRemoteAddr(); return boardArticleService.update(
             boardArticleSeq,
             request,
@@ -80,7 +80,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     fun get(
         @PathVariable boardArticleSeq: Int,
         @AuthenticationPrincipal userDetails: UserDetails?
-    ): BoardArticleDto =
+    ): BoardArticleResponse =
         boardArticleService.get(boardArticleSeq)
 
     /** 게시물 페이징 목록 조회 */
@@ -88,7 +88,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     fun list(
         search: BoardArticleSearch, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
-    ): Page<BoardArticleDto> {
+    ): Page<BoardArticleResponse> {
         return boardArticleService.list(search, pageable, userDetails)
     }
 }

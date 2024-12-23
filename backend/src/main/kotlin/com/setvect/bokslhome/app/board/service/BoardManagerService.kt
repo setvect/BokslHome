@@ -1,8 +1,8 @@
 package com.setvect.bokslhome.app.board.service
 
 import com.setvect.bokslhome.app.board.model.BoardManagerCreateRequest
-import com.setvect.bokslhome.app.board.model.BoardManagerDto
-import com.setvect.bokslhome.app.board.model.BoardManagerSearch
+import com.setvect.bokslhome.app.board.model.BoardManagerResponse
+import com.setvect.bokslhome.app.board.model.BoardManagerSearchRequest
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import org.springframework.data.domain.Page
@@ -12,33 +12,33 @@ import org.springframework.stereotype.Service
 @Service
 class BoardManagerService(private val boardManagerRepository: BoardManagerRepository) {
 
-    fun create(request: BoardManagerCreateRequest): BoardManagerDto {
+    fun create(request: BoardManagerCreateRequest): BoardManagerResponse {
         val entity = request.toEntity()
         val savedEntity = boardManagerRepository.save(entity)
-        return BoardManagerDto.from(savedEntity)
+        return BoardManagerResponse.from(savedEntity)
     }
 
-    fun get(boardCode: String): BoardManagerDto {
+    fun get(boardCode: String): BoardManagerResponse {
         val entity = boardManagerRepository.findById(boardCode)
             .orElseThrow { UserGuideException("게시판을 찾을 수 없습니다: $boardCode") }
-        return BoardManagerDto.from(entity)
+        return BoardManagerResponse.from(entity)
     }
 
-    fun getAll(): List<BoardManagerDto> =
-        boardManagerRepository.findAll().map { BoardManagerDto.from(it) }
+    fun getAll(): List<BoardManagerResponse> =
+        boardManagerRepository.findAll().map { BoardManagerResponse.from(it) }
 
-    fun update(request: BoardManagerCreateRequest): BoardManagerDto {
+    fun update(request: BoardManagerCreateRequest): BoardManagerResponse {
         get(request.boardCode)
         /* 존재 여부 확인 */
         val entity = request.toEntity()
         val savedEntity = boardManagerRepository.save(entity)
-        return BoardManagerDto.from(savedEntity)
+        return BoardManagerResponse.from(savedEntity)
     }
 
     fun delete(boardCode: String) =
         boardManagerRepository.deleteUpdate(boardCode)
 
-    fun list(search: BoardManagerSearch, pageable: Pageable): Page<BoardManagerDto> =
+    fun list(search: BoardManagerSearchRequest, pageable: Pageable): Page<BoardManagerResponse> =
         boardManagerRepository.findBySearch(boardCode = search.boardCode, name = search.name, pageable = pageable)
-            .map { BoardManagerDto.from(it) }
+            .map { BoardManagerResponse.from(it) }
 }
