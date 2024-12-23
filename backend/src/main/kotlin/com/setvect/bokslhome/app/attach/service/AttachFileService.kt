@@ -2,6 +2,7 @@ package com.setvect.bokslhome.app.attach.service
 
 import com.setvect.bokslhome.app.attach.entity.AttachFileEntity
 import com.setvect.bokslhome.app.attach.model.AttachFileModule
+import com.setvect.bokslhome.app.attach.model.AttachFileResponse
 import com.setvect.bokslhome.app.attach.repository.AttachRepository
 import com.setvect.bokslhome.app.board.model.FileData
 import com.setvect.bokslhome.config.BokslProperties
@@ -44,5 +45,21 @@ class AttachFileService(
             )
         }
         return attachRepository.saveAll(fileList)
+    }
+
+    fun getAttachFile(moduleName: AttachFileModule, moduleId: String): List<AttachFileResponse> {
+        val attachFileList = attachRepository.findByModuleNameAndModuleId(moduleName, moduleId)
+        return attachFileList.map { AttachFileResponse.from(it) }
+    }
+
+    /**
+     * 모듈별 첨부파일 조회
+     * @param moduleName 모듈명
+     * @param moduleIdList 모듈ID 리스트
+     * @return 모듈ID별 첨부파일 리스트
+     */
+    fun getAttachFileByModuleId(moduleName: AttachFileModule, moduleIdList: List<String>): Map<String, List<AttachFileResponse>> {
+        val attachFileList = attachRepository.findByModuleNameAndModuleIdIn(moduleName, moduleIdList)
+        return attachFileList.groupBy { it.moduleId }.mapValues { it.value.map { AttachFileResponse.from(it) } }
     }
 }

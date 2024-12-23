@@ -1,5 +1,7 @@
 package com.setvect.bokslhome.app.board.service
 
+import com.setvect.bokslhome.app.attach.model.AttachFileModule
+import com.setvect.bokslhome.app.attach.service.AttachFileService
 import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleDto
@@ -9,8 +11,6 @@ import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
-import com.setvect.bokslhome.app.attach.service.AttachFileService
-import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import java.util.Optional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -32,7 +32,8 @@ class BoardArticleService(
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
         attachFileService.storeAttach(fileDataList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
-        return BoardArticleDto.from(savedEntity)
+        val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
+        return BoardArticleDto.from(savedEntity, attachFileList)
     }
 
     fun update(
@@ -57,7 +58,8 @@ class BoardArticleService(
             encryptF = request.encryptF
         )
         val savedEntity = boardArticleRepository.save(entity)
-        return BoardArticleDto.from(savedEntity)
+        val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
+        return BoardArticleDto.from(savedEntity, attachFileList)
     }
 
     fun delete(boardArticleSeq: Int, userDetails: UserDetails) {
@@ -72,14 +74,21 @@ class BoardArticleService(
             throw UserGuideException("삭제된 게시물입니다")
         }
 
-        return BoardArticleDto.from(boardArticle)
+        val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, boardArticleSeq.toString())
+        return BoardArticleDto.from(boardArticle, attachFileList)
     }
 
-    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleDto> =
-        boardArticleRepository.findBySearch(
+    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleDto> {
+        val boardArticlePage = boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
             title = search.title,
             content = search.content,
             pageable = pageable
-        ).map { BoardArticleDto.from(it) }
+        )
+        val attachFileList =
+            attachFileService.getAttachFileByModuleId(
+                AttachFileModule.BOARD,
+                boardArticlePage.content.map { it.boardArticleSeq.toString() })
+        return boardArticlePage.map { BoardArticleDto.from(it, attachFileList[it.boardArticleSeq.toString()] ?: emptyList()) }
+    }
 }
