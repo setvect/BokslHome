@@ -6,7 +6,8 @@ import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleResponse
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
-import com.setvect.bokslhome.app.board.model.FileDataDto
+import com.setvect.bokslhome.app.board.model.AttachFileDao
+import com.setvect.bokslhome.app.board.model.BoardArticleModifyRequest
 import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideException
@@ -24,21 +25,22 @@ class BoardArticleService(
     private val userRepository: UserRepository,
     private val attachFileService: AttachFileService
 ) {
-    fun create(request: BoardArticleCreateRequest, fileDataDtoList: List<FileDataDto>, ip: String, userDetails: UserDetails): BoardArticleResponse {
+    fun create(request: BoardArticleCreateRequest, attachFileDaoList: List<AttachFileDao>, ip: String, userDetails: UserDetails): BoardArticleResponse {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
         val user = Optional.ofNullable(userDetails)
             .map { userRepository.findById(it.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") } }.get()
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
-        attachFileService.storeAttach(fileDataDtoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
+        attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
         return BoardArticleResponse.from(savedEntity, attachFileList)
     }
 
     fun update(
         boardArticleSeq: Int,
-        request: BoardArticleCreateRequest,
+        request: BoardArticleModifyRequest,
+        attachFileDaoList: List<AttachFileDao>,
         ip: String,
         userDetails: UserDetails,
     ): BoardArticleResponse {
@@ -49,15 +51,16 @@ class BoardArticleService(
         }
         val user = userRepository.findById(userDetails.username).orElseThrow { UserGuideException("로그인정보가 없습니다.") }
         val entity = BoardArticleEntity(
-            boardArticleSeq = existingArticle.boardArticleSeq,
-            boardManager = existingArticle.boardManager,
-            user = user,
-            title = request.title,
-            content = request.content,
-            ip = ip,
+                boardArticleSeq = existingArticle.boardArticleSeq,
+                boardManager = existingArticle.boardManager,
+                user = user,
+                title = request.title,
+                content = request.content,
+                ip = ip,
             encryptF = request.encryptF
         )
         val savedEntity = boardArticleRepository.save(entity)
+        attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
         return BoardArticleResponse.from(savedEntity, attachFileList)
     }

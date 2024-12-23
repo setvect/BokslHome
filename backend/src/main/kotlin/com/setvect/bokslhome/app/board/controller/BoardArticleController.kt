@@ -1,9 +1,10 @@
 package com.setvect.bokslhome.app.board.controller
 
+import com.setvect.bokslhome.app.board.model.AttachFileDao
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
+import com.setvect.bokslhome.app.board.model.BoardArticleModifyRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleResponse
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
-import com.setvect.bokslhome.app.board.model.FileDataDto
 import com.setvect.bokslhome.app.board.service.BoardArticleService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
@@ -16,11 +17,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -31,15 +31,15 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     @ResponseStatus(HttpStatus.CREATED)
     fun create(
         @RequestPart("request") request: BoardArticleCreateRequest,
-        @RequestPart("files", required = false) multipartFiles: List<MultipartFile>?,
+        @RequestPart("attachFileList", required = false) attachFileList: List<MultipartFile>?,
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleResponse {
         val clientIp = httpRequest.remoteAddr
 
         // 스트림으로 파일 처리
-        val fileDataDtoList = multipartFiles?.map { file ->
-            FileDataDto(
+        val attachFileDaoList = attachFileList?.map { file ->
+            AttachFileDao(
                 originalName = file.originalFilename ?: "",
                 contentType = file.contentType ?: "",
                 inputStream = file.inputStream,
@@ -47,23 +47,28 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
             )
         } ?: emptyList()
 
-        return boardArticleService.create(request, fileDataDtoList, clientIp, userDetails)
+        return boardArticleService.create(request, attachFileDaoList, clientIp, userDetails)
     }
 
     /** 게시물 수정 */
     @PutMapping("/{boardArticleSeq}")
     fun update(
         @PathVariable boardArticleSeq: Int,
-        @RequestBody request: BoardArticleCreateRequest,
+        @RequestPart request: BoardArticleModifyRequest,
+        @RequestPart("attachFileList", required = false) attachFileList: List<MultipartFile>?,
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleResponse {
-        val clientIp = httpRequest.getRemoteAddr(); return boardArticleService.update(
-            boardArticleSeq,
-            request,
-            clientIp,
-            userDetails
-        )
+        val clientIp = httpRequest.remoteAddr
+        val attachFileDaoList = attachFileList?.map { file ->
+            AttachFileDao(
+                originalName = file.originalFilename ?: "",
+                contentType = file.contentType ?: "",
+                inputStream = file.inputStream,
+                size = file.size.toInt()
+            )
+        } ?: emptyList()
+        return boardArticleService.update(boardArticleSeq, request, attachFileDaoList, clientIp, userDetails)
     }
 
     /** 게시물 삭제 */

@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 --WebAppBoundary
-Content-Disposition: form-data; name="files"; filename="test.txt"
+Content-Disposition: form-data; name="attachFileList"; filename="test.txt"
 Content-Type: text/plain
 
 이것은 테스트 파일의 내용입니다.
@@ -70,7 +70,7 @@ Content-Type: text/plain
 한글도 잘 들어갑니다.
 
 --WebAppBoundary
-Content-Disposition: form-data; name="files"; filename="메모.txt"
+Content-Disposition: form-data; name="attachFileList"; filename="메모.txt"
 Content-Type: text/plain
 
 두 번째 파일입니다.
@@ -79,22 +79,20 @@ Content-Type: text/plain
 --WebAppBoundary--
 
 ### 게시물 수정
-PUT http://localhost:8080/api/board-article/2
+PUT http://localhost:8080/api/board-article/10102
 Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="request"
 Content-Type: application/json
 
 {
-  "boardCode": "NOTICE",
-  "title": "수정된 공지사항",
-  "content": "수정된 공지사항 내용입니다.",
-  "attachFileList": [
-    {
-      "fileName": "updated.txt",
-      "savePath": "/upload/2024/01/updated.txt",
-      "size": 2048
-    }
-  ]
+  "title": "제목 수정해요.111122233",
+  "content": "첨부파일 테스트입니다.",
+  "encryptF": false
 }
+--WebAppBoundary--
 
 ### 게시물 삭제
 DELETE http://localhost:8080/api/board-article/2

@@ -2,7 +2,7 @@ package com.setvect.bokslhome.app.board.model
 
 import java.io.InputStream
 
-data class FileDataDto(
+data class AttachFileDao(
     val originalName: String,
     val contentType: String,
     val inputStream: InputStream,
@@ -13,7 +13,7 @@ data class FileDataDto(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as FileDataDto
+        other as AttachFileDao
 
         if (originalName != other.originalName) return false
         if (contentType != other.contentType) return false
