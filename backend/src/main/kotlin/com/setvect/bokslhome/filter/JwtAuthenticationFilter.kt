@@ -30,7 +30,6 @@ class JwtAuthenticationFilter(
 
                 val userDetails = org.springframework.security.core.userdetails.User
                     .withUsername(user.userId)
-                    .password("")
                     .authorities(authorities)
                     .build()
 

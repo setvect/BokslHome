@@ -4,9 +4,9 @@ import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import com.setvect.bokslhome.app.attach.service.AttachFileService
 import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
-import com.setvect.bokslhome.app.board.model.BoardArticleDto
+import com.setvect.bokslhome.app.board.model.BoardArticleResponse
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
-import com.setvect.bokslhome.app.board.model.FileData
+import com.setvect.bokslhome.app.board.model.FileDataDto
 import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideException
@@ -24,16 +24,16 @@ class BoardArticleService(
     private val userRepository: UserRepository,
     private val attachFileService: AttachFileService
 ) {
-    fun create(request: BoardArticleCreateRequest, fileDataList: List<FileData>, ip: String, userDetails: UserDetails): BoardArticleDto {
+    fun create(request: BoardArticleCreateRequest, fileDataDtoList: List<FileDataDto>, ip: String, userDetails: UserDetails): BoardArticleResponse {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow { IllegalArgumentException("게시판을 찾을 수 없습니다: ${request.boardCode}") }
         val user = Optional.ofNullable(userDetails)
             .map { userRepository.findById(it.username).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다: $it") } }.get()
         val boardArticleEntity = request.toEntity(boardManager, ip, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
-        attachFileService.storeAttach(fileDataList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
+        attachFileService.storeAttach(fileDataDtoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
-        return BoardArticleDto.from(savedEntity, attachFileList)
+        return BoardArticleResponse.from(savedEntity, attachFileList)
     }
 
     fun update(
@@ -41,7 +41,7 @@ class BoardArticleService(
         request: BoardArticleCreateRequest,
         ip: String,
         userDetails: UserDetails,
-    ): BoardArticleDto {
+    ): BoardArticleResponse {
         val existingArticle = boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { UserGuideException("게시물을 찾을 수 없습니다") }
         if (existingArticle.deleteF) {
@@ -59,14 +59,14 @@ class BoardArticleService(
         )
         val savedEntity = boardArticleRepository.save(entity)
         val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
-        return BoardArticleDto.from(savedEntity, attachFileList)
+        return BoardArticleResponse.from(savedEntity, attachFileList)
     }
 
     fun delete(boardArticleSeq: Int, userDetails: UserDetails) {
         boardArticleRepository.deleteUpdate(boardArticleSeq)
     }
 
-    fun get(boardArticleSeq: Int): BoardArticleDto {
+    fun get(boardArticleSeq: Int): BoardArticleResponse {
         val boardArticle = boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { UserGuideException("게시물을 찾을 수 없습니다") }
 
@@ -75,10 +75,10 @@ class BoardArticleService(
         }
 
         val attachFileList = attachFileService.getAttachFile(AttachFileModule.BOARD, boardArticleSeq.toString())
-        return BoardArticleDto.from(boardArticle, attachFileList)
+        return BoardArticleResponse.from(boardArticle, attachFileList)
     }
 
-    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleDto> {
+    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleResponse> {
         val boardArticlePage = boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
             title = search.title,
@@ -89,6 +89,6 @@ class BoardArticleService(
             attachFileService.getAttachFileByModuleId(
                 AttachFileModule.BOARD,
                 boardArticlePage.content.map { it.boardArticleSeq.toString() })
-        return boardArticlePage.map { BoardArticleDto.from(it, attachFileList[it.boardArticleSeq.toString()] ?: emptyList()) }
+        return boardArticlePage.map { BoardArticleResponse.from(it, attachFileList[it.boardArticleSeq.toString()] ?: emptyList()) }
     }
 }

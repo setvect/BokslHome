@@ -4,7 +4,7 @@ import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.attach.model.AttachFileResponse
 import java.util.Date
 
-data class BoardArticleDto(
+data class BoardArticleResponse(
     val boardArticleSeq: Int,
     val boardCode: String,
     val userId: String,
@@ -19,7 +19,7 @@ data class BoardArticleDto(
 ) {
     companion object {
         fun from(entity: BoardArticleEntity, attachFileList: List<AttachFileResponse>) =
-            BoardArticleDto(
+            BoardArticleResponse(
                 boardArticleSeq = entity.boardArticleSeq,
                 boardCode = entity.boardManager.boardCode,
                 userId = entity.user.userId,

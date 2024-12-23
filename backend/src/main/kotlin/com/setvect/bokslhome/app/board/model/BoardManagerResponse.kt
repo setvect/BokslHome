@@ -2,7 +2,7 @@ package com.setvect.bokslhome.app.board.model
 
 import com.setvect.bokslhome.app.board.entity.BoardManagerEntity
 
-data class BoardManagerDto(
+data class BoardManagerResponse(
     val boardCode: String,
     val name: String,
     val uploadLimit: Int = 0,
@@ -13,8 +13,8 @@ data class BoardManagerDto(
     val deleteF: Boolean = false,
 ) {
     companion object {
-        fun from(entity: BoardManagerEntity): BoardManagerDto {
-            return BoardManagerDto(
+        fun from(entity: BoardManagerEntity): BoardManagerResponse {
+            return BoardManagerResponse(
                 boardCode = entity.boardCode,
                 name = entity.name,
                 uploadLimit = entity.uploadLimit,
