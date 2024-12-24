@@ -16,8 +16,8 @@ import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
 import java.util.Optional
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -104,7 +104,7 @@ class BoardArticleService(
         return BoardArticleResponse.from(boardArticle, attachFileList)
     }
 
-    fun list(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): Page<BoardArticleResponse> {
+    fun page(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {
         val boardArticlePage = boardArticleRepository.findBySearch(
             boardCode = search.boardCode,
             title = search.title,
@@ -115,7 +115,8 @@ class BoardArticleService(
             attachFileService.getAttachFileList(
                 AttachFileModule.BOARD,
                 boardArticlePage.content.map { it.boardArticleSeq.toString() })
-        return boardArticlePage.map { BoardArticleResponse.from(it, attachFileList[it.boardArticleSeq.toString()] ?: emptyList()) }
+        val page = boardArticlePage.map { BoardArticleResponse.from(it, attachFileList[it.boardArticleSeq.toString()] ?: emptyList()) }
+        return PagedModel(page)
     }
 
     fun getAttachFile(boardArticleSeq: Int, attachFileSeq: Int): AttachFileDto {

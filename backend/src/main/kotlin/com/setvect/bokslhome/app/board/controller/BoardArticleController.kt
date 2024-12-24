@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.net.URLConnection
 import java.net.URLEncoder
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
@@ -88,13 +88,11 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         boardArticleService.get(boardArticleSeq)
 
     /** 게시물 페이징 목록 조회 */
-    @GetMapping("/list")
-    fun list(
+    @GetMapping("/page")
+    fun page(
         search: BoardArticleSearch, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
-    ): Page<BoardArticleResponse> {
-        return boardArticleService.list(search, pageable, userDetails)
-    }
+    ): PagedModel<BoardArticleResponse> = boardArticleService.page(search, pageable, userDetails)
 
     @GetMapping("/download/{boardArticleSeq}/{attachFileSeq}")
     fun download(@PathVariable boardArticleSeq: Int, @PathVariable attachFileSeq: Int, response: HttpServletResponse) {

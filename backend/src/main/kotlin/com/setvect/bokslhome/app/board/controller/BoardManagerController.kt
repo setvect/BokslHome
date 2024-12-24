@@ -4,8 +4,8 @@ import com.setvect.bokslhome.app.board.model.BoardManagerCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardManagerResponse
 import com.setvect.bokslhome.app.board.model.BoardManagerSearchRequest
 import com.setvect.bokslhome.app.board.service.BoardManagerService
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -44,7 +44,7 @@ class BoardManagerController(private val boardManagerService: BoardManagerServic
         boardManagerService.get(boardCode)
 
     /** 게시판 페이징 목록 조회 */
-    @GetMapping("/list")
-    fun list(search: BoardManagerSearchRequest, pageable: Pageable): Page<BoardManagerResponse> =
-        boardManagerService.list(search, pageable)
+    @GetMapping("/page")
+    fun page(search: BoardManagerSearchRequest, pageable: Pageable): PagedModel<BoardManagerResponse> =
+        boardManagerService.page(search, pageable)
 }
