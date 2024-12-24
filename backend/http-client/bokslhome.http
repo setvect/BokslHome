@@ -114,6 +114,9 @@ GET http://localhost:8080/api/board-article/10102
 GET http://localhost:8080/api/board-article/list?page=0&size=10&boardCode=NOTICE&word=공지&searchType=TITLE
 Authorization: {{authToken}}
 
+### 게시물 첨부파일 다운로드
+GET http://localhost:8080/api/board-article/download/10102/10200
+
 ### 로그인 요청
 POST http://localhost:8080/api/login
 Content-Type: application/json

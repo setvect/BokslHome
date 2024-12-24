@@ -7,6 +7,9 @@ import com.setvect.bokslhome.app.board.model.BoardArticleResponse
 import com.setvect.bokslhome.app.board.model.BoardArticleSearch
 import com.setvect.bokslhome.app.board.service.BoardArticleService
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import java.net.URLConnection
+import java.net.URLEncoder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -91,5 +94,24 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         @AuthenticationPrincipal userDetails: UserDetails?
     ): Page<BoardArticleResponse> {
         return boardArticleService.list(search, pageable, userDetails)
+    }
+
+    @GetMapping("/download/{boardArticleSeq}/{attachFileSeq}")
+    fun download(@PathVariable boardArticleSeq: Int, @PathVariable attachFileSeq: Int, response: HttpServletResponse) {
+        val attachFile = boardArticleService.getAttachFile(boardArticleSeq, attachFileSeq)
+        val encodedFilename = URLEncoder.encode(attachFile.originalName, "UTF-8").replace("+", "%20")
+
+        response.contentType = URLConnection.guessContentTypeFromName(attachFile.originalName)
+        response.setContentLength(attachFile.file.length().toInt())
+        response.setHeader(
+            "Content-Disposition",
+            "attachment; filename=\"$encodedFilename\"; filename*=UTF-8''$encodedFilename"
+        )
+
+        attachFile.file.inputStream().use { input ->
+            response.outputStream.use { output ->
+                input.copyTo(output) // 파일 데이터를 클라이언트로 복사
+            }
+        }
     }
 }

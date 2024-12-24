@@ -1,10 +1,12 @@
 package com.setvect.bokslhome.app.attach.service
 
 import com.setvect.bokslhome.app.attach.entity.AttachFileEntity
+import com.setvect.bokslhome.app.attach.model.AttachFileDto
 import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import com.setvect.bokslhome.app.attach.model.AttachFileResponse
 import com.setvect.bokslhome.app.attach.repository.AttachRepository
 import com.setvect.bokslhome.app.board.model.AttachFileDao
+import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.config.BokslProperties
 import java.time.LocalDate
@@ -48,14 +50,28 @@ class AttachFileService(
         return attachRepository.saveAll(fileList)
     }
 
-    fun getAttachFile(moduleName: AttachFileModule, moduleId: String): List<AttachFileResponse> {
+    fun getAttachFileList(moduleName: AttachFileModule, moduleId: String): List<AttachFileResponse> {
         val attachFileList = attachRepository.findByModuleNameAndModuleId(moduleName, moduleId)
         return attachFileList.map { AttachFileResponse.from(it) }
     }
 
-    fun getAttachFileByModuleId(moduleName: AttachFileModule, moduleIdList: List<String>): Map<String, List<AttachFileResponse>> {
+    fun getAttachFileList(moduleName: AttachFileModule, moduleIdList: List<String>): Map<String, List<AttachFileResponse>> {
         val attachFileList = attachRepository.findByModuleNameAndModuleIdIn(moduleName, moduleIdList)
         return attachFileList.groupBy { it.moduleId }.mapValues { it.value.map { AttachFileResponse.from(it) } }
+    }
+
+    fun getAttachFile(attachFileSeq: Int, module: AttachFileModule, moduleId: String): AttachFileDto {
+        val attachFile = attachRepository.findById(attachFileSeq)
+            .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
+        if (attachFile.moduleName != module || attachFile.moduleId != moduleId) {
+            throw UserGuideException(UserGuideException.FORBIDDEN, UserGuideCode.PermissionDenied)
+        }
+        val file = bokslProperties.getAttachFilePath().resolve(attachFile.saveName)
+        if (!file.exists()) {
+            log.warn("파일이 없음: {}", file.absolutePath)
+            throw UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
+        }
+        return AttachFileDto.from(attachFile, file)
     }
 
     fun deleteAttachFileList(attachFileSeqList: List<Int>, module: AttachFileModule, moduleId: String) {
@@ -63,7 +79,7 @@ class AttachFileService(
 
         attachFile.forEach {
             if (it.moduleId != moduleId || it.moduleName != module) {
-                throw UserGuideException("권한이 없습니다.")
+                throw UserGuideException(UserGuideException.FORBIDDEN, UserGuideCode.PermissionDenied)
             }
         }
 

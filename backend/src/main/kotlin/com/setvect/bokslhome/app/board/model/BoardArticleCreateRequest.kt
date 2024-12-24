@@ -9,7 +9,7 @@ data class BoardArticleCreateRequest(
     val title: String,
     val content: String,
     val encryptF: Boolean = false,
-    var ip: String,
+    var ip: String?,
 ) {
     fun toEntity(
         boardManager: BoardManagerEntity,
@@ -19,7 +19,7 @@ data class BoardArticleCreateRequest(
         user = user,
         title = title,
         content = content,
-        ip = ip,
+        ip = ip!!,
         encryptF = encryptF,
     )
 }

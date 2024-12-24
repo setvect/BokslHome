@@ -14,12 +14,12 @@ class LoginService(
     private val jwtUtil: JwtUtil,
 ) {
     fun authenticate(username: String, password: String): String {
-        val user = userRepository.findByUserId(username) ?: throw UserGuideException("로그인 실패", UserGuideCode.LoginFailed)
+        val user = userRepository.findByUserId(username) ?: throw UserGuideException(UserGuideException.LOGIN_FAIL, UserGuideCode.LoginFailed)
 
         return if (passwordEncoder.matches(password, user.password)) {
             jwtUtil.generateToken(username)
         } else {
-            throw UserGuideException("로그인 실패", UserGuideCode.LoginFailed)
+            throw UserGuideException(UserGuideException.LOGIN_FAIL, UserGuideCode.LoginFailed)
         }
     }
 }
