@@ -9,10 +9,10 @@ data class BoardArticleCreateRequest(
     val title: String,
     val content: String,
     val encryptF: Boolean = false,
+    var ip: String,
 ) {
     fun toEntity(
         boardManager: BoardManagerEntity,
-        ip: String,
         user: UserEntity,
     ) = BoardArticleEntity(
         boardManager = boardManager,

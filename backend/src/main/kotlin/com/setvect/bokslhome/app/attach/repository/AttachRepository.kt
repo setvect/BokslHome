@@ -8,4 +8,6 @@ interface AttachRepository : JpaRepository<AttachFileEntity, Int> {
     fun findByModuleNameAndModuleId(moduleName: AttachFileModule, moduleId: String): List<AttachFileEntity>
 
     fun findByModuleNameAndModuleIdIn(moduleName: AttachFileModule, moduleId: List<String>): List<AttachFileEntity>
+
+    fun findByAttachFileSeqIsIn(attachFileSeqList: List<Int>): List<AttachFileEntity>
 }

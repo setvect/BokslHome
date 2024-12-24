@@ -35,19 +35,9 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleResponse {
-        val clientIp = httpRequest.remoteAddr
-
-        // 스트림으로 파일 처리
-        val attachFileDaoList = attachFileList?.map { file ->
-            AttachFileDao(
-                originalName = file.originalFilename ?: "",
-                contentType = file.contentType ?: "",
-                inputStream = file.inputStream,
-                size = file.size.toInt()
-            )
-        } ?: emptyList()
-
-        return boardArticleService.create(request, attachFileDaoList, clientIp, userDetails)
+        request.ip = httpRequest.remoteAddr
+        val attachFileDaoList = toAttachFileDaoList(attachFileList)
+        return boardArticleService.create(request, attachFileDaoList, userDetails)
     }
 
     /** 게시물 수정 */
@@ -59,8 +49,15 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         httpRequest: HttpServletRequest,
         @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleResponse {
-        val clientIp = httpRequest.remoteAddr
-        val attachFileDaoList = attachFileList?.map { file ->
+        request.boardArticleSeq = boardArticleSeq
+        request.ip = httpRequest.remoteAddr
+        val attachFileDaoList = toAttachFileDaoList(attachFileList)
+        return boardArticleService.update(request, attachFileDaoList, userDetails)
+    }
+
+    /** MultipartFile 목록을 AttachFileDao 목록으로 변환 */
+    private fun toAttachFileDaoList(attachFileList: List<MultipartFile>?): List<AttachFileDao> {
+        return attachFileList?.map { file ->
             AttachFileDao(
                 originalName = file.originalFilename ?: "",
                 contentType = file.contentType ?: "",
@@ -68,7 +65,6 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
                 size = file.size.toInt()
             )
         } ?: emptyList()
-        return boardArticleService.update(boardArticleSeq, request, attachFileDaoList, clientIp, userDetails)
     }
 
     /** 게시물 삭제 */

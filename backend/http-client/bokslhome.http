@@ -90,8 +90,16 @@ Content-Type: application/json
 {
   "title": "제목 수정해요.111122233",
   "content": "첨부파일 테스트입니다.",
-  "encryptF": false
+  "encryptF": false,
+  "deleteAttachFileSeqList": [10251]
 }
+
+--WebAppBoundary
+Content-Disposition: form-data; name="attachFileList"; filename="복슬이.txt"
+Content-Type: text/plain
+
+복슬이 사랑해.
+
 --WebAppBoundary--
 
 ### 게시물 삭제
