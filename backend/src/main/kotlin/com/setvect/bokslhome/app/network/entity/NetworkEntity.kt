@@ -13,6 +13,7 @@ import jakarta.persistence.Lob
 import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
@@ -29,20 +30,26 @@ data class NetworkEntity(
         allocationSize = 50
     )
     val networkSeq: Int = 0,
+
     @Column(name = "TITLE", nullable = false, length = 200)
     val title: String,
+
     @Column(name = "CONTENT", nullable = false)
     @Lob
     @Basic(fetch = FetchType.LAZY)
     val content: String,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "EDIT_DATE", nullable = false)
-    val editDate: Date = Date(),
+    val editDate: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
     val deleteF: Boolean = false,
+
 ) {
     protected constructor() : this(
         title = "",

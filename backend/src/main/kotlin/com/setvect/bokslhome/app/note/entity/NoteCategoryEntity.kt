@@ -11,10 +11,10 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import java.sql.Types
-import java.util.Date
+import java.time.LocalDateTime
 import org.hibernate.annotations.JdbcTypeCode
 
 /**
@@ -33,15 +33,20 @@ data class NoteCategoryEntity(
         allocationSize = 50
     )
     val categorySeq: Int = 0,
+
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", nullable = false)
     val parent: NoteCategoryEntity?,
+
     @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL])
     val children: List<NoteCategoryEntity> = emptyList(),
+
     @Column(name = "NAME", nullable = false, length = 50)
     val name: String,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)

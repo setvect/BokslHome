@@ -24,14 +24,19 @@ data class CodeEntity(
         allocationSize = 50
     )
     val codeSeq: Int = 0,
+
     @Column(name = "MAJOR_CODE", nullable = false, length = 20)
     val majorCode: String,
+
     @Column(name = "MINOR_CODE", nullable = false, length = 20)
     val minorCode: String,
+
     @Column(name = "CODE_VALUE", nullable = false, length = 100)
     val codeValue: String,
+
     @Column(name = "ORDER_NO", nullable = false)
     val orderNo: Int = 0,
+
 ) {
     protected constructor() : this(
         majorCode = "",

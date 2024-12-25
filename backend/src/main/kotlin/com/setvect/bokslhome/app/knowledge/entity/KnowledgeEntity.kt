@@ -11,6 +11,7 @@ import jakarta.persistence.Lob
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
@@ -30,16 +31,21 @@ data class KnowledgeEntity(
         allocationSize = 50
     )
     val knowledgeSeq: Int = 0,
+
     @Column(name = "CLASSIFY_C", nullable = false, length = 20)
     val classifyC: String,
+
     @Column(name = "PROBLEM", nullable = false)
     @Lob
     val problem: String,
+
     @Column(name = "SOLUTION", nullable = true)
     @Lob
     val solution: String? = null,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)

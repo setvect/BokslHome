@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
@@ -72,7 +73,7 @@ data class BoardArticleEntity(
      * 등록일
      */
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
     /**
      * 게시물 삭제 여부
      */

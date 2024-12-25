@@ -10,9 +10,10 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
@@ -32,20 +33,25 @@ data class TodoEntity(
         allocationSize = 50
     )
     val todoSeq: Int = 0,
+
     @Column(name = "CONTENT", nullable = false, length = 1000)
     val content: String,
+
     @Column(name = "STATUS_TYPE", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     val statusType: StatusType,
+
     @Column(name = "CHECK_DATE", nullable = true)
     val checkDate: Date? = null,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
+
     @Column(name = "DELETE_F", nullable = false)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
     val deleteF: Boolean = false,
-) {
+    ) {
     protected constructor() : this(
         content = "",
         statusType = StatusType.PLAN,

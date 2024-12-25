@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
+import java.time.LocalDateTime
 import java.util.Date
 
 /**
@@ -32,18 +33,23 @@ data class CommentEntity(
         allocationSize = 50
     )
     val commentSeq: Int = 0,
+
     @Column(name = "MODULE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     val moduleName: CommentModule,
+
     @Column(name = "MODULE_ID", nullable = false, length = 50)
     val moduleId: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER", nullable = false)
     val user: UserEntity,
+
     @Column(name = "CONTENT", nullable = false, length = 4000)
     val content: String,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now(),
 ) {
     protected constructor() : this(
         moduleName = CommentModule.BOARD,

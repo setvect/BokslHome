@@ -23,18 +23,23 @@ data class UserEntity(
     @Id
     @Column(name = "USER_ID", unique = true, nullable = false, length = 20)
     val userId: String,
+    
     @Column(name = "NAME", nullable = false, length = 50)
     val name: String,
+    
     @Column(name = "PASSWD", nullable = false, length = 60)
     @JsonIgnore
     val password: String,
+    
     @Column(name = "DELETE_FLAG", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
     val deleteFlag: Boolean = false,
+    
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "username")
     val userRole: Set<UserRoleEntity> = emptySet(),
+    
 ) {
     protected constructor() : this(
         userId = "",

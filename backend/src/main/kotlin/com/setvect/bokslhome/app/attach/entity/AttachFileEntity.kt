@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 import java.util.Date
 
 /**
@@ -28,19 +29,26 @@ data class AttachFileEntity(
         allocationSize = 50
     )
     val attachFileSeq: Int = 0,
+
     @Column(name = "MODULE_NAME", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     val moduleName: AttachFileModule,
+
     @Column(name = "MODULE_ID", nullable = false, length = 50)
     val moduleId: String,
+
     @Column(name = "ORIGINAL_NAME", nullable = false, length = 250)
     val originalName: String,
+
     @Column(name = "SAVE_NAME", nullable = false, length = 250)
     val saveName: String,
+
     @Column(name = "SIZE", nullable = false)
     val size: Int = 0,
+
     @Column(name = "REG_DATE", nullable = false)
-    val regDate: Date = Date(),
+    val regDate: LocalDateTime = LocalDateTime.now()
+
 ) {
     constructor() : this(
         moduleName = AttachFileModule.BOARD,
