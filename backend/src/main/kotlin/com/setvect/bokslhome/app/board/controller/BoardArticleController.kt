@@ -96,7 +96,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     fun page(
         search: BoardArticleSearch, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
-    ): PagedModel<BoardArticleResponse> = boardArticleService.page(search, pageable, userDetails)
+    ): PagedModel<BoardArticleResponse> = boardArticleService.page(pageable, search, userDetails)
 
     @GetMapping("/download/{boardArticleSeq}/{attachFileSeq}")
     fun download(@PathVariable boardArticleSeq: Int, @PathVariable attachFileSeq: Int, response: HttpServletResponse) {

@@ -23,25 +23,10 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
     """,
     )
     fun findBySearch(
+        pageable: Pageable,
         boardCode: String,
         title: String?,
         content: String?,
-        pageable: Pageable,
-    ): Page<BoardArticleEntity>
-
-    @Query(
-        """
-        SELECT a
-        FROM BoardArticleEntity a
-        WHERE a.boardManager.boardCode = :boardCode
-        AND a.user.userId = :userId
-        AND a.deleteF = false
-    """,
-    )
-    fun findByBoardCodeAndUserId(
-        boardCode: String,
-        userId: String,
-        pageable: Pageable,
     ): Page<BoardArticleEntity>
 
     @Query(

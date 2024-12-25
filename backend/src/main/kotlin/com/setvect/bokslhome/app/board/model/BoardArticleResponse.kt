@@ -1,8 +1,8 @@
 package com.setvect.bokslhome.app.board.model
 
-import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
 import com.setvect.bokslhome.app.attach.model.AttachFileResponse
-import java.util.Date
+import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
+import java.time.LocalDateTime
 
 data class BoardArticleResponse(
     val boardArticleSeq: Int,
@@ -13,7 +13,7 @@ data class BoardArticleResponse(
     val ip: String,
     val hitCount: Int,
     val encryptF: Boolean,
-    val regDate: Date,
+    val regDate: LocalDateTime,
     val deleteF: Boolean,
     val attachFileList: List<AttachFileResponse>
 ) {

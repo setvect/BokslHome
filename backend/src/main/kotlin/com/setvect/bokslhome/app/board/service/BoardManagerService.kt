@@ -46,7 +46,7 @@ class BoardManagerService(private val boardManagerRepository: BoardManagerReposi
         boardManagerRepository.deleteUpdate(boardCode)
 
     fun page(search: BoardManagerSearchRequest, pageable: Pageable): PagedModel<BoardManagerResponse> {
-        val page = boardManagerRepository.findBySearch(boardCode = search.boardCode, name = search.name, pageable = pageable)
+        val page = boardManagerRepository.findBySearch(pageable = pageable, boardCode = search.boardCode, name = search.name)
             .map { BoardManagerResponse.from(it) }
         return PagedModel(page)
     }

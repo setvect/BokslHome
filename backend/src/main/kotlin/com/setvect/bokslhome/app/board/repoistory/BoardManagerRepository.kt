@@ -20,9 +20,9 @@ interface BoardManagerRepository : JpaRepository<BoardManagerEntity, String> {
     """,
     )
     fun findBySearch(
+        pageable: Pageable,
         boardCode: String?,
         name: String?,
-        pageable: Pageable,
     ): Page<BoardManagerEntity>
 
     @Modifying

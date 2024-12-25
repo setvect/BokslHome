@@ -25,7 +25,7 @@ class JwtAuthenticationFilter(
         if (token != null) {
             val userId = jwtUtil.getUserIdFromToken(token)
             if (userId != null) {
-                val user = userService.findById(userId)
+                val user = userService.getUser(userId)
                 val authorities = user.role.map { SimpleGrantedAuthority(it.name) }
 
                 val userDetails = org.springframework.security.core.userdetails.User

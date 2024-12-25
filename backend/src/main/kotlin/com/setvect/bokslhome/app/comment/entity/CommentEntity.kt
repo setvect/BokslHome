@@ -1,6 +1,6 @@
-package com.setvect.bokslhome.app.common.entity
+package com.setvect.bokslhome.app.comment.entity
 
-import com.setvect.bokslhome.app.common.model.CommentModule
+import com.setvect.bokslhome.app.comment.model.CommentModule
 import com.setvect.bokslhome.app.user.entity.UserEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -42,7 +42,7 @@ data class CommentEntity(
     val moduleId: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER", nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = false)
     val user: UserEntity,
 
     @Column(name = "CONTENT", nullable = false, length = 4000)

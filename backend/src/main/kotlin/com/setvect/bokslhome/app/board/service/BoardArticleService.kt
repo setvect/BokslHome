@@ -14,7 +14,7 @@ import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
-import java.util.Optional
+import com.setvect.bokslhome.app.user.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -27,7 +27,8 @@ class BoardArticleService(
     private val boardArticleRepository: BoardArticleRepository,
     private val boardManagerRepository: BoardManagerRepository,
     private val userRepository: UserRepository,
-    private val attachFileService: AttachFileService
+    private val attachFileService: AttachFileService,
+    private val userService: UserService
 ) {
     private val log = LoggerFactory.getLogger(BoardArticleService::class.java)
 
@@ -38,13 +39,7 @@ class BoardArticleService(
                 log.warn("게시판을 찾을 수 없습니다: ${request.boardCode}")
                 UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
             }
-        val user = Optional.ofNullable(userDetails)
-            .map {
-                userRepository.findById(it.username).orElseThrow {
-                    log.info("사용자를 찾을 수 없습니다: $it")
-                    UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
-                }
-            }.get()
+        val user = userService.findById(userDetails.username)
         val boardArticleEntity = request.toEntity(boardManager, user)
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
         attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
@@ -104,12 +99,12 @@ class BoardArticleService(
         return BoardArticleResponse.from(boardArticle, attachFileList)
     }
 
-    fun page(search: BoardArticleSearch, pageable: Pageable, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {
+    fun page(pageable: Pageable, search: BoardArticleSearch, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {
         val boardArticlePage = boardArticleRepository.findBySearch(
+            pageable = pageable,
             boardCode = search.boardCode,
             title = search.title,
-            content = search.content,
-            pageable = pageable
+            content = search.content
         )
         val attachFileList =
             attachFileService.getAttachFileList(
