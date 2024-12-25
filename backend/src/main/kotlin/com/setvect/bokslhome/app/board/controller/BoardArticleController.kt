@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.net.URLConnection
 import java.net.URLEncoder
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.http.HttpStatus
@@ -29,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/api/board-article")
 class BoardArticleController(private val boardArticleService: BoardArticleService) {
+    private val log = LoggerFactory.getLogger(BoardArticleController::class.java)
+
     /** 게시물 생성 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -84,8 +87,9 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     fun get(
         @PathVariable boardArticleSeq: Int,
         @AuthenticationPrincipal userDetails: UserDetails?
-    ): BoardArticleResponse =
-        boardArticleService.get(boardArticleSeq)
+    ): BoardArticleResponse {
+        return boardArticleService.get(boardArticleSeq)
+    }
 
     /** 게시물 페이징 목록 조회 */
     @GetMapping("/page")

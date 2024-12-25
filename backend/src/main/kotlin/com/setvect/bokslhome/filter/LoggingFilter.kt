@@ -1,5 +1,6 @@
 package com.setvect.bokslhome.filter
 
+import com.setvect.bokslhome.config.BokslProperties
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -10,11 +11,15 @@ import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
 
 @Component
-class LoggingFilter : OncePerRequestFilter() {
-
+class LoggingFilter(private val bokslProperties: BokslProperties) : OncePerRequestFilter() {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+        if (!bokslProperties.httpLogging) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         // Multipart 요청 로깅 비활성화
         if (request.contentType?.startsWith("multipart/") == true) {
             filterChain.doFilter(request, response)
@@ -24,10 +29,14 @@ class LoggingFilter : OncePerRequestFilter() {
         val cachedRequest = ContentCachingRequestWrapper(request)
         val responseWrapper = ContentCachingResponseWrapper(response)
 
-        filterChain.doFilter(cachedRequest, responseWrapper)
-
-        logRequest(cachedRequest)
-        logResponse(responseWrapper)
+        try {
+            filterChain.doFilter(cachedRequest, responseWrapper)
+            logRequest(cachedRequest)
+            logResponse(responseWrapper)
+        } finally {
+            // 반드시 응답 데이터를 클라이언트에 복사
+            responseWrapper.copyBodyToResponse()
+        }
     }
 
     private fun logRequest(request: ContentCachingRequestWrapper) {
