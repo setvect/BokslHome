@@ -115,7 +115,7 @@ class BoardArticleService(
     }
 
     fun getAttachFile(boardArticleSeq: Int, attachFileSeq: Int): AttachFileDto {
-        val boardArticle = boardArticleRepository.findById(boardArticleSeq)
+        boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         return attachFileService.getAttachFile(attachFileSeq, AttachFileModule.BOARD, boardArticleSeq.toString())
     }
