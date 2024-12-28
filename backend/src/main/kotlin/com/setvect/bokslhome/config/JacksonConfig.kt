@@ -23,8 +23,8 @@ class JacksonConfig {
         )
 
         return ObjectMapper()
-            .registerModule(javaTimeModule) // Java 타임 모듈 등록
+            .registerModule(javaTimeModule)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // 타임스탬프 비활성화
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 }

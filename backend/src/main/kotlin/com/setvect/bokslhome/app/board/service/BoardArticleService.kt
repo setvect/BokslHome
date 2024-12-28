@@ -40,7 +40,15 @@ class BoardArticleService(
                 UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
             }
         val user = userService.findById(userDetails.username)
-        val boardArticleEntity = request.toEntity(boardManager, user)
+        val boardArticleEntity = BoardArticleEntity(
+            boardManager = boardManager,
+            user = user,
+            title = request.title,
+            content = request.content,
+            ip = request.ip!!,
+            encryptF = request.encryptF,
+        )
+
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
         attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFileList(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())

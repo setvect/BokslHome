@@ -3,7 +3,6 @@ package com.setvect.bokslhome.config
 import com.setvect.bokslhome.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -25,13 +24,10 @@ class SecurityConfig(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
             )
-            // TODO login API 제외하고 모두 거부
             .authorizeHttpRequests {
                 it
-                    .requestMatchers(HttpMethod.GET, "/api/memo-category/**").permitAll()
-                    .requestMatchers("/api/memo-category/**").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers("/api/board-manager/**").hasAuthority("ROLE_ADMIN")
-                    .anyRequest().permitAll()
+                    .requestMatchers("/api/login").permitAll()
+                    .anyRequest().hasAuthority("ROLE_ADMIN")
             }
 
         return http.build()
