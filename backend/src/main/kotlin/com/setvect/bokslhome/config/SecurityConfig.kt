@@ -21,17 +21,18 @@ class SecurityConfig(
         http
             .cors { it.configure(http) }
             .csrf { it.disable() }
-            .authorizeHttpRequests {
-                it
-                    .requestMatchers(HttpMethod.GET, "/api/memo-category/**").permitAll()  // GET 요청만 공용 허용
-                    .requestMatchers("/api/memo-category/**").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers("/api/board-manager/**").hasAuthority("ROLE_ADMIN")
-                    .anyRequest().permitAll()
-            }
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
             )
+            // TODO login API 제외하고 모두 거부
+            .authorizeHttpRequests {
+                it
+                    .requestMatchers(HttpMethod.GET, "/api/memo-category/**").permitAll()
+                    .requestMatchers("/api/memo-category/**").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers("/api/board-manager/**").hasAuthority("ROLE_ADMIN")
+                    .anyRequest().permitAll()
+            }
 
         return http.build()
     }
