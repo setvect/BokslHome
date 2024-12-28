@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
 interface MemoRepository : JpaRepository<MemoEntity, Int> {
-    @Query("SELECT m FROM MemoEntity m WHERE m.category.memoCategorySeq = :categorySeq AND m.deleteF = false ORDER BY m.editDate DESC")
-    fun findByCategory(@Param("categorySeq") categorySeq: Int): List<MemoEntity>
+    @Query("SELECT m FROM MemoEntity m WHERE m.category.memoCategorySeq = :id AND m.deleteF = false ORDER BY m.editDate DESC")
+    fun findByCategory(@Param("id") categorySeq: Int): List<MemoEntity>
 
     @Modifying
     @Transactional

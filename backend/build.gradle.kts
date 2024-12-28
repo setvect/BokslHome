@@ -62,6 +62,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("commons-io:commons-io:2.15.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 }
 
 allOpen {

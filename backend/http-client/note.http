@@ -1,0 +1,35 @@
+### NoteCategory 생성
+POST http://localhost:8080/api/note-category
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "새로운 노트 카테고리",
+    "parentCategorySeq": 4781
+}
+
+### NoteCategory 수정
+PUT http://localhost:8080/api/note-category/10000
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "수정된 노트 카테고리 이름",
+    "parentCategorySeq": 4781
+}
+
+### NoteCategory 삭제
+DELETE http://localhost:8080/api/note-category/10000
+Authorization: Bearer {{authToken}}
+
+### 특정 NoteCategory 조회
+GET http://localhost:8080/api/note-category/10000
+Authorization: Bearer {{authToken}}
+
+### 활성 NoteCategory 목록 조회
+GET http://localhost:8080/api/note-category
+Authorization: Bearer {{authToken}}
+
+### NoteCategory 트리 조회
+GET http://localhost:8080/api/note-category/tree
+Authorization: Bearer {{authToken}}

@@ -17,9 +17,6 @@ import java.sql.Types
 import java.time.LocalDateTime
 import org.hibernate.annotations.JdbcTypeCode
 
-/**
- * 노트 카테고리
- */
 @Entity
 @Table(name = "TBDA_NOTE_CATEGORY")
 data class NoteCategoryEntity(
@@ -32,7 +29,7 @@ data class NoteCategoryEntity(
         initialValue = 10000,
         allocationSize = 50
     )
-    val categorySeq: Int = 0,
+    val noteCategorySeq: Int = 0,
 
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", nullable = false)
