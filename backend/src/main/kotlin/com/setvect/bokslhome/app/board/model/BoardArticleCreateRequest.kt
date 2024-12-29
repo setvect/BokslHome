@@ -6,12 +6,4 @@ data class BoardArticleCreateRequest(
     val content: String,
     val encryptF: Boolean = false,
     var ip: String?,
-) {
-    constructor() : this(
-        boardCode = "",
-        title = "",
-        content = "",
-        encryptF = false,
-        ip = null,
-    )
-}
+)

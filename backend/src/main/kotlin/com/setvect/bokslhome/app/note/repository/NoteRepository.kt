@@ -1,19 +1,21 @@
-package com.setvect.bokslhome.app.board.repoistory
+package com.setvect.bokslhome.app.note.repository
 
-import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
+import com.setvect.bokslhome.app.note.entity.NoteEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
-interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
+interface NoteRepository : JpaRepository<NoteEntity, Int> {
+
     @Query(
         """
         SELECT a
-        FROM BoardArticleEntity a
-        WHERE a.boardManager.boardCode = :boardCode
+        FROM NoteEntity a
+        WHERE a.category.noteCategorySeq = :noteCategorySeq
         AND (:title IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:content IS NULL OR a.content LIKE CONCAT('%', :content, '%'))
         AND a.deleteF = false
@@ -21,13 +23,13 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
     )
     fun findBySearch(
         pageable: Pageable,
-        boardCode: String,
+        noteCategorySeq: Int,
         title: String?,
         content: String?,
-    ): Page<BoardArticleEntity>
+    ): Page<NoteEntity>
 
     @Modifying
     @Transactional
-    @Query("update BoardArticleEntity set deleteF = 'Y' where boardArticleSeq = :boardArticleSeq")
-    fun deleteUpdate(boardArticleSeq: Int)
+    @Query("UPDATE NoteEntity m SET m.deleteF = true WHERE m.noteSeq = :id")
+    fun deleteUpdate(@Param("id") noteSeq: Int): Int
 }

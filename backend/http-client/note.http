@@ -1,6 +1,6 @@
 ### NoteCategory 생성
 POST http://localhost:8080/api/note-category
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ### NoteCategory 수정
 PUT http://localhost:8080/api/note-category/10000
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
 Content-Type: application/json
 
 {
@@ -20,16 +20,84 @@ Content-Type: application/json
 
 ### NoteCategory 삭제
 DELETE http://localhost:8080/api/note-category/10000
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
 
 ### 특정 NoteCategory 조회
 GET http://localhost:8080/api/note-category/10000
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
 
 ### 활성 NoteCategory 목록 조회
 GET http://localhost:8080/api/note-category
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
 
 ### NoteCategory 트리 조회
 GET http://localhost:8080/api/note-category/tree
-Authorization: Bearer {{authToken}}
+Authorization: {{authToken}}
+
+
+# Note API 관리
+
+### 노트 생성 (첨부파일 포함)
+POST http://localhost:8080/api/note
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="request"
+Content-Type: application/json
+
+{
+  "title": "테스트 노트 제목",
+  "content": "테스트 내용을 작성합니다.",
+  "noteCategorySeq": 10001
+}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="attachFileList"; filename="sample.txt"
+Content-Type: text/plain
+
+테스트용 파일입니다.
+여러 줄을 작성하는 것도 가능합니다.
+
+--WebAppBoundary--
+
+### 노트 수정
+PUT http://localhost:8080/api/note/10003
+Authorization: {{authToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="request"
+Content-Type: application/json
+
+{
+  "title": "수정된 노트 제목",
+  "content": "수정된 내용입니다.",
+  "noteCategorySeq": 10001,
+  "deleteAttachFileSeqList": [10754]
+}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="attachFileList"; filename="update_sample.txt"
+Content-Type: text/plain
+
+수정된 첨부파일 내용입니다.
+
+--WebAppBoundary--
+
+### 노트 삭제
+DELETE http://localhost:8080/api/note/10000
+Authorization: {{authToken}}
+
+### 노트 단건 조회
+GET http://localhost:8080/api/note/10003
+Authorization: {{authToken}}
+
+### 노트 페이징 목록 조회
+GET http://localhost:8080/api/note/page?noteCategorySeq=10001&page=0&size=10
+Authorization: {{authToken}}
+
+### 노트 첨부파일 다운로드
+GET http://localhost:8080/api/note/download/10003/10754
+Authorization: {{authToken}}
+Content-Type: application/json

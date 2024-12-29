@@ -11,11 +11,10 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import java.sql.Types
 import java.time.LocalDateTime
-import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
 /**
@@ -36,7 +35,7 @@ data class NoteEntity(
     val noteSeq: Int = 0,
 
     @Column(name = "CATEGORY_SEQ", nullable = false)
-    val categorySeq: Int,
+    val noteCategorySeq: Int,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_SEQ", insertable = false, updatable = false)
@@ -50,7 +49,7 @@ data class NoteEntity(
     val content: String,
 
     @Column(name = "EDIT_DATE", nullable = true)
-    val editDate: Date? = null,
+    val editDate: LocalDateTime? = null,
 
     @Column(name = "REG_DATE", nullable = false)
     val regDate: LocalDateTime = LocalDateTime.now(),
@@ -63,6 +62,5 @@ data class NoteEntity(
     @Column(name = "DELETE_F", nullable = false, length = 1)
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
-    val deleteF: Boolean = false,
-
+    val deleteF: Boolean = false
 )

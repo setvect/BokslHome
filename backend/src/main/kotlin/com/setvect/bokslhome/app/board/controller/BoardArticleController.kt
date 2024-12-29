@@ -1,15 +1,13 @@
 package com.setvect.bokslhome.app.board.controller
 
-import com.setvect.bokslhome.app.board.model.AttachFileDao
+import com.setvect.bokslhome.app.attach.service.AttachFileHelper
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleModifyRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleResponse
-import com.setvect.bokslhome.app.board.model.BoardArticleSearch
+import com.setvect.bokslhome.app.board.model.BoardArticleSearchRequest
 import com.setvect.bokslhome.app.board.service.BoardArticleService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import java.net.URLConnection
-import java.net.URLEncoder
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -42,7 +40,7 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
         @AuthenticationPrincipal userDetails: UserDetails
     ): BoardArticleResponse {
         request.ip = httpRequest.remoteAddr
-        val attachFileDaoList = toAttachFileDaoList(attachFileList)
+        val attachFileDaoList = AttachFileHelper.toAttachFileDaoList(attachFileList)
         return boardArticleService.create(request, attachFileDaoList, userDetails)
     }
 
@@ -57,20 +55,8 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     ): BoardArticleResponse {
         request.boardArticleSeq = boardArticleSeq
         request.ip = httpRequest.remoteAddr
-        val attachFileDaoList = toAttachFileDaoList(attachFileList)
+        val attachFileDaoList = AttachFileHelper.toAttachFileDaoList(attachFileList)
         return boardArticleService.update(request, attachFileDaoList, userDetails)
-    }
-
-    /** MultipartFile 목록을 AttachFileDao 목록으로 변환 */
-    private fun toAttachFileDaoList(attachFileList: List<MultipartFile>?): List<AttachFileDao> {
-        return attachFileList?.map { file ->
-            AttachFileDao(
-                originalName = file.originalFilename ?: "",
-                contentType = file.contentType ?: "",
-                inputStream = file.inputStream,
-                size = file.size.toInt()
-            )
-        } ?: emptyList()
     }
 
     /** 게시물 삭제 */
@@ -94,26 +80,13 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     /** 게시물 페이징 목록 조회 */
     @GetMapping("/page")
     fun page(
-        search: BoardArticleSearch, pageable: Pageable,
+        search: BoardArticleSearchRequest, pageable: Pageable,
         @AuthenticationPrincipal userDetails: UserDetails?
     ): PagedModel<BoardArticleResponse> = boardArticleService.page(pageable, search, userDetails)
 
     @GetMapping("/download/{boardArticleSeq}/{attachFileSeq}")
     fun download(@PathVariable boardArticleSeq: Int, @PathVariable attachFileSeq: Int, response: HttpServletResponse) {
         val attachFile = boardArticleService.getAttachFile(boardArticleSeq, attachFileSeq)
-        val encodedFilename = URLEncoder.encode(attachFile.originalName, "UTF-8").replace("+", "%20")
-
-        response.contentType = URLConnection.guessContentTypeFromName(attachFile.originalName)
-        response.setContentLength(attachFile.file.length().toInt())
-        response.setHeader(
-            "Content-Disposition",
-            "attachment; filename=\"$encodedFilename\"; filename*=UTF-8''$encodedFilename"
-        )
-
-        attachFile.file.inputStream().use { input ->
-            response.outputStream.use { output ->
-                input.copyTo(output) // 파일 데이터를 클라이언트로 복사
-            }
-        }
+        AttachFileHelper.prepareFileDownload(response, attachFile)
     }
 }

@@ -5,7 +5,7 @@ import com.setvect.bokslhome.app.attach.model.AttachFileDto
 import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import com.setvect.bokslhome.app.attach.model.AttachFileResponse
 import com.setvect.bokslhome.app.attach.repository.AttachRepository
-import com.setvect.bokslhome.app.board.model.AttachFileDao
+import com.setvect.bokslhome.app.attach.model.AttachFileTransferDao
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.config.BokslProperties
@@ -22,11 +22,11 @@ class AttachFileService(
     private val attachRepository: AttachRepository
 ) {
     private val log = LoggerFactory.getLogger(AttachFileService::class.java)
-    fun storeAttach(attachFileDaoList: List<AttachFileDao>, attachFileModule: AttachFileModule, moduleId: String): List<AttachFileEntity> {
+    fun storeAttach(attachFileTransferDaoList: List<AttachFileTransferDao>, attachFileModule: AttachFileModule, moduleId: String): List<AttachFileEntity> {
         val today = LocalDate.now()
         val datePath = today.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
-        val fileList = attachFileDaoList.map { fileData ->
+        val fileList = attachFileTransferDaoList.map { fileData ->
             val extension = FilenameUtils.getExtension(fileData.originalName)
             val uniqueFileName = if (extension.isEmpty()) {
                 UUID.randomUUID().toString()

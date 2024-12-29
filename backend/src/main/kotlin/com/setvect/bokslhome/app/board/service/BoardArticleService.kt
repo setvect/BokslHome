@@ -4,11 +4,11 @@ import com.setvect.bokslhome.app.attach.model.AttachFileDto
 import com.setvect.bokslhome.app.attach.model.AttachFileModule
 import com.setvect.bokslhome.app.attach.service.AttachFileService
 import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
-import com.setvect.bokslhome.app.board.model.AttachFileDao
+import com.setvect.bokslhome.app.attach.model.AttachFileTransferDao
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleModifyRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleResponse
-import com.setvect.bokslhome.app.board.model.BoardArticleSearch
+import com.setvect.bokslhome.app.board.model.BoardArticleSearchRequest
 import com.setvect.bokslhome.app.board.repoistory.BoardArticleRepository
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
@@ -33,7 +33,7 @@ class BoardArticleService(
     private val log = LoggerFactory.getLogger(BoardArticleService::class.java)
 
     @Transactional
-    fun create(request: BoardArticleCreateRequest, attachFileDaoList: List<AttachFileDao>, userDetails: UserDetails): BoardArticleResponse {
+    fun create(request: BoardArticleCreateRequest, attachFileTransferDaoList: List<AttachFileTransferDao>, userDetails: UserDetails): BoardArticleResponse {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow {
                 log.warn("게시판을 찾을 수 없습니다: ${request.boardCode}")
@@ -50,13 +50,13 @@ class BoardArticleService(
         )
 
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
-        attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
+        attachFileService.storeAttach(attachFileTransferDaoList, AttachFileModule.BOARD, boardArticleEntity.boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFileList(AttachFileModule.BOARD, savedEntity.boardArticleSeq.toString())
         return BoardArticleResponse.from(savedEntity, attachFileList)
     }
 
     @Transactional
-    fun update(request: BoardArticleModifyRequest, attachFileDaoList: List<AttachFileDao>, userDetails: UserDetails): BoardArticleResponse {
+    fun update(request: BoardArticleModifyRequest, attachFileTransferDaoList: List<AttachFileTransferDao>, userDetails: UserDetails): BoardArticleResponse {
         val existingArticle = boardArticleRepository.findById(request.boardArticleSeq!!)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         if (existingArticle.deleteF) {
@@ -84,7 +84,7 @@ class BoardArticleService(
             request.boardArticleSeq.toString()
         )
 
-        attachFileService.storeAttach(attachFileDaoList, AttachFileModule.BOARD, request.boardArticleSeq.toString())
+        attachFileService.storeAttach(attachFileTransferDaoList, AttachFileModule.BOARD, request.boardArticleSeq.toString())
         val attachFileList = attachFileService.getAttachFileList(AttachFileModule.BOARD, request.boardArticleSeq.toString())
 
         return BoardArticleResponse.from(boardArticleEntity, attachFileList)
@@ -107,7 +107,7 @@ class BoardArticleService(
         return BoardArticleResponse.from(boardArticle, attachFileList)
     }
 
-    fun page(pageable: Pageable, search: BoardArticleSearch, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {
+    fun page(pageable: Pageable, search: BoardArticleSearchRequest, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {
         val boardArticlePage = boardArticleRepository.findBySearch(
             pageable = pageable,
             boardCode = search.boardCode,

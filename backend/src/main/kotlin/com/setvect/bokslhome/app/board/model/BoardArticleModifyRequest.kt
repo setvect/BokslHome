@@ -7,13 +7,4 @@ data class BoardArticleModifyRequest(
     val deleteAttachFileSeqList: List<Int>? = emptyList(),
     var boardArticleSeq: Int?,
     var ip: String?,
-) {
-    constructor() : this(
-        title = "",
-        content = "",
-        encryptF = false,
-        deleteAttachFileSeqList = emptyList(),
-        boardArticleSeq = null,
-        ip = null,
-    )
-}
+)
