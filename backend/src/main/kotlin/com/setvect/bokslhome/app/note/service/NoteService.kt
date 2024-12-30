@@ -96,10 +96,7 @@ class NoteService(
     }
 
     private fun getNoteById(noteSeq: Int): NoteEntity {
-        return noteRepository.findById(noteSeq).orElseThrow {
-            log.warn("Note not found with ID: {}", noteSeq)
-            RuntimeException("Note not found")
-        }
+        return noteRepository.findById(noteSeq).get()
     }
 
     private fun getNoteCategoryById(noteCategorySeq: Int): NoteCategoryEntity {

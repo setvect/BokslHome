@@ -12,7 +12,6 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
 import java.time.LocalDateTime
-import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
 /**

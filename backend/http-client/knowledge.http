@@ -1,0 +1,35 @@
+### Knowledge 생성
+POST http://localhost:8080/api/knowledge
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "classifyC": "JAVA",
+    "problem": "Describe the problem here",
+    "solution": "Provide the solution here"
+}
+
+### Knowledge 수정
+PUT http://localhost:8080/api/knowledge/10000
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "classifyC": "JAVA",
+    "problem": "Updated problem description",
+    "solution": "Updated solution description"
+}
+
+### Knowledge 삭제
+DELETE http://localhost:8080/api/knowledge/10001
+Authorization: {{authToken}}
+
+### 특정 Knowledge 조회
+GET http://localhost:8080/api/knowledge/10000
+Accept: application/json
+Authorization: {{authToken}}
+
+### Knowledge 목록 페이징 조회
+GET http://localhost:8080/api/knowledge/page?classifyC=JAVA&content=&page=0&size=2
+Accept: application/json
+Authorization: {{authToken}}
