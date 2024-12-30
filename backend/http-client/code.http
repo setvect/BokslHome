@@ -1,0 +1,42 @@
+### Code 생성
+POST http://localhost:8080/api/code
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "majorCode": "KNOW_TYPE",
+    "minorCode": "SAMPLE_MINOR",
+    "codeValue": "Sample Value",
+    "orderNo": 1
+}
+
+### Code 수정
+PUT http://localhost:8080/api/code/10000
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "majorCode": "KNOW_TYPE",
+    "minorCode": "UPDATED_MINOR",
+    "codeValue": "Updated Value",
+    "orderNo": 2
+}
+
+### Code 삭제
+DELETE http://localhost:8080/api/code/10000
+Authorization: {{authToken}}
+
+### 특정 Code 조회
+GET http://localhost:8080/api/code/10000
+Accept: application/json
+Authorization: {{authToken}}
+
+### Code 목록 페이징 조회
+GET http://localhost:8080/api/code/page?majorCode=KNOW_TYPE&page=0&size=10
+Accept: application/json
+Authorization: {{authToken}}
+
+### Major 코드
+GET http://localhost:8080/api/code/majorCode
+Accept: application/json
+Authorization: {{authToken}}
