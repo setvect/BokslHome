@@ -10,11 +10,10 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Lob
-import jakarta.persistence.Table
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import java.sql.Types
 import java.time.LocalDateTime
-import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
 @Entity

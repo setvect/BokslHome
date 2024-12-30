@@ -1,0 +1,33 @@
+### Network 생성
+POST http://localhost:8080/api/network
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "title": "Sample Network Title",
+    "content": "This is the content of the network entity."
+}
+
+### Network 수정
+PUT http://localhost:8080/api/network/10000
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+    "title": "Updated Network Title",
+    "content": "Updated content for the network entity."
+}
+
+### Network 삭제
+DELETE http://localhost:8080/api/network/10000
+Authorization: {{authToken}}
+
+### 특정 Network 조회
+GET http://localhost:8080/api/network/10000
+Accept: application/json
+Authorization: {{authToken}}
+
+### Network 목록 페이징 조회
+GET http://localhost:8080/api/network/page?title=&page=0&size=3
+Accept: application/json
+Authorization: {{authToken}}
