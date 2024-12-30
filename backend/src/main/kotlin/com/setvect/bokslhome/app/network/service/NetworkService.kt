@@ -4,6 +4,7 @@ import com.setvect.bokslhome.app.network.entity.NetworkEntity
 import com.setvect.bokslhome.app.network.model.NetworkRequest
 import com.setvect.bokslhome.app.network.model.NetworkResponse
 import com.setvect.bokslhome.app.network.repository.NetworkRepository
+import com.setvect.bokslhome.util.CommonUtil
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
@@ -53,7 +54,7 @@ class NetworkService(
     }
 
     fun page(pageable: Pageable, title: String?): PagedModel<NetworkResponse> {
-        val networkPage = networkRepository.findBySearch(pageable, title)
+        val networkPage = networkRepository.findBySearch(pageable, CommonUtil.emptyStringNull(title))
         val responsePage = networkPage.map { NetworkResponse.from(it) }
         return PagedModel(responsePage)
     }

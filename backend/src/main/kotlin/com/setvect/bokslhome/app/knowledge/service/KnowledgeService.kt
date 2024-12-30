@@ -6,6 +6,7 @@ import com.setvect.bokslhome.app.knowledge.model.KnowledgeResponse
 import com.setvect.bokslhome.app.knowledge.repository.KnowledgeRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
+import com.setvect.bokslhome.util.CommonUtil
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
@@ -54,18 +55,12 @@ class KnowledgeService(
     }
 
     fun page(pageable: Pageable, classifyC: String, content: String?): PagedModel<KnowledgeResponse> {
-        val knowledgePage = knowledgeRepository.findBySearch(pageable, classifyC, content)
+        val knowledgePage = knowledgeRepository.findBySearch(pageable, classifyC, CommonUtil.emptyStringNull(content))
         val responsePage = knowledgePage.map { KnowledgeResponse.from(it) }
         return PagedModel(responsePage)
     }
 
     private fun getKnowledgeById(knowledgeSeq: Int): KnowledgeEntity {
-        return knowledgeRepository.findById(knowledgeSeq)
-            .orElseThrow {
-                UserGuideException(
-                    UserGuideException.RESOURCE_NOT_FOUND,
-                    UserGuideCode.NotFund
-                )
-            }
+        return knowledgeRepository.findById(knowledgeSeq).get()
     }
 }

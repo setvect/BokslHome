@@ -13,6 +13,7 @@ import com.setvect.bokslhome.app.note.repository.NoteCategoryRepository
 import com.setvect.bokslhome.app.note.repository.NoteRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
+import com.setvect.bokslhome.util.CommonUtil
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
@@ -82,7 +83,8 @@ class NoteService(
     }
 
     fun page(pageable: Pageable, categorySeq: Int, title: String?, content: String?): PagedModel<NoteResponse> {
-        val notePage = noteRepository.findBySearch(pageable, categorySeq, title, content)
+        val notePage =
+            noteRepository.findBySearch(pageable, categorySeq, CommonUtil.emptyStringNull(title), CommonUtil.emptyStringNull(content))
 
         val attachFileListMap = attachFileService.getAttachFileList(
             AttachFileModule.NOTE,

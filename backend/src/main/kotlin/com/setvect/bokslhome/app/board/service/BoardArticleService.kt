@@ -2,9 +2,9 @@ package com.setvect.bokslhome.app.board.service
 
 import com.setvect.bokslhome.app.attach.model.AttachFileDto
 import com.setvect.bokslhome.app.attach.model.AttachFileModule
+import com.setvect.bokslhome.app.attach.model.AttachFileTransferDao
 import com.setvect.bokslhome.app.attach.service.AttachFileService
 import com.setvect.bokslhome.app.board.entity.BoardArticleEntity
-import com.setvect.bokslhome.app.attach.model.AttachFileTransferDao
 import com.setvect.bokslhome.app.board.model.BoardArticleCreateRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleModifyRequest
 import com.setvect.bokslhome.app.board.model.BoardArticleResponse
@@ -15,6 +15,7 @@ import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
 import com.setvect.bokslhome.app.user.service.UserService
+import com.setvect.bokslhome.util.CommonUtil
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -33,7 +34,11 @@ class BoardArticleService(
     private val log = LoggerFactory.getLogger(BoardArticleService::class.java)
 
     @Transactional
-    fun create(request: BoardArticleCreateRequest, attachFileTransferDaoList: List<AttachFileTransferDao>, userDetails: UserDetails): BoardArticleResponse {
+    fun create(
+        request: BoardArticleCreateRequest,
+        attachFileTransferDaoList: List<AttachFileTransferDao>,
+        userDetails: UserDetails
+    ): BoardArticleResponse {
         val boardManager = boardManagerRepository.findById(request.boardCode)
             .orElseThrow {
                 log.warn("게시판을 찾을 수 없습니다: ${request.boardCode}")
@@ -56,7 +61,11 @@ class BoardArticleService(
     }
 
     @Transactional
-    fun update(request: BoardArticleModifyRequest, attachFileTransferDaoList: List<AttachFileTransferDao>, userDetails: UserDetails): BoardArticleResponse {
+    fun update(
+        request: BoardArticleModifyRequest,
+        attachFileTransferDaoList: List<AttachFileTransferDao>,
+        userDetails: UserDetails
+    ): BoardArticleResponse {
         val existingArticle = boardArticleRepository.findById(request.boardArticleSeq!!)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         if (existingArticle.deleteF) {
@@ -111,8 +120,8 @@ class BoardArticleService(
         val boardArticlePage = boardArticleRepository.findBySearch(
             pageable = pageable,
             boardCode = search.boardCode,
-            title = search.title,
-            content = search.content
+            title = CommonUtil.emptyStringNull(search.title),
+            content = CommonUtil.emptyStringNull(search.content)
         )
         val attachFileList =
             attachFileService.getAttachFileList(

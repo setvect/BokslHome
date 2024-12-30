@@ -6,6 +6,7 @@ import com.setvect.bokslhome.app.board.model.BoardManagerSearchRequest
 import com.setvect.bokslhome.app.board.repoistory.BoardManagerRepository
 import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
+import com.setvect.bokslhome.util.CommonUtil
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -46,7 +47,11 @@ class BoardManagerService(private val boardManagerRepository: BoardManagerReposi
         boardManagerRepository.deleteUpdate(boardCode)
 
     fun page(search: BoardManagerSearchRequest, pageable: Pageable): PagedModel<BoardManagerResponse> {
-        val page = boardManagerRepository.findBySearch(pageable = pageable, boardCode = search.boardCode, name = search.name)
+        val page = boardManagerRepository.findBySearch(
+            pageable,
+            CommonUtil.emptyStringNull(search.boardCode),
+            CommonUtil.emptyStringNull(search.name)
+        )
             .map { BoardManagerResponse.from(it) }
         return PagedModel(page)
     }
