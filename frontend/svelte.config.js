@@ -3,16 +3,16 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: vitePreprocess(),
+  preprocess: vitePreprocess(),
 
-	kit: {
-		adapter: adapter({
-			out: 'build',
-			precompress: false,
-			envPrefix: 'APP_',
-			polyfill: true
-		})
-	}
+  kit: {
+    adapter: adapter({
+      out: 'build',
+      precompress: false,
+      envPrefix: 'APP_',
+      polyfill: true
+    })
+  }
 };
 
 export default config;

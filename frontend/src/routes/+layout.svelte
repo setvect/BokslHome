@@ -1,8 +1,8 @@
 <script>
-	import modeobserver from './utils/modeobserver';
-	import { onMount } from 'svelte';
+  import modeobserver from './utils/modeobserver';
+  import { onMount } from 'svelte';
 
-	onMount(modeobserver);
+  onMount(modeobserver);
 </script>
 
 <slot />
