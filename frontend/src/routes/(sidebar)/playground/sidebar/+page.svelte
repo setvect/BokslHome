@@ -12,10 +12,7 @@
 
 <MetaTag {path} {description} title={metaTitle} {subtitle} />
 
-<div
-  id="main-content"
-  class="relative mx-auto h-full w-full overflow-y-auto bg-gray-50 p-4 dark:bg-gray-900"
->
+<div id="main-content" class="relative mx-auto h-full w-full overflow-y-auto bg-gray-50 p-4 dark:bg-gray-900">
   <main>
     <div class="grid grid-cols-1 pt-2 xl:grid-cols-3 xl:gap-4 xl:px-0 dark:bg-gray-900">
       <div class="col-span-full mb-4 xl:mb-2">
@@ -24,9 +21,7 @@
           <BreadcrumbItem href="/">Pages</BreadcrumbItem>
           <BreadcrumbItem>Playground</BreadcrumbItem>
         </Breadcrumb>
-        <Heading tag="h1" class="text-xl font-semibold sm:text-2xl">
-          Create something awesome here 1111111111111
-        </Heading>
+        <Heading tag="h1" class="text-xl font-semibold sm:text-2xl">Create something awesome here 1111111111111</Heading>
       </div>
     </div>
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

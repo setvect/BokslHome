@@ -9,21 +9,10 @@
 </script>
 
 <Navbar {fluid} class="text-black" color="default" let:NavContainer>
-  <NavHamburger
-    onClick={() => (drawerHidden = !drawerHidden)}
-    class="m-0 me-3 md:block lg:hidden"
-  />
+  <NavHamburger onClick={() => (drawerHidden = !drawerHidden)} class="m-0 me-3 md:block lg:hidden" />
   <NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
-    <img
-      src="/images/flowbite-svelte-icon-logo.svg"
-      class="me-2.5 h-6 sm:h-8"
-      alt="Flowbite Logo"
-    />
-    <span
-      class="ml-px self-center whitespace-nowrap text-xl font-semibold sm:text-2xl dark:text-white"
-    >
-      Flowbite
-    </span>
+    <img src="/images/flowbite-svelte-icon-logo.svg" class="me-2.5 h-6 sm:h-8" alt="Flowbite Logo" />
+    <span class="ml-px self-center whitespace-nowrap text-xl font-semibold sm:text-2xl dark:text-white"> Flowbite </span>
   </NavBrand>
   <div class="hidden lg:block lg:ps-3">
     <form>

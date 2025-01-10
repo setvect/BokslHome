@@ -2,18 +2,8 @@
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
 
-  import {
-    Sidebar,
-    SidebarDropdownWrapper,
-    SidebarGroup,
-    SidebarItem,
-    SidebarWrapper
-  } from 'flowbite-svelte';
-  import {
-    AngleDownOutline,
-    AngleUpOutline,
-    WandMagicSparklesOutline
-  } from 'flowbite-svelte-icons';
+  import { Sidebar, SidebarDropdownWrapper, SidebarGroup, SidebarItem, SidebarWrapper } from 'flowbite-svelte';
+  import { AngleDownOutline, AngleUpOutline, WandMagicSparklesOutline } from 'flowbite-svelte-icons';
 
   export let drawerHidden: boolean = false;
 
@@ -42,10 +32,10 @@
     {
       name: 'Playground',
       icon: WandMagicSparklesOutline,
-      children: {
-        Stacked: '/playground/stacked',
-        Sidebar: '/playground/sidebar'
-      }
+      children: [
+        { name: 'Stacked', link: '/playground/stacked' },
+        { name: 'Sidebar', link: '/playground/sidebar' }
+      ]
     }
   ];
 
@@ -71,8 +61,8 @@
               <AngleUpOutline slot="arrowup" strokeWidth="3.3" size="sm" />
               <svelte:component this={icon} slot="icon" class={iconClass} />
 
-              {#each Object.entries(children) as [title, href]}
-                <SidebarItem label={title} {href} spanClass="ml-9" class={itemClass} />
+              {#each children as child}
+                <SidebarItem label={child.name} href={child.link} spanClass="ml-9" class={itemClass} />
               {/each}
             </SidebarDropdownWrapper>
           {:else}
