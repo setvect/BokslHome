@@ -33,19 +33,19 @@
       name: '게시판',
       icon: WandMagicSparklesOutline,
       children: [
-        { name: '게시판 관리', link: '/playground/stacked' },
-        { name: '글', link: '/playground/sidebar' },
-        { name: '책', link: '/playground/sidebar' },
-        { name: '음악', link: '/playground/sidebar' },
-        { name: '영화', link: '/playground/sidebar' },
-        { name: '사진', link: '/playground/sidebar' },
-        { name: '기억', link: '/playground/sidebar' },
-        { name: '인연', link: '/playground/sidebar' },
-        { name: '잡담', link: '/playground/sidebar' },
-        { name: '꿈', link: '/playground/sidebar' },
-        { name: '기술사', link: '/playground/sidebar' },
-        { name: '소설', link: '/playground/sidebar' },
-        { name: '운동', link: '/playground/sidebar' }
+        { name: '게시판 관리', link: '/board/manage' },
+        { name: '글', link: '' },
+        { name: '책', link: '' },
+        { name: '음악', link: '' },
+        { name: '영화', link: '' },
+        { name: '사진', link: '' },
+        { name: '기억', link: '' },
+        { name: '인연', link: '' },
+        { name: '잡담', link: '' },
+        { name: '꿈', link: '' },
+        { name: '기술사', link: '' },
+        { name: '소설', link: '' },
+        { name: '운동', link: '' }
       ]
     },
     {
