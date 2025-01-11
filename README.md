@@ -132,3 +132,4 @@ docker restart bokslhome
 ## 7. 관련 라이브러
 - [flowbite-svelte](https://flowbite-svelte.com)
 - [flowbite-svelte-admin-dashboard](https://github.com/themesberg/flowbite-svelte-admin-dashboard) 
+- [tailwindcss](https://tailwindcss.com/docs)

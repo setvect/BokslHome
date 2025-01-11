@@ -30,12 +30,45 @@
 
   let posts = [
     {
-      name: 'Playground',
+      name: '게시판',
       icon: WandMagicSparklesOutline,
       children: [
-        { name: 'Stacked', link: '/playground/stacked' },
-        { name: 'Sidebar', link: '/playground/sidebar' }
+        { name: '게시판 관리', link: '/playground/stacked' },
+        { name: '글', link: '/playground/sidebar' },
+        { name: '책', link: '/playground/sidebar' },
+        { name: '음악', link: '/playground/sidebar' },
+        { name: '영화', link: '/playground/sidebar' },
+        { name: '사진', link: '/playground/sidebar' },
+        { name: '기억', link: '/playground/sidebar' },
+        { name: '인연', link: '/playground/sidebar' },
+        { name: '잡담', link: '/playground/sidebar' },
+        { name: '꿈', link: '/playground/sidebar' },
+        { name: '기술사', link: '/playground/sidebar' },
+        { name: '소설', link: '/playground/sidebar' },
+        { name: '운동', link: '/playground/sidebar' }
       ]
+    },
+    {
+      name: '지식',
+      icon: WandMagicSparklesOutline,
+      href: '/settings'
+    },
+    {
+      name: '노트',
+      icon: WandMagicSparklesOutline
+    },
+    {
+      name: '메모',
+      icon: WandMagicSparklesOutline
+    },
+    {
+      name: '관계',
+      icon: WandMagicSparklesOutline
+    },
+    {
+      name: '이것저것',
+      icon: WandMagicSparklesOutline,
+      children: [{ name: '로또', link: '/playground/stacked' }]
     }
   ];
 
@@ -54,7 +87,7 @@
   >
     <nav class="divide-y divide-gray-200 dark:divide-gray-700">
       <SidebarGroup ulClass={groupClass} class="mb-3">
-        {#each posts as { name, icon, children } (name)}
+        {#each posts as { name, icon, href, children } (name)}
           {#if children}
             <SidebarDropdownWrapper bind:isOpen={dropdowns[name]} label={name} class="pr-3">
               <AngleDownOutline slot="arrowdown" strokeWidth="3.3" size="sm" />
@@ -66,7 +99,7 @@
               {/each}
             </SidebarDropdownWrapper>
           {:else}
-            <SidebarItem label={name} spanClass="ml-3" class={itemClass}>
+            <SidebarItem label={name} {href} spanClass="ml-3" class={itemClass}>
               <svelte:component this={icon} slot="icon" class={iconClass} />
             </SidebarItem>
           {/if}
