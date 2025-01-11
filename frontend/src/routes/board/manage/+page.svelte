@@ -40,9 +40,10 @@
 </script>
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">
-  <div class="p-4">
+  <div class="pt-4 px-4">
     <Heading tag="h1" class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">게시판 관리</Heading>
-
+  </div>
+  <div class="px-4 mb-4">
     <Toolbar embedded class="w-full py-4 text-gray-500  dark:text-gray-400">
       <Select bind:value={selectedOption} class="me-4 w-40">
         <option value="code">코드</option>
@@ -51,8 +52,6 @@
       <Input placeholder="" class="me-4 w-60 border xl:w-72" />
       <Button class="w-18" color="alternative">검색</Button>
     </Toolbar>
-  </div>
-  <div class="px-4 m-4">
     <Table class="border border-gray-200 dark:border-gray-700">
       <TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
         {#each ['코드', '바로가기', '게시판 이름', '기능'] as title}
