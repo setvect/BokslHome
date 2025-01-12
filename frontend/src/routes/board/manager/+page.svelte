@@ -8,5 +8,5 @@
   <div class="pt-4 px-4">
     <Heading tag="h1" class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">게시판 관리</Heading>
   </div>
-  <div class="px-4 mb-4"><BoardManageList /></div>
+  <div class="px-4 mt-5"><BoardManageList /></div>
 </main>

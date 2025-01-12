@@ -39,7 +39,7 @@
 </script>
 
 <div>
-  <Toolbar embedded class="w-full py-4 text-gray-500  dark:text-gray-400">
+  <Toolbar embedded class="w-full pb-4 text-gray-500 dark:text-gray-400">
     <Select bind:value={selectedOption} class="me-4 w-40">
       <option value="name">이름</option>
       <option value="code">코드</option>
