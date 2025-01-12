@@ -1,6 +1,7 @@
 <script lang="ts">
-  import BoardManageList from '$lib/components/board/manage/BoardManageList.svelte';
+  import BoardManageList from '$lib/components/board/manager/BoardManagerList.svelte';
   import { Heading } from 'flowbite-svelte';
+  import MetaTag from '../../utils/MetaTag.svelte';
 </script>
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">
