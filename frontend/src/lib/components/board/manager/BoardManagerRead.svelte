@@ -30,8 +30,8 @@
 
 <div class="max-w-3xl mt-5">
   <div class="space-y-2">
-    {#each Object.entries(boardData) as [key, value]}
-      <div class="flex items-center py-3 border-b border-gray-200 dark:border-gray-700">
+    {#each Object.entries(boardData) as [key, value], index}
+      <div class="flex items-center {index === 0 ? 'pb-4' : 'py-4'} border-b border-gray-200 dark:border-gray-700">
         <Label class="w-48 text-gray-700 dark:text-gray-300 font-medium">
           {#if key === 'code'}
             게시판 코드
