@@ -46,42 +46,39 @@
     </Select>
     <Input placeholder="" class="me-4 w-60 border xl:w-72" />
     <Button class="w-18" color="alternative">검색</Button>
-    <Button class="w-18 ml-7" color="light">만들기</Button>
+    <Button class="w-18 ml-5" color="light">만들기</Button>
   </Toolbar>
   <Table class="border border-gray-200 dark:border-gray-700">
-    <TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
-      {#each ['코드', '바로가기', '게시판 이름', '기능'] as title}
-        <TableHeadCell class="p-4 font-medium">{title}</TableHeadCell>
-      {/each}
+    <TableHead class="text-base">
+      <TableHeadCell class="table-cell w-48">코드</TableHeadCell>
+      <TableHeadCell class="table-cell">바로가기</TableHeadCell>
+      <TableHeadCell class="table-cell">게시판 이름</TableHeadCell>
+      <TableHeadCell class="table-cell w-64">기능</TableHeadCell>
     </TableHead>
     <TableBody>
-      <TableBodyRow class="text-base">
-        <TableBodyCell class="mr-12 flex items-center space-x-6 whitespace-nowrap p-4">ㅇㅇㅇㅇ</TableBodyCell>
-        <TableBodyCell class="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-500 dark:text-gray-400 xl:max-w-xs">
-          aaaa
-        </TableBodyCell>
-        <TableBodyCell class="p-4">aaas</TableBodyCell>
-        <TableBodyCell class="space-x-2 p-4">
-          <Button size="sm" class="gap-2 px-3">
-            <EditOutline size="sm" /> Edit user
+      <TableBodyRow class="table-row">
+        <TableBodyCell class="table-cell">11111</TableBodyCell>
+        <TableBodyCell class="table-cell">aaaa</TableBodyCell>
+        <TableBodyCell class="table-cell">aaas</TableBodyCell>
+        <TableBodyCell class="table-cell">
+          <Button size="xs" class="gap-1">
+            <EditOutline size="xs" /> Edit user
           </Button>
-          <Button color="red" size="sm" class="gap-2 px-3">
-            <TrashBinSolid size="sm" /> Delete user
+          <Button color="red" size="xs" class="gap-1">
+            <TrashBinSolid size="xs" /> Delete user
           </Button>
         </TableBodyCell>
       </TableBodyRow>
-      <TableBodyRow class="text-base">
-        <TableBodyCell class="mr-12 flex items-center space-x-6 whitespace-nowrap p-4">ㅇㅇㅇㅇ</TableBodyCell>
-        <TableBodyCell class="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-500 dark:text-gray-400 xl:max-w-xs">
-          aaaa
-        </TableBodyCell>
-        <TableBodyCell class="p-4">aaas</TableBodyCell>
-        <TableBodyCell class="space-x-2 p-4">
-          <Button size="sm" class="gap-2 px-3">
-            <EditOutline size="sm" /> Edit user
+      <TableBodyRow class="table-row">
+        <TableBodyCell class="table-cell"></TableBodyCell>
+        <TableBodyCell class="table-cell">aaaa</TableBodyCell>
+        <TableBodyCell class="table-cell">aaas</TableBodyCell>
+        <TableBodyCell class="table-cell">
+          <Button size="xs" class="gap-1">
+            <EditOutline size="xs" /> Edit user
           </Button>
-          <Button color="red" size="sm" class="gap-2 px-3">
-            <TrashBinSolid size="sm" /> Delete user
+          <Button color="red" size="xs" class="gap-1">
+            <TrashBinSolid size="xs" /> Delete user
           </Button>
         </TableBodyCell>
       </TableBodyRow>
@@ -91,3 +88,13 @@
     <Pagination {pages} large on:previous={previous} on:next={next} />
   </div>
 </div>
+
+<style>
+  :global(.table-cell) {
+    @apply p-4 whitespace-normal break-all;
+  }
+
+  :global(.table-row) {
+    @apply text-base;
+  }
+</style>

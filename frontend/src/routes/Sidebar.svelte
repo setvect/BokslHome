@@ -33,7 +33,7 @@
       name: '게시판',
       icon: WandMagicSparklesOutline,
       children: [
-        { name: '게시판 관리', link: '/board/manage' },
+        { name: '게시판 관리', link: '/board/manager' },
         { name: '글', link: '' },
         { name: '책', link: '' },
         { name: '음악', link: '' },
