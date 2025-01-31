@@ -31,10 +31,13 @@
   }
 
   const previous = () => {
-    alert('Previous btn clicked. Make a call to your server to fetch data.');
+    alert('이전');
   };
   const next = () => {
-    alert('Next btn clicked. Make a call to your server to fetch data.');
+    alert('다음');
+  };
+  const handleSearch = () => {
+    alert('검색');
   };
 </script>
 
@@ -45,35 +48,22 @@
       <option value="code">코드</option>
     </Select>
     <Input placeholder="" class="me-4 w-60 border xl:w-72" />
-    <Button class="w-18" color="alternative">검색</Button>
-    <Button class="w-18 ml-5" color="light">만들기</Button>
+    <Button on:click={handleSearch} class="w-18" color="alternative">검색</Button>
+    <Button href="./manager/write" class="w-18 ml-5" color="light">만들기</Button>
   </Toolbar>
   <Table class="border border-gray-200 dark:border-gray-700">
     <TableHead class="text-base">
-      <TableHeadCell class="table-cell w-48">코드</TableHeadCell>
-      <TableHeadCell class="table-cell">바로가기</TableHeadCell>
-      <TableHeadCell class="table-cell">게시판 이름</TableHeadCell>
-      <TableHeadCell class="table-cell w-64">기능</TableHeadCell>
+      <TableHeadCell class="w-48">코드</TableHeadCell>
+      <TableHeadCell>바로가기</TableHeadCell>
+      <TableHeadCell>게시판 이름</TableHeadCell>
+      <TableHeadCell class="w-64">기능</TableHeadCell>
     </TableHead>
     <TableBody>
-      <TableBodyRow class="table-row">
-        <TableBodyCell class="table-cell">11111</TableBodyCell>
-        <TableBodyCell class="table-cell">aaaa</TableBodyCell>
-        <TableBodyCell class="table-cell">aaas</TableBodyCell>
-        <TableBodyCell class="table-cell">
-          <Button size="xs" class="gap-1">
-            <EditOutline size="xs" /> Edit user
-          </Button>
-          <Button color="red" size="xs" class="gap-1">
-            <TrashBinSolid size="xs" /> Delete user
-          </Button>
-        </TableBodyCell>
-      </TableBodyRow>
-      <TableBodyRow class="table-row">
-        <TableBodyCell class="table-cell"></TableBodyCell>
-        <TableBodyCell class="table-cell">aaaa</TableBodyCell>
-        <TableBodyCell class="table-cell">aaas</TableBodyCell>
-        <TableBodyCell class="table-cell">
+      <TableBodyRow class="text-base">
+        <TableBodyCell class="p-4 whitespace-normal break-all w-48">abcde</TableBodyCell>
+        <TableBodyCell class="p-4 whitespace-normal break-all"><a href="./manager/read">a11aaa</a></TableBodyCell>
+        <TableBodyCell class="p-4 whitespace-normal break-all">aaas</TableBodyCell>
+        <TableBodyCell class="p-4 whitespace-normal break-all">
           <Button size="xs" class="gap-1">
             <EditOutline size="xs" /> Edit user
           </Button>
@@ -88,13 +78,3 @@
     <Pagination {pages} large on:previous={previous} on:next={next} />
   </div>
 </div>
-
-<style>
-  :global(.table-cell) {
-    @apply p-4 whitespace-normal break-all;
-  }
-
-  :global(.table-row) {
-    @apply text-base;
-  }
-</style>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Label, Button } from 'flowbite-svelte';
+  import { goto } from '$app/navigation';
 
   export let boardData = {
     code: 'NOTICE',
@@ -13,11 +14,12 @@
   const getYesNo = (value: string) => (value === 'Y' ? '예' : '아니오');
 
   function handleList() {
-    // 목록 페이지로 이동
+    goto('/board/manager');
   }
 
   function handleModify() {
     // 수정 페이지로 이동
+    alert('수정 페이지로 이동합니다.');
   }
 
   function handleDelete() {
