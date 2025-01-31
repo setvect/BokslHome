@@ -1,13 +1,10 @@
 <script lang="ts">
   import { Label, Input, Radio, Button } from 'flowbite-svelte';
   import { goto } from '$app/navigation';
-  import { createForm } from '@felte/core';
-  import { validator } from '@felte/validator-zod';
-  import { writable } from 'svelte/store';
   import { z } from 'zod';
+  import { useForm } from '$lib/utils/formUtils';
 
   type FormData = {
-    [key: string]: string | number;
     code: string;
     name: string;
     uploadLimit: number;
@@ -31,32 +28,20 @@
     useEncrypt: z.string()
   });
 
-  const { form, errors, touched } = createForm<FormData>(
-    {
-      extend: [validator({ schema: formSchema })],
-      initialValues: {
-        code: '',
-        name: '',
-        uploadLimit: 0,
-        useComment: 'Y',
-        useUpload: 'Y',
-        useEncrypt: 'N'
-      },
-      onSubmit: (values) => {
-        console.log('Valid:', values);
-      }
-    },
-    {
-      storeFactory: (store) => {
-        const { subscribe, set, update } = writable(store);
-        return {
-          subscribe,
-          set,
-          update
-        };
-      }
-    }
-  );
+  const initialValues: FormData = {
+    code: '',
+    name: '',
+    uploadLimit: 0,
+    useComment: 'Y',
+    useUpload: 'Y',
+    useEncrypt: 'N'
+  };
+
+  function handleSubmit(values: FormData) {
+    console.log('Valid:', values);
+  }
+
+  const { form, errors, touched } = useForm(formSchema, initialValues, handleSubmit);
 
   function handleCancel() {
     goto('/board/manager');
