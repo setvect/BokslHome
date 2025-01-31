@@ -3,27 +3,18 @@
   import { goto } from '$app/navigation';
   import { createForm } from '@felte/core';
   import { validator } from '@felte/validator-zod';
-  import { z } from 'zod';
   import { writable } from 'svelte/store';
+  import { z } from 'zod';
 
-  interface FormData {
-    [key: string]: string | number; // 인덱스 시그니처 추가
+  type FormData = {
+    [key: string]: string | number;
     code: string;
     name: string;
     uploadLimit: number;
     useComment: string;
     useUpload: string;
     useEncrypt: string;
-  }
-
-  interface Touched {
-    code?: boolean;
-    name?: boolean;
-    uploadLimit?: boolean;
-    useComment?: boolean;
-    useUpload?: boolean;
-    useEncrypt?: boolean;
-  }
+  };
 
   const formSchema = z.object({
     code: z.string().min(1, '게시판 코드를 입력해주세요'),
@@ -40,21 +31,6 @@
     useEncrypt: z.string()
   });
 
-  // Store Factory 정의
-  const storeFactory = <T,>(initialValue: T) => {
-    const store = writable(initialValue);
-    return {
-      ...store,
-      getValue: () => {
-        let value: T = initialValue; // 초기값 설정
-        store.subscribe((v) => {
-          value = v;
-        })();
-        return value;
-      }
-    };
-  };
-
   const { form, errors, touched } = createForm<FormData>(
     {
       extend: [validator({ schema: formSchema })],
@@ -70,7 +46,16 @@
         console.log('Valid:', values);
       }
     },
-    { storeFactory }
+    {
+      storeFactory: (store) => {
+        const { subscribe, set, update } = writable(store);
+        return {
+          subscribe,
+          set,
+          update
+        };
+      }
+    }
   );
 
   function handleCancel() {
