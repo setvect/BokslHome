@@ -3,5 +3,13 @@
     140
   ],
   "github.copilot.chat.localeOverride": "ko",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.inlayHints.enabled": "onUnlessPressed",
+  "editor.inlayHints.padding": false,
+  "javascript.inlayHints.enumMemberValues.enabled": false,
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": true
 }
