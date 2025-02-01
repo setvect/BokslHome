@@ -37,15 +37,15 @@
     useEncrypt: 'N'
   };
 
-  function handleSubmit(values: FormData) {
+  const handleSubmit = (values: FormData) => {
     console.log('Valid:', values);
-  }
+  };
 
   const { form, errors, touched } = useForm(formSchema, initialValues, handleSubmit);
 
-  function handleCancel() {
+  const handleCancel = () => {
     goto('/board/manager');
-  }
+  };
 </script>
 
 <div class="max-w-3xl">
