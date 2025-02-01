@@ -34,7 +34,7 @@
       icon: WandMagicSparklesOutline,
       children: [
         { name: '게시판 관리', link: '/board/manager' },
-        { name: '글', link: '' },
+        { name: '글', link: '/board/article' },
         { name: '책', link: '' },
         { name: '음악', link: '' },
         { name: '영화', link: '' },
