@@ -56,7 +56,7 @@
       <div class="flex-1">
         <Input id="code" name="code" type="text" color={$touched.code && $errors.code ? 'red' : 'base'} />
         {#if $touched.code && $errors.code}
-          <p class="mt-2 text-sm text-red-600 dark:text-red-300">{$errors.code}</p>
+          <p class="error-text">{$errors.code}</p>
         {/if}
       </div>
     </div>
@@ -67,7 +67,7 @@
       <div class="flex-1">
         <Input id="name" name="name" type="text" color={$touched.name && $errors.name ? 'red' : 'base'} />
         {#if $touched.name && $errors.name}
-          <p class="mt-2 text-sm text-red-600 dark:text-red-300">{$errors.name}</p>
+          <p class="error-text">{$errors.name}</p>
         {/if}
       </div>
     </div>
@@ -84,7 +84,7 @@
           </Input>
         </div>
         {#if $touched.uploadLimit && $errors.uploadLimit}
-          <p class="mt-2 text-sm text-red-600 dark:text-red-300">{$errors.uploadLimit}</p>
+          <p class="error-text">{$errors.uploadLimit}</p>
         {/if}
       </div>
     </div>
