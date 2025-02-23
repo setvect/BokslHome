@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Label, Input, Radio, Button } from 'flowbite-svelte';
   import { goto } from '$app/navigation';
-  import { z } from 'zod';
+  import QuillEditor from '$lib/components/QuillEditor.svelte';
   import { useForm } from '$lib/utils/formUtils';
-  import SvelteQuill from 'svelte-quill';
+  import { Button, Input } from 'flowbite-svelte';
+  import 'quill/dist/quill.snow.css';
+  import { z } from 'zod';
 
   type FormData = {
     title: string;
@@ -21,16 +22,19 @@
   };
 
   const handleSubmit = (values: FormData) => {
-    console.log('Valid:', values);
+    console.log('Title:', values.title);
+    console.log('Content:', values.content);
   };
 
-  const { form, errors, touched } = useForm(formSchema, initialValues, handleSubmit);
+  const { form, errors, touched, setFieldValue } = useForm(formSchema, initialValues, handleSubmit);
 
-  // SvelteQuill 에디터의 값을 별도의 변수로 관리
-  let contentValue = initialValues.content;
+  function handleEditorChange(event: CustomEvent<string>) {
+    const content = event.detail;
+    setFieldValue('content', content);
+  }
 
   const handleCancel = () => {
-    goto('/board/manager');
+    goto('/board/article');
   };
 </script>
 
@@ -45,12 +49,9 @@
       </div>
     </div>
 
-    <!-- 기존 content 영역을 Quill 에디터로 대체 -->
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <SvelteQuill bind:value={contentValue} />
-        <!-- hidden input에 바인딩하여 useForm이 값을 읽도록 함 -->
-        <input type="hidden" bind:value={contentValue} name="content" />
+        <QuillEditor content={initialValues.content} on:change={handleEditorChange} />
         {#if $touched.content && $errors.content}
           <p class="error-text">{$errors.content}</p>
         {/if}
@@ -58,7 +59,7 @@
     </div>
 
     <div class="flex justify-end gap-2 mt-6">
-      <Button type="submit">저장</Button>
+      <Button type="submit" color="green">저장</Button>
       <Button on:click={handleCancel} color="light">취소</Button>
     </div>
   </form>
