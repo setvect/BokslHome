@@ -1,4 +1,4 @@
-import { createForm, type AssignableErrors } from '@felte/core';
+import { createForm } from '@felte/core';
 import { validator } from '@felte/validator-zod';
 import { writable } from 'svelte/store';
 import { ZodSchema } from 'zod';
@@ -22,7 +22,7 @@ export function useForm<T extends FormData>(
   onSubmit: (values: T) => void | Promise<void>,
   options: FormOptions<T> = {}
 ) {
-  const { validateOnChange = true, validateOnBlur = true, resetOnSubmit = false } = options;
+  const { validateOnChange = true, validateOnBlur = true, resetOnSubmit = false, onError } = options;
 
   const form = createForm<T>(
     {
@@ -36,11 +36,18 @@ export function useForm<T extends FormData>(
           }
         } catch (error) {
           console.error('Form submission error:', error);
+          if (onError) {
+            let errors: Record<keyof T, string[]> = {} as Record<keyof T, string[]>;
+            if (typeof error === 'object' && error !== null && 'errors' in error) {
+              errors = (error as { errors: Record<keyof T, string[]> }).errors;
+            }
+            onError(errors);
+          }
           throw error;
         }
       },
-      validateOnChange, // 추가
-      validateOnBlur // 추가
+      validateOnChange,
+      validateOnBlur
     },
     {
       storeFactory: (store) => {
@@ -50,23 +57,20 @@ export function useForm<T extends FormData>(
     }
   );
 
-  // 유용한 헬퍼 메서드 추가
-  const resetField = (fieldName: keyof T) => {
-    const updatedFields: Partial<T> = {};
-    updatedFields[fieldName] = initialValues[fieldName];
+  // 중복 업데이트 로직을 위한 헬퍼 함수
+  const updateFieldValue = (fieldName: keyof T, value: FormField) => {
     form.setFields((currentValues) => ({
       ...currentValues,
-      ...updatedFields
+      [fieldName]: value as T[keyof T]
     }));
   };
 
+  const resetField = (fieldName: keyof T) => {
+    updateFieldValue(fieldName, initialValues[fieldName]);
+  };
+
   const setFieldValue = (fieldName: keyof T, value: FormField) => {
-    const updatedFields: Partial<T> = {};
-    updatedFields[fieldName] = value as T[keyof T];
-    form.setFields((currentValues) => ({
-      ...currentValues,
-      ...updatedFields
-    }));
+    updateFieldValue(fieldName, value);
   };
 
   return {
