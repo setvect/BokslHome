@@ -1,19 +1,6 @@
 <script lang="ts">
   import BoardManagerWrite from '$lib/components/board/manager/BoardManagerWrite.svelte';
-  import { Heading, Label, Input, Radio, Button } from 'flowbite-svelte';
-
-  let formData = {
-    code: '',
-    name: '',
-    uploadLimit: '',
-    useComment: 'Y',
-    useUpload: 'Y',
-    useEncrypt: 'N'
-  };
-
-  function handleSubmit() {
-    console.log('폼 데이터:', formData);
-  }
+  import { Heading } from 'flowbite-svelte';
 </script>
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">

@@ -56,7 +56,7 @@
     </Select>
     <Input placeholder="" class="me-4 w-52 border" />
     <Button on:click={handleSearch} class="w-18" color="alternative">검색</Button>
-    <Button href="./manager/write" class="w-18 ml-5" color="light">만들기</Button>
+    <Button href="./article/write" class="w-18 ml-5" color="light">만들기</Button>
   </Toolbar>
   <Table class="border border-gray-200 dark:border-gray-700">
     <TableHead class="text-base">

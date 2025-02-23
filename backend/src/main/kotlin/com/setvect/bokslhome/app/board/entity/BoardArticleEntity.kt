@@ -1,10 +1,13 @@
 package com.setvect.bokslhome.app.board.entity
 
+import com.setvect.bokslhome.app.board.model.EncryptType
 import com.setvect.bokslhome.app.user.entity.UserEntity
 import com.setvect.bokslhome.common.converter.BooleanToYNConverter
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -16,7 +19,6 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import java.sql.Types
 import java.time.LocalDateTime
-import java.util.Date
 import org.hibernate.annotations.JdbcTypeCode
 
 /**
@@ -69,6 +71,14 @@ data class BoardArticleEntity(
     @JdbcTypeCode(Types.CHAR)
     @Convert(converter = BooleanToYNConverter::class)
     val encryptF: Boolean = false,
+
+    // TODO 작업
+    /**
+     * 암호화 타입
+     */
+    @Column(name = "ENCRYPT_TYPE", nullable = true, length = 1)
+    @Enumerated(EnumType.STRING)
+    val encryptType: EncryptType? = null,
     /**
      * 등록일
      */
@@ -83,7 +93,7 @@ data class BoardArticleEntity(
     val deleteF: Boolean = false,
 ) {
     // JPA를 위한 no-args 생성자
-    protected constructor() : this(
+    constructor() : this(
         boardManager = BoardManagerEntity("", ""),
         user = UserEntity("", "", ""),
         title = "",

@@ -84,7 +84,7 @@ class BoardArticleService(
             title = request.title,
             content = request.content,
             ip = request.ip!!,
-            encryptF = request.encryptF
+            encryptF = request.encryptF,
         )
         val boardArticleEntity = boardArticleRepository.save(modifiedArticle)
         attachFileService.deleteAttachFileList(
