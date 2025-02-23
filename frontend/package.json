@@ -38,6 +38,8 @@
     "@felte/core": "^1.4.4",
     "@felte/validator-zod": "^1.0.18",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
     "axios": "^1.7.8",
     "dayjs": "^1.11.13",
     "flowbite": "^2.5.2",

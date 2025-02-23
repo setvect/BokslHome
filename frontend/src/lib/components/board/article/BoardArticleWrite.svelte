@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import QuillEditor from '$lib/components/QuillEditor.svelte';
+  import ToastEditor from '$lib/components/ToastEditor.svelte';
   import { useForm } from '$lib/utils/formUtils';
   import { Button, Input } from 'flowbite-svelte';
   import 'quill/dist/quill.snow.css';
@@ -51,7 +52,7 @@
 
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <QuillEditor content={initialValues.content} on:change={handleEditorChange} />
+        <ToastEditor content={initialValues.content} on:change={handleEditorChange} />
         {#if $touched.content && $errors.content}
           <p class="error-text">{$errors.content}</p>
         {/if}
