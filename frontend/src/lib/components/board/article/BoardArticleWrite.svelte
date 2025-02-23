@@ -28,10 +28,10 @@
 
   const { form, errors, touched, setFieldValue } = useForm(formSchema, initialValues, handleSubmit);
 
-  function handleEditorChange(event: CustomEvent<string>) {
+  const handleEditorChange = (event: CustomEvent<string>) => {
     const content = event.detail;
     setFieldValue('content', content);
-  }
+  };
 
   const handleCancel = () => {
     goto('/board/article');
