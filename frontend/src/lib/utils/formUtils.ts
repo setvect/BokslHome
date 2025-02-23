@@ -39,15 +39,6 @@ export function useForm<T extends FormData>(
           throw error;
         }
       },
-      validate: (values) => {
-        const result = schema.safeParse(values);
-        if (result.success) {
-          return undefined;
-        }
-        return Object.fromEntries(
-          Object.entries(result.error.formErrors.fieldErrors).map(([key, value]) => [key, Array.isArray(value) ? value : [String(value)]])
-        ) as AssignableErrors<T>;
-      },
       validateOnChange, // 추가
       validateOnBlur // 추가
     },
