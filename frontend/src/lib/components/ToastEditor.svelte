@@ -30,10 +30,7 @@
         event.stopPropagation();
         const file = item.getAsFile();
         console.log('Pasted image file:', file);
-        if (editor && typeof editor.getCurrentModeEditor === 'function') {
-          const modeEditor = editor.getCurrentModeEditor();
-          modeEditor.replaceSelection('서버에 업로드된 이미지 URL');
-        }
+        editor.replaceSelection('서버에 업로드된 이미지 URL');
 
         break;
       }
@@ -64,6 +61,8 @@
     };
     editor = new Editor(options);
 
+    console.log('Editor instance:', editor);
+    console.log('........:', editor.isMarkdownMode());
     editorContainer.addEventListener('paste', handlePaste, true);
   });
 
