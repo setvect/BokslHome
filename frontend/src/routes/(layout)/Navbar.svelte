@@ -3,7 +3,7 @@
   import { DarkMode, NavBrand, NavHamburger, Navbar } from 'flowbite-svelte';
   import { Fa } from 'svelte-fa';
 
-  import '../app.pcss';
+  import '../../app.pcss';
 
   export let fluid = true;
   export let drawerHidden = false;

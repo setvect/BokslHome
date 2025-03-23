@@ -1,5 +1,4 @@
 <script lang="ts">
-  import BoardArticleList from '$lib/components/board/article/BoardArticleList.svelte';
   import BoardArticleWrite from '$lib/components/board/article/BoardArticleWrite.svelte';
   import { Heading } from 'flowbite-svelte';
 </script>

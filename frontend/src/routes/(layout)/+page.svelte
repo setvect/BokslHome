@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Breadcrumb, BreadcrumbItem, Heading } from 'flowbite-svelte';
   import { Card } from 'flowbite-svelte';
-  import MetaTag from './utils/MetaTag.svelte';
   import Footer from './Footer.svelte';
 </script>
 
