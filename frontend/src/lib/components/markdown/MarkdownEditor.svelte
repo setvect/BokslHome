@@ -1,6 +1,6 @@
 <script lang="ts">
   import { marked } from 'marked';
-  import SimpleMDEWrapper from './SimpleMDEWrapper.svelte';
+  import EasymdeWrapper from './EasymdeWrapper.svelte';
   
   export let value: string = '';
   export let darkMode: boolean = false;
@@ -12,7 +12,7 @@
 
 <div class="editor-container">
   <div class="editor">
-    <SimpleMDEWrapper
+    <EasymdeWrapper
       bind:value
       {darkMode}
     />
