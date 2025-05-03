@@ -50,6 +50,7 @@
     "@types/marked": "^6.0.0",
     "axios": "^1.7.8",
     "dayjs": "^1.11.13",
+    "easymde": "^2.20.0",
     "flowbite": "^2.5.2",
     "flowbite-svelte": "^0.47.4",
     "flowbite-svelte-icons": "^2.0.2",

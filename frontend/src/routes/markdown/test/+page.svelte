@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BasicEditor from '$lib/components/markdown/BasicEditor.svelte';
+  import MarkdownEditor from '$lib/components/markdown/MarkdownEditor.svelte';
   
   let content = '';
   let isDarkMode = false;
@@ -15,7 +15,7 @@
     </label>
   </div>
   
-  <BasicEditor
+  <MarkdownEditor
     bind:value={content}
     darkMode={isDarkMode}
   />
