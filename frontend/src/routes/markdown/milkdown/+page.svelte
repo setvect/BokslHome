@@ -15,6 +15,7 @@
   import { EditorView, keymap } from '@codemirror/view';
   import { defaultKeymap } from '@codemirror/commands';
   import { markdown } from '@codemirror/lang-markdown';
+  import { oneDark } from '@codemirror/theme-one-dark';
 
   // 상수 정의
   const INITIAL_MARKDOWN = 'Hello, Milkdown!';
@@ -66,6 +67,7 @@
         extensions: [
           markdown(),
           keymap.of(defaultKeymap),
+          oneDark,
           EditorView.updateListener.of((update) => {
             if (update.docChanged) {
               markdownValue = update.state.doc.toString();
@@ -258,7 +260,7 @@
     <!-- CodeMirror 에디터 -->
     <div class="border-2 border-green-200 rounded-lg p-4 flex flex-col bg-green-50" role="textbox" aria-label="CodeMirror 에디터">
       <div class="text-sm font-medium mb-2 text-green-700">CodeMirror 에디터</div>
-      <div class="flex-1 overflow-auto bg-white rounded" bind:this={codeMirrorElement}></div>
+      <div class="flex-1 overflow-auto rounded" bind:this={codeMirrorElement}></div>
     </div>
   </div>
 </div>
