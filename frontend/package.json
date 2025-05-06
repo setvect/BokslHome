@@ -35,6 +35,11 @@
     "vite": "^6.2.2"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.7.0",
+    "@codemirror/lang-markdown": "^6.3.2",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.7",
     "@felte/core": "^1.4.4",
     "@felte/validator-zod": "^1.0.18",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
