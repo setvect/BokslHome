@@ -60,6 +60,7 @@
     "lucide-svelte": "^0.462.0",
     "marked": "^15.0.11",
     "quill": "^2.0.3",
+    "svelte-codemirror-editor": "^1.4.1",
     "svelte-fa": "^4.0.3",
     "svelte-heros-v2": "^2.0.1",
     "turndown": "^7.2.0",

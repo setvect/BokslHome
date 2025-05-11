@@ -56,16 +56,4 @@
   .get-content-btn:hover {
     background-color: #45a049;
   }
-
-  .changed-content {
-    margin-top: 2rem;
-    padding: 1rem;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-  }
-
-  .changed-content pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
 </style>
