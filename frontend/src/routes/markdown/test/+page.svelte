@@ -2,7 +2,7 @@
   import MarkdownEditor, { type MarkdownEditorMethods } from '$lib/components/markdown/MarkdownEditor.svelte';
 
   let content = '# hello\n- ㅋㅋㅋ\n- ㄲㄲㄲ\n\n```sql\nSELECT * FROM users;\n```';
-  let isDarkMode = false;
+  let isDarkMode = true;
   let markdownEditor: MarkdownEditorMethods;
 
   function handleContentChange(newContent: string) {
