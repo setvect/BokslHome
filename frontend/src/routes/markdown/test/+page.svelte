@@ -1,7 +1,7 @@
 <script lang="ts">
   import MarkdownEditor from '$lib/components/markdown/MarkdownEditor.svelte';
 
-  let content = '# hello\n\n```sql\nSELECT * FROM users;\n```';
+  let content = '# hello\n- ㅋㅋㅋ\n- ㄲㄲㄲ\n\n```sql\nSELECT * FROM users;\n```';
   let isDarkMode = false;
 </script>
 
