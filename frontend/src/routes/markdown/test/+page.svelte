@@ -26,7 +26,7 @@
     <button on:click={handleGetContent} class="get-content-btn"> 내용 가져오기 </button>
   </div>
 
-  <MarkdownEditor bind:this={markdownEditor} bind:value={content} {isDarkMode} onChange={handleContentChange} height="100%" />
+  <MarkdownEditor bind:this={markdownEditor} bind:value={content} {isDarkMode} onChange={handleContentChange} height="500px" />
 </div>
 
 <style>
