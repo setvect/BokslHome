@@ -21,18 +21,19 @@
 </script>
 
 <script lang="ts">
-  import CodeMirror from 'svelte-codemirror-editor';
-  import { markdown } from '@codemirror/lang-markdown';
-  import { oneDark } from '@codemirror/theme-one-dark';
-  import { javascript } from '@codemirror/lang-javascript';
+  import { indentWithTab } from '@codemirror/commands';
   import { java } from '@codemirror/lang-java';
+  import { javascript } from '@codemirror/lang-javascript';
+  import { markdown } from '@codemirror/lang-markdown';
   import { sql } from '@codemirror/lang-sql';
-  import { LanguageDescription } from '@codemirror/language';
-  import { EditorView } from '@codemirror/view';
+  import { LanguageDescription, bracketMatching } from '@codemirror/language';
+  import { oneDark } from '@codemirror/theme-one-dark';
+  import { EditorView, keymap } from '@codemirror/view';
+  import { Button, ButtonGroup } from 'flowbite-svelte';
+  import { ExpandOutline, EyeOutline, EyeSolid, MinimizeOutline } from 'flowbite-svelte-icons';
+  import CodeMirror from 'svelte-codemirror-editor';
   import { allKeymaps } from './keymaps';
   import MarkdownPreview from './MarkdownPreview.svelte';
-  import { Button, ButtonGroup } from 'flowbite-svelte';
-  import { EyeOutline, EyeSolid, ExpandOutline, MinimizeOutline } from 'flowbite-svelte-icons';
 
   // Props 정의
   export let value: MarkdownEditorProps['value'] = '';
@@ -46,6 +47,36 @@
   // 제어 옵션 상태
   let showPreview = true;
   let isFullscreen = false;
+
+  // 언어 지원 사전 정의
+  const languageSupport = [
+    LanguageDescription.of({
+      name: 'javascript',
+      alias: ['js'],
+      support: javascript()
+    }),
+    LanguageDescription.of({
+      name: 'typescript',
+      alias: ['ts'],
+      support: javascript({ typescript: true })
+    }),
+    LanguageDescription.of({
+      name: 'java',
+      support: java()
+    }),
+    LanguageDescription.of({
+      name: 'sql',
+      support: sql()
+    }),
+    LanguageDescription.of({
+      name: 'markdown',
+      alias: ['md'],
+      support: markdown()
+    })
+  ];
+
+  // 에디터 추가 확장 기능
+  const editorExtensions = [...allKeymaps, bracketMatching(), keymap.of([indentWithTab])];
 
   // 에디터 내용을 가져오는 메서드
   export function getContent(): string {
@@ -92,29 +123,10 @@
         <CodeMirror
           bind:value
           lang={markdown({
-            codeLanguages: [
-              LanguageDescription.of({
-                name: 'javascript',
-                alias: ['js'],
-                support: javascript()
-              }),
-              LanguageDescription.of({
-                name: 'typescript',
-                alias: ['ts'],
-                support: javascript({ typescript: true })
-              }),
-              LanguageDescription.of({
-                name: 'java',
-                support: java()
-              }),
-              LanguageDescription.of({
-                name: 'sql',
-                support: sql()
-              })
-            ]
+            codeLanguages: languageSupport
           })}
           theme={isDarkMode ? oneDark : undefined}
-          extensions={allKeymaps}
+          extensions={editorExtensions}
           on:ready={handleReady}
           on:change={handleChange}
           styles={{

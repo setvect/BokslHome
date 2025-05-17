@@ -14,7 +14,6 @@
   onMount(() => {
     // localStorage에서 초기 다크 모드 상태를 읽어 스토어에 반영
     const savedTheme = localStorage.getItem('color-theme');
-    console.log('savedTheme', savedTheme);
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       isDarkMode.set(true);
     } else {
