@@ -33,7 +33,6 @@
   import MarkdownPreview from './MarkdownPreview.svelte';
   import { Button, ButtonGroup } from 'flowbite-svelte';
   import { EyeOutline, EyeSolid, ExpandOutline, MinimizeOutline } from 'flowbite-svelte-icons';
-  import { onMount, onDestroy } from 'svelte';
 
   // Props 정의
   export let value: MarkdownEditorProps['value'] = '';
@@ -65,27 +64,6 @@
   function toggleFullscreen() {
     isFullscreen = !isFullscreen;
   }
-
-  // 단축키 핸들러
-  function handleKeydown(e: KeyboardEvent) {
-    // Ctrl+Alt+P: 미리보기 토글
-    if (e.ctrlKey && e.altKey && (e.key === 'p' || e.key === 'P')) {
-      e.preventDefault();
-      showPreview = !showPreview;
-    }
-    // Ctrl+Alt+F: 전체화면 토글
-    if (e.ctrlKey && e.altKey && (e.key === 'f' || e.key === 'F')) {
-      e.preventDefault();
-      toggleFullscreen();
-    }
-  }
-
-  onMount(() => {
-    window.addEventListener('keydown', handleKeydown);
-  });
-  onDestroy(() => {
-    window.removeEventListener('keydown', handleKeydown);
-  });
 </script>
 
 <div class="markdown-editor-wrapper {isFullscreen ? 'fullscreen' : ''}">
@@ -110,41 +88,43 @@
 
   <div class="markdown-editor" style="width: {width}; height: {height}; min-height: 0;">
     <div class="editor-container">
-      <CodeMirror
-        bind:value
-        lang={markdown({
-          codeLanguages: [
-            LanguageDescription.of({
-              name: 'javascript',
-              alias: ['js'],
-              support: javascript()
-            }),
-            LanguageDescription.of({
-              name: 'typescript',
-              alias: ['ts'],
-              support: javascript({ typescript: true })
-            }),
-            LanguageDescription.of({
-              name: 'java',
-              support: java()
-            }),
-            LanguageDescription.of({
-              name: 'sql',
-              support: sql()
-            })
-          ]
-        })}
-        theme={isDarkMode ? oneDark : undefined}
-        extensions={allKeymaps}
-        on:ready={handleReady}
-        on:change={handleChange}
-        styles={{
-          '&': {
-            height: '100%',
-            fontSize: '1.3em'
-          }
-        }}
-      />
+      {#key isDarkMode}
+        <CodeMirror
+          bind:value
+          lang={markdown({
+            codeLanguages: [
+              LanguageDescription.of({
+                name: 'javascript',
+                alias: ['js'],
+                support: javascript()
+              }),
+              LanguageDescription.of({
+                name: 'typescript',
+                alias: ['ts'],
+                support: javascript({ typescript: true })
+              }),
+              LanguageDescription.of({
+                name: 'java',
+                support: java()
+              }),
+              LanguageDescription.of({
+                name: 'sql',
+                support: sql()
+              })
+            ]
+          })}
+          theme={isDarkMode ? oneDark : undefined}
+          extensions={allKeymaps}
+          on:ready={handleReady}
+          on:change={handleChange}
+          styles={{
+            '&': {
+              height: '100%',
+              fontSize: '1.3em'
+            }
+          }}
+        />
+      {/key}
     </div>
     {#if showPreview}
       <div class="preview-outer">
@@ -200,12 +180,6 @@
   .markdown-editor-wrapper.fullscreen .markdown-editor {
     height: 100%;
     min-height: 0;
-  }
-  .icon {
-    width: 1em;
-    height: 1em;
-    margin-right: 0.3em;
-    vertical-align: middle;
   }
   .editor-container {
     flex: 1 1 0%;

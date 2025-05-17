@@ -1,8 +1,8 @@
 <script lang="ts">
   import MarkdownEditor, { type MarkdownEditorMethods } from '$lib/components/markdown/MarkdownEditor.svelte';
+  import { isDarkMode } from '$lib/stores/themeStore';
 
   let content = '# hello\n- ㅋㅋㅋ\n- ㄲㄲㄲ\n\n```sql\nSELECT * FROM users;\n```';
-  let isDarkMode = true;
   let markdownEditor: MarkdownEditorMethods;
 
   function handleContentChange(newContent: string) {
@@ -19,14 +19,10 @@
   <h1>마크다운 에디터 테스트</h1>
 
   <div class="controls">
-    <label>
-      <input type="checkbox" bind:checked={isDarkMode} />
-      다크 모드
-    </label>
     <button on:click={handleGetContent} class="get-content-btn"> 내용 가져오기 </button>
   </div>
 
-  <MarkdownEditor bind:this={markdownEditor} bind:value={content} {isDarkMode} onChange={handleContentChange} height="500px" />
+  <MarkdownEditor bind:this={markdownEditor} bind:value={content} isDarkMode={$isDarkMode} onChange={handleContentChange} height="500px" />
 </div>
 
 <style>
