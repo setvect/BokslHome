@@ -34,6 +34,7 @@
   import CodeMirror from 'svelte-codemirror-editor';
   import { allKeymaps } from './keymaps';
   import MarkdownPreview from './MarkdownPreview.svelte';
+  import { onMount } from 'svelte';
 
   // Props 정의
   export let value: MarkdownEditorProps['value'] = '';
@@ -43,6 +44,7 @@
   export let onChange: MarkdownEditorProps['onChange'] = () => {};
 
   let editorView: EditorView;
+  let editorElement: HTMLElement;
 
   // 제어 옵션 상태
   let showPreview = true;
@@ -85,6 +87,8 @@
 
   function handleReady(event: CustomEvent<EditorView>) {
     editorView = event.detail;
+    // 에디터 뷰에서 DOM 엘리먼트 가져오기
+    editorElement = editorView.dom;
   }
 
   function handleChange(event: CustomEvent<string>) {
@@ -95,6 +99,111 @@
   function toggleFullscreen() {
     isFullscreen = !isFullscreen;
   }
+
+  // 클립보드 이미지 업로드 처리 함수
+  async function uploadImageFromClipboard(imageBlob: Blob): Promise<string> {
+    try {
+      // 이미지 파일 데이터를 FormData로 준비
+      const formData = new FormData();
+      formData.append('image', imageBlob, 'clipboard-image.png');
+
+      // 실제 API 호출은 생략하고 임의의 URL 반환
+      // API 호출 예시:
+      // const response = await fetch('/api/upload/image', {
+      //   method: 'POST',
+      //   body: formData
+      // });
+      // const data = await response.json();
+      // return data.imageUrl;
+
+      // 임의의 URL 반환 (실제 구현 시 위 주석 코드로 대체)
+      return Promise.resolve(`https://example.com/images/${Date.now()}.png`);
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error);
+      throw error;
+    }
+  }
+
+  // 마크다운 에디터에 이미지 태그 삽입
+  function insertImageMarkdown(imageUrl: string) {
+    if (!editorView) return;
+
+    const cursor = editorView.state.selection.main.head;
+    const imageMarkdown = `![이미지](${imageUrl})`;
+
+    const transaction = editorView.state.update({
+      changes: { from: cursor, insert: imageMarkdown }
+    });
+
+    editorView.dispatch(transaction);
+  }
+
+  // 클립보드 붙여넣기 이벤트 처리 함수
+  async function handlePaste(event: ClipboardEvent) {
+    // 클립보드에 이미지가 있는지 확인
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    let imageItem = null;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        imageItem = items[i];
+        break;
+      }
+    }
+
+    // 이미지가 아니면 기본 붙여넣기 동작 실행
+    if (!imageItem) return;
+
+    // 기본 붙여넣기 동작 방지
+    event.preventDefault();
+
+    // 클립보드에서 이미지 데이터 가져오기
+    const blob = imageItem.getAsFile();
+    if (!blob) return;
+
+    try {
+      // 이미지 업로드 및 URL 받기
+      const imageUrl = await uploadImageFromClipboard(blob);
+
+      // 마크다운 이미지 태그 삽입
+      insertImageMarkdown(imageUrl);
+    } catch (error) {
+      console.error('이미지 처리 중 오류 발생:', error);
+    }
+  }
+
+  // 마운트 시 붙여넣기 이벤트 리스너 등록
+  onMount(() => {
+    const pasteEventHandler = (e: ClipboardEvent) => {
+      handlePaste(e);
+    };
+
+    // CodeMirror 초기화 후 이벤트 리스너 등록을 위한 지연 처리
+    const setupPasteListener = () => {
+      if (editorElement) {
+        editorElement.addEventListener('paste', pasteEventHandler);
+        return () => {
+          editorElement.removeEventListener('paste', pasteEventHandler);
+        };
+      }
+    };
+
+    // editorElement가 준비되면 이벤트 리스너 설정
+    const interval = setInterval(() => {
+      if (editorElement) {
+        setupPasteListener();
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+      if (editorElement) {
+        editorElement.removeEventListener('paste', pasteEventHandler);
+      }
+    };
+  });
 </script>
 
 <div class="markdown-editor-wrapper {isFullscreen ? 'fullscreen' : ''}">
