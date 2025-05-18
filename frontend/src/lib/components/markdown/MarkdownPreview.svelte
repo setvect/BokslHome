@@ -1,10 +1,12 @@
 <script lang="ts">
   import { marked } from 'marked';
+  import { onMount } from 'svelte';
 
   export let content = '';
   export let isDarkMode = true;
 
   let previewHtml = '';
+  let previewContainer: HTMLDivElement;
 
   // 마크다운을 HTML로 변환
   async function updatePreview(markdownText: string) {
@@ -15,9 +17,36 @@
   $: if (content) {
     updatePreview(content);
   }
+
+  /**
+   * 스크롤 위치를 비율에 따라 설정하는 메서드
+   * @param positionRatio 0~1 사이의 값으로, 문서 내에서의 상대적 위치
+   */
+  export function scrollToPosition(positionRatio: number) {
+    if (!previewContainer) return;
+
+    // 스크롤 가능한 높이 계산
+    const scrollHeight = previewContainer.scrollHeight - previewContainer.clientHeight;
+
+    // 비율에 따른 스크롤 위치 계산
+    const targetScrollTop = scrollHeight * positionRatio;
+
+    // 부드러운 스크롤 적용
+    previewContainer.scrollTo({
+      top: targetScrollTop,
+      behavior: 'smooth'
+    });
+  }
+
+  // 마크다운 요소와 에디터 라인 간의 매핑을 개선하기 위한 기능을 추가할 수 있음
+  // 예: 마크다운 요소에 data-line 속성을 추가하여 더 정확한 위치 매핑 구현
+
+  onMount(() => {
+    // 필요한 초기화 작업이 있을 경우 여기에 구현
+  });
 </script>
 
-<div class="preview-container" class:dark={isDarkMode}>
+<div class="preview-container" class:dark={isDarkMode} bind:this={previewContainer}>
   {@html previewHtml}
 </div>
 
@@ -31,6 +60,7 @@
     overflow: auto;
     background-color: white;
     color: #1a202c;
+    scroll-behavior: smooth;
   }
 
   .preview-container.dark {

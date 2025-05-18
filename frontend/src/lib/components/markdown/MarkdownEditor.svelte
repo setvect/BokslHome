@@ -26,15 +26,15 @@
   import { javascript } from '@codemirror/lang-javascript';
   import { markdown } from '@codemirror/lang-markdown';
   import { sql } from '@codemirror/lang-sql';
-  import { LanguageDescription, bracketMatching } from '@codemirror/language';
+  import { bracketMatching, LanguageDescription } from '@codemirror/language';
   import { oneDark } from '@codemirror/theme-one-dark';
-  import { EditorView, keymap } from '@codemirror/view';
+  import { EditorView, keymap, ViewPlugin, ViewUpdate } from '@codemirror/view';
   import { Button, ButtonGroup } from 'flowbite-svelte';
   import { ExpandOutline, EyeOutline, EyeSolid, MinimizeOutline } from 'flowbite-svelte-icons';
+  import { onMount } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
   import { allKeymaps } from './keymaps';
   import MarkdownPreview from './MarkdownPreview.svelte';
-  import { onMount } from 'svelte';
 
   // Props 정의
   export let value: MarkdownEditorProps['value'] = '';
@@ -45,10 +45,15 @@
 
   let editorView: EditorView;
   let editorElement: HTMLElement;
+  let previewComponent: MarkdownPreview;
 
   // 제어 옵션 상태
   let showPreview = true;
   let isFullscreen = false;
+
+  // 커서 위치 추적 변수
+  let currentCursorLine = 0;
+  let currentCursorPosition = 0;
 
   // 언어 지원 사전 정의
   const languageSupport = [
@@ -77,8 +82,29 @@
     })
   ];
 
+  // 커서 위치 변경 감지 플러그인 생성
+  const cursorTrackPlugin = ViewPlugin.fromClass(
+    class {
+      update(update: ViewUpdate) {
+        if (update.selectionSet || update.docChanged) {
+          const selection = update.state.selection.main;
+          const doc = update.state.doc;
+
+          // 현재 커서 위치 저장
+          currentCursorPosition = selection.from;
+
+          // 현재 커서의 라인 번호 계산 (0-based)
+          currentCursorLine = doc.lineAt(selection.from).number - 1;
+
+          // 미리보기 스크롤 위치 동기화
+          syncPreviewScroll();
+        }
+      }
+    }
+  );
+
   // 에디터 추가 확장 기능
-  const editorExtensions = [...allKeymaps, bracketMatching(), keymap.of([indentWithTab])];
+  const editorExtensions = [...allKeymaps, bracketMatching(), keymap.of([indentWithTab]), cursorTrackPlugin];
 
   // 에디터 내용을 가져오는 메서드
   export function getContent(): string {
@@ -98,6 +124,21 @@
 
   function toggleFullscreen() {
     isFullscreen = !isFullscreen;
+  }
+
+  // 미리보기 스크롤 위치 동기화 함수
+  function syncPreviewScroll() {
+    if (!showPreview || !previewComponent) return;
+
+    // 전체 라인 수
+    const totalLines = editorView ? editorView.state.doc.lines : 0;
+    if (totalLines === 0) return;
+
+    // 현재 커서 라인 비율 계산 (0~1 사이 값)
+    const lineRatio = currentCursorLine / totalLines;
+
+    // 미리보기 스크롤 위치 동기화 요청
+    previewComponent.scrollToPosition(lineRatio);
   }
 
   // 클립보드 이미지 업로드 처리 함수
@@ -249,7 +290,7 @@
     </div>
     {#if showPreview}
       <div class="preview-outer">
-        <MarkdownPreview content={value} {isDarkMode} />
+        <MarkdownPreview content={value} {isDarkMode} bind:this={previewComponent} />
       </div>
     {/if}
   </div>
