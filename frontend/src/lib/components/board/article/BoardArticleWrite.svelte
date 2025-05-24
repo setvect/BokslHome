@@ -30,6 +30,7 @@
 
   const handleEditorChange = (event: CustomEvent<string>) => {
     const content = event.detail;
+    console.log('Content:', content);
     setFieldValue('content', content);
   };
 
@@ -51,7 +52,7 @@
 
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <!-- 여기에 마크다운 에디터 추가 -->
+        <QuillEditor on:change={handleEditorChange} />
       </div>
     </div>
 
