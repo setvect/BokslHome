@@ -1,10 +1,9 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { MetaTags } from 'svelte-meta-tags';
 
-  export let path: string = '';
-  export let description: string = '';
-  export let title: string = '';
-  export let subtitle: string = '';
+  let { path = '', description = '', title = '', subtitle = '' } = $props();
 
   let imgsrc = `https://open-graph-vercel.vercel.app/api/flowbite-svelte-admin-dashboard?title=${subtitle}`;
 

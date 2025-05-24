@@ -1,6 +1,8 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import QuillEditor from '$lib/components/QuillEditor.svelte';
+  import QuillEditor, { type QuillEditorMethods } from '$lib/components/QuillEditor.svelte';
   import { useForm } from '$lib/utils/formUtils';
   import { Button, Input } from 'flowbite-svelte';
   import 'quill/dist/quill.snow.css';
@@ -10,6 +12,8 @@
     title: string;
     content: string;
   };
+
+  let quillEditor = $state<QuillEditorMethods>();
 
   const formSchema = z.object({
     title: z.string().min(1, '제목을 입력해주세요.'),
@@ -51,13 +55,13 @@
 
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <QuillEditor onchange={handleEditorChange} />
+        <QuillEditor bind:this={quillEditor} onchange={handleEditorChange} />
       </div>
     </div>
 
     <div class="flex justify-end gap-2 mt-6">
       <Button type="submit" color="green">저장</Button>
-      <Button on:click={handleCancel} color="light">취소</Button>
+      <Button onclick={handleCancel} color="light">취소</Button>
     </div>
   </form>
 </div>

@@ -1,4 +1,6 @@
-<script context="module" lang="ts">
+<svelte:options runes={true} />
+
+<script module lang="ts">
   // 컴포넌트 타입 정의
   export type QuillEditorProps = {
     /** 에디터의 내용 */
@@ -31,28 +33,29 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  // Props 정의
-  export let content: string = '';
-  export let theme: QuillEditorProps['theme'] = 'snow';
-  // 기본 툴바 옵션 (props로 전달받거나 수정 가능)
-  export let modules: QuillEditorProps['modules'] = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
-      [{ header: 1 }, { header: 2 }],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ indent: '-1' }, { indent: '+1' }],
-      [{ size: ['small', false, 'large', 'huge'] }],
-      [{ color: [] }, { background: [] }],
-      [{ align: [] }],
-      ['clean'],
-      ['link', 'image', 'video']
-    ]
-  };
-  export let onchange: QuillEditorProps['onchange'] = undefined;
+  // Props 정의 (Runes Mode)
+  let {
+    content = $bindable(''),
+    theme = 'snow',
+    modules = {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ header: 1 }, { header: 2 }],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ indent: '-1' }, { indent: '+1' }],
+        [{ size: ['small', false, 'large', 'huge'] }],
+        [{ color: [] }, { background: [] }],
+        [{ align: [] }],
+        ['clean'],
+        ['link', 'image', 'video']
+      ]
+    },
+    onchange = undefined
+  }: QuillEditorProps = $props();
 
-  let editorContainer: HTMLDivElement;
-  let quillEditor: any;
+  let editorContainer = $state<HTMLDivElement>();
+  let quillEditor = $state<any>();
 
   // 에디터의 HTML 내용을 반환하는 메서드
   export function getContent(): string {
@@ -92,6 +95,8 @@
   }
 
   onMount(async () => {
+    if (!editorContainer) return;
+
     const QuillModule = await import('quill');
     const Quill = QuillModule.default;
     quillEditor = new Quill(editorContainer, {

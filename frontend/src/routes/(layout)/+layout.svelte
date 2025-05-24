@@ -1,9 +1,12 @@
+<svelte:options runes={true} />
+
 <script>
   import '../../app.pcss';
   import Navbar from './Navbar.svelte';
   import Sidebar from './Sidebar.svelte';
   import MetaTag from '../utils/MetaTag.svelte';
-  let drawerHidden = false;
+
+  let drawerHidden = $state(false);
 </script>
 
 <MetaTag title="복슬이네" />

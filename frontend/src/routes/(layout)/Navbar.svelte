@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script>
   import { faPaw } from '@fortawesome/free-solid-svg-icons';
   import { DarkMode, NavBrand, NavHamburger, Navbar } from 'flowbite-svelte';
@@ -7,9 +9,7 @@
 
   import '../../app.pcss';
 
-  export let fluid = true;
-  export let drawerHidden = false;
-  export let list = false;
+  let { fluid = true, drawerHidden = $bindable(false), list = false } = $props();
 
   onMount(() => {
     // localStorage에서 초기 다크 모드 상태를 읽어 스토어에 반영
@@ -50,7 +50,7 @@
 </script>
 
 <Navbar {fluid} class="text-black min-h-[68px] py-3" color="default" let:NavContainer>
-  <NavHamburger onClick={() => (drawerHidden = !drawerHidden)} class="m-0 me-3 md:block lg:hidden" />
+  <NavHamburger onclick={() => (drawerHidden = !drawerHidden)} class="m-0 me-3 md:block lg:hidden" />
   <NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
     <Fa icon={faPaw} class="me-2.5 text-4xl sm:text-4xl text-yellow-200" />
     <span class="ml-px self-center whitespace-nowrap text-xl font-semibold sm:text-2xl dark:text-white"> 복슬이네 </span>

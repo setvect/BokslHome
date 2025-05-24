@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
@@ -5,7 +7,7 @@
   import { Sidebar, SidebarDropdownWrapper, SidebarGroup, SidebarItem, SidebarWrapper } from 'flowbite-svelte';
   import { AngleDownOutline, AngleUpOutline, WandMagicSparklesOutline } from 'flowbite-svelte-icons';
 
-  export let drawerHidden: boolean = false;
+  let { drawerHidden = $bindable(false) } = $props();
 
   const closeDrawer = () => {
     drawerHidden = true;
@@ -17,8 +19,8 @@
     'flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700';
   let groupClass = 'pt-2 space-y-2';
 
-  $: mainSidebarUrl = $page.url.pathname;
-  let activeMainSidebar: string;
+  let mainSidebarUrl = $derived($page.url.pathname);
+  let activeMainSidebar = $state('');
 
   afterNavigate((navigation) => {
     // this fixes https://github.com/themesberg/flowbite-svelte/issues/364
@@ -72,7 +74,7 @@
     }
   ];
 
-  let dropdowns = Object.fromEntries(Object.keys(posts).map((x) => [x, false]));
+  let dropdowns = $state(Object.fromEntries(Object.keys(posts).map((x) => [x, false])));
 </script>
 
 <Sidebar
@@ -112,7 +114,7 @@
 <div
   hidden={drawerHidden}
   class="fixed inset-0 z-20 bg-gray-900/50 dark:bg-gray-900/60"
-  on:click={closeDrawer}
-  on:keydown={closeDrawer}
+  onclick={closeDrawer}
+  onkeydown={closeDrawer}
   role="presentation"
 ></div>

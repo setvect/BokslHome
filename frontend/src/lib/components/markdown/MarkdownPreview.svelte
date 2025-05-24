@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { marked } from 'marked';
   import { markedHighlight } from 'marked-highlight';
@@ -50,12 +52,18 @@
     })
   );
 
-  export let content = '';
-  export let isDarkMode = true;
+  // Props 정의 (Runes Mode)
+  let {
+    content = '',
+    isDarkMode = true
+  }: {
+    content?: string;
+    isDarkMode?: boolean;
+  } = $props();
 
-  let previewHtml = '';
-  let previewContainer: HTMLDivElement;
-  let isInitialized = false;
+  let previewHtml = $state('');
+  let previewContainer = $state<HTMLDivElement>();
+  let isInitialized = $state(false);
 
   // 마크다운을 HTML로 변환
   async function updatePreview(markdownText: string) {
@@ -63,9 +71,11 @@
   }
 
   // content가 변경될 때마다 미리보기 업데이트
-  $: if (content) {
-    updatePreview(content);
-  }
+  $effect(() => {
+    if (content) {
+      updatePreview(content);
+    }
+  });
 
   /**
    * 스크롤 위치를 비율에 따라 설정하는 메서드
@@ -106,11 +116,13 @@
   }
 
   // isDarkMode가 변경될 때마다 테마 업데이트
-  $: if (isDarkMode !== undefined) {
-    if (typeof document !== 'undefined') {
-      updateThemeStyles();
+  $effect(() => {
+    if (isDarkMode !== undefined) {
+      if (typeof document !== 'undefined') {
+        updateThemeStyles();
+      }
     }
-  }
+  });
 </script>
 
 <div class="preview-container" class:dark={isDarkMode} bind:this={previewContainer}>

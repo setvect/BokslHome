@@ -1,4 +1,6 @@
-<script context="module" lang="ts">
+<svelte:options runes={true} />
+
+<script module lang="ts">
   // 컴포넌트 타입 정의
   export type MarkdownEditorProps = {
     /** 에디터의 내용 */
@@ -36,24 +38,20 @@
   import { allKeymaps } from './keymaps';
   import MarkdownPreview from './MarkdownPreview.svelte';
 
-  // Props 정의
-  export let value: MarkdownEditorProps['value'] = '';
-  export let width: MarkdownEditorProps['width'] = '100%';
-  export let height: MarkdownEditorProps['height'] = '100%';
-  export let isDarkMode: MarkdownEditorProps['isDarkMode'] = true;
-  export let onchange: MarkdownEditorProps['onchange'] = undefined;
+  // Props 정의 (Runes Mode)
+  let { value = $bindable(''), width = '100%', height = '100%', isDarkMode = true, onchange = undefined }: MarkdownEditorProps = $props();
 
   let editorView: EditorView;
   let editorElement: HTMLElement;
-  let previewComponent: MarkdownPreview;
+  let previewComponent = $state<MarkdownPreview>();
 
-  // 제어 옵션 상태
-  let showPreview = true;
-  let isFullscreen = false;
+  // 제어 옵션 상태 (반응형 상태)
+  let showPreview = $state(true);
+  let isFullscreen = $state(false);
 
   // 커서 위치 추적 변수
-  let currentCursorLine = 0;
-  let currentCursorPosition = 0;
+  let currentCursorLine = $state(0);
+  let currentCursorPosition = $state(0);
 
   // 언어 지원 사전 정의
   const languageSupport = [

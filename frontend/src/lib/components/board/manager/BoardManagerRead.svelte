@@ -1,15 +1,19 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { Label, Button } from 'flowbite-svelte';
   import { goto } from '$app/navigation';
 
-  export let boardData = {
-    code: 'NOTICE',
-    name: '공지사항',
-    uploadLimit: '10',
-    useComment: 'Y',
-    useUpload: 'Y',
-    useEncrypt: 'N'
-  };
+  let {
+    boardData = {
+      code: 'NOTICE',
+      name: '공지사항',
+      uploadLimit: '10',
+      useComment: 'Y',
+      useUpload: 'Y',
+      useEncrypt: 'N'
+    }
+  } = $props();
 
   const getYesNo = (value: string) => (value === 'Y' ? '예' : '아니오');
 
@@ -65,8 +69,8 @@
   </div>
 
   <div class="flex justify-end gap-2 mt-6">
-    <Button color="light" on:click={handleList}>목록</Button>
-    <Button color="red" on:click={handleDelete}>삭제</Button>
-    <Button color="blue" on:click={handleModify}>수정</Button>
+    <Button color="light" onclick={handleList}>목록</Button>
+    <Button color="red" onclick={handleDelete}>삭제</Button>
+    <Button color="blue" onclick={handleModify}>수정</Button>
   </div>
 </div>

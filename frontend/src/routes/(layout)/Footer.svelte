@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { Frame } from 'flowbite-svelte';
 </script>

@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import {
     Button,
@@ -14,21 +16,20 @@
     type LinkType
   } from 'flowbite-svelte';
   import { EditOutline, TrashBinSolid } from 'flowbite-svelte-icons';
-  let selectedOption = 'name'; // 기본값 설정
 
-  let pages: LinkType[] = [
+  let selectedOption = $state('name'); // 기본값 설정
+  let pages = $state<LinkType[]>([
     { name: '1', href: '', active: false },
     { name: '2', href: '', active: false }
-  ];
+  ]);
 
-  $: {
+  $effect(() => {
     pages.forEach((page) => {
       let splitUrl = page.href!.split('?');
       let queryString = splitUrl.slice(1).join('?');
       const hrefParams = new URLSearchParams(queryString);
     });
-    pages = pages;
-  }
+  });
 
   const previous = () => {
     alert('이전');
@@ -48,7 +49,7 @@
       <option value="code">코드</option>
     </Select>
     <Input placeholder="" class="me-4 w-60 border xl:w-72" />
-    <Button on:click={handleSearch} class="w-18" color="alternative">검색</Button>
+    <Button onclick={handleSearch} class="w-18" color="alternative">검색</Button>
     <Button href="./manager/write" class="w-18 ml-5" color="light">만들기</Button>
   </Toolbar>
   <Table class="border border-gray-200 dark:border-gray-700">

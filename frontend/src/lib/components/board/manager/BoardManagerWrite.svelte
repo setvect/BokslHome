@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { Label, Input, Radio, Button } from 'flowbite-svelte';
   import { goto } from '$app/navigation';
@@ -116,7 +118,7 @@
 
     <div class="flex justify-end gap-2 mt-6">
       <Button type="submit">저장</Button>
-      <Button on:click={handleCancel} color="light">취소</Button>
+      <Button onclick={handleCancel} color="light">취소</Button>
     </div>
   </form>
 </div>
