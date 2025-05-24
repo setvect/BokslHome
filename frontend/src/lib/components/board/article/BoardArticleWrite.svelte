@@ -28,8 +28,7 @@
 
   const { form, errors, touched, setFieldValue } = useForm(formSchema, initialValues, handleSubmit);
 
-  const handleEditorChange = (event: CustomEvent<string>) => {
-    const content = event.detail;
+  const handleEditorChange = (content: string) => {
     console.log('Content:', content);
     setFieldValue('content', content);
   };
@@ -52,7 +51,7 @@
 
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <QuillEditor on:change={handleEditorChange} />
+        <QuillEditor onchange={handleEditorChange} />
       </div>
     </div>
 

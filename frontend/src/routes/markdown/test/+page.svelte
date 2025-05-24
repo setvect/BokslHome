@@ -5,8 +5,8 @@
   let content = '# hello\n- ㅋㅋㅋ\n- ㄲㄲㄲ\n\n```sql\nSELECT * FROM users;\n```';
   let markdownEditor: MarkdownEditorMethods;
 
-  function handleContentChange(event: CustomEvent<string>) {
-    console.log('에디터 내용 변경:', event.detail);
+  function handleContentChange(newContent: string) {
+    console.log('에디터 내용 변경:', newContent);
   }
 
   function handleGetContent() {
@@ -22,7 +22,7 @@
     <button on:click={handleGetContent} class="get-content-btn"> 내용 가져오기 </button>
   </div>
 
-  <MarkdownEditor bind:this={markdownEditor} bind:value={content} isDarkMode={$isDarkMode} on:change={handleContentChange} height="500px" />
+  <MarkdownEditor bind:this={markdownEditor} bind:value={content} isDarkMode={$isDarkMode} onchange={handleContentChange} height="500px" />
 </div>
 
 <style>

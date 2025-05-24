@@ -7,6 +7,8 @@
     theme?: string;
     /** Quill 모듈 설정 (툴바 등) */
     modules?: any;
+    /** 내용이 변경될 때 호출되는 콜백 함수 */
+    onchange?: (content: string) => void;
   };
 
   // 컴포넌트 메서드 타입 정의
@@ -27,7 +29,7 @@
 </script>
 
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount } from 'svelte';
 
   // Props 정의
   export let content: string = '';
@@ -47,8 +49,8 @@
       ['link', 'image', 'video']
     ]
   };
+  export let onchange: QuillEditorProps['onchange'] = undefined;
 
-  const dispatch = createEventDispatcher();
   let editorContainer: HTMLDivElement;
   let quillEditor: any;
 
@@ -100,7 +102,7 @@
     quillEditor.root.innerHTML = content || '';
     quillEditor.on('text-change', () => {
       content = quillEditor.root.innerHTML;
-      dispatch('change', content);
+      onchange?.(content);
     });
   });
 </script>

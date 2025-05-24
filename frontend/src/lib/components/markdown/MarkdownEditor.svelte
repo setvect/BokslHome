@@ -9,6 +9,8 @@
     height?: string;
     /** 다크모드 여부 (기본값: true) */
     isDarkMode?: boolean;
+    /** 내용이 변경될 때 호출되는 콜백 함수 */
+    onchange?: (value: string) => void;
   };
 
   // 컴포넌트 메서드 타입 정의
@@ -29,18 +31,17 @@
   import { EditorView, keymap, ViewPlugin, ViewUpdate } from '@codemirror/view';
   import { Button, ButtonGroup } from 'flowbite-svelte';
   import { ExpandOutline, EyeOutline, EyeSolid, MinimizeOutline } from 'flowbite-svelte-icons';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
   import { allKeymaps } from './keymaps';
   import MarkdownPreview from './MarkdownPreview.svelte';
-
-  const dispatch = createEventDispatcher();
 
   // Props 정의
   export let value: MarkdownEditorProps['value'] = '';
   export let width: MarkdownEditorProps['width'] = '100%';
   export let height: MarkdownEditorProps['height'] = '100%';
   export let isDarkMode: MarkdownEditorProps['isDarkMode'] = true;
+  export let onchange: MarkdownEditorProps['onchange'] = undefined;
 
   let editorView: EditorView;
   let editorElement: HTMLElement;
@@ -119,7 +120,7 @@
   function handleChange(event: CustomEvent<string>) {
     const newValue = event.detail;
     value = newValue;
-    dispatch('change', newValue);
+    onchange?.(newValue);
   }
 
   function toggleFullscreen() {
