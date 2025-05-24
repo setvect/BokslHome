@@ -89,12 +89,12 @@
   >
     <nav class="divide-y divide-gray-200 dark:divide-gray-700">
       <SidebarGroup ulClass={groupClass} class="mb-3">
-        {#each posts as { name, icon, href, children } (name)}
+        {#each posts as { name, icon: IconComponent, href, children } (name)}
           {#if children}
             <SidebarDropdownWrapper bind:isOpen={dropdowns[name]} label={name} class="pr-3">
               <AngleDownOutline slot="arrowdown" strokeWidth="3.3" size="sm" />
               <AngleUpOutline slot="arrowup" strokeWidth="3.3" size="sm" />
-              <svelte:component this={icon} slot="icon" class={iconClass} />
+              <IconComponent slot="icon" class={iconClass} />
 
               {#each children as child}
                 <SidebarItem label={child.name} href={child.link} spanClass="ml-9" class={itemClass} />
@@ -102,7 +102,7 @@
             </SidebarDropdownWrapper>
           {:else}
             <SidebarItem label={name} {href} spanClass="ml-3" class={itemClass}>
-              <svelte:component this={icon} slot="icon" class={iconClass} />
+              <IconComponent slot="icon" class={iconClass} />
             </SidebarItem>
           {/if}
         {/each}
