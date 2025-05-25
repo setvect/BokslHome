@@ -7,6 +7,7 @@
   import { Button, Input } from 'flowbite-svelte';
   import 'quill/dist/quill.snow.css';
   import { z } from 'zod';
+  import { isDarkMode } from '$lib/stores/themeStore';
 
   type FormData = {
     title: string;
@@ -14,6 +15,7 @@
   };
 
   let quillEditor = $state<QuillEditorMethods>();
+  let editorContent = $state(''); // 에디터 내용을 위한 상태 변수
 
   const formSchema = z.object({
     title: z.string().min(1, '제목을 입력해주세요.'),
@@ -32,10 +34,10 @@
 
   const { form, errors, touched, setFieldValue } = useForm(formSchema, initialValues, handleSubmit);
 
-  const handleEditorChange = (content: string) => {
-    console.log('Content:', content);
-    setFieldValue('content', content);
-  };
+  // 에디터 내용이 변경될 때마다 폼 값 업데이트
+  $effect(() => {
+    setFieldValue('content', editorContent);
+  });
 
   const handleCancel = () => {
     goto('/board/article');
@@ -55,7 +57,10 @@
 
     <div class="flex items-center border-b border-gray-200 dark:border-gray-700 py-4">
       <div class="flex-1">
-        <QuillEditor bind:this={quillEditor} onchange={handleEditorChange} />
+        <QuillEditor bind:this={quillEditor} bind:content={editorContent} height="50vh" darkMode={$isDarkMode} />
+        {#if $touched.content && $errors.content}
+          <p class="error-text">{$errors.content}</p>
+        {/if}
       </div>
     </div>
 
