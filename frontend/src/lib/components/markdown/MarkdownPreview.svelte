@@ -229,4 +229,17 @@
   .preview-container.dark :global(th) {
     background-color: #2d3748;
   }
+
+  .preview-container :global(code) {
+    padding: 0.2em 0.4em;
+    border-radius: 0.25em;
+    background-color: #f7fafc; /* 라이트 모드: pre 배경색과 일치 */
+    color: #384252; /* 라이트 모드: 가독성 좋은 어두운 텍스트 색상 */
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* 고정폭 글꼴 */
+  }
+
+  .preview-container.dark :global(code) {
+    background-color: #2d3748; /* 다크 모드: pre 배경색과 일치 */
+    color: #c5c8c6; /* 다크 모드: 가독성 좋은 밝은 텍스트 색상 */
+  }
 </style>
