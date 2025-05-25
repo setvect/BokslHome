@@ -101,7 +101,7 @@
     }
   );
 
-  // 에디터 추가 확장 기능
+  // 에디터 추가 확장 기능 (고정)
   const editorExtensions = [...allKeymaps, bracketMatching(), keymap.of([indentWithTab]), cursorTrackPlugin];
 
   // 에디터 내용을 가져오는 메서드

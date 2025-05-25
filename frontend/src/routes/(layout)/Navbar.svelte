@@ -5,47 +5,33 @@
   import { DarkMode, NavBrand, NavHamburger, Navbar } from 'flowbite-svelte';
   import { Fa } from 'svelte-fa';
   import { onMount } from 'svelte';
-  import { isDarkMode } from '$lib/stores/themeStore';
+  import { isDarkMode, setDarkMode } from '$lib/stores/themeStore';
 
   import '../../app.pcss';
 
   let { fluid = true, drawerHidden = $bindable(false), list = false } = $props();
 
   onMount(() => {
-    // localStorage에서 초기 다크 모드 상태를 읽어 스토어에 반영
-    const savedTheme = localStorage.getItem('color-theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      isDarkMode.set(true);
-    } else {
-      isDarkMode.set(false);
-    }
-
-    // DarkMode 컴포넌트의 클릭 이벤트를 감지하기 어려우므로, localStorage 변경을 감지하여 스토어 업데이트
-    // 또는 DarkMode 컴포넌트가 DOM에 클래스를 변경하는 것을 MutationObserver로 감지할 수도 있음.
-    // 여기서는 localStorage를 주기적으로 확인하거나, DarkMode 컴포넌트의 내부 구현에 따라 더 나은 방법을 찾아야 할 수 있음.
-    // 가장 간단한 방법은 DarkMode 컴포넌트의 변경이 html 태그의 class를 바꾸므로, 그것을 감지하는 것.
-
+    // DarkMode 컴포넌트가 DOM에 클래스를 변경하는 것을 MutationObserver로 감지
     const observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
           const htmlClasses = document.documentElement.classList;
-          isDarkMode.set(htmlClasses.contains('dark'));
+          const isDark = htmlClasses.contains('dark');
+
+          // 스토어 상태와 DOM 상태가 다르면 스토어 업데이트
+          if ($isDarkMode !== isDark) {
+            setDarkMode(isDark);
+          }
         }
       }
     });
 
     observer.observe(document.documentElement, { attributes: true });
 
-    // 스토어 변경 시 localStorage 업데이트 (DarkMode 컴포넌트가 이미 처리하므로 중복될 수 있음)
-    // isDarkMode.subscribe(value => {
-    //   if (value) {
-    //     document.documentElement.classList.add('dark');
-    //     localStorage.setItem('color-theme', 'dark');
-    //   } else {
-    //     document.documentElement.classList.remove('dark');
-    //     localStorage.setItem('color-theme', 'light');
-    //   }
-    // });
+    return () => {
+      observer.disconnect();
+    };
   });
 </script>
 

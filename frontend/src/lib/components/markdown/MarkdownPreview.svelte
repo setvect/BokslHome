@@ -1,56 +1,11 @@
 <svelte:options runes={true} />
 
 <script lang="ts">
-  import { marked } from 'marked';
-  import { markedHighlight } from 'marked-highlight';
   import { onMount } from 'svelte';
-  import hljs from 'highlight.js';
+  import { parseMarkdown, setMarkdownTheme } from '$lib/utils/markdown';
   // 기본 테마 스타일 import
   import 'highlight.js/styles/github.css';
   import 'highlight.js/styles/github-dark.css';
-
-  // 자주 사용되는 언어 패키지 import
-  import javascript from 'highlight.js/lib/languages/javascript';
-  import typescript from 'highlight.js/lib/languages/typescript';
-  import markdown from 'highlight.js/lib/languages/markdown';
-  import sql from 'highlight.js/lib/languages/sql';
-  import java from 'highlight.js/lib/languages/java';
-  import python from 'highlight.js/lib/languages/python';
-  import json from 'highlight.js/lib/languages/json';
-  import xml from 'highlight.js/lib/languages/xml';
-  import css from 'highlight.js/lib/languages/css';
-  import yaml from 'highlight.js/lib/languages/yaml';
-  import bash from 'highlight.js/lib/languages/bash';
-
-  // 언어 등록
-  hljs.registerLanguage('javascript', javascript);
-  hljs.registerLanguage('typescript', typescript);
-  hljs.registerLanguage('markdown', markdown);
-  hljs.registerLanguage('sql', sql);
-  hljs.registerLanguage('java', java);
-  hljs.registerLanguage('python', python);
-  hljs.registerLanguage('json', json);
-  hljs.registerLanguage('xml', xml);
-  hljs.registerLanguage('css', css);
-  hljs.registerLanguage('yaml', yaml);
-  hljs.registerLanguage('bash', bash);
-
-  // 마크다운 구문 강조 설정 - 컴포넌트 초기화 시점에 적용
-  marked.use(
-    markedHighlight({
-      langPrefix: 'hljs language-',
-      highlight(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(code, { language: lang }).value;
-          } catch (err) {
-            console.error('하이라이팅 오류:', err);
-          }
-        }
-        return hljs.highlightAuto(code).value;
-      }
-    })
-  );
 
   // Props 정의 (Runes Mode)
   let {
@@ -67,12 +22,17 @@
 
   // 마크다운을 HTML로 변환
   async function updatePreview(markdownText: string) {
-    previewHtml = await marked.parse(markdownText);
+    try {
+      previewHtml = await parseMarkdown(markdownText);
+    } catch (error) {
+      console.error('미리보기 업데이트 오류:', error);
+      previewHtml = '<p>미리보기 업데이트 중 오류가 발생했습니다.</p>';
+    }
   }
 
   // content가 변경될 때마다 미리보기 업데이트
   $effect(() => {
-    if (content) {
+    if (isInitialized) {
       updatePreview(content);
     }
   });
@@ -99,28 +59,21 @@
 
   onMount(() => {
     // 다크모드 테마 적용
-    updateThemeStyles();
+    setMarkdownTheme(isDarkMode);
 
     // 초기화 완료 상태로 설정
     isInitialized = true;
 
-    // 컴포넌트가 마운트된 후에 content가 있다면 다시 한번 업데이트
+    // 컴포넌트가 마운트된 후에 content가 있다면 업데이트
     if (content) {
       updatePreview(content);
     }
   });
 
-  // 다크모드에 따라 highlight.js 테마 스타일 업데이트
-  function updateThemeStyles() {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-  }
-
   // isDarkMode가 변경될 때마다 테마 업데이트
   $effect(() => {
     if (isDarkMode !== undefined) {
-      if (typeof document !== 'undefined') {
-        updateThemeStyles();
-      }
+      setMarkdownTheme(isDarkMode);
     }
   });
 </script>
