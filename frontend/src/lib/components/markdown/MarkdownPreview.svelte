@@ -145,6 +145,19 @@
     list-style-type: square !important;
   }
 
+  /* 번호 목록 중첩 스타일 */
+  .preview-container :global(ol) {
+    list-style-type: decimal !important; /* 1단계: 1, 2, 3, ... */
+  }
+
+  .preview-container :global(ol ol) {
+    list-style-type: lower-alpha !important; /* 2단계: a, b, c, ... */
+  }
+
+  .preview-container :global(ol ol ol) {
+    list-style-type: lower-roman !important; /* 3단계: i, ii, iii, ... */
+  }
+
   .preview-container :global(li) {
     margin-bottom: 0.5em;
     display: list-item !important;

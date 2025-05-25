@@ -58,6 +58,13 @@ export function initializeMarkdown(): void {
       })
     );
 
+    // marked 기본 옵션 설정
+    marked.setOptions({
+      gfm: true, // GitHub Flavored Markdown 활성화
+      breaks: true, // 줄바꿈을 <br>로 변환
+      pedantic: false // 엄격한 마크다운 규칙 비활성화 (더 유연한 파싱)
+    });
+
     isMarkdownInitialized = true;
   } catch (error) {
     console.error('마크다운 초기화 오류:', error);
