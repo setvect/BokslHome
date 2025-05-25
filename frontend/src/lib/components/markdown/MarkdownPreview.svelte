@@ -127,8 +127,27 @@
     padding-left: 2em;
   }
 
+  /* 리스트 스타일 명시적 설정 */
+  .preview-container :global(ul) {
+    list-style-type: disc !important;
+  }
+
+  .preview-container :global(ol) {
+    list-style-type: decimal !important;
+  }
+
+  /* 중첩된 리스트 스타일 */
+  .preview-container :global(ul ul) {
+    list-style-type: circle !important;
+  }
+
+  .preview-container :global(ul ul ul) {
+    list-style-type: square !important;
+  }
+
   .preview-container :global(li) {
     margin-bottom: 0.5em;
+    display: list-item !important;
   }
 
   /* 코드 하이라이팅 관련 스타일 */
