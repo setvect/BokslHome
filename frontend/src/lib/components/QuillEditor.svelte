@@ -110,22 +110,112 @@
     }
   }
 
-  onMount(async () => {
+  onMount(() => {
     if (!editorContainer) return;
 
-    const QuillModule = await import('quill');
-    const Quill = QuillModule.default;
-    quillEditor = new Quill(editorContainer, {
-      theme,
-      modules
-    });
-    // 초기값 설정
-    quillEditor.root.innerHTML = content || '';
-    quillEditor.on('text-change', () => {
-      content = quillEditor.root.innerHTML;
-      onchange?.(content);
-    });
+    (async () => {
+      const QuillModule = await import('quill');
+      const Quill = QuillModule.default;
+
+      quillEditor = new Quill(editorContainer, {
+        theme,
+        modules
+      });
+      // 초기값 설정
+      quillEditor.root.innerHTML = content || '';
+      quillEditor.on('text-change', () => {
+        content = quillEditor.root.innerHTML;
+        onchange?.(content);
+      });
+
+      // 클립보드 붙여넣기 이벤트 리스너 등록
+      const pasteEventHandler = (e: ClipboardEvent) => {
+        handlePaste(e);
+      };
+
+      // capture 단계에서 등록하여 Quill보다 먼저 실행
+      quillEditor.root.addEventListener('paste', pasteEventHandler, true);
+    })();
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      if (quillEditor && quillEditor.root) {
+        quillEditor.root.removeEventListener('paste', () => {});
+      }
+    };
   });
+
+  // 클립보드 이미지 업로드 처리 함수
+  async function uploadImageFromClipboard(imageBlob: Blob): Promise<string> {
+    try {
+      // 이미지 파일 데이터를 FormData로 준비
+      const formData = new FormData();
+      formData.append('image', imageBlob, 'clipboard-image.png');
+
+      // 실제 API 호출은 생략하고 임의의 URL 반환
+      // API 호출 예시:
+      // const response = await fetch('/api/upload/image', {
+      //   method: 'POST',
+      //   body: formData
+      // });
+      // const data = await response.json();
+      // return data.imageUrl;
+
+      // 임의의 URL 반환 (실제 구현 시 위 주석 코드로 대체)
+      return Promise.resolve(`https://example.com/images/${Date.now()}.png`);
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error);
+      throw error;
+    }
+  }
+
+  // Quill 에디터에 이미지 삽입
+  function insertImage(imageUrl: string) {
+    if (!quillEditor) return;
+
+    const range = quillEditor.getSelection();
+    const index = range ? range.index : quillEditor.getLength();
+
+    quillEditor.insertEmbed(index, 'image', imageUrl);
+    quillEditor.setSelection(index + 1);
+  }
+
+  // 클립보드 붙여넣기 이벤트 처리 함수
+  async function handlePaste(event: ClipboardEvent) {
+    // 클립보드에 이미지가 있는지 확인
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    let imageItem = null;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        imageItem = items[i];
+        break;
+      }
+    }
+
+    // 이미지가 아니면 기본 붙여넣기 동작 실행
+    if (!imageItem) return;
+
+    // 이미지가 있으면 즉시 기본 동작 차단
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    // 클립보드에서 이미지 데이터 가져오기
+    const blob = imageItem.getAsFile();
+    if (!blob) return;
+
+    try {
+      // 이미지 업로드 및 URL 받기
+      const imageUrl = await uploadImageFromClipboard(blob);
+
+      // Quill 에디터에 이미지 삽입
+      insertImage(imageUrl);
+    } catch (error) {
+      console.error('이미지 처리 중 오류 발생:', error);
+    }
+  }
 </script>
 
 <!-- 에디터가 렌더링될 영역 -->
