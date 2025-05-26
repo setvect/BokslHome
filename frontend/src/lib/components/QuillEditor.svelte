@@ -65,6 +65,15 @@
 
   let editorContainer = $state<HTMLDivElement>();
   let quillEditor = $state<any>();
+  let editorReadyPromise = $state<Promise<void>>();
+  let resolveEditorReady: (() => void) | null = null;
+
+  // 에디터 준비 완료 Promise 초기화
+  $effect(() => {
+    editorReadyPromise = new Promise<void>((resolve) => {
+      resolveEditorReady = resolve;
+    });
+  });
 
   // 외부에서 content가 변경될 때 에디터에 반영
   $effect(() => {
@@ -97,9 +106,12 @@
   }
 
   // 에디터에 포커스를 설정하는 메서드
-  export function focus(): void {
-    if (quillEditor) {
-      quillEditor.focus();
+  export async function focus(): Promise<void> {
+    if (editorReadyPromise) {
+      await editorReadyPromise;
+      if (quillEditor) {
+        quillEditor.focus();
+      }
     }
   }
 
@@ -121,8 +133,10 @@
         theme,
         modules
       });
+
       // 초기값 설정
       quillEditor.root.innerHTML = content || '';
+
       quillEditor.on('text-change', () => {
         content = quillEditor.root.innerHTML;
         onchange?.(content);
@@ -135,6 +149,11 @@
 
       // capture 단계에서 등록하여 Quill보다 먼저 실행
       quillEditor.root.addEventListener('paste', pasteEventHandler, true);
+
+      // 에디터 준비 완료 알림
+      if (resolveEditorReady) {
+        resolveEditorReady();
+      }
     })();
 
     // 컴포넌트 언마운트 시 이벤트 리스너 제거
