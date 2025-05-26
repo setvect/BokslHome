@@ -5,8 +5,9 @@
   import QuillEditor, { type QuillEditorMethods } from '$lib/components/QuillEditor.svelte';
   import MarkdownEditor, { type MarkdownEditorMethods } from '$lib/components/markdown/MarkdownEditor.svelte';
   import { useForm } from '$lib/utils/formUtils';
-  import { Button, Input, Modal, ButtonGroup } from 'flowbite-svelte';
-  import { CodeBranchOutline, PenOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
+  import { showConfirmAlert } from '$lib/utils/alertUtils';
+  import { Button, Input, ButtonGroup } from 'flowbite-svelte';
+  import { CodeBranchOutline, PenOutline } from 'flowbite-svelte-icons';
   import 'quill/dist/quill.snow.css';
   import { z } from 'zod';
   import { isDarkMode } from '$lib/stores/themeStore';
@@ -29,8 +30,6 @@
   let markdownEditor = $state<MarkdownEditorMethods>();
   let editorContent = $state('');
   let selectedEditor = $state<EditorType>('markdown');
-  let showWarningModal = $state(false);
-  let pendingEditorType = $state<EditorType>('markdown');
 
   // 폼 스키마 및 초기값
   const formSchema = z.object({
@@ -68,12 +67,18 @@
     goto('/board/article');
   }
 
-  function handleEditorTypeChange(newEditorType: EditorType) {
+  async function handleEditorTypeChange(newEditorType: EditorType) {
     const hasContent = editorContent.trim().length > 0;
 
     if (hasContent && newEditorType !== selectedEditor) {
-      pendingEditorType = newEditorType;
-      showWarningModal = true;
+      const confirmed = await showConfirmAlert(
+        '편집기 변경 확인',
+        '편집기를 변경하면 현재 작성된 내용이 모두 삭제됩니다.\n계속하시겠습니까?'
+      );
+
+      if (confirmed) {
+        changeEditor(newEditorType);
+      }
     } else {
       changeEditor(newEditorType);
     }
@@ -96,16 +101,6 @@
     } else if (editorType === 'quill' && quillEditor) {
       await quillEditor.focus();
     }
-  }
-
-  function confirmEditorChange() {
-    changeEditor(pendingEditorType);
-    showWarningModal = false;
-  }
-
-  function cancelEditorChange() {
-    showWarningModal = false;
-    pendingEditorType = selectedEditor;
   }
 
   // 에디터 설정 객체
@@ -145,8 +140,13 @@
         <ButtonGroup>
           {#each Object.entries(editorConfigs) as [type, config]}
             {@const isSelected = selectedEditor === type}
-            <Button color={isSelected ? 'alternative' : 'light'} on:click={() => handleEditorTypeChange(type as EditorType)}>
-              <svelte:component this={config.icon} class="mr-2 h-4 w-4" />
+            {@const IconComponent = config.icon}
+            <Button
+              color={isSelected ? 'blue' : 'light'}
+              on:click={() => handleEditorTypeChange(type as EditorType)}
+              class={isSelected ? 'editor-button-active' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}
+            >
+              <IconComponent class="mr-2 h-4 w-4" />
               {config.label}
             </Button>
           {/each}
@@ -175,18 +175,3 @@
     </div>
   </form>
 </div>
-
-<!-- 편집기 변경 경고 모달 -->
-<Modal bind:open={showWarningModal} size="xs" autoclose={false} class="w-full">
-  <div class="text-center">
-    <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200" />
-    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-      편집기를 변경하면 현재 작성된 내용이 모두 삭제됩니다.<br />
-      계속하시겠습니까?
-    </h3>
-    <div class="flex justify-center gap-2">
-      <Button color="red" on:click={confirmEditorChange}>확인</Button>
-      <Button color="alternative" on:click={cancelEditorChange}>취소</Button>
-    </div>
-  </div>
-</Modal>

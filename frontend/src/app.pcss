@@ -44,3 +44,63 @@
 .error-text {
   @apply mt-2 text-sm text-red-600 dark:text-red-300;
 }
+
+/* ButtonGroup 활성 상태 스타일 개선 */
+@layer components {
+  .editor-button-active {
+    @apply bg-blue-600 text-white border-blue-600 shadow-md;
+  }
+
+  .editor-button-active:hover {
+    @apply bg-blue-700 border-blue-700;
+  }
+
+  .dark .editor-button-active {
+    @apply bg-blue-500 border-blue-500;
+  }
+
+  .dark .editor-button-active:hover {
+    @apply bg-blue-600 border-blue-600;
+  }
+}
+
+/* SweetAlert2 다크 모드 스타일 */
+.dark .swal2-popup {
+  @apply bg-gray-800 border border-gray-700;
+}
+
+.dark .swal2-title {
+  @apply text-white;
+}
+
+.dark .swal2-html-container {
+  @apply text-gray-300;
+}
+
+.dark .swal2-confirm {
+  @apply focus:ring-4 focus:outline-none;
+}
+
+.dark .swal2-cancel {
+  @apply focus:ring-4 focus:outline-none;
+}
+
+.dark .swal2-icon.swal2-warning {
+  @apply border-yellow-500;
+  color: #f59e0b !important;
+}
+
+.dark .swal2-icon.swal2-success {
+  @apply border-green-500;
+  color: #10b981 !important;
+}
+
+.dark .swal2-icon.swal2-error {
+  @apply border-red-500;
+  color: #ef4444 !important;
+}
+
+.dark .swal2-icon.swal2-info {
+  @apply border-blue-500;
+  color: #3b82f6 !important;
+}

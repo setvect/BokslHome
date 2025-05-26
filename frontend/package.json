@@ -67,6 +67,7 @@
     "svelte-codemirror-editor": "^1.4.1",
     "svelte-fa": "^4.0.3",
     "svelte-heros-v2": "^2.0.1",
+    "sweetalert2": "^11.22.0",
     "turndown": "^7.2.0",
     "zod": "^3.24.1"
   }
