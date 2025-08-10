@@ -1,15 +1,19 @@
-import flowbite from 'flowbite/plugin';
+import typography from '@tailwindcss/typography';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts,md}', './node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'],
-  plugins: [flowbite],
-  darkMode: 'selector',
+  content: [
+    './src/**/*.{html,js,svelte,ts}'
+  ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Pretendard Variable', 'sans-serif'] // 기본 폰트를 Pretendard로 설정
+        sans: ['Pretendard Variable', 'system-ui', 'sans-serif']
       }
-    }
-  }
-};
+    },
+  },
+  plugins: [
+    typography
+  ],
+  darkMode: 'class'
+}
