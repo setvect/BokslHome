@@ -2,7 +2,11 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { fade } from 'svelte/transition';
 
-	let { children, title, trigger } = $props();
+	let { children, title, trigger }: { 
+		children?: any, 
+		title?: string, 
+		trigger?: any 
+	} = $props();
 
 	const {
 		elements: { trigger: triggerElement, overlay, content, close, portalled },

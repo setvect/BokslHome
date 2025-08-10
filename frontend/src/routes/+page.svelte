@@ -1,184 +1,206 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import Dialog from '$lib/components/Dialog.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import { createDialog, melt } from '@melt-ui/svelte';
 
-	// 다크모드 토글 상태
-	let isDarkMode = $state(false);
+	// 폼 데이터
+	let name = $state('');
+	let email = $state('');
+	let password = $state('');
+	let message = $state('');
+	let isChecked = $state(false);
+	let selectedOption = $state('option1');
+	let count = $state(0);
 
-	// 다크모드 토글 함수
-	function toggleDarkMode() {
-		isDarkMode = !isDarkMode;
-		if (isDarkMode) {
-			document.documentElement.classList.add('dark');
-		} else {
-			document.documentElement.classList.remove('dark');
-		}
+	// 폼 제출 함수
+	function handleSubmit() {
+		alert(`폼 제출!\n이름: ${name}\n이메일: ${email}\n메시지: ${message}\n체크: ${isChecked}\n선택: ${selectedOption}`);
 	}
 
-	// 메뉴 항목들 (기존 복슬홈피 참고)
-	const menuItems = [
-		{ name: '게시판', description: '다양한 주제의 게시글을 작성하고 관리합니다', icon: '📝' },
-		{ name: '복슬지식', description: '지식과 정보를 체계적으로 정리합니다', icon: '📚' },
-		{ name: '복슬노트', description: '개인 노트와 메모를 관리합니다', icon: '📓' },
-		{ name: '복슬메모', description: '간단한 메모와 할 일을 기록합니다', icon: '📋' },
-		{ name: '복슬관계', description: '인맥과 관계를 관리합니다', icon: '🤝' },
-		{ name: '이것저것', description: '로또 번호 생성 등 유틸리티 기능', icon: '🎲' }
-	];
+	// 카운터 함수들
+	function increment() {
+		count++;
+	}
 
-	// 드롭다운 메뉴 아이템
-	const dropdownItems = [
-		{ label: '프로필 보기', action: () => alert('프로필 보기') },
-		{ label: '설정', action: () => alert('설정') },
-		{ label: '로그아웃', action: () => alert('로그아웃') }
-	];
+	function decrement() {
+		count--;
+	}
+
+	function reset() {
+		count = 0;
+		name = '';
+		email = '';
+		password = '';
+		message = '';
+		isChecked = false;
+		selectedOption = 'option1';
+	}
 </script>
 
 <svelte:head>
-	<title>복슬이네 - 홈</title>
+	<title>Hello World - 샘플 페이지</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-	<!-- 헤더 -->
-	<header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex justify-between items-center h-16">
-				<!-- 로고 -->
-				<div class="flex items-center">
-					<span class="text-2xl">🐾</span>
-					<h1 class="ml-2 text-xl font-bold text-gray-900 dark:text-white">복슬이네</h1>
-				</div>
-
-				<!-- 헤더 버튼들 -->
-				<div class="flex items-center space-x-4">
-					<!-- 다크모드 토글 -->
-					<Button variant="ghost" size="icon" onclick={toggleDarkMode}>
-						{#if isDarkMode}
-							<span class="text-lg">☀️</span>
-						{:else}
-							<span class="text-lg">🌙</span>
-						{/if}
-					</Button>
-
-					<!-- 사용자 메뉴 드롭다운 -->
-					<Dropdown {dropdownItems}>
-						{#snippet trigger(triggerAction)}
-							<Button variant="outline" onclick={triggerAction}>
-								사용자 메뉴
-							</Button>
-						{/snippet}
-					</Dropdown>
-				</div>
-			</div>
-		</div>
-	</header>
-
-	<!-- 메인 컨텐츠 -->
-	<main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-		<!-- 환영 메시지 -->
+	<div class="container mx-auto py-8 px-4">
+		<!-- Hello World 섹션 -->
 		<div class="text-center mb-12">
-			<h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-				복슬이네에 오신 것을 환영합니다! 🎉
-			</h2>
-			<p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
-				Melt UI + Tailwind CSS로 새롭게 구축된 복슬홈피입니다.
+			<h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+				👋 Hello World!
+			</h1>
+			<p class="text-lg text-gray-600 dark:text-gray-300">
+				SvelteKit + Tailwind CSS 4.x + Melt UI 샘플 페이지입니다.
 			</p>
-			
-			<!-- 다이얼로그 데모 -->
-			<Dialog title="복슬홈피 소개">
-				{#snippet trigger(triggerAction)}
-					<Button onclick={triggerAction}>
-						소개 보기
-					</Button>
-				{/snippet}
-				
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<!-- 버튼 예시 섹션 -->
+			<Card title="🔘 버튼 예시">
 				<div class="space-y-4">
-					<p>복슬홈피는 개인 홈페이지 프로젝트입니다.</p>
-					<p>Svelte + Melt UI + Tailwind CSS로 구축되었습니다.</p>
-					<ul class="text-left space-y-2">
-						<li>• 게시판 시스템</li>
-						<li>• 지식 관리</li>
-						<li>• 노트 및 메모</li>
-						<li>• 인맥 관리</li>
-						<li>• 유틸리티 기능</li>
-					</ul>
+					<div class="flex flex-wrap gap-2">
+						<Button onclick={increment}>카운트 증가</Button>
+						<Button variant="secondary" onclick={decrement}>카운트 감소</Button>
+						<Button variant="destructive" onclick={reset}>리셋</Button>
+					</div>
+					
+					<div class="flex flex-wrap gap-2">
+						<Button variant="outline" size="sm">작은 버튼</Button>
+						<Button variant="ghost" size="default">중간 버튼</Button>
+						<Button variant="outline" size="lg">큰 버튼</Button>
+					</div>
+
+					<div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+						<p class="text-center text-xl font-semibold">
+							카운터: <span class="text-blue-600 dark:text-blue-400">{count}</span>
+						</p>
+					</div>
 				</div>
-			</Dialog>
+			</Card>
+
+			<!-- 폼 입력 예시 섹션 -->
+			<Card title="📝 폼 입력 예시">
+				<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-4">
+					<!-- 텍스트 입력 -->
+					<div>
+						<label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							이름
+						</label>
+						<input
+							id="name"
+							type="text"
+							bind:value={name}
+							placeholder="이름을 입력하세요"
+							class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+						/>
+					</div>
+
+					<!-- 이메일 입력 -->
+					<div>
+						<label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							이메일
+						</label>
+						<input
+							id="email"
+							type="email"
+							bind:value={email}
+							placeholder="email@example.com"
+							class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+						/>
+					</div>
+
+					<!-- 비밀번호 입력 -->
+					<div>
+						<label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							비밀번호
+						</label>
+						<input
+							id="password"
+							type="password"
+							bind:value={password}
+							placeholder="비밀번호를 입력하세요"
+							class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+						/>
+					</div>
+
+					<!-- 셀렉트 박스 -->
+					<div>
+						<label for="select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							옵션 선택
+						</label>
+						<select
+							id="select"
+							bind:value={selectedOption}
+							class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+						>
+							<option value="option1">옵션 1</option>
+							<option value="option2">옵션 2</option>
+							<option value="option3">옵션 3</option>
+						</select>
+					</div>
+
+					<!-- 텍스트 영역 -->
+					<div>
+						<label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							메시지
+						</label>
+						<textarea
+							id="message"
+							bind:value={message}
+							placeholder="메시지를 입력하세요..."
+							rows="3"
+							class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+						></textarea>
+					</div>
+
+					<!-- 체크박스 -->
+					<div class="flex items-center">
+						<input
+							id="checkbox"
+							type="checkbox"
+							bind:checked={isChecked}
+							class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+						/>
+						<label for="checkbox" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+							동의합니다
+						</label>
+					</div>
+
+					<!-- 제출 버튼 -->
+					<Button onclick={handleSubmit} class="w-full">
+						폼 제출하기
+					</Button>
+				</form>
+			</Card>
 		</div>
 
-		<!-- 메뉴 카드들 -->
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{#each menuItems as menu}
-				<Card title={menu.name} class="hover:shadow-lg transition-shadow cursor-pointer">
-					<div class="text-center">
-						<div class="text-4xl mb-4">{menu.icon}</div>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">
-							{menu.description}
-						</p>
-						<Button variant="outline" size="sm">
-							{menu.name} 보기
-						</Button>
-					</div>
-				</Card>
-			{/each}
-		</div>
+		<!-- 현재 상태 표시 -->
+		<Card title="📊 현재 상태" class="mt-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div class="space-y-2">
+					<p><strong>이름:</strong> {name || '(입력 안됨)'}</p>
+					<p><strong>이메일:</strong> {email || '(입력 안됨)'}</p>
+					<p><strong>체크박스:</strong> {isChecked ? '체크됨' : '체크 안됨'}</p>
+				</div>
+				<div class="space-y-2">
+					<p><strong>선택된 옵션:</strong> {selectedOption}</p>
+					<p><strong>카운터:</strong> {count}</p>
+					<p><strong>메시지 길이:</strong> {message.length}자</p>
+				</div>
+			</div>
+		</Card>
 
-		<!-- 기능 데모 섹션 -->
-		<div class="mt-16">
-			<h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-				UI 컴포넌트 데모
-			</h3>
-			
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-				<!-- 버튼 데모 -->
-				<Card title="버튼 변형">
-					<div class="space-y-4">
-						<div class="flex flex-wrap gap-2">
-							<Button>기본 버튼</Button>
-							<Button variant="secondary">보조 버튼</Button>
-							<Button variant="outline">아웃라인</Button>
-							<Button variant="ghost">고스트</Button>
-							<Button variant="destructive">삭제</Button>
-						</div>
-						<div class="flex flex-wrap gap-2">
-							<Button size="sm">작은 버튼</Button>
-							<Button size="default">기본 크기</Button>
-							<Button size="lg">큰 버튼</Button>
-						</div>
-					</div>
-				</Card>
-
-				<!-- 상태 데모 -->
-				<Card title="상태 관리">
-					<div class="space-y-4">
-						<p class="text-sm text-gray-600 dark:text-gray-300">
-							현재 테마: <span class="font-semibold">{isDarkMode ? '다크 모드' : '라이트 모드'}</span>
-						</p>
-						<div class="flex gap-2">
-							<Button onclick={() => isDarkMode = false} variant={!isDarkMode ? 'default' : 'outline'} size="sm">
-								라이트
-							</Button>
-							<Button onclick={() => isDarkMode = true} variant={isDarkMode ? 'default' : 'outline'} size="sm">
-								다크
-							</Button>
-						</div>
-						<p class="text-xs text-gray-500 dark:text-gray-400">
-							Melt UI의 상태 관리와 Tailwind의 다크모드가 완벽하게 연동됩니다.
-						</p>
-					</div>
-				</Card>
+		<!-- 기술 정보 -->
+		<div class="mt-8 text-center">
+			<div class="inline-flex items-center space-x-4 px-6 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+				<span class="text-sm text-gray-600 dark:text-gray-300">
+					🚀 SvelteKit 2.27.3
+				</span>
+				<span class="text-sm text-gray-600 dark:text-gray-300">
+					🎨 Tailwind CSS 4.1.11
+				</span>
+				<span class="text-sm text-gray-600 dark:text-gray-300">
+					🔧 Melt UI 0.86.6
+				</span>
 			</div>
 		</div>
-	</main>
-
-	<!-- 푸터 -->
-	<footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
-		<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-			<div class="text-center text-gray-600 dark:text-gray-300">
-				<p>© 2024 복슬이네. Melt UI + Tailwind CSS로 구축되었습니다.</p>
-			</div>
-		</div>
-	</footer>
+	</div>
 </div>

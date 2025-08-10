@@ -2,7 +2,16 @@
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { fade } from 'svelte/transition';
 
-	let { children, trigger, items = [] } = $props();
+	interface DropdownItem {
+		label: string;
+		action: () => void;
+	}
+
+	let { children, trigger, items = [] }: { 
+		children?: any, 
+		trigger?: any, 
+		items?: DropdownItem[] 
+	} = $props();
 
 	const {
 		elements: { trigger: triggerElement, menu, item },
