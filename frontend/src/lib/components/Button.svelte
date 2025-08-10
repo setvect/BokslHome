@@ -29,6 +29,7 @@
 		size?: VariantProps<typeof buttonVariants>['size'];
 		class?: string;
 		onclick?: () => void;
+		disabled?: boolean;
 		children: any;
 	};
 
