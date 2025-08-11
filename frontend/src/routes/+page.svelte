@@ -1,6 +1,17 @@
-<div class="p-8">
-  <h1 class="text-4xl font-bold text-blue-600">Welcome to SvelteKit</h1>
-  <p class="text-lg text-gray-700 mt-4">Visit <a href="https://kit.svelte.dev" class="text-blue-500 underline">kit.svelte.dev</a> to read the documentation</p>
+<script>
+  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+</script>
+
+<div class="p-8 bg-background text-foreground min-h-screen">
+  <div class="flex justify-between items-start mb-8">
+    <div>
+      <h1 class="text-4xl font-bold text-primary">Welcome to SvelteKit</h1>
+      <p class="text-lg text-muted-foreground mt-4">Visit <a href="https://kit.svelte.dev" class="text-primary underline">kit.svelte.dev</a> to read the documentation</p>
+    </div>
+    
+    <!-- 테마 토글 -->
+    <ThemeToggle />
+  </div>
 
   <!-- Tailwind 테스트용 -->
   <div class="mt-8 p-6 bg-red-500 text-white rounded-lg">
@@ -9,12 +20,20 @@
   </div>
 
   <!-- 색상 테스트 페이지 링크 -->
-  <div class="mt-8 space-x-4">
-    <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-      🎨 Tailwind 색상 팔레트 테스트
-    </a>
-    <a href="/test-colors/custom" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
-      🎭 커스텀 색상 변수 테스트
-    </a>
+  <div class="mt-8 space-y-4">
+    <div class="space-x-4">
+      <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+        🎨 Tailwind 색상 팔레트 테스트
+      </a>
+      <a href="/test-colors/custom" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
+        🎭 커스텀 색상 변수 테스트
+      </a>
+    </div>
+    
+    <div>
+      <a href="/test-theme" class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
+        🔍 테마 시스템 검증 페이지
+      </a>
+    </div>
   </div>
 </div>
