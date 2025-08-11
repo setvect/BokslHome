@@ -1,3 +1,13 @@
 {
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "css.customData": [
+    "./css-custom-data.json"
+  ],
+  "files.associations": {
+    "*.pcss": "css"
+  },
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "postcss.validate": false
 }

@@ -67,7 +67,10 @@
   </div>
 
   <!-- 네비게이션 -->
-  <div class="mt-12 text-center">
+  <div class="mt-12 text-center space-x-4">
+    <a href="/test-colors/custom" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+      🎭 커스텀 색상 테스트
+    </a>
     <a href="/" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
       홈으로 돌아가기
     </a>

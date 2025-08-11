@@ -67,9 +67,9 @@
 ## 2단계: 기본 색상 시스템 구축
 
 ### 2.1 순수 Tailwind 색상 테스트
-- [ ] 기본 Tailwind 색상 팔레트 작동 확인
-- [ ] 간단한 테스트 페이지 생성 (`/test-colors`)
-- [ ] 모든 기본 색상들이 정상 렌더링되는지 확인
+- [x] 기본 Tailwind 색상 팔레트 작동 확인
+- [x] 간단한 테스트 페이지 생성 (`/test-colors`)
+- [x] 모든 기본 색상들이 정상 렌더링되는지 확인
 
 ### 2.2 커스텀 색상 변수 도입
 - [ ] `src/app.css`에 `@theme` 지시어로 색상 변수 정의:
@@ -84,8 +84,8 @@
     --color-primary-foreground: var(--primary-foreground);
   }
   ```
-- [ ] CSS 변수 기본값 정의 (light/dark 테마용)
-- [ ] 색상 변수와 Tailwind 클래스 연동 테스트
+- [x] CSS 변수 기본값 정의 (light/dark 테마용)
+- [x] 색상 변수와 Tailwind 클래스 연동 테스트
 
 ## 3단계: 테마 시스템 구현
 

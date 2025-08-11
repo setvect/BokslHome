@@ -1,4 +1,15 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "svelte.svelte-vscode"
+  "editor.defaultFormatter": "svelte.svelte-vscode",
+  "files.associations": {
+    "*.pcss": "css"
+  },
+  "css.customData": [
+    "../.vscode/css-custom-data.json"
+  ],
+  "tailwindCSS.includeLanguages": {
+    "postcss": "css",
+    "css": "css",
+    "svelte": "html"
+  }
 }

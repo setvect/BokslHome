@@ -9,9 +9,12 @@
   </div>
 
   <!-- 색상 테스트 페이지 링크 -->
-  <div class="mt-8">
+  <div class="mt-8 space-x-4">
     <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-      🎨 Tailwind 색상 팔레트 테스트 페이지
+      🎨 Tailwind 색상 팔레트 테스트
+    </a>
+    <a href="/test-colors/custom" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
+      🎭 커스텀 색상 변수 테스트
     </a>
   </div>
 </div>
