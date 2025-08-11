@@ -1,4 +1,7 @@
 <script lang="ts">
+  // SvelteKit에서 자동으로 전달하는 모든 props를 무시
+  $: void $$restProps;
+
   import * as Card from "$lib/components/ui/card/index";
   import { Input } from "$lib/components/ui/input/index";
   import { Label } from "$lib/components/ui/label/index";
@@ -10,6 +13,27 @@
     message: "",
     subscribe: false
   };
+
+  let buttonStates = {
+    submit: false,
+    reset: false
+  };
+
+  function handleSubmit() {
+    buttonStates.submit = true;
+    setTimeout(() => {
+      buttonStates.submit = false;
+      alert('폼이 제출되었습니다!');
+    }, 1000);
+  }
+
+  function handleReset() {
+    buttonStates.reset = true;
+    setTimeout(() => {
+      formData = { name: "", email: "", message: "", subscribe: false };
+      buttonStates.reset = false;
+    }, 500);
+  }
 </script>
 
 <div class="min-h-screen bg-background text-foreground">
@@ -58,8 +82,19 @@
           </div>
         </Card.Content>
         <Card.Footer class="flex gap-2">
-          <Button>제출</Button>
-          <Button variant="outline">취소</Button>
+          <Button 
+            on:click={handleSubmit}
+            disabled={buttonStates.submit}
+          >
+            {buttonStates.submit ? '제출 중...' : '제출'}
+          </Button>
+          <Button 
+            variant="outline" 
+            on:click={handleReset}
+            disabled={buttonStates.reset}
+          >
+            {buttonStates.reset ? '초기화 중...' : '초기화'}
+          </Button>
         </Card.Footer>
       </Card.Root>
 
@@ -73,19 +108,25 @@
         </Card.Header>
         <Card.Content>
           <div class="flex flex-wrap gap-4 mb-6">
-            <Button>Default</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="destructive">Destructive</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="link">Link</Button>
+            <Button on:click={() => console.log('Default clicked!')}>Default</Button>
+            <Button variant="secondary" on:click={() => console.log('Secondary clicked!')}>Secondary</Button>
+            <Button variant="destructive" on:click={() => console.log('Destructive clicked!')}>Destructive</Button>
+            <Button variant="outline" on:click={() => console.log('Outline clicked!')}>Outline</Button>
+            <Button variant="ghost" on:click={() => console.log('Ghost clicked!')}>Ghost</Button>
+            <Button variant="link" on:click={() => console.log('Link clicked!')}>Link</Button>
           </div>
           
+          <div class="flex flex-wrap gap-4 mb-6">
+            <Button size="sm" on:click={() => console.log('Small clicked!')}>Small</Button>
+            <Button size="default" on:click={() => console.log('Default clicked!')}>Default</Button>
+            <Button size="lg" on:click={() => console.log('Large clicked!')}>Large</Button>
+            <Button size="icon" on:click={() => console.log('Icon clicked!')}>🎨</Button>
+          </div>
+
           <div class="flex flex-wrap gap-4">
-            <Button size="sm">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">Large</Button>
-            <Button size="icon">🎨</Button>
+            <Button disabled>Disabled</Button>
+            <Button variant="outline" disabled>Disabled Outline</Button>
+            <Button variant="secondary" disabled>Disabled Secondary</Button>
           </div>
         </Card.Content>
       </Card.Root>

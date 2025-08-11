@@ -1,4 +1,7 @@
 <script lang="ts">
+  // SvelteKit에서 자동으로 전달하는 모든 props를 무시
+  $: void $$restProps;
+  
   import * as Card from "$lib/components/ui/card/index";
 </script>
 

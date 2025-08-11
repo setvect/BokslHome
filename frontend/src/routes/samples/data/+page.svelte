@@ -1,3 +1,8 @@
+<script>
+  // SvelteKit에서 자동으로 전달하는 모든 props를 무시
+  $: void $$restProps;
+</script>
+
 <div class="min-h-screen bg-background text-foreground">
   <div class="container mx-auto py-12">
     <div class="mb-8">
