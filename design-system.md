@@ -3,20 +3,20 @@
 ## 1단계: 프로젝트 초기화 및 기본 설정
 
 ### 1.1 SvelteKit 프로젝트 생성
-- [ ] `npm create svelte@latest frontend` - 새 SvelteKit 프로젝트 생성
-- [ ] TypeScript 옵션 선택
-- [ ] ESLint, Prettier 옵션 선택
-- [ ] 프로젝트 디렉토리 이동 및 의존성 설치
+- [x] `npm create svelte@latest frontend` - 새 SvelteKit 프로젝트 생성
+- [x] TypeScript 옵션 선택
+- [x] ESLint, Prettier 옵션 선택
+- [x] 프로젝트 디렉토리 이동 및 의존성 설치
 
 ### 1.2 개발 환경 설정
-- [ ] ESLint 설정 확인 및 커스터마이징
-- [ ] Prettier 설정 파일 생성 (`.prettierrc`)
-- [ ] VS Code 설정 파일 생성 (`.vscode/settings.json`)
-- [ ] Git 설정 확인 (`.gitignore` 검토)
+- [x] ESLint 설정 확인 및 커스터마이징
+- [x] Prettier 설정 파일 생성 (`.prettierrc`)
+- [x] VS Code 설정 파일 생성 (`.vscode/settings.json`)
+- [x] Git 설정 확인 (`.gitignore` 검토)
 
 ### 1.3 Tailwind CSS v4.1 설치 및 설정
-- [ ] `npm install -D tailwindcss@4.1.1 @tailwindcss/postcss@4.1.1 autoprefixer postcss`
-- [ ] PostCSS 설정 파일 생성 (`postcss.config.js`):
+- [x] `npm install -D tailwindcss@4.1.1 @tailwindcss/postcss@4.1.1 autoprefixer postcss`
+- [x] PostCSS 설정 파일 생성 (`postcss.config.js`):
   ```js
   export default {
     plugins: {
@@ -25,7 +25,7 @@
     },
   }
   ```
-- [ ] Tailwind 설정 파일 생성 (`tailwind.config.ts`):
+- [x] Tailwind 설정 파일 생성 (`tailwind.config.ts`):
   ```ts
   import type { Config } from "tailwindcss";
 
@@ -34,23 +34,23 @@
     darkMode: ["class"]
   } satisfies Config;
   ```
-- [ ] `src/app.css` 파일에 Tailwind 지시어 추가:
+- [x] `src/app.css` 파일에 Tailwind 지시어 추가:
   ```css
   @import "tailwindcss";
   ```
 
 ### 1.4 기본 설정 파일들 생성
-- [ ] `.prettierrc` 파일 생성:
+- [x] `.prettierrc` 파일 생성:
   ```json
   {
     "useTabs": false,
     "singleQuote": true,
     "trailingComma": "none",
-    "printWidth": 100,
+    "printWidth": 140,
     "semi": true
   }
   ```
-- [ ] `.vscode/settings.json` 파일 생성:
+- [x] `.vscode/settings.json` 파일 생성:
   ```json
   {
     "editor.formatOnSave": true,
@@ -59,10 +59,10 @@
   ```
 
 ### 1.5 Tailwind CSS v4.1 기본 설정 검증
-- [ ] 개발 서버 실행 (`npm run dev`)
-- [ ] 가장 간단한 Tailwind 클래스 테스트 (`bg-red-500`, `text-blue-600`)
-- [ ] 브라우저에서 색상이 정상적으로 표시되는지 확인
-- [ ] Vite 빌드 정상 작동 확인 (`npm run build`)
+- [x] 개발 서버 실행 (`npm run dev`)
+- [x] 가장 간단한 Tailwind 클래스 테스트 (`bg-red-500`, `text-blue-600`)
+- [x] 브라우저에서 색상이 정상적으로 표시되는지 확인
+- [x] Vite 빌드 정상 작동 확인 (`npm run build`)
 
 ## 2단계: 기본 색상 시스템 구축
 
