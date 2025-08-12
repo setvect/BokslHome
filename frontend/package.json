@@ -13,6 +13,8 @@
   },
   "type": "module",
   "devDependencies": {
+    "@internationalized/date": "^3.8.2",
+    "@lucide/svelte": "^0.515.0",
     "@sveltejs/adapter-auto": "^3.2.5",
     "@sveltejs/kit": "^2.8.5",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
@@ -20,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "autoprefixer": "^10.4.21",
+    "bits-ui": "^2.9.2",
     "clsx": "^2.1.1",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",

@@ -119,12 +119,12 @@
 ## 5단계: 핵심 UI 컴포넌트 구축
 
 ### 5.1 기본 컴포넌트 설치
-- [ ] Card 컴포넌트: `npx shadcn-svelte@latest add card`
-- [ ] Input 컴포넌트: `npx shadcn-svelte@latest add input`
-- [ ] Label 컴포넌트: `npx shadcn-svelte@latest add label`
-- [ ] Breadcrumb 컴포넌트: `npx shadcn-svelte@latest add breadcrumb`
-- [ ] Badge 컴포넌트: `npx shadcn-svelte@latest add badge`
-- [ ] 각 컴포넌트의 색상 적용 확인
+- [x] Card 컴포넌트: `npx shadcn-svelte@latest add card`
+- [x] Input 컴포넌트: `npx shadcn-svelte@latest add input`
+- [x] Label 컴포넌트: `npx shadcn-svelte@latest add label`
+- [x] Breadcrumb 컴포넌트: `npx shadcn-svelte@latest add breadcrumb`
+- [x] Badge 컴포넌트: `npx shadcn-svelte@latest add badge`
+- [x] 각 컴포넌트의 색상 적용 확인
 
 ### 5.2 컴포넌트 테스트 페이지 작성
 - [ ] 각 컴포넌트별 테스트 페이지 생성
