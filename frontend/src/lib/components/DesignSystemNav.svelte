@@ -32,7 +32,9 @@
         { name: 'Input', href: '/design-system/components/input', badge: 'stable' },
         { name: 'Label', href: '/design-system/components/label', badge: 'stable' },
         { name: 'Badge', href: '/design-system/components/badge', badge: 'stable' },
-        { name: 'Breadcrumb', href: '/design-system/components/breadcrumb', badge: 'stable' }
+        { name: 'Breadcrumb', href: '/design-system/components/breadcrumb', badge: 'stable' },
+        // 신규: HtmlEditor 컴포넌트 미리보기
+        { name: 'HtmlEditor', href: '/design-system/components/editor', badge: 'beta' }
       ]
     },
     {
@@ -69,7 +71,7 @@
 </script>
 
 <nav class="w-64 bg-card border-r border-border h-full overflow-y-auto">
-  <div class="p-6" key={currentPath}>
+  <div class="p-6">
     <div class="mb-6">
       <h2 class="text-lg font-semibold text-foreground mb-2">디자인 시스템</h2>
       <p class="text-sm text-muted-foreground">현대적인 UI 컴포넌트 라이브러리</p>
