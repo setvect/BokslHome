@@ -95,26 +95,26 @@
 - [x] 테마 전환 기능 구현 및 테스트
 
 ### 3.2 테마 적용 검증
-- [ ] 각 테마에서 색상이 올바르게 변경되는지 확인
-- [ ] localStorage를 이용한 테마 설정 저장
-- [ ] 시스템 선호도 자동 감지 기능
+- [x] 각 테마에서 색상이 올바르게 변경되는지 확인
+- [x] localStorage를 이용한 테마 설정 저장
+- [x] 시스템 선호도 자동 감지 기능
 
 ## 4단계: shadcn-svelte 통합
 
 ### 4.1 shadcn-svelte 설치 및 설정
-- [ ] shadcn-svelte CLI 설치: `npx shadcn-svelte@latest init`
-- [ ] 설치 프롬프트 옵션 선택:
+- [x] shadcn-svelte CLI 설치: `npx shadcn-svelte@latest init`
+- [x] 설치 프롬프트 옵션 선택:
   - TypeScript: Yes
   - Style: Default
   - Base color: Slate
   - CSS variables: Yes
-- [ ] 기본 설정 파일 생성됨 확인 (`components.json`)
-- [ ] 첫 번째 컴포넌트 설치: `npx shadcn-svelte@latest add button`
+- [x] 기본 설정 파일 생성됨 확인 (`components.json`)
+- [x] 첫 번째 컴포넌트 설치: `npx shadcn-svelte@latest add button`
 
 ### 4.2 컴포넌트 색상 연동 테스트
-- [ ] Button 컴포넌트가 커스텀 색상 변수를 올바르게 사용하는지 확인
-- [ ] 테마 변경 시 컴포넌트 색상이 정상 변경되는지 테스트
-- [ ] 필요시 컴포넌트 스타일 조정
+- [x] Button 컴포넌트가 커스텀 색상 변수를 올바르게 사용하는지 확인
+- [x] 테마 변경 시 컴포넌트 색상이 정상 변경되는지 테스트
+- [x] 필요시 컴포넌트 스타일 조정
 
 ## 5단계: 핵심 UI 컴포넌트 구축
 
