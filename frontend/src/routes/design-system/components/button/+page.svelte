@@ -2,20 +2,9 @@
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button/button.svelte';
-  
-  let copiedCode = '';
-  
-  async function copyCode(code: string, id: string) {
-    try {
-      await navigator.clipboard.writeText(code);
-      copiedCode = id;
-      setTimeout(() => {
-        copiedCode = '';
-      }, 2000);
-    } catch (err) {
-      console.error('복사 실패:', err);
-    }
-  }
+  import CodeBlock from '$lib/components/CodeBlock.svelte';
+  import PropsTable from '$lib/components/PropsTable.svelte';
+  import AccessibilityGuide from '$lib/components/AccessibilityGuide.svelte';
   
   const buttonVariants = [
     { 
@@ -67,41 +56,137 @@
     {
       title: '기본 사용법',
       description: '가장 기본적인 버튼 사용 방법',
-      code: `&lt;script&gt;
+      code: `<` + `script>
   import Button from '$lib/components/ui/button/button.svelte';
-&lt;/script&gt;
+<` + `/script>
 
-&lt;Button onclick={() => alert('클릭됨!')}&gt;
+<Button onclick={() => alert('클릭됨!')}>
   클릭하세요
-&lt;/Button&gt;`
+</Button>`
     },
     {
       title: '링크 버튼',
       description: '다른 페이지로 이동하는 버튼',
-      code: `&lt;Button href="/about"&gt;
+      code: `<Button href="/about">
   소개 페이지로 이동
-&lt;/Button&gt;`
+</Button>`
     },
     {
       title: '비활성화된 버튼',
       description: '조건에 따라 비활성화되는 버튼',
-      code: `&lt;Button disabled&gt;
+      code: `<Button disabled>
   비활성화된 버튼
-&lt;/Button&gt;`
+</Button>`
     },
     {
       title: '아이콘이 있는 버튼',
       description: '텍스트와 아이콘을 함께 사용',
-      code: `&lt;Button&gt;
+      code: `<Button>
   📄 문서 다운로드
-&lt;/Button&gt;`
+</Button>`
     },
     {
       title: '전체 폭 버튼',
       description: '컨테이너 전체 폭을 차지하는 버튼',
-      code: `&lt;Button class="w-full"&gt;
+      code: `<Button class="w-full">
   전체 폭 버튼
-&lt;/Button&gt;`
+</Button>`
+    }
+  ];
+  
+  const buttonProps = [
+    {
+      name: 'variant',
+      type: "'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'",
+      defaultValue: "'default'",
+      description: '버튼의 시각적 스타일을 결정합니다.',
+      required: false
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'default' | 'lg' | 'icon'",
+      defaultValue: "'default'",
+      description: '버튼의 크기를 결정합니다.',
+      required: false
+    },
+    {
+      name: 'href',
+      type: 'string',
+      description: '링크 URL을 설정하면 a 태그로 렌더링됩니다.',
+      required: false
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      defaultValue: 'false',
+      description: '버튼을 비활성화합니다.',
+      required: false
+    },
+    {
+      name: 'onclick',
+      type: '() => void',
+      description: '버튼 클릭 시 실행될 함수입니다.',
+      required: false
+    },
+    {
+      name: 'type',
+      type: "'button' | 'submit' | 'reset'",
+      defaultValue: "'button'",
+      description: '버튼의 HTML 타입 속성입니다.',
+      required: false
+    },
+    {
+      name: 'class',
+      type: 'string',
+      description: '추가 CSS 클래스를 적용합니다.',
+      required: false
+    }
+  ];
+  
+  const accessibilityGuidelines = [
+    {
+      title: '키보드 내비게이션',
+      description: '키보드만으로도 완전히 조작 가능합니다',
+      level: 'AA' as const,
+      items: [
+        'Tab 키로 버튼에 포커스를 이동할 수 있습니다',
+        'Enter 키 또는 Space 키로 버튼을 활성화할 수 있습니다', 
+        '포커스 시 명확한 시각적 표시기를 제공합니다',
+        'disabled 상태일 때 포커스를 받지 않습니다'
+      ]
+    },
+    {
+      title: '스크린 리더 지원',
+      description: '스크린 리더 사용자를 위한 최적화',
+      level: 'AA' as const,
+      items: [
+        '적절한 role="button" 또는 링크 의미를 전달합니다',
+        '버튼의 목적을 명확하게 설명하는 레이블을 제공합니다',
+        'disabled 상태를 스크린 리더에 알립니다',
+        'aria-pressed 등 필요한 ARIA 속성을 지원합니다'
+      ]
+    },
+    {
+      title: '시각적 접근성',
+      description: '시각 장애가 있는 사용자를 위한 고려사항',
+      level: 'AA' as const,
+      items: [
+        'WCAG AA 기준 4.5:1 대비율을 준수합니다',
+        '색상에만 의존하지 않고 텍스트로도 정보를 전달합니다',
+        '충분한 크기의 클릭 영역을 제공합니다 (최소 44x44px)',
+        '브라우저 확대 시에도 가독성을 유지합니다'
+      ]
+    },
+    {
+      title: '운동 장애 지원',
+      description: '손목이나 손가락 사용이 어려운 사용자를 위한 배려',
+      level: 'A' as const,
+      items: [
+        '마우스 호버 없이도 모든 기능에 접근할 수 있습니다',
+        '실수로 클릭하기 어려운 적절한 간격을 유지합니다',
+        '드래그 동작이 필요하지 않습니다',
+        '타이머나 시간 제한이 없습니다'
+      ]
     }
   ];
 </script>
@@ -198,9 +283,7 @@
               
               <div class="space-y-2">
                 <div class="text-xs text-muted-foreground">사용 예시: {variant.usage}</div>
-                <div class="bg-muted rounded p-3">
-                  <code class="text-sm">{@html variant.code}</code>
-                </div>
+                <CodeBlock code={variant.code} language="svelte" showCopy={false} />
               </div>
             </div>
           </CardContent>
@@ -243,9 +326,7 @@
                 </Button>
               </div>
               
-              <div class="bg-muted rounded p-3">
-                <code class="text-sm">{@html size.code}</code>
-              </div>
+              <CodeBlock code={size.code} language="svelte" showCopy={false} />
             </div>
           </CardContent>
         </Card>
@@ -301,9 +382,7 @@
               
               <div>
                 <h4 class="font-medium text-sm mb-3">코드</h4>
-                <div class="bg-muted rounded p-4">
-                  <pre class="text-sm overflow-x-auto"><code>{@html example.code}</code></pre>
-                </div>
+                <CodeBlock code={example.code} language="svelte" />
               </div>
             </div>
           </CardContent>
@@ -313,110 +392,18 @@
   </section>
   
   <!-- 속성 (Props) -->
-  <section class="mb-16">
-    <div class="mb-8">
-      <h2 class="text-3xl font-bold text-foreground mb-4">속성 (Props)</h2>
-      <p class="text-muted-foreground">
-        Button 컴포넌트에서 사용할 수 있는 모든 속성들입니다.
-      </p>
-    </div>
-    
-    <Card>
-      <CardContent class="pt-6">
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b">
-                <th class="text-left py-3 font-medium">속성</th>
-                <th class="text-left py-3 font-medium">타입</th>
-                <th class="text-left py-3 font-medium">기본값</th>
-                <th class="text-left py-3 font-medium">설명</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              <tr class="border-b">
-                <td class="py-3 font-mono">variant</td>
-                <td class="py-3 text-muted-foreground">'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'</td>
-                <td class="py-3 font-mono">'default'</td>
-                <td class="py-3">버튼의 시각적 스타일</td>
-              </tr>
-              <tr class="border-b">
-                <td class="py-3 font-mono">size</td>
-                <td class="py-3 text-muted-foreground">'sm' | 'default' | 'lg' | 'icon'</td>
-                <td class="py-3 font-mono">'default'</td>
-                <td class="py-3">버튼의 크기</td>
-              </tr>
-              <tr class="border-b">
-                <td class="py-3 font-mono">href</td>
-                <td class="py-3 text-muted-foreground">string</td>
-                <td class="py-3 text-muted-foreground">-</td>
-                <td class="py-3">링크 URL (설정 시 a 태그로 렌더링)</td>
-              </tr>
-              <tr class="border-b">
-                <td class="py-3 font-mono">disabled</td>
-                <td class="py-3 text-muted-foreground">boolean</td>
-                <td class="py-3 font-mono">false</td>
-                <td class="py-3">버튼 비활성화 여부</td>
-              </tr>
-              <tr class="border-b">
-                <td class="py-3 font-mono">onclick</td>
-                <td class="py-3 text-muted-foreground">function</td>
-                <td class="py-3 text-muted-foreground">-</td>
-                <td class="py-3">클릭 이벤트 핸들러</td>
-              </tr>
-              <tr class="border-b">
-                <td class="py-3 font-mono">class</td>
-                <td class="py-3 text-muted-foreground">string</td>
-                <td class="py-3 text-muted-foreground">-</td>
-                <td class="py-3">추가 CSS 클래스</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </CardContent>
-    </Card>
-  </section>
+  <PropsTable 
+    props={buttonProps} 
+    title="속성 (Props)"
+    description="Button 컴포넌트에서 사용할 수 있는 모든 속성들입니다."
+  />
   
   <!-- 접근성 -->
-  <section class="mb-16">
-    <div class="mb-8">
-      <h2 class="text-3xl font-bold text-foreground mb-4">접근성 (Accessibility)</h2>
-      <p class="text-muted-foreground">
-        Button 컴포넌트는 웹 접근성 표준을 준수합니다.
-      </p>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg">키보드 지원</CardTitle>
-          <CardDescription>키보드만으로도 완전히 조작 가능</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ul class="space-y-2 text-sm">
-            <li>• <kbd class="bg-muted px-1.5 py-0.5 rounded">Tab</kbd> - 포커스 이동</li>
-            <li>• <kbd class="bg-muted px-1.5 py-0.5 rounded">Enter</kbd> - 버튼 활성화</li>
-            <li>• <kbd class="bg-muted px-1.5 py-0.5 rounded">Space</kbd> - 버튼 활성화</li>
-          </ul>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg">스크린 리더</CardTitle>
-          <CardDescription>스크린 리더 친화적인 구조</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ul class="space-y-2 text-sm">
-            <li>• 적절한 role과 aria 속성</li>
-            <li>• 명확한 버튼 레이블</li>
-            <li>• 상태 변화 알림</li>
-            <li>• 포커스 표시기</li>
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
-  </section>
+  <AccessibilityGuide 
+    guidelines={accessibilityGuidelines}
+    title="접근성 (Accessibility)"
+    description="Button 컴포넌트는 WCAG 2.1 접근성 표준을 준수합니다."
+  />
   
   <!-- 관련 컴포넌트 -->
   <section>
