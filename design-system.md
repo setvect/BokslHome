@@ -147,9 +147,9 @@
 ## 7단계: 고급 기능 및 최적화
 
 ### 7.1 추가 문서 페이지들
-- [ ] Typography 가이드
-- [ ] Spacing 시스템
-- [ ] 컴포넌트별 상세 문서 (Buttons, Forms, Navigation, Feedback)
+- [x] Typography 가이드
+- [x] Spacing 시스템
+- [x] 컴포넌트별 상세 문서 (Buttons, Forms, Navigation, Feedback)
 
 ### 7.2 개발자 경험 개선
 - [ ] 코드 하이라이팅

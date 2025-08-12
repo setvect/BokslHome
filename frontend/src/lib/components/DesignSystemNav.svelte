@@ -15,6 +15,13 @@
       ]
     },
     {
+      title: '디자인 토큰',
+      items: [
+        { name: 'Typography', href: '/design-system/typography' },
+        { name: 'Spacing', href: '/design-system/spacing' }
+      ]
+    },
+    {
       title: '컴포넌트',
       items: [
         { name: 'Button', href: '/design-system/components/button', badge: 'stable' },

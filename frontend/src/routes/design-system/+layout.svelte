@@ -57,6 +57,12 @@
         case 'custom':
           displayName = '커스텀 색상';
           break;
+        case 'typography':
+          displayName = 'Typography';
+          break;
+        case 'spacing':
+          displayName = 'Spacing';
+          break;
       }
       
       breadcrumbs.push({
