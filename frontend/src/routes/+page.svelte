@@ -30,12 +30,18 @@
       </a>
     </div>
     
-    <div class="space-x-4">
-      <a href="/test-theme" class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
-        🔍 테마 시스템 검증 페이지
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <a href="/design-system" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium shadow-lg">
+        📚 디자인 시스템 문서
       </a>
       <a href="/test-components" class="inline-flex items-center px-6 py-3 bg-accent text-accent-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
-        🧩 shadcn-svelte 컴포넌트 테스트
+        🧩 컴포넌트 테스트
+      </a>
+      <a href="/test-theme" class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
+        🔍 테마 시스템 검증
+      </a>
+      <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
+        🎨 색상 팔레트 테스트
       </a>
     </div>
   </div>
