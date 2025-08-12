@@ -326,6 +326,41 @@
       </div>
     </div>
     
+    <!-- 개별 컴포넌트 테스트 페이지 링크 -->
+    <div class="bg-card rounded-lg border p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-card-foreground">개별 컴포넌트 상세 테스트</h2>
+      <p class="text-muted-foreground mb-4">
+        각 컴포넌트의 모든 기능과 상태를 자세히 테스트할 수 있는 전용 페이지들입니다.
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Button href="/test-components/button" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+          <span class="font-semibold mb-1">Button 컴포넌트</span>
+          <span class="text-sm text-muted-foreground">모든 variant, 크기, 상태, 로딩 등</span>
+        </Button>
+        
+        <Button href="/test-components/card" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+          <span class="font-semibold mb-1">Card 컴포넌트</span>
+          <span class="text-sm text-muted-foreground">다양한 구조와 스타일, 인터랙션</span>
+        </Button>
+        
+        <Button href="/test-components/input" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+          <span class="font-semibold mb-1">Input & Label</span>
+          <span class="text-sm text-muted-foreground">모든 input 타입, 검증, 상태</span>
+        </Button>
+        
+        <Button href="/test-components/breadcrumb" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+          <span class="font-semibold mb-1">Breadcrumb</span>
+          <span class="text-sm text-muted-foreground">동적 경로, 다양한 패턴</span>
+        </Button>
+        
+        <Button href="/test-components/badge" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+          <span class="font-semibold mb-1">Badge</span>
+          <span class="text-sm text-muted-foreground">상태, 카운터, 태그, 인터랙션</span>
+        </Button>
+      </div>
+    </div>
+    
     <!-- 네비게이션 -->
     <div class="text-center space-x-4">
       <Button href="/" variant="secondary">
