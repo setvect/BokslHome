@@ -42,6 +42,22 @@
     "vite": "^6.0.1"
   },
   "dependencies": {
-    "prismjs": "^1.30.0"
+    "@tiptap/core": "^2.26.1",
+    "@tiptap/extension-color": "^2.26.1",
+    "@tiptap/extension-hard-break": "^2.26.1",
+    "@tiptap/extension-highlight": "^2.26.1",
+    "@tiptap/extension-horizontal-rule": "^2.26.1",
+    "@tiptap/extension-image": "^2.26.1",
+    "@tiptap/extension-link": "^2.26.1",
+    "@tiptap/extension-table": "^2.26.1",
+    "@tiptap/extension-table-cell": "^2.26.1",
+    "@tiptap/extension-table-header": "^2.26.1",
+    "@tiptap/extension-table-row": "^2.26.1",
+    "@tiptap/extension-text-style": "^2.26.1",
+    "@tiptap/extension-underline": "^2.26.1",
+    "@tiptap/starter-kit": "^2.26.1",
+    "prismjs": "^1.30.0",
+    "prosemirror-markdown": "^1.13.2",
+    "svelte-tiptap": "^2.2.0"
   }
 }

@@ -41,7 +41,8 @@
         { name: '컴포넌트 테스트', href: '/design-system/test/components' },
         { name: '색상 팔레트 테스트', href: '/design-system/test/colors' },
         { name: '커스텀 색상 테스트', href: '/design-system/test/colors/custom' },
-        { name: '테마 시스템 검증', href: '/design-system/test/theme' }
+        { name: '테마 시스템 검증', href: '/design-system/test/theme' },
+        { name: 'HtmlEditor 테스트', href: '/test-editor', badge: 'NEW' }
       ]
     }
   ];
@@ -69,7 +70,7 @@
 </script>
 
 <nav class="w-64 bg-card border-r border-border h-full overflow-y-auto">
-  <div class="p-6" key={currentPath}>
+  <div class="p-6">
     <div class="mb-6">
       <h2 class="text-lg font-semibold text-foreground mb-2">디자인 시스템</h2>
       <p class="text-sm text-muted-foreground">현대적인 UI 컴포넌트 라이브러리</p>
