@@ -70,23 +70,16 @@ function createThemeStore() {
     init: () => {
       if (browser) {
         const storedTheme = getStoredTheme();
-        const appliedTheme = getAppliedTheme(storedTheme);
         
-        // HTML 클래스 초기 설정
-        const root = document.documentElement;
-        if (appliedTheme === 'dark') {
-          root.classList.add('dark');
-        } else {
-          root.classList.remove('dark');
-        }
-        
+        // HTML에서 이미 테마가 설정되어 있으므로 스토어 상태만 동기화
         set(storedTheme);
         
         // 시스템 테마 변경 감지
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addEventListener('change', () => {
+        const handleSystemThemeChange = () => {
           update(currentTheme => {
             if (currentTheme === 'system') {
+              const root = document.documentElement;
               const newAppliedTheme = getAppliedTheme('system');
               if (newAppliedTheme === 'dark') {
                 root.classList.add('dark');
@@ -96,7 +89,14 @@ function createThemeStore() {
             }
             return currentTheme;
           });
-        });
+        };
+        
+        mediaQuery.addEventListener('change', handleSystemThemeChange);
+        
+        // 정리 함수 반환 (필요시 사용)
+        return () => {
+          mediaQuery.removeEventListener('change', handleSystemThemeChange);
+        };
       }
     }
   };

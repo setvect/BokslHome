@@ -4,6 +4,38 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- 테마 깜빡임 방지 스크립트 -->
+    <script>
+      (function() {
+        function getStoredTheme() {
+          try {
+            return localStorage.getItem('theme');
+          } catch (e) {
+            return null;
+          }
+        }
+        
+        function getSystemTheme() {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        
+        function getAppliedTheme(theme) {
+          if (theme === 'system' || !theme) {
+            return getSystemTheme();
+          }
+          return theme;
+        }
+        
+        const storedTheme = getStoredTheme();
+        const appliedTheme = getAppliedTheme(storedTheme);
+        
+        if (appliedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

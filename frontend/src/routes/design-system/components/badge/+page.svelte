@@ -227,7 +227,7 @@
               <div class="space-y-2">
                 <div class="text-xs text-muted-foreground">사용 예시: {variant.usage}</div>
                 <div class="bg-muted rounded p-3">
-                  <code class="text-sm">{variant.code}</code>
+                  <code class="text-sm">{@html variant.code}</code>
                 </div>
               </div>
             </div>
@@ -337,7 +337,7 @@
               <div>
                 <h4 class="font-medium text-sm mb-3">코드</h4>
                 <div class="bg-muted rounded p-4">
-                  <pre class="text-sm overflow-x-auto"><code>{example.code}</code></pre>
+                  <pre class="text-sm overflow-x-auto"><code>{@html example.code}</code></pre>
                 </div>
               </div>
             </div>
@@ -369,7 +369,7 @@
             <Badge class="text-sm py-1 px-3" variant="secondary">큰 크기</Badge>
           </div>
           <div class="mt-4 bg-muted rounded p-3">
-            <pre class="text-sm"><code>{`<Badge class="text-xs" variant="secondary">작은 크기</Badge>
+            <pre class="text-sm"><code>{@html `<Badge class="text-xs" variant="secondary">작은 크기</Badge>
 <Badge variant="secondary">기본 크기</Badge>
 <Badge class="text-sm py-1 px-3" variant="secondary">큰 크기</Badge>`}</code></pre>
           </div>
@@ -389,7 +389,7 @@
             <Badge class="bg-pink-100 text-pink-800 border-pink-200">분홍색</Badge>
           </div>
           <div class="mt-4 bg-muted rounded p-3">
-            <pre class="text-sm"><code>{`<Badge class="bg-purple-100 text-purple-800 border-purple-200">보라색</Badge>
+            <pre class="text-sm"><code>{@html `<Badge class="bg-purple-100 text-purple-800 border-purple-200">보라색</Badge>
 <Badge class="bg-green-100 text-green-800 border-green-200">초록색</Badge>`}</code></pre>
           </div>
         </CardContent>

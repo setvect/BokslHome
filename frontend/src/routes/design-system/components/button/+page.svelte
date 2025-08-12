@@ -199,7 +199,7 @@
               <div class="space-y-2">
                 <div class="text-xs text-muted-foreground">사용 예시: {variant.usage}</div>
                 <div class="bg-muted rounded p-3">
-                  <code class="text-sm">{variant.code}</code>
+                  <code class="text-sm">{@html variant.code}</code>
                 </div>
               </div>
             </div>
@@ -244,7 +244,7 @@
               </div>
               
               <div class="bg-muted rounded p-3">
-                <code class="text-sm">{size.code}</code>
+                <code class="text-sm">{@html size.code}</code>
               </div>
             </div>
           </CardContent>
@@ -302,7 +302,7 @@
               <div>
                 <h4 class="font-medium text-sm mb-3">코드</h4>
                 <div class="bg-muted rounded p-4">
-                  <pre class="text-sm overflow-x-auto"><code>{example.code}</code></pre>
+                  <pre class="text-sm overflow-x-auto"><code>{@html example.code}</code></pre>
                 </div>
               </div>
             </div>

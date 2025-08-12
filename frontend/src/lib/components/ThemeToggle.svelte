@@ -1,7 +1,34 @@
 <script lang="ts">
   import { theme } from '$lib/stores/theme';
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
   
-  $: currentTheme = $theme;
+  // 초기값을 DOM 상태에서 결정
+  let currentTheme = browser && document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  
+  onMount(() => {
+    // 실제 저장된 테마 값으로 동기화
+    if (browser) {
+      const storedTheme = localStorage.getItem('theme') || 'system';
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      if (storedTheme === 'system') {
+        currentTheme = 'system';
+      } else {
+        currentTheme = isDark ? 'dark' : 'light';
+      }
+      
+      // 스토어 초기화
+      theme.init();
+    }
+    
+    // 스토어 구독
+    const unsubscribe = theme.subscribe(value => {
+      currentTheme = value;
+    });
+    
+    return unsubscribe;
+  });
   
   // 현재 테마에 따른 아이콘 결정
   $: themeIcon = currentTheme === 'dark' ? '☀️' : '🌙';
