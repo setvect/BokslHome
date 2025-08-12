@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   
@@ -30,19 +29,15 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-6xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">Button 컴포넌트 테스트</h1>
-        <p class="text-lg text-muted-foreground">
-          Button 컴포넌트의 모든 variant, 크기, 상태를 종합적으로 테스트하는 페이지입니다.
-        </p>
-        <div class="mt-4 flex gap-2">
-          <Badge>총 클릭: {clickCount}</Badge>
-          <Badge variant="secondary">테마 변경으로 색상 확인 가능</Badge>
-        </div>
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">Button 컴포넌트 테스트</h1>
+      <p class="text-lg text-muted-foreground">
+        Button 컴포넌트의 모든 variant, 크기, 상태를 종합적으로 테스트하는 페이지입니다.
+      </p>
+      <div class="mt-4 flex gap-2">
+        <Badge>총 클릭: {clickCount}</Badge>
+        <Badge variant="secondary">테마 변경으로 색상 확인 가능</Badge>
       </div>
-      
-      <ThemeToggle />
     </div>
     
     <!-- 필수 클래스 명시 -->
@@ -206,8 +201,8 @@
         <div class="space-y-3">
           <div class="flex flex-wrap gap-3">
             <Button href="/" variant="default">홈으로 가기</Button>
-            <Button href="/test-components" variant="secondary">컴포넌트 테스트</Button>
-            <Button href="/test-colors" variant="outline">색상 테스트</Button>
+            <Button href="/design-system/test/components" variant="secondary">컴포넌트 테스트</Button>
+            <Button href="/design-system/test/colors" variant="outline">색상 테스트</Button>
             <Button href="https://svelte.dev" variant="link" target="_blank">
               외부 링크 (새 창)
             </Button>
@@ -321,10 +316,10 @@
     
     <!-- 네비게이션 -->
     <div class="text-center space-x-4 pt-8 border-t">
-      <Button href="/test-components" variant="secondary">
+      <Button href="/design-system/test/components" variant="secondary">
         ← 전체 컴포넌트 테스트
       </Button>
-      <Button href="/test-components/card" variant="outline">
+      <Button href="/design-system/test/components/card" variant="outline">
         Card 테스트 →
       </Button>
     </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import { theme } from '$lib/stores/theme';
   import { onMount } from 'svelte';
   
@@ -53,15 +52,11 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-4xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">테마 시스템 검증</h1>
-        <p class="text-lg text-muted-foreground">
-          라이트/다크 테마 전환이 올바르게 작동하는지 확인하는 페이지입니다.
-        </p>
-      </div>
-      
-      <ThemeToggle />
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">테마 시스템 검증</h1>
+      <p class="text-lg text-muted-foreground">
+        라이트/다크 테마 전환이 올바르게 작동하는지 확인하는 페이지입니다.
+      </p>
     </div>
     
     <!-- 현재 테마 상태 -->

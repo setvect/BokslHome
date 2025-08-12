@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
@@ -25,15 +24,11 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-6xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">Card 컴포넌트 테스트</h1>
-        <p class="text-lg text-muted-foreground">
-          Card 컴포넌트의 다양한 구조와 스타일을 테스트하는 페이지입니다.
-        </p>
-      </div>
-      
-      <ThemeToggle />
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">Card 컴포넌트 테스트</h1>
+      <p class="text-lg text-muted-foreground">
+        Card 컴포넌트의 다양한 구조와 스타일을 테스트하는 페이지입니다.
+      </p>
     </div>
     
     <!-- 기본 Card 구조 -->
@@ -351,13 +346,13 @@
     
     <!-- 네비게이션 -->
     <div class="text-center space-x-4 pt-8 border-t">
-      <Button href="/test-components/button" variant="outline">
+      <Button href="/design-system/test/components/button" variant="outline">
         ← Button 테스트
       </Button>
-      <Button href="/test-components" variant="secondary">
+      <Button href="/design-system/test/components" variant="secondary">
         전체 컴포넌트 테스트
       </Button>
-      <Button href="/test-components/input" variant="outline">
+      <Button href="/design-system/test/components/input" variant="outline">
         Input 테스트 →
       </Button>
     </div>

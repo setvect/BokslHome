@@ -1,5 +1,4 @@
 <script>
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   
   // Tailwind가 감지할 수 있도록 모든 커스텀 색상 클래스들을 명시적으로 나열
   const customClasses = [
@@ -12,18 +11,11 @@
 </script>
 
 <div class="p-8 bg-background text-foreground min-h-screen">
-  <div class="flex justify-between items-start mb-8">
-    <div>
-      <h1 class="text-4xl font-bold mb-4 text-foreground">커스텀 색상 변수 테스트</h1>
-      <p class="text-lg text-muted-foreground">
-        @theme 지시어로 정의한 커스텀 색상 변수들이 정상적으로 작동하는지 확인하는 페이지입니다.
-      </p>
-    </div>
-    
-    <!-- 테마 토글 -->
-    <div class="flex flex-col items-end gap-4">
-      <ThemeToggle />
-    </div>
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold mb-4 text-foreground">커스텀 색상 변수 테스트</h1>
+    <p class="text-lg text-muted-foreground">
+      @theme 지시어로 정의한 커스텀 색상 변수들이 정상적으로 작동하는지 확인하는 페이지입니다.
+    </p>
   </div>
 
   <!-- 기본 색상들 -->

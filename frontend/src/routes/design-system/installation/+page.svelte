@@ -359,7 +359,7 @@ export const theme = createThemeStore();`,
           
           <div class="pt-4 border-t">
             <div class="flex flex-col sm:flex-row gap-4">
-              <Button href="/test-components" variant="outline">
+              <Button href="/design-system/test/components" variant="outline">
                 컴포넌트 테스트 페이지
               </Button>
               <Button href="/design-system/colors" variant="outline">

@@ -67,7 +67,7 @@
       <Button size="lg" href="/design-system/installation">
         시작하기
       </Button>
-      <Button variant="outline" size="lg" href="/test-components">
+      <Button variant="outline" size="lg" href="/design-system/test/components">
         컴포넌트 둘러보기
       </Button>
       <Button variant="ghost" size="lg" href="https://github.com" target="_blank">
@@ -256,7 +256,7 @@
       <Button size="lg" href="/design-system/installation">
         설치 가이드 보기
       </Button>
-      <Button variant="outline" size="lg" href="/test-components">
+      <Button variant="outline" size="lg" href="/design-system/test/components">
         라이브 데모 체험
       </Button>
     </div>

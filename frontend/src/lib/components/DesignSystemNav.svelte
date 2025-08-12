@@ -28,9 +28,10 @@
     {
       title: '테스트',
       items: [
-        { name: '전체 컴포넌트', href: '/test-components' },
-        { name: '색상 테스트', href: '/test-colors' },
-        { name: '테마 검증', href: '/test-theme' }
+        { name: '컴포넌트 테스트', href: '/design-system/test/components' },
+        { name: '색상 팔레트 테스트', href: '/design-system/test/colors' },
+        { name: '커스텀 색상 테스트', href: '/design-system/test/colors/custom' },
+        { name: '테마 시스템 검증', href: '/design-system/test/theme' }
       ]
     }
   ];

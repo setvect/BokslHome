@@ -48,6 +48,15 @@
         case 'breadcrumb':
           displayName = 'Breadcrumb';
           break;
+        case 'test':
+          displayName = '테스트';
+          break;
+        case 'theme':
+          displayName = '테마 검증';
+          break;
+        case 'custom':
+          displayName = '커스텀 색상';
+          break;
       }
       
       breadcrumbs.push({

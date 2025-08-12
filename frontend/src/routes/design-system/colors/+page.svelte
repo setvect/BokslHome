@@ -443,13 +443,13 @@
         <div class="text-center">
           <h3 class="text-lg font-semibold text-foreground mb-4">더 많은 색상 테스트</h3>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/test-colors" variant="outline">
+            <Button href="/design-system/test/colors" variant="outline">
               전체 색상 팔레트 테스트
             </Button>
-            <Button href="/test-colors/custom" variant="outline">
+            <Button href="/design-system/test/colors/custom" variant="outline">
               커스텀 색상 변수 테스트
             </Button>
-            <Button href="/test-theme" variant="outline">
+            <Button href="/design-system/test/theme" variant="outline">
               테마 시스템 검증
             </Button>
           </div>

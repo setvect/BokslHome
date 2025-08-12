@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
@@ -50,34 +49,30 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-6xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">Badge 컴포넌트 테스트</h1>
-        <p class="text-lg text-muted-foreground">
-          Badge 컴포넌트의 다양한 variant, 크기, 용도를 테스트하는 페이지입니다.
-        </p>
-        
-        <!-- 현재 페이지 브레드크럼 -->
-        <div class="mt-4">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">홈</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/test-components">테스트</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Badge 컴포넌트</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </div>
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">Badge 컴포넌트 테스트</h1>
+      <p class="text-lg text-muted-foreground">
+        Badge 컴포넌트의 다양한 variant, 크기, 용도를 테스트하는 페이지입니다.
+      </p>
       
-      <ThemeToggle />
+      <!-- 현재 페이지 브레드크럼 -->
+      <div class="mt-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">홈</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/design-system/test/components">테스트</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Badge 컴포넌트</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
     </div>
     
     <!-- 기본 Badge Variant -->
@@ -532,10 +527,10 @@
     
     <!-- 네비게이션 -->
     <div class="text-center space-x-4 pt-8 border-t">
-      <Button href="/test-components/breadcrumb" variant="outline">
+      <Button href="/design-system/test/components/breadcrumb" variant="outline">
         ← Breadcrumb 테스트
       </Button>
-      <Button href="/test-components" variant="secondary">
+      <Button href="/design-system/test/components" variant="secondary">
         전체 컴포넌트 테스트
       </Button>
       <Button href="/" variant="outline">

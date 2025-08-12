@@ -19,30 +19,10 @@
     <p class="mt-2">이 박스가 빨간 배경색으로 표시되면 Tailwind가 정상 작동합니다!</p>
   </div>
 
-  <!-- 색상 테스트 페이지 링크 -->
-  <div class="mt-8 space-y-4">
-    <div class="space-x-4">
-      <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-        🎨 Tailwind 색상 팔레트 테스트
-      </a>
-      <a href="/test-colors/custom" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
-        🎭 커스텀 색상 변수 테스트
-      </a>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <a href="/design-system" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-medium shadow-lg">
-        📚 디자인 시스템 문서
-      </a>
-      <a href="/test-components" class="inline-flex items-center px-6 py-3 bg-accent text-accent-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
-        🧩 컴포넌트 테스트
-      </a>
-      <a href="/test-theme" class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
-        🔍 테마 시스템 검증
-      </a>
-      <a href="/test-colors" class="inline-flex items-center px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium">
-        🎨 색상 팔레트 테스트
-      </a>
-    </div>
+  <!-- 디자인 시스템 링크 -->
+  <div class="mt-8">
+    <a href="/design-system" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg text-lg">
+      📚 디자인 시스템 보러가기
+    </a>
   </div>
 </div>

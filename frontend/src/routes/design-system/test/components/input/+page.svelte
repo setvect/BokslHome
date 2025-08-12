@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Input } from '$lib/components/ui/input';
@@ -61,15 +60,11 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-6xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">Input & Label 컴포넌트 테스트</h1>
-        <p class="text-lg text-muted-foreground">
-          Input과 Label 컴포넌트의 다양한 타입과 상태를 테스트하는 페이지입니다.
-        </p>
-      </div>
-      
-      <ThemeToggle />
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">Input & Label 컴포넌트 테스트</h1>
+      <p class="text-lg text-muted-foreground">
+        Input과 Label 컴포넌트의 다양한 타입과 상태를 테스트하는 페이지입니다.
+      </p>
     </div>
     
     <!-- 기본 Input 타입들 -->
@@ -563,13 +558,13 @@
     
     <!-- 네비게이션 -->
     <div class="text-center space-x-4 pt-8 border-t">
-      <Button href="/test-components/card" variant="outline">
+      <Button href="/design-system/test/components/card" variant="outline">
         ← Card 테스트
       </Button>
-      <Button href="/test-components" variant="secondary">
+      <Button href="/design-system/test/components" variant="secondary">
         전체 컴포넌트 테스트
       </Button>
-      <Button href="/test-components/breadcrumb" variant="outline">
+      <Button href="/design-system/test/components/breadcrumb" variant="outline">
         Breadcrumb 테스트 →
       </Button>
     </div>

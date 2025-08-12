@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Input } from '$lib/components/ui/input';
@@ -11,15 +10,11 @@
 <div class="p-8 bg-background text-foreground min-h-screen">
   <div class="max-w-4xl mx-auto">
     <!-- 헤더 -->
-    <div class="flex justify-between items-start mb-8">
-      <div>
-        <h1 class="text-4xl font-bold mb-4 text-foreground">shadcn-svelte 컴포넌트 테스트</h1>
-        <p class="text-lg text-muted-foreground">
-          shadcn-svelte 컴포넌트가 커스텀 색상 변수와 올바르게 연동되는지 확인하는 페이지입니다.
-        </p>
-      </div>
-      
-      <ThemeToggle />
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-foreground">shadcn-svelte 컴포넌트 테스트</h1>
+      <p class="text-lg text-muted-foreground">
+        shadcn-svelte 컴포넌트가 커스텀 색상 변수와 올바르게 연동되는지 확인하는 페이지입니다.
+      </p>
     </div>
     
     <!-- 버튼 클래스 명시적 선언 (Tailwind 생성 보장) -->
@@ -245,7 +240,7 @@
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/test-components">테스트</BreadcrumbLink>
+                <BreadcrumbLink href="/design-system/test/components">테스트</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -334,27 +329,27 @@
       </p>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Button href="/test-components/button" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+        <Button href="/design-system/test/components/button" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
           <span class="font-semibold mb-1">Button 컴포넌트</span>
           <span class="text-sm text-muted-foreground">모든 variant, 크기, 상태, 로딩 등</span>
         </Button>
         
-        <Button href="/test-components/card" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+        <Button href="/design-system/test/components/card" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
           <span class="font-semibold mb-1">Card 컴포넌트</span>
           <span class="text-sm text-muted-foreground">다양한 구조와 스타일, 인터랙션</span>
         </Button>
         
-        <Button href="/test-components/input" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+        <Button href="/design-system/test/components/input" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
           <span class="font-semibold mb-1">Input & Label</span>
           <span class="text-sm text-muted-foreground">모든 input 타입, 검증, 상태</span>
         </Button>
         
-        <Button href="/test-components/breadcrumb" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+        <Button href="/design-system/test/components/breadcrumb" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
           <span class="font-semibold mb-1">Breadcrumb</span>
           <span class="text-sm text-muted-foreground">동적 경로, 다양한 패턴</span>
         </Button>
         
-        <Button href="/test-components/badge" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
+        <Button href="/design-system/test/components/badge" variant="outline" class="h-auto p-4 flex flex-col items-start text-left">
           <span class="font-semibold mb-1">Badge</span>
           <span class="text-sm text-muted-foreground">상태, 카운터, 태그, 인터랙션</span>
         </Button>
@@ -366,10 +361,10 @@
       <Button href="/" variant="secondary">
         홈으로 돌아가기
       </Button>
-      <Button href="/test-colors/custom" variant="outline">
+      <Button href="/design-system/test/colors/custom" variant="outline">
         커스텀 색상 테스트
       </Button>
-      <Button href="/test-theme" variant="ghost">
+      <Button href="/design-system/test/theme" variant="ghost">
         테마 검증 페이지
       </Button>
     </div>
