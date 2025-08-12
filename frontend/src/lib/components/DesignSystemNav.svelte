@@ -4,6 +4,9 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Card, CardContent } from '$lib/components/ui/card';
   
+  // 모바일 네비게이션 콜백
+  export let onNavigate: (() => void) | undefined = undefined;
+  
   // 네비게이션 메뉴 구조
   const navItems = [
     {
@@ -96,6 +99,7 @@
                     ? 'bg-primary text-primary-foreground shadow-sm' 
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:translate-x-1'
                 }`}
+                onclick={() => onNavigate?.()}
               >
                 <div class="flex items-center justify-between w-full">
                   <div class="flex items-center gap-2">
