@@ -45,25 +45,72 @@
   --ring: oklch(9% 0.035 259.7);
 }
 
-/* Dark mode */
+/* Dark mode - 자연스럽고 편안한 색상 */
 .dark {
-  --background: oklch(9% 0.035 259.7);
-  --foreground: oklch(98.7% 0.013 238.1);
-  --card: oklch(9% 0.035 259.7);
-  --card-foreground: oklch(98.7% 0.013 238.1);
-  --popover: oklch(9% 0.035 259.7);
-  --popover-foreground: oklch(98.7% 0.013 238.1);
-  --primary: oklch(98.7% 0.013 238.1);
-  --primary-foreground: oklch(20.8% 0.042 264.6);
-  --secondary: oklch(21.1% 0.032 258.3);
-  --secondary-foreground: oklch(98.7% 0.013 238.1);
-  --muted: oklch(21.1% 0.032 258.3);
-  --muted-foreground: oklch(68.9% 0.026 239.2);
-  --accent: oklch(21.1% 0.032 258.3);
-  --accent-foreground: oklch(98.7% 0.013 238.1);
-  --destructive: oklch(35.7% 0.199 29.2);
-  --destructive-foreground: oklch(98.7% 0.013 238.1);
-  --border: oklch(21.1% 0.032 258.3);
-  --input: oklch(21.1% 0.032 258.3);
-  --ring: oklch(88.6% 0.026 239.2);
+  --background: oklch(12% 0.015 260);
+  --foreground: oklch(85% 0.012 250);
+  --card: oklch(15% 0.018 260);
+  --card-foreground: oklch(85% 0.012 250);
+  --popover: oklch(15% 0.018 260);
+  --popover-foreground: oklch(85% 0.012 250);
+  --primary: oklch(65% 0.15 250);
+  --primary-foreground: oklch(98% 0.008 250);
+  --secondary: oklch(22% 0.025 260);
+  --secondary-foreground: oklch(78% 0.015 250);
+  --muted: oklch(20% 0.020 260);
+  --muted-foreground: oklch(60% 0.018 250);
+  --accent: oklch(25% 0.030 260);
+  --accent-foreground: oklch(85% 0.012 250);
+  --destructive: oklch(55% 0.180 25);
+  --destructive-foreground: oklch(95% 0.008 25);
+  --border: oklch(25% 0.025 260);
+  --input: oklch(22% 0.025 260);
+  --ring: oklch(65% 0.15 250);
+}
+
+/* 스크롤바 스타일링 */
+:root {
+  /* 라이트 모드 스크롤바 */
+  --scrollbar-track: oklch(96% 0.01 220);
+  --scrollbar-thumb: oklch(80% 0.02 220);
+  --scrollbar-thumb-hover: oklch(70% 0.03 220);
+}
+
+.dark {
+  /* 다크 모드 스크롤바 - 은은하고 자연스러운 색상 */
+  --scrollbar-track: oklch(12% 0.015 260);
+  --scrollbar-thumb: oklch(30% 0.025 260);
+  --scrollbar-thumb-hover: oklch(40% 0.030 260);
+}
+
+/* 웹킷 기반 브라우저 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
