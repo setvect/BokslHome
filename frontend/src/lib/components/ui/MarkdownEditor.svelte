@@ -1,5 +1,5 @@
 <script lang="ts">
-  // MarkdownEditor 컴포넌트 - 4단계: 테마 시스템 연동
+  // MarkdownEditor 컴포넌트 - 5단계: Mermaid 다이어그램 지원
   import { onMount, onDestroy } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
   import { markdown } from '@codemirror/lang-markdown';
@@ -7,6 +7,7 @@
   import { EditorState } from '@codemirror/state';
   import { marked } from 'marked';
   import { theme } from '$lib/stores/theme';
+  import mermaid from 'mermaid';
   
   // Props 정의
   let { 
@@ -14,13 +15,15 @@
     readOnly = false,
     height = '400px',
     showPreview = true,
-    onChange
+    onChange,
+    onImageUpload
   } = $props<{
     value?: string;
     readOnly?: boolean; 
     height?: string;
     showPreview?: boolean;
     onChange?: (value: string) => void;
+    onImageUpload?: (file: File) => Promise<string>;
   }>();
   
   // 상태 변수
@@ -29,6 +32,7 @@
   let editorView: EditorView | undefined;
   let previewHtml = $state('');
   let isDarkMode = $state(false);
+  let isFullscreen = $state(false);
   
   // 테마 감지 함수
   function detectTheme(): boolean {
@@ -50,10 +54,76 @@
     return htmlHasDark || window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
   
+  // Mermaid 설정
+  let mermaidInitialized = false;
+  
+  function initMermaid() {
+    if (mermaidInitialized) return;
+    
+    try {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isDarkMode ? 'dark' : 'default',
+        securityLevel: 'loose',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true
+        },
+        sequence: {
+          useMaxWidth: true,
+          actorMargin: 50,
+          boxMargin: 10,
+          boxTextMargin: 5,
+          noteMargin: 10,
+          messageMargin: 35
+        }
+      });
+      
+      mermaidInitialized = true;
+    } catch (error) {
+      console.error('Mermaid initialization error:', error);
+    }
+  }
+  
+  // Marked 커스텀 렌더러 설정
+  const renderer = new marked.Renderer();
+  
+  // 코드 블록 커스텀 렌더러 (Mermaid 지원)
+  renderer.code = function(token: any) {
+    const { text, lang, escaped } = token || {};
+    
+    try {
+      const codeText = text || '';
+      const actualLanguage = lang;
+      
+      if (actualLanguage === 'mermaid') {
+        const id = `mermaid-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+        const html = `<div class="mermaid-diagram mermaid-loading" data-id="${id}">${codeText}</div>`;
+        return html;
+      }
+      
+      // 일반 코드 블록
+      const escapedCode = codeText
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      
+      return `<pre><code class="language-${actualLanguage || ''}">${escapedCode}</code></pre>`;
+      
+    } catch (error) {
+      console.error('Code renderer error:', error, { token });
+      return `<pre><code style="color: red;">코드 렌더링 오류: ${error}</code></pre>`;
+    }
+  };
+  
   // Marked 설정
   marked.setOptions({
     breaks: true,
-    gfm: true
+    gfm: true,
+    renderer: renderer
   });
   
   // CodeMirror 확장 설정 (테마 반응형)
@@ -133,7 +203,73 @@
       return result;
     } catch (error) {
       console.error('Markdown parsing error:', error);
-      return `<p style="color: red;">마크다운 파싱 오류: ${error}</p>`;
+      // 에러 발생 시 원본 텍스트를 pre 태그로 감싸서 반환
+      const escapedMarkdown = markdown
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      return `<pre style="color: red; background: #fef2f2; padding: 12px; border-radius: 4px; border: 1px solid #fecaca;">
+마크다운 파싱 오류: ${error}
+
+원본 내용:
+${escapedMarkdown}
+</pre>`;
+    }
+  }
+  
+  // Mermaid 다이어그램 렌더링
+  async function renderMermaidDiagrams() {
+    if (typeof window === 'undefined') return;
+    
+    // Mermaid 초기화
+    initMermaid();
+    
+    // 다양한 선택자로 mermaid 요소 찾기
+    const selectors = [
+      '.preview-content .mermaid-diagram',
+      '.mermaid-diagram',
+      '[data-id*="mermaid"]'
+    ];
+    
+    let mermaidElements: NodeListOf<Element> | null = null;
+    for (const selector of selectors) {
+      mermaidElements = document.querySelectorAll(selector);
+      if (mermaidElements.length > 0) break;
+    }
+    
+    if (!mermaidElements || mermaidElements.length === 0) {
+      return;
+    }
+    
+    for (const element of mermaidElements) {
+      const htmlElement = element as HTMLElement;
+      const code = htmlElement.textContent || '';
+      const dataId = htmlElement.getAttribute('data-id') || `mermaid-${Date.now()}`;
+      
+      try {
+        // 기존 SVG가 있으면 제거
+        const existingSvg = htmlElement.querySelector('svg');
+        if (existingSvg) {
+          existingSvg.remove();
+        }
+        
+        // 코드가 비어있지 않은지 확인
+        if (!code.trim()) {
+          continue;
+        }
+        
+        // Mermaid 다이어그램 렌더링
+        const { svg } = await mermaid.render(dataId, code.trim());
+        htmlElement.innerHTML = svg;
+        
+        // 스타일 적용 및 로딩 클래스 제거
+        htmlElement.classList.remove('mermaid-loading');
+        htmlElement.classList.add('mermaid-rendered');
+        
+      } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        htmlElement.innerHTML = `<div class="mermaid-error">다이어그램 렌더링 오류: ${error}</div>`;
+      }
     }
   }
   
@@ -153,8 +289,16 @@
   
   // 실시간 미리보기 업데이트
   $effect(() => {
-    convertMarkdownToHtml(currentValue).then(html => {
+    convertMarkdownToHtml(currentValue).then(async (html) => {
       previewHtml = html;
+      
+      // DOM 업데이트를 위해 다음 틱에서 실행
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
+      // Mermaid 다이어그램이 포함된 경우에만 렌더링
+      if (html.includes('mermaid-diagram')) {
+        await renderMermaidDiagrams();
+      }
     });
   });
   
@@ -168,6 +312,11 @@
       const newIsDarkMode = detectTheme();
       if (newIsDarkMode !== isDarkMode) {
         isDarkMode = newIsDarkMode;
+        // 테마 변경 시 Mermaid 다시 초기화 및 렌더링
+        mermaidInitialized = false;
+        setTimeout(() => {
+          renderMermaidDiagrams();
+        }, 100);
       }
     });
     
@@ -182,6 +331,10 @@
       const newIsDarkMode = detectTheme();
       if (newIsDarkMode !== isDarkMode) {
         isDarkMode = newIsDarkMode;
+        mermaidInitialized = false;
+        setTimeout(() => {
+          renderMermaidDiagrams();
+        }, 100);
       }
     };
     
@@ -193,17 +346,25 @@
         const newIsDarkMode = detectTheme();
         if (newIsDarkMode !== isDarkMode) {
           isDarkMode = newIsDarkMode;
+          mermaidInitialized = false;
+          setTimeout(() => {
+            renderMermaidDiagrams();
+          }, 100);
         }
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
     
+    // ESC 키 이벤트 리스너 추가
+    window.addEventListener('keydown', handleKeydown);
+    
     // 정리 함수
     return () => {
       observer.disconnect();
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('keydown', handleKeydown);
     };
   });
   
@@ -211,10 +372,72 @@
   function togglePreview() {
     previewVisible = !previewVisible;
   }
+  
+  // 전체화면 토글 (7단계)
+  function toggleFullscreen() {
+    isFullscreen = !isFullscreen;
+  }
+  
+  // ESC 키 핸들러
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && isFullscreen) {
+      isFullscreen = false;
+    }
+  }
+  
+  // 클립보드 이미지 처리 (6단계)
+  async function mockImageUpload(file: File): Promise<string> {
+    // 백엔드 모킹: 실제로는 서버에 업로드하고 URL 반환
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // 가상의 업로드된 URL 생성 (실제로는 서버 응답)
+        const fileName = file.name || 'image.png';
+        const mockUrl = `https://example.com/uploads/${Date.now()}-${fileName}`;
+        resolve(mockUrl);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  // 클립보드 paste 이벤트 핸들러
+  async function handlePaste(event: ClipboardEvent) {
+    if (readOnly) return;
+    
+    const items = event.clipboardData?.items;
+    if (!items) return;
+    
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        event.preventDefault();
+        
+        const file = item.getAsFile();
+        if (!file) continue;
+        
+        try {
+          // 사용자 정의 업로드 함수가 있으면 사용, 없으면 기본 모킹 함수 사용
+          const imageUrl = onImageUpload ? await onImageUpload(file) : await mockImageUpload(file);
+          
+          // 현재 커서 위치에 마크다운 이미지 문법 삽입
+          const imageMarkdown = `![${file.name || 'image'}](${imageUrl})`;
+          
+          // 에디터에 이미지 마크다운 삽입
+          const newValue = currentValue + '\n\n' + imageMarkdown + '\n\n';
+          handleValueChange(newValue);
+          
+        } catch (error) {
+          console.error('이미지 업로드 실패:', error);
+          // TODO: 사용자에게 오류 메시지 표시
+        }
+        
+        break; // 첫 번째 이미지만 처리
+      }
+    }
+  }
 </script>
 
 <!-- 컴포넌트 구조 -->
-<div class="markdown-editor" style="height: {height};">
+<div class="markdown-editor" style="height: {height};" onpaste={handlePaste} class:fullscreen={isFullscreen}>
   <!-- 툴바 -->
   <div class="markdown-toolbar">
     <button 
@@ -224,7 +447,15 @@
     >
       {previewVisible ? '📝 편집만' : '👁️ 미리보기'}
     </button>
+    <button 
+      class="toolbar-btn" 
+      onclick={toggleFullscreen}
+      aria-label="전체화면 토글"
+    >
+      {isFullscreen ? '🗗 창모드' : '🗖 전체화면'}
+    </button>
     <span class="toolbar-title">Markdown Editor</span>
+    <span class="toolbar-info">📋 이미지 붙여넣기 지원 | ESC: 전체화면 해제</span>
   </div>
   
   <!-- 메인 영역: 2단 레이아웃 -->
@@ -258,6 +489,18 @@
   </div>
 </div>
 
+<!-- 전체화면 모달 배경 -->
+{#if isFullscreen}
+  <div 
+    class="fullscreen-backdrop" 
+    onclick={() => isFullscreen = false}
+    onkeydown={(e) => e.key === 'Enter' && (isFullscreen = false)}
+    role="button"
+    tabindex="0"
+    aria-label="전체화면 해제"
+  ></div>
+{/if}
+
 <style>
   .markdown-editor {
     border: 1px solid var(--border);
@@ -267,6 +510,31 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
+  }
+  
+  /* 전체화면 모드 (7단계) */
+  .markdown-editor.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    border-radius: 0;
+    border: none;
+  }
+  
+  .fullscreen-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
   }
   
   /* 툴바 */
@@ -297,6 +565,12 @@
   .toolbar-title {
     font-weight: 500;
     color: var(--muted-foreground);
+  }
+  
+  .toolbar-info {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    margin-left: auto;
   }
   
   /* 메인 컨텐츠 영역 */
@@ -467,6 +741,49 @@
   :global(.preview-content th) {
     background: var(--muted);
     font-weight: 600;
+  }
+  
+  /* Mermaid 다이어그램 스타일 */
+  :global(.preview-content .mermaid-diagram) {
+    margin: 1rem 0;
+    text-align: center;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  
+  /* 로딩 중인 Mermaid 다이어그램 숨김 */
+  :global(.preview-content .mermaid-diagram.mermaid-loading) {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  
+  :global(.preview-content .mermaid-diagram.mermaid-rendered) {
+    opacity: 1;
+    border: none;
+    padding: 0.5rem;
+    transition: opacity 0.2s ease;
+  }
+  
+  :global(.preview-content .mermaid-diagram svg) {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  :global(.preview-content .mermaid-error) {
+    color: #ef4444;
+    background: color-mix(in srgb, #ef4444 10%, transparent);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ef4444;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
   }
   
   /* 반응형 */
