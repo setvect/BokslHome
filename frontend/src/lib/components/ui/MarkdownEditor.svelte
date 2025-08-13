@@ -475,7 +475,12 @@ ${escapedMarkdown}
 </script>
 
 <!-- 컴포넌트 구조 -->
-<div class="markdown-editor" style="height: {height};" onpaste={handlePaste} class:fullscreen={isFullscreen}>
+<div 
+  class="markdown-editor" 
+  style="height: {isFullscreen ? '100vh' : height};" 
+  onpaste={handlePaste} 
+  class:fullscreen={isFullscreen}
+>
   <!-- 툴바 -->
   <div class="markdown-toolbar">
     <button 
@@ -529,17 +534,6 @@ ${escapedMarkdown}
   </div>
 </div>
 
-<!-- 전체화면 모달 배경 -->
-{#if isFullscreen}
-  <div 
-    class="fullscreen-backdrop" 
-    onclick={() => isFullscreen = false}
-    onkeydown={(e) => e.key === 'Enter' && (isFullscreen = false)}
-    role="button"
-    tabindex="0"
-    aria-label="전체화면 해제"
-  ></div>
-{/if}
 
 <style>
   .markdown-editor {
@@ -555,27 +549,20 @@ ${escapedMarkdown}
   
   /* 전체화면 모드 (7단계) */
   .markdown-editor.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
     z-index: 1000;
-    border-radius: 0;
-    border: none;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0;
   }
   
-  .fullscreen-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-  }
   
   /* 툴바 */
   .markdown-toolbar {
