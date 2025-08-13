@@ -5,13 +5,18 @@
   // SSR 안전: TinyMCE 로딩을 onMount에서 동적 import로 처리
 
   // Runes 모드: $props() 사용
-  let { value = '<p>여기에 내용을 입력하세요...</p>', readOnly = false } = $props<{
+  let { value = '<p>여기에 내용을 입력하세요...</p>', readOnly = false, onChange } = $props<{
     value?: string;
     readOnly?: boolean;
+    // 내용 변경 콜백(HTML)
+    onChange?: (html: string) => void;
   }>();
 
   let mountEl: HTMLElement;
   let editor: import('tinymce').Editor | undefined;
+  let isDark = $state(false);
+
+  // 디버깅 로그 제거
 
   onMount(async () => {
     // 1) TinyMCE 본체를 먼저 로드하고 전역에 노출
@@ -31,33 +36,76 @@
       import('tinymce/plugins/image')
     ]);
 
+    // 테마 상태 계산 및 리스너 설정
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const computeIsDark = () => {
+      const htmlDark = document.documentElement.classList.contains('dark');
+      let stored: 'light' | 'dark' | 'system' | null = null;
+      try { stored = (localStorage.getItem('theme') as any) || null; } catch {}
+      if (stored === 'dark') return true;
+      if (stored === 'light') return false;
+      // stored === 'system' 또는 없음 → 시스템 선호 사용, 단 htmlDark가 명시되면 우선
+      return htmlDark || prefersDark.matches;
+    };
+    isDark = computeIsDark();
+
+    const reinit = async () => {
+      const currentHtml = editor?.getContent?.() ?? value;
+      if (editor) {
+        await editor.remove();
+        editor = undefined;
+      }
       const created = await tinymce.init({
         target: mountEl,
         menubar: false,
-        plugins: 'code table link lists image',
-        // 최소 단계에서는 툴바를 숨기고 인라인 편집으로 전환해 즉시 입력 가능하게 함
-        inline: true,
-        toolbar: false,
-        readonly: readOnly,
-        // OSS 라이선스 동의
-        license_key: 'gpl',
-        // 정적 에셋 경로 지정(스킨/콘텐츠 CSS 404 방지)
+        branding: false,
+      license_key: 'gpl',
+        plugins: 'lists link image table code',
+        toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code',
+        inline: false,
+        skin: isDark ? 'oxide-dark' : 'oxide',
+        content_css: isDark ? 'dark' : 'default',
         base_url: '/tinymce',
-        // 콘텐츠 스타일을 현재 디자인 시스템 변수에 맞춤
-        content_css: false,
-        content_style: `
-          :root { color-scheme: dark light; }
-          html, body { margin: 0; padding: 0; background: transparent; color: var(--foreground); font: inherit; }
-          body { caret-color: var(--foreground); }
-          a { color: var(--primary); }
-          p { margin: 0 0 .5rem 0; }
-          table { width: 100%; border-collapse: collapse; }
-          td, th { border: 1px solid var(--border); padding: 4px 6px; }
-        `,
-        init_instance_callback: (ed: import('tinymce').Editor) => ed.setContent(value)
+        readonly: readOnly,
+        height: 360,
+        init_instance_callback: (ed: import('tinymce').Editor) => {
+          ed.setContent(currentHtml);
+          ed.on('Change KeyUp SetContent Undo Redo Input', () => {
+            onChange?.(ed.getContent());
+          });
+        }
       });
-    // init은 배열을 반환할 수 있으므로 첫 번째 인스턴스를 사용
-    editor = (Array.isArray(created) ? created[0] : created) as import('tinymce').Editor;
+      editor = (Array.isArray(created) ? created[0] : created) as import('tinymce').Editor;
+    };
+
+    await reinit();
+
+    const mo = new MutationObserver(async () => {
+      const next = computeIsDark();
+      if (next !== isDark) {
+        isDark = next;
+        await reinit();
+      }
+    });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    prefersDark.addEventListener('change', async () => {
+      const next = computeIsDark();
+      if (next !== isDark) {
+        isDark = next;
+        await reinit();
+      }
+    });
+
+    // storage 이벤트(다른 탭/윈도우에서 테마 변경) 대응
+    window.addEventListener('storage', async (e) => {
+      if (e.key === 'theme') {
+        const next = computeIsDark();
+        if (next !== isDark) {
+          isDark = next;
+          await reinit();
+        }
+      }
+    });
   });
 
   // 읽기 전용 모드 토글
@@ -68,12 +116,41 @@
   onDestroy(() => {
     editor?.remove();
   });
+
+  // 외부에서 소스 보기 다이얼로그를 열 수 있도록 메서드 노출
+  export function openSource(): void {
+    editor?.execCommand('mceCodeEditor');
+  }
+
+  // 외부에서 내용 제어를 위한 메서드 노출
+  export function getHTML(): string {
+    return editor?.getContent() ?? '';
+  }
+
+  export function setHTML(html: string): void {
+    editor?.setContent(html);
+  }
+
+  // 외부 value가 바뀌면 에디터에 반영 (읽기 전용이 아닐 때)
+  $effect(() => {
+    if (editor && typeof value === 'string') {
+      const current = editor.getContent();
+      if (current !== value) {
+        editor.setContent(value);
+      }
+    }
+  });
 </script>
 
 <div class="html-editor" bind:this={mountEl}></div>
 
 <style>
-  /* 2단계에서는 스타일을 추가하지 않음 */
+  /* 디자인 시스템 테마 변수를 상속 받아 가독성 확보 */
+  .html-editor {
+    color: var(--foreground);
+    background: transparent;
+  }
+  /* TinyMCE는 자체 스킨을 사용하므로 최소 래퍼 스타일만 유지 */
 </style>
 
 
