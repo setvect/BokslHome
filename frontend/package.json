@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "vite build",
+    "build": "npm run copy:tinymce && vite build",
     "dev": "vite dev",
     "preview": "vite preview",
+    "copy:tinymce": "mkdir -p static/tinymce && rsync -a --delete node_modules/tinymce/skins static/tinymce/ || (mkdir -p static/tinymce && cp -r node_modules/tinymce/skins static/tinymce/)",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check . && eslint .",
