@@ -33,8 +33,7 @@
         { name: 'Label', href: '/design-system/components/label', badge: 'stable' },
         { name: 'Badge', href: '/design-system/components/badge', badge: 'stable' },
         { name: 'Breadcrumb', href: '/design-system/components/breadcrumb', badge: 'stable' },
-        // 신규: HtmlEditor (TinyMCE) 미리보기
-        { name: 'HtmlEditor (TinyMCE)', href: '/design-system/components/editor', badge: 'beta' }
+        { name: 'HtmlEditor', href: '/design-system/components/editor', badge: 'beta' }
       ]
     },
     {
