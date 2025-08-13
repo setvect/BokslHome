@@ -1,5 +1,10 @@
 <script lang="ts">
-  // MarkdownEditor 컴포넌트 - 1단계: 기본 구조
+  // MarkdownEditor 컴포넌트 - 2단계: CodeMirror 통합
+  import { onMount, onDestroy } from 'svelte';
+  import CodeMirror from 'svelte-codemirror-editor';
+  import { markdown } from '@codemirror/lang-markdown';
+  import { EditorView } from '@codemirror/view';
+  import { EditorState } from '@codemirror/state';
   
   // Props 정의
   let { 
@@ -19,6 +24,31 @@
   // 상태 변수
   let currentValue = $state(value);
   let previewVisible = $state(showPreview);
+  let editorView: EditorView | undefined;
+  
+  // CodeMirror 확장 설정
+  const extensions = [
+    markdown(),
+    EditorView.theme({
+      '&': {
+        fontSize: '14px',
+        fontFamily: '"JetBrains Mono", "Fira Code", monospace'
+      },
+      '.cm-content': {
+        padding: '12px',
+        minHeight: 'calc(100% - 24px)'
+      },
+      '.cm-focused': {
+        outline: 'none'
+      },
+      '.cm-editor': {
+        height: '100%'
+      },
+      '.cm-scroller': {
+        fontFamily: 'inherit'
+      }
+    })
+  ];
   
   // 값 변경 핸들러
   function handleValueChange(newValue: string) {
@@ -58,16 +88,14 @@
   <div class="markdown-content" class:preview-hidden={!previewVisible}>
     <!-- 에디터 패널 -->
     <div class="editor-panel">
-      <div class="editor-placeholder">
-        <h3>📝 에디터 영역</h3>
-        <p>CodeMirror가 여기에 들어갑니다</p>
-        <textarea 
+      <div class="codemirror-container">
+        <CodeMirror
           bind:value={currentValue}
-          oninput={(e) => handleValueChange(e.currentTarget.value)}
-          readonly={readOnly}
-          placeholder="마크다운을 입력하세요..."
-          class="temp-textarea"
-        ></textarea>
+          {extensions}
+          {readOnly}
+          on:change={(e) => handleValueChange(e.detail)}
+          class="markdown-codemirror"
+        />
       </div>
     </div>
     
@@ -151,30 +179,44 @@
     min-width: 0; /* flex 자식의 최소 너비 문제 해결 */
   }
   
-  .editor-placeholder {
+  .codemirror-container {
     flex: 1;
-    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
-  
-  .temp-textarea {
-    flex: 1;
-    width: 100%;
+    background: var(--background);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 12px;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    resize: none;
-    outline: none;
+    overflow: hidden;
   }
   
-  .temp-textarea:focus {
-    border-color: var(--ring);
+  :global(.markdown-codemirror) {
+    height: 100%;
+    flex: 1;
+  }
+  
+  :global(.markdown-codemirror .cm-editor) {
+    height: 100%;
+    background: var(--background) !important;
+    color: var(--foreground) !important;
+  }
+  
+  :global(.markdown-codemirror .cm-content) {
+    background: var(--background) !important;
+    color: var(--foreground) !important;
+  }
+  
+  :global(.markdown-codemirror .cm-focused) {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+  
+  :global(.markdown-codemirror .cm-activeLine) {
+    background: var(--accent) !important;
+  }
+  
+  :global(.markdown-codemirror .cm-selectionBackground) {
+    background: var(--primary) !important;
+    opacity: 0.3;
   }
   
   /* 분할자 */

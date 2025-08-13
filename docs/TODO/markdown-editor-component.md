@@ -23,10 +23,10 @@ prismjs (코드 하이라이트)
 - [x] `MarkdownEditor.svelte` 기본 컴포넌트 생성
 - [x] 2단 레이아웃 CSS 구조 구현
 
-### 2단계: CodeMirror 에디터 구현
-- [ ] CodeMirror 6 설정 및 markdown 언어 지원
-- [ ] 에디터 기본 기능 (입력, 편집)
-- [ ] 실시간 내용 변경 감지
+### 2단계: CodeMirror 에디터 구현 ✅
+- [x] CodeMirror 6 설정 및 markdown 언어 지원
+- [x] 에디터 기본 기능 (입력, 편집)
+- [x] 실시간 내용 변경 감지
 
 ### 3단계: Marked 미리보기 구현
 - [ ] marked를 이용한 markdown → HTML 변환
