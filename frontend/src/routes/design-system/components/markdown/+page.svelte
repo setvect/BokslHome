@@ -382,6 +382,25 @@ flowchart TD
 <div class="container">
   <h1>MarkdownEditor</h1>
   
+  <!-- 컨트롤 버튼 -->
+  <section class="controls-section">
+    <button 
+      class="fetch-data-btn"
+      onclick={handleFetchData}
+    >
+      📄 데이터 가져오기
+    </button>
+  </section>
+
+  <!-- 에디터 -->
+  <section class="editor-section">
+    <MarkdownEditor 
+      bind:value={editorValue}
+      height="600px"
+      showPreview={false}  
+    />
+  </section>
+  
   <!-- Props 테이블 -->
   <section class="props-section">
     <h2>Props</h2>
@@ -429,25 +448,6 @@ flowchart TD
         <div>커스텀 이미지 업로드 함수</div>
       </div>
     </div>
-  </section>
-
-  <!-- 컨트롤 버튼 -->
-  <section class="controls-section">
-    <button 
-      class="fetch-data-btn"
-      onclick={handleFetchData}
-    >
-      📄 데이터 가져오기
-    </button>
-  </section>
-
-  <!-- 에디터 -->
-  <section class="editor-section">
-    <MarkdownEditor 
-      bind:value={editorValue}
-      height="600px"
-      showPreview={false}  
-    />
   </section>
 </div>
 

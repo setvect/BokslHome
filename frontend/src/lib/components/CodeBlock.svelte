@@ -80,10 +80,6 @@
 
 <style>
   /* Prism.js 기본 테마 (라이트 모드) */
-  pre[class*="language-"] {
-    background: hsl(var(--card));
-    color: hsl(var(--foreground));
-  }
   
   :global(.token.comment),
   :global(.token.prolog),

@@ -6,6 +6,20 @@
   import PropsTable from '$lib/components/PropsTable.svelte';
   import AccessibilityGuide from '$lib/components/AccessibilityGuide.svelte';
   
+  let copiedCode = $state('');
+  
+  async function copyCode(code: string, id: string) {
+    try {
+      await navigator.clipboard.writeText(code);
+      copiedCode = id;
+      setTimeout(() => {
+        copiedCode = '';
+      }, 2000);
+    } catch (err) {
+      console.error('복사 실패:', err);
+    }
+  }
+  
   const buttonVariants = [
     { 
       variant: 'default', 
