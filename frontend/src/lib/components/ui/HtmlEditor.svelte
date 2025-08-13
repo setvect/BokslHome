@@ -65,6 +65,7 @@
         inline: false,
         skin: isDark ? 'oxide-dark' : 'oxide',
         content_css: isDark ? 'dark' : 'default',
+        content_style: isDark ? 'body{color:#ccc !important;}' : '',
         base_url: '/tinymce',
         readonly: readOnly,
         height: 360,
@@ -149,6 +150,14 @@
   .html-editor {
     color: var(--foreground);
     background: transparent;
+  }
+  /* TinyMCE 포커스 시 외곽선 오버레이 투명도 조절 */
+  :global(.tox.tox-edit-focus .tox-edit-area::before) {
+    opacity: 0.3 !important;
+  }
+  /* 다크 모드에서 TinyMCE 툴바 아이콘 컬러 다운톤 */
+  :global(.dark .tox .tox-tbtn svg) {
+    fill: #ccc !important;
   }
   /* TinyMCE는 자체 스킨을 사용하므로 최소 래퍼 스타일만 유지 */
 </style>
