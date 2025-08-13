@@ -54,6 +54,11 @@ export const codeLanguages = (info: string) => {
 // CodeMirror 테마 생성
 export function createEditorTheme(isDarkMode: boolean) {
   return EditorView.theme({
+    // 커서 깜빡임 애니메이션 키프레임
+    '@keyframes cm-blink': {
+      '0%, 50%': { opacity: '1' },
+      '51%, 100%': { opacity: '0' }
+    },
     '&': {
       fontSize: '14px',
       fontFamily: '"JetBrains Mono", "Fira Code", monospace',
@@ -67,6 +72,13 @@ export function createEditorTheme(isDarkMode: boolean) {
     },
     '.cm-focused': {
       outline: 'none'
+    },
+    '.cm-cursor, .cm-dropCursor': {
+      borderLeft: isDarkMode ? '2px solid #60a5fa' : '2px solid #2563eb',
+      borderRadius: '1px'
+    },
+    '.cm-cursor': {
+      animation: 'cm-blink 1.2s infinite'
     },
     '.cm-editor': {
       height: '100%',

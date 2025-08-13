@@ -1,6 +1,14 @@
 <script lang="ts">
   import MarkdownEditor from '$lib/components/ui/MarkdownEditor.svelte';
   
+  // 데이터 가져오기 핸들러
+  function handleFetchData() {
+    console.log('===== 마크다운 에디터 내용 =====');
+    console.log(editorValue);
+    console.log('===============================');
+    console.log('길이:', editorValue.length, '문자');
+  }
+
   let editorValue = `# MarkdownEditor 컴포넌트
 
 실시간 마크다운 편집과 미리보기를 제공하는 컴포넌트입니다.
@@ -423,11 +431,22 @@ flowchart TD
     </div>
   </section>
 
+  <!-- 컨트롤 버튼 -->
+  <section class="controls-section">
+    <button 
+      class="fetch-data-btn"
+      onclick={handleFetchData}
+    >
+      📄 데이터 가져오기
+    </button>
+  </section>
+
   <!-- 에디터 -->
   <section class="editor-section">
     <MarkdownEditor 
       bind:value={editorValue}
       height="600px"
+      showPreview={false}  
     />
   </section>
 </div>
@@ -455,6 +474,29 @@ flowchart TD
     font-weight: 600;
     margin-bottom: 16px;
     color: var(--foreground);
+  }
+
+  .controls-section {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .fetch-data-btn {
+    padding: 8px 16px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .fetch-data-btn:hover {
+    background: var(--primary)/90;
+    opacity: 0.9;
   }
 
   .props-table {
