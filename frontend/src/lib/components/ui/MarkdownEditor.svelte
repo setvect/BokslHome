@@ -1,11 +1,25 @@
 <script lang="ts">
-  // MarkdownEditor 컴포넌트 - 5단계: Mermaid 다이어그램 지원
-  import { markdown } from '@codemirror/lang-markdown';
+  // MarkdownEditor 컴포넌트 - 코드 하이라이팅 지원
+  import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+  import { javascript } from '@codemirror/lang-javascript';
+  import { python } from '@codemirror/lang-python';
+  import { java } from '@codemirror/lang-java';
+  import { html } from '@codemirror/lang-html';
+  import { css } from '@codemirror/lang-css';
+  import { json } from '@codemirror/lang-json';
   import { EditorView } from '@codemirror/view';
+  import { StreamLanguage } from '@codemirror/language';
+  import { yaml } from '@codemirror/legacy-modes/mode/yaml';
+  import { shell } from '@codemirror/legacy-modes/mode/shell';
+  import { go } from '@codemirror/legacy-modes/mode/go';
+  import { rust } from '@codemirror/legacy-modes/mode/rust';
   import { marked } from 'marked';
   import mermaid from 'mermaid';
   import { onMount } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
+  
+  // Prism.js 동적 import로 브라우저 환경에서만 로드
+  let Prism: any = null;
   
   // Props 정의
   let { 
@@ -30,7 +44,6 @@
   let previewHtml = $state('');
   let isDarkMode = $state(false);
   let isFullscreen = $state(false);
-  let codemirrorComponent: any;
   let editorView: any; // CodeMirror EditorView 인스턴스
   
   // 테마 감지 함수
@@ -56,10 +69,57 @@
   // Mermaid 설정
   let mermaidInitialized = false;
   
-  function initMermaid() {
-    if (mermaidInitialized) return;
+  // Prism.js 초기화
+  let prismInitialized = false;
+  
+  async function initPrism() {
+    if (prismInitialized || typeof window === 'undefined') return;
     
     try {
+      // Prism.js와 필요한 언어 컴포넌트들 동적 로드
+      const prismModule = await import('prismjs');
+      Prism = prismModule.default;
+      
+      // 의존성 순서를 고려한 언어 로딩 (일부 언어는 다른 언어에 의존함)
+      const basicLanguages = [
+        { name: 'json', loader: () => import('prismjs/components/prism-json' as any) },
+        { name: 'yaml', loader: () => import('prismjs/components/prism-yaml' as any) },
+        { name: 'bash', loader: () => import('prismjs/components/prism-bash' as any) },
+        { name: 'sql', loader: () => import('prismjs/components/prism-sql' as any) }
+      ];
+      
+      const advancedLanguages = [
+        { name: 'typescript', loader: () => import('prismjs/components/prism-typescript' as any) },
+        { name: 'python', loader: () => import('prismjs/components/prism-python' as any) },
+        { name: 'java', loader: () => import('prismjs/components/prism-java' as any) },
+        { name: 'go', loader: () => import('prismjs/components/prism-go' as any) },
+        { name: 'rust', loader: () => import('prismjs/components/prism-rust' as any) }
+      ];
+      
+      const allLanguageLoaders = [...basicLanguages, ...advancedLanguages];
+      
+      // 각 언어를 개별적으로 로드하여 오류 발생 시에도 다른 언어는 작동하도록 함
+      for (const { name, loader } of allLanguageLoaders) {
+        try {
+          await loader();
+          // 언어가 실제로 로드되었는지 확인
+          if (Prism.languages[name]) {
+            // 언어 로드 성공
+          }
+        } catch (error) {
+          // 언어 로드 실패 (무시)
+        }
+      }
+      
+      prismInitialized = true;
+    } catch (error) {
+      console.error('Prism.js 초기화 오류:', error);
+    }
+  }
+  
+  function initMermaid() {
+    try {
+      // 항상 새로운 설정으로 초기화 (테마 변경 시)
       mermaid.initialize({
         startOnLoad: false,
         theme: isDarkMode ? 'dark' : 'default',
@@ -88,21 +148,22 @@
   // Marked 커스텀 렌더러 설정
   const renderer = new marked.Renderer();
   
-  // 코드 블록 커스텀 렌더러 (Mermaid 지원)
+  // 코드 블록 커스텀 렌더러 (Mermaid + Prism.js 지원)
   renderer.code = function(token: any) {
     const { text, lang } = token || {};
     
     try {
       const codeText = text || '';
-      const actualLanguage = lang;
+      const actualLanguage = lang || '';
       
       if (actualLanguage === 'mermaid') {
         const id = `mermaid-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-        const html = `<div class="mermaid-diagram mermaid-loading" data-id="${id}">${codeText}</div>`;
+        // 원본 코드를 data-code 속성에 저장하고, div 내부는 비워둠
+        const html = `<div class="mermaid-diagram mermaid-loading" data-id="${id}" data-code="${codeText.replace(/"/g, '&quot;')}"></div>`;
         return html;
       }
       
-      // 일반 코드 블록
+      // 일반 코드 블록 - Prism.js 클래스 추가
       const escapedCode = codeText
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -110,7 +171,9 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
       
-      return `<pre><code class="language-${actualLanguage || ''}">${escapedCode}</code></pre>`;
+      // Prism.js가 인식할 수 있도록 language- 클래스 추가
+      const languageClass = actualLanguage ? `language-${actualLanguage}` : 'language-text';
+      return `<pre class="code-block ${languageClass}"><code class="${languageClass}" data-lang="${actualLanguage}">${escapedCode}</code></pre>`;
       
     } catch (error) {
       console.error('Code renderer error:', error, { token });
@@ -120,14 +183,54 @@
   
   // Marked 설정
   marked.setOptions({
-    breaks: true,
+    breaks: false,
     gfm: true,
     renderer: renderer
   });
   
+  // 언어 맵 함수 생성 (CodeMirror가 요구하는 형식)
+  const codeLanguages = (info: string) => {
+    const lang = info.toLowerCase();
+    
+    switch (lang) {
+      case 'javascript':
+      case 'js':
+        return javascript().language;
+      case 'typescript':
+      case 'ts':
+        return javascript({ typescript: true }).language;
+      case 'python':
+      case 'py':
+        return python().language;
+      case 'java':
+        return java().language;
+      case 'html':
+        return html().language;
+      case 'css':
+        return css().language;
+      case 'json':
+        return json().language;
+      case 'yaml':
+      case 'yml':
+        return StreamLanguage.define(yaml);
+      case 'bash':
+      case 'sh':
+      case 'shell':
+        return StreamLanguage.define(shell);
+      case 'go':
+        return StreamLanguage.define(go);
+      case 'rust':
+        return StreamLanguage.define(rust);
+      default:
+        return null;
+    }
+  };
+
   // CodeMirror 확장 설정 (테마 반응형)
   const extensions = $derived([
-    markdown(),
+    markdown({
+      codeLanguages: codeLanguages
+    }),
     EditorView.theme({
       '&': {
         fontSize: '14px',
@@ -226,6 +329,56 @@ ${escapedMarkdown}
     }
   }
   
+  // Prism.js 코드 하이라이팅 적용
+  async function applySyntaxHighlighting() {
+    if (typeof window === 'undefined') return;
+    
+    // Prism 초기화
+    await initPrism();
+    if (!prismInitialized || !Prism) {
+      return;
+    }
+    
+    // 코드 블록 찾기
+    const codeBlocks = document.querySelectorAll('.preview-content pre code[data-lang]');
+    
+    for (const codeBlock of codeBlocks) {
+      const htmlElement = codeBlock as HTMLElement;
+      const lang = htmlElement.getAttribute('data-lang') || '';
+      
+      if (!lang) continue;
+      
+      try {
+        // 언어별 매핑 (일부 언어는 다른 이름으로 등록됨)
+        const languageMap: { [key: string]: string } = {
+          'js': 'javascript',
+          'ts': 'typescript',
+          'py': 'python',
+          'sh': 'bash',
+          'shell': 'bash',
+          'yml': 'yaml'
+        };
+        
+        const actualLang = languageMap[lang] || lang;
+        
+        // 언어별 하이라이팅 적용
+        if (Prism.languages[actualLang]) {
+          const code = htmlElement.textContent || '';
+          try {
+            const highlightedCode = Prism.highlight(code, Prism.languages[actualLang], actualLang);
+            htmlElement.innerHTML = highlightedCode;
+            htmlElement.classList.add('syntax-highlighted');
+          } catch (highlightError) {
+            // 하이라이팅 실패 시 원본 코드 유지
+          }
+        }
+      } catch (error) {
+        console.error(`Syntax highlighting error for ${lang}:`, error);
+        // 오류 발생 시 원본 코드 유지
+      }
+    }
+  }
+  
   // Mermaid 다이어그램 렌더링
   async function renderMermaidDiagrams() {
     if (typeof window === 'undefined') return;
@@ -252,32 +405,53 @@ ${escapedMarkdown}
     
     for (const element of mermaidElements) {
       const htmlElement = element as HTMLElement;
-      const code = htmlElement.textContent || '';
+      // 원본 코드를 data-code 속성에서 가져옴
+      const code = htmlElement.getAttribute('data-code') || htmlElement.textContent || '';
       const dataId = htmlElement.getAttribute('data-id') || `mermaid-${Date.now()}`;
       
       try {
-        // 기존 SVG가 있으면 제거
-        const existingSvg = htmlElement.querySelector('svg');
-        if (existingSvg) {
-          existingSvg.remove();
-        }
-        
         // 코드가 비어있지 않은지 확인
         if (!code.trim()) {
           continue;
         }
         
-        // Mermaid 다이어그램 렌더링
-        const { svg } = await mermaid.render(dataId, code.trim());
-        htmlElement.innerHTML = svg;
+        // 기존 내용 제거 (SVG나 오류 메시지)
+        htmlElement.innerHTML = '';
         
-        // 스타일 적용 및 로딩 클래스 제거
-        htmlElement.classList.remove('mermaid-loading');
-        htmlElement.classList.add('mermaid-rendered');
+        // 로딩 상태로 설정
+        htmlElement.classList.remove('mermaid-rendered', 'mermaid-error');
+        htmlElement.classList.add('mermaid-loading');
+        
+        try {
+          // HTML 엔티티 디코딩
+          const decodedCode = code.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+          
+          // 새로운 ID로 렌더링 (테마 변경 시 충돌 방지)
+          const renderId = `${dataId}-${Date.now()}`;
+          
+          // Mermaid 다이어그램 렌더링
+          const { svg } = await mermaid.render(renderId, decodedCode.trim());
+          htmlElement.innerHTML = svg;
+          
+          // 스타일 적용 및 로딩 클래스 제거
+          htmlElement.classList.remove('mermaid-loading');
+          htmlElement.classList.add('mermaid-rendered');
+          
+        } catch (renderError) {
+          console.error('Mermaid diagram rendering failed:', renderError);
+          // 렌더링 실패 시 원본 코드 표시
+          const decodedCode = code.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+          const errorMessage = renderError instanceof Error ? renderError.message : String(renderError);
+          htmlElement.innerHTML = `<pre style="color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 12px; border-radius: 4px; border: 1px solid #ef4444; font-family: monospace; white-space: pre-wrap;">\n❌ 다이어그램 렌더링 실패:\n${errorMessage}\n\n📝 원본 코드:\n${decodedCode.trim()}\n</pre>`;
+          htmlElement.classList.remove('mermaid-loading');
+          htmlElement.classList.add('mermaid-error');
+        }
         
       } catch (error) {
         console.error('Mermaid rendering error:', error);
         htmlElement.innerHTML = `<div class="mermaid-error">다이어그램 렌더링 오류: ${error}</div>`;
+        htmlElement.classList.remove('mermaid-loading');
+        htmlElement.classList.add('mermaid-error');
       }
     }
   }
@@ -304,6 +478,9 @@ ${escapedMarkdown}
       // DOM 업데이트를 위해 다음 틱에서 실행
       await new Promise(resolve => setTimeout(resolve, 0));
       
+      // Prism.js 코드 하이라이팅 적용
+      await applySyntaxHighlighting();
+      
       // Mermaid 다이어그램이 포함된 경우에만 렌더링
       if (html.includes('mermaid-diagram')) {
         await renderMermaidDiagrams();
@@ -316,6 +493,9 @@ ${escapedMarkdown}
     // 초기 테마 설정
     isDarkMode = detectTheme();
     
+    // Prism.js 초기화
+    initPrism();
+    
     // HTML 클래스 변화 감지 (MutationObserver)
     const observer = new MutationObserver(() => {
       const newIsDarkMode = detectTheme();
@@ -324,6 +504,7 @@ ${escapedMarkdown}
         // 테마 변경 시 Mermaid 다시 초기화 및 렌더링
         mermaidInitialized = false;
         setTimeout(() => {
+          initMermaid();
           renderMermaidDiagrams();
         }, 100);
       }
@@ -342,6 +523,7 @@ ${escapedMarkdown}
         isDarkMode = newIsDarkMode;
         mermaidInitialized = false;
         setTimeout(() => {
+          initMermaid();
           renderMermaidDiagrams();
         }, 100);
       }
@@ -357,6 +539,7 @@ ${escapedMarkdown}
           isDarkMode = newIsDarkMode;
           mermaidInitialized = false;
           setTimeout(() => {
+            initMermaid();
             renderMermaidDiagrams();
           }, 100);
         }
@@ -507,7 +690,6 @@ ${escapedMarkdown}
     <div class="editor-panel">
       <div class="codemirror-container">
         <CodeMirror
-          bind:this={codemirrorComponent}
           bind:value={currentValue}
           {extensions}
           readonly={readOnly}
@@ -767,6 +949,130 @@ ${escapedMarkdown}
     background: none;
     padding: 0;
     font-size: 0.875rem;
+  }
+  
+  /* Prism.js 코드 하이라이팅 스타일 */
+  :global(.preview-content .code-block) {
+    position: relative;
+    background: var(--muted) !important;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    overflow: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  
+  /* 토큰별 스타일링 - 라이트 모드 */
+  :global(.preview-content .token.comment),
+  :global(.preview-content .token.prolog),
+  :global(.preview-content .token.doctype),
+  :global(.preview-content .token.cdata) {
+    color: #6a737d;
+    font-style: italic;
+  }
+  
+  :global(.preview-content .token.punctuation) {
+    color: #586069;
+  }
+  
+  :global(.preview-content .token.property),
+  :global(.preview-content .token.tag),
+  :global(.preview-content .token.boolean),
+  :global(.preview-content .token.number),
+  :global(.preview-content .token.constant),
+  :global(.preview-content .token.symbol),
+  :global(.preview-content .token.deleted) {
+    color: #d73a49;
+  }
+  
+  :global(.preview-content .token.selector),
+  :global(.preview-content .token.attr-name),
+  :global(.preview-content .token.string),
+  :global(.preview-content .token.char),
+  :global(.preview-content .token.builtin),
+  :global(.preview-content .token.inserted) {
+    color: #032f62;
+  }
+  
+  :global(.preview-content .token.operator),
+  :global(.preview-content .token.entity),
+  :global(.preview-content .token.url),
+  :global(.preview-content .language-css .token.string),
+  :global(.preview-content .style .token.string) {
+    color: #d73a49;
+  }
+  
+  :global(.preview-content .token.atrule),
+  :global(.preview-content .token.attr-value),
+  :global(.preview-content .token.keyword) {
+    color: #d73a49;
+  }
+  
+  :global(.preview-content .token.function),
+  :global(.preview-content .token.class-name) {
+    color: #6f42c1;
+  }
+  
+  :global(.preview-content .token.regex),
+  :global(.preview-content .token.important),
+  :global(.preview-content .token.variable) {
+    color: #e36209;
+  }
+  
+  /* 다크 모드에서의 토큰 스타일링 */
+  :global(.dark .preview-content .token.comment),
+  :global(.dark .preview-content .token.prolog),
+  :global(.dark .preview-content .token.doctype),
+  :global(.dark .preview-content .token.cdata) {
+    color: #8b949e;
+    font-style: italic;
+  }
+  
+  :global(.dark .preview-content .token.punctuation) {
+    color: #c9d1d9;
+  }
+  
+  :global(.dark .preview-content .token.property),
+  :global(.dark .preview-content .token.tag),
+  :global(.dark .preview-content .token.boolean),
+  :global(.dark .preview-content .token.number),
+  :global(.dark .preview-content .token.constant),
+  :global(.dark .preview-content .token.symbol),
+  :global(.dark .preview-content .token.deleted) {
+    color: #f85149;
+  }
+  
+  :global(.dark .preview-content .token.selector),
+  :global(.dark .preview-content .token.attr-name),
+  :global(.dark .preview-content .token.string),
+  :global(.dark .preview-content .token.char),
+  :global(.dark .preview-content .token.builtin),
+  :global(.dark .preview-content .token.inserted) {
+    color: #a5d6ff;
+  }
+  
+  :global(.dark .preview-content .token.operator),
+  :global(.dark .preview-content .token.entity),
+  :global(.dark .preview-content .token.url),
+  :global(.dark .preview-content .language-css .token.string),
+  :global(.dark .preview-content .style .token.string) {
+    color: #f85149;
+  }
+  
+  :global(.dark .preview-content .token.atrule),
+  :global(.dark .preview-content .token.attr-value),
+  :global(.dark .preview-content .token.keyword) {
+    color: #f85149;
+  }
+  
+  :global(.dark .preview-content .token.function),
+  :global(.dark .preview-content .token.class-name) {
+    color: #d2a8ff;
+  }
+  
+  :global(.dark .preview-content .token.regex),
+  :global(.dark .preview-content .token.important),
+  :global(.dark .preview-content .token.variable) {
+    color: #ffa657;
   }
   
   :global(.preview-content ul, .preview-content ol) {
