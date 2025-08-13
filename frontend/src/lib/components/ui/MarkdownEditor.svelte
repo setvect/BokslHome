@@ -27,10 +27,11 @@
   // 상태 변수
   let currentValue = $state(value);
   let previewVisible = $state(showPreview);
-  let editorView: EditorView | undefined;
   let previewHtml = $state('');
   let isDarkMode = $state(false);
   let isFullscreen = $state(false);
+  let codemirrorComponent: any;
+  let editorView: any; // CodeMirror EditorView 인스턴스
   
   // 테마 감지 함수
   function detectTheme(): boolean {
@@ -89,7 +90,7 @@
   
   // 코드 블록 커스텀 렌더러 (Mermaid 지원)
   renderer.code = function(token: any) {
-    const { text, lang, escaped } = token || {};
+    const { text, lang } = token || {};
     
     try {
       const codeText = text || '';
@@ -381,6 +382,38 @@ ${escapedMarkdown}
     previewVisible = !previewVisible;
   }
   
+  // 커서 위치에 텍스트 삽입 (CodeMirror API 사용)
+  function insertAtCursorPosition(textToInsert: string) {
+    if (editorView) {
+      try {
+        const state = editorView.state;
+        const selection = state.selection.main;
+        const cursorPos = selection.head;
+        
+        // CodeMirror API로 텍스트 삽입
+        editorView.dispatch({
+          changes: {
+            from: cursorPos,
+            to: cursorPos,
+            insert: textToInsert
+          },
+          selection: {
+            anchor: cursorPos + textToInsert.length,
+            head: cursorPos + textToInsert.length
+          }
+        });
+        
+        return;
+      } catch (error) {
+        console.error('CodeMirror API 사용 실패:', error);
+      }
+    }
+    
+    // 폴백: 텍스트 끝에 추가
+    const newValue = currentValue + textToInsert;
+    handleValueChange(newValue);
+  }
+  
   // 전체화면 토글 (7단계)
   function toggleFullscreen() {
     isFullscreen = !isFullscreen;
@@ -428,10 +461,7 @@ ${escapedMarkdown}
           
           // 현재 커서 위치에 마크다운 이미지 문법 삽입
           const imageMarkdown = `![${file.name || 'image'}](${imageUrl})`;
-          
-          // 에디터에 이미지 마크다운 삽입
-          const newValue = currentValue + '\n\n' + imageMarkdown + '\n\n';
-          handleValueChange(newValue);
+          insertAtCursorPosition(imageMarkdown);
           
         } catch (error) {
           console.error('이미지 업로드 실패:', error);
@@ -472,10 +502,12 @@ ${escapedMarkdown}
     <div class="editor-panel">
       <div class="codemirror-container">
         <CodeMirror
+          bind:this={codemirrorComponent}
           bind:value={currentValue}
           {extensions}
           readonly={readOnly}
           on:change={(e) => handleValueChange(e.detail)}
+          on:ready={(e) => editorView = e.detail}
           class="markdown-codemirror"
         />
       </div>
