@@ -147,7 +147,9 @@
         backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff'
       },
       '.cm-scroller': {
-        fontFamily: 'inherit'
+        fontFamily: 'inherit',
+        overflow: 'auto',
+        maxHeight: '100%'
       },
       '.cm-activeLine': {
         backgroundColor: isDarkMode ? '#1c1c1c' : '#f1f5f9'
@@ -584,6 +586,7 @@ ${escapedMarkdown}
     display: flex;
     flex: 1;
     overflow: hidden;
+    min-height: 0; /* flex 자식의 최소 높이 문제 해결 */
   }
   
   .markdown-content.preview-hidden .editor-panel {
@@ -596,6 +599,8 @@ ${escapedMarkdown}
     display: flex;
     flex-direction: column;
     min-width: 0; /* flex 자식의 최소 너비 문제 해결 */
+    min-height: 0; /* flex 자식의 최소 높이 문제 해결 */
+    overflow: hidden;
   }
   
   .codemirror-container {
@@ -606,11 +611,14 @@ ${escapedMarkdown}
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
+    min-height: 0; /* flex 자식의 스크롤 문제 해결 */
   }
   
   :global(.markdown-codemirror) {
     height: 100%;
     flex: 1;
+    min-height: 0;
+    overflow: auto;
   }
   
   :global(.markdown-codemirror .cm-focused) {
