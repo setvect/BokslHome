@@ -1,11 +1,12 @@
 <script lang="ts">
-  // MarkdownEditor 컴포넌트 - 3단계: Marked 미리보기 통합
+  // MarkdownEditor 컴포넌트 - 4단계: 테마 시스템 연동
   import { onMount, onDestroy } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorView } from '@codemirror/view';
   import { EditorState } from '@codemirror/state';
   import { marked } from 'marked';
+  import { theme } from '$lib/stores/theme';
   
   // Props 정의
   let { 
@@ -27,43 +28,109 @@
   let previewVisible = $state(showPreview);
   let editorView: EditorView | undefined;
   let previewHtml = $state('');
+  let isDarkMode = $state(false);
+  
+  // 테마 감지 함수
+  function detectTheme(): boolean {
+    if (typeof window === 'undefined') return false;
+    
+    // HTML 클래스에서 다크 모드 감지
+    const htmlHasDark = document.documentElement.classList.contains('dark');
+    
+    // localStorage에서 테마 설정 확인
+    let storedTheme: string | null = null;
+    try {
+      storedTheme = localStorage.getItem('theme');
+    } catch {}
+    
+    if (storedTheme === 'dark') return true;
+    if (storedTheme === 'light') return false;
+    
+    // system 모드이거나 설정이 없으면 HTML 클래스 또는 시스템 선호도 사용
+    return htmlHasDark || window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
   
   // Marked 설정
   marked.setOptions({
     breaks: true,
-    gfm: true,
-    headerIds: false,
-    mangle: false
+    gfm: true
   });
   
-  // CodeMirror 확장 설정
-  const extensions = [
+  // CodeMirror 확장 설정 (테마 반응형)
+  const extensions = $derived([
     markdown(),
     EditorView.theme({
       '&': {
         fontSize: '14px',
-        fontFamily: '"JetBrains Mono", "Fira Code", monospace'
+        fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+        backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff'
       },
       '.cm-content': {
         padding: '12px',
-        minHeight: 'calc(100% - 24px)'
+        minHeight: 'calc(100% - 24px)',
+        backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+        color: isDarkMode ? '#fafafa' : '#09090b'
       },
       '.cm-focused': {
         outline: 'none'
       },
       '.cm-editor': {
-        height: '100%'
+        height: '100%',
+        backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff'
       },
       '.cm-scroller': {
         fontFamily: 'inherit'
+      },
+      '.cm-activeLine': {
+        backgroundColor: isDarkMode ? '#1c1c1c' : '#f1f5f9'
+      },
+      '.cm-selectionBackground': {
+        backgroundColor: isDarkMode ? '#3b82f6' : '#2563eb',
+        opacity: '0.3'
+      },
+      '.cm-gutters': {
+        backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+        color: isDarkMode ? '#71717a' : '#71717a',
+        border: 'none'
+      },
+      '.cm-lineNumbers .cm-gutterElement': {
+        color: isDarkMode ? '#52525b' : '#a1a1aa'
+      },
+      // Markdown 구문 하이라이트 색상
+      '.cm-header': {
+        color: isDarkMode ? '#60a5fa' : '#2563eb',
+        fontWeight: '600'
+      },
+      '.cm-strong': {
+        color: isDarkMode ? '#fbbf24' : '#d97706',
+        fontWeight: '600'
+      },
+      '.cm-emphasis': {
+        color: isDarkMode ? '#a78bfa' : '#7c3aed',
+        fontStyle: 'italic'
+      },
+      '.cm-monospace': {
+        color: isDarkMode ? '#34d399' : '#059669',
+        backgroundColor: isDarkMode ? '#1c1c1c' : '#f1f5f9',
+        padding: '2px 4px',
+        borderRadius: '3px'
+      },
+      '.cm-link': {
+        color: isDarkMode ? '#60a5fa' : '#2563eb',
+        textDecoration: 'underline'
+      },
+      '.cm-quote': {
+        color: isDarkMode ? '#9ca3af' : '#6b7280',
+        fontStyle: 'italic'
       }
     })
-  ];
+  ]);
   
   // Markdown → HTML 변환
-  function convertMarkdownToHtml(markdown: string): string {
+  async function convertMarkdownToHtml(markdown: string): Promise<string> {
     try {
-      return marked.parse(markdown);
+      const result = await marked.parse(markdown);
+      return result;
     } catch (error) {
       console.error('Markdown parsing error:', error);
       return `<p style="color: red;">마크다운 파싱 오류: ${error}</p>`;
@@ -86,7 +153,58 @@
   
   // 실시간 미리보기 업데이트
   $effect(() => {
-    previewHtml = convertMarkdownToHtml(currentValue);
+    convertMarkdownToHtml(currentValue).then(html => {
+      previewHtml = html;
+    });
+  });
+  
+  // 테마 변화 감지 및 업데이트
+  onMount(() => {
+    // 초기 테마 설정
+    isDarkMode = detectTheme();
+    
+    // HTML 클래스 변화 감지 (MutationObserver)
+    const observer = new MutationObserver(() => {
+      const newIsDarkMode = detectTheme();
+      if (newIsDarkMode !== isDarkMode) {
+        isDarkMode = newIsDarkMode;
+      }
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // 시스템 테마 변화 감지
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = () => {
+      const newIsDarkMode = detectTheme();
+      if (newIsDarkMode !== isDarkMode) {
+        isDarkMode = newIsDarkMode;
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    
+    // localStorage 변화 감지 (다른 탭에서 테마 변경)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        const newIsDarkMode = detectTheme();
+        if (newIsDarkMode !== isDarkMode) {
+          isDarkMode = newIsDarkMode;
+        }
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // 정리 함수
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   });
   
   // 미리보기 토글
@@ -117,7 +235,7 @@
         <CodeMirror
           bind:value={currentValue}
           {extensions}
-          {readOnly}
+          readonly={readOnly}
           on:change={(e) => handleValueChange(e.detail)}
           class="markdown-codemirror"
         />
@@ -215,29 +333,9 @@
     flex: 1;
   }
   
-  :global(.markdown-codemirror .cm-editor) {
-    height: 100%;
-    background: var(--background) !important;
-    color: var(--foreground) !important;
-  }
-  
-  :global(.markdown-codemirror .cm-content) {
-    background: var(--background) !important;
-    color: var(--foreground) !important;
-  }
-  
   :global(.markdown-codemirror .cm-focused) {
     outline: 2px solid var(--ring);
     outline-offset: -2px;
-  }
-  
-  :global(.markdown-codemirror .cm-activeLine) {
-    background: var(--accent) !important;
-  }
-  
-  :global(.markdown-codemirror .cm-selectionBackground) {
-    background: var(--primary) !important;
-    opacity: 0.3;
   }
   
   /* 분할자 */
