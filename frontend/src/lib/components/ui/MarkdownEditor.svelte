@@ -1,10 +1,11 @@
 <script lang="ts">
-  // MarkdownEditor 컴포넌트 - 2단계: CodeMirror 통합
+  // MarkdownEditor 컴포넌트 - 3단계: Marked 미리보기 통합
   import { onMount, onDestroy } from 'svelte';
   import CodeMirror from 'svelte-codemirror-editor';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorView } from '@codemirror/view';
   import { EditorState } from '@codemirror/state';
+  import { marked } from 'marked';
   
   // Props 정의
   let { 
@@ -25,6 +26,15 @@
   let currentValue = $state(value);
   let previewVisible = $state(showPreview);
   let editorView: EditorView | undefined;
+  let previewHtml = $state('');
+  
+  // Marked 설정
+  marked.setOptions({
+    breaks: true,
+    gfm: true,
+    headerIds: false,
+    mangle: false
+  });
   
   // CodeMirror 확장 설정
   const extensions = [
@@ -50,6 +60,16 @@
     })
   ];
   
+  // Markdown → HTML 변환
+  function convertMarkdownToHtml(markdown: string): string {
+    try {
+      return marked.parse(markdown);
+    } catch (error) {
+      console.error('Markdown parsing error:', error);
+      return `<p style="color: red;">마크다운 파싱 오류: ${error}</p>`;
+    }
+  }
+  
   // 값 변경 핸들러
   function handleValueChange(newValue: string) {
     currentValue = newValue;
@@ -62,6 +82,11 @@
     if (currentValue !== value) {
       currentValue = value;
     }
+  });
+  
+  // 실시간 미리보기 업데이트
+  $effect(() => {
+    previewHtml = convertMarkdownToHtml(currentValue);
   });
   
   // 미리보기 토글
@@ -107,12 +132,8 @@
     <!-- 미리보기 패널 -->
     {#if previewVisible}
       <div class="preview-panel">
-        <div class="preview-placeholder">
-          <h3>👁️ 미리보기 영역</h3>
-          <p>Marked 렌더링이 여기에 들어갑니다</p>
-          <div class="preview-content">
-            {currentValue}
-          </div>
+        <div class="preview-content">
+          {@html previewHtml}
         </div>
       </div>
     {/if}
@@ -238,24 +259,116 @@
     min-width: 0;
   }
   
-  .preview-placeholder {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
   .preview-content {
     flex: 1;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--muted);
-    white-space: pre-wrap;
-    font-family: monospace;
-    font-size: 12px;
+    padding: 20px;
+    background: var(--background);
+    color: var(--foreground);
     overflow: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+  }
+  
+  /* 미리보기 내 마크다운 스타일링 */
+  :global(.preview-content h1) {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.75rem 0;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem 0;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content p) {
+    margin: 0.75rem 0;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content strong) {
+    font-weight: 600;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content em) {
+    font-style: italic;
+    color: var(--muted-foreground);
+  }
+  
+  :global(.preview-content code) {
+    background: var(--muted);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content pre) {
+    background: var(--muted);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid var(--border);
+  }
+  
+  :global(.preview-content pre code) {
+    background: none;
+    padding: 0;
+    font-size: 0.875rem;
+  }
+  
+  :global(.preview-content ul, .preview-content ol) {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  :global(.preview-content li) {
+    margin: 0.25rem 0;
+    color: var(--foreground);
+  }
+  
+  :global(.preview-content blockquote) {
+    border-left: 4px solid var(--primary);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--muted-foreground);
+    background: var(--muted);
+    padding: 1rem;
+    border-radius: 0.25rem;
+  }
+  
+  :global(.preview-content table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    border: 1px solid var(--border);
+  }
+  
+  :global(.preview-content th, .preview-content td) {
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  :global(.preview-content th) {
+    background: var(--muted);
+    font-weight: 600;
   }
   
   /* 반응형 */
