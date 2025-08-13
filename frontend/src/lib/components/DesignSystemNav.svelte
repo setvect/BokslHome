@@ -33,7 +33,8 @@
         { name: 'Label', href: '/design-system/components/label', badge: 'stable' },
         { name: 'Badge', href: '/design-system/components/badge', badge: 'stable' },
         { name: 'Breadcrumb', href: '/design-system/components/breadcrumb', badge: 'stable' },
-        { name: 'HtmlEditor', href: '/design-system/components/editor', badge: 'beta' }
+        { name: 'HtmlEditor', href: '/design-system/components/editor', badge: 'beta' },
+        { name: 'MarkdownEditor', href: '/design-system/components/markdown', badge: 'alpha' }
       ]
     },
     {
@@ -63,7 +64,7 @@
     switch (badge) {
       case 'stable': return 'default';
       case 'beta': return 'secondary';
-      case 'alpha': return 'destructive';
+      case 'alpha': return 'outline';
       default: return 'outline';
     }
   }

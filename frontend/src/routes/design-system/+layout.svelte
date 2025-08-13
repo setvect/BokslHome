@@ -59,6 +59,12 @@
         case 'breadcrumb':
           displayName = 'Breadcrumb';
           break;
+        case 'markdown':
+          displayName = 'MarkdownEditor';
+          break;
+        case 'editor':
+          displayName = 'HtmlEditor';
+          break;
         case 'test':
           displayName = '테스트';
           break;

@@ -18,10 +18,10 @@ prismjs (코드 하이라이트)
 
 ## 단계별 작업 계획 (8단계)
 
-### 1단계: 의존성 설치 및 기본 구조
-- [ ] npm 패키지 설치
-- [ ] `MarkdownEditor.svelte` 기본 컴포넌트 생성
-- [ ] 2단 레이아웃 CSS 구조 구현
+### 1단계: 의존성 설치 및 기본 구조 ✅
+- [x] npm 패키지 설치
+- [x] `MarkdownEditor.svelte` 기본 컴포넌트 생성
+- [x] 2단 레이아웃 CSS 구조 구현
 
 ### 2단계: CodeMirror 에디터 구현
 - [ ] CodeMirror 6 설정 및 markdown 언어 지원
