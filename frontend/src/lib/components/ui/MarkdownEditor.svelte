@@ -1,13 +1,11 @@
 <script lang="ts">
   // MarkdownEditor 컴포넌트 - 5단계: Mermaid 다이어그램 지원
-  import { onMount, onDestroy } from 'svelte';
-  import CodeMirror from 'svelte-codemirror-editor';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorView } from '@codemirror/view';
-  import { EditorState } from '@codemirror/state';
   import { marked } from 'marked';
-  import { theme } from '$lib/stores/theme';
   import mermaid from 'mermaid';
+  import { onMount } from 'svelte';
+  import CodeMirror from 'svelte-codemirror-editor';
   
   // Props 정의
   let { 
@@ -155,6 +153,14 @@
         backgroundColor: isDarkMode ? '#1c1c1c' : '#f1f5f9'
       },
       '.cm-selectionBackground': {
+        backgroundColor: isDarkMode ? '#3b82f6' : '#2563eb',
+        opacity: '0.3'
+      },
+      '&.cm-focused .cm-selectionBackground': {
+        backgroundColor: isDarkMode ? '#3b82f6' : '#2563eb',
+        opacity: '0.3'
+      },
+      '.cm-selection': {
         backgroundColor: isDarkMode ? '#3b82f6' : '#2563eb',
         opacity: '0.3'
       },
@@ -610,6 +616,38 @@ ${escapedMarkdown}
   :global(.markdown-codemirror .cm-focused) {
     outline: 2px solid var(--ring);
     outline-offset: -2px;
+  }
+  
+  /* 텍스트 선택 영역 강화 */
+  :global(.markdown-codemirror .cm-selectionLayer .cm-selectionBackground) {
+    background: #3b82f6 !important;
+    opacity: 0.3 !important;
+  }
+  
+  :global(.markdown-codemirror .cm-content ::selection) {
+    background: #3b82f6 !important;
+    opacity: 0.3 !important;
+  }
+  
+  :global(.markdown-codemirror .cm-content ::-moz-selection) {
+    background: #3b82f6 !important;
+    opacity: 0.3 !important;
+  }
+  
+  /* 다크모드에서 텍스트 선택 */
+  :global(.dark .markdown-codemirror .cm-selectionLayer .cm-selectionBackground) {
+    background: #60a5fa !important;
+    opacity: 0.4 !important;
+  }
+  
+  :global(.dark .markdown-codemirror .cm-content ::selection) {
+    background: #60a5fa !important;
+    opacity: 0.4 !important;
+  }
+  
+  :global(.dark .markdown-codemirror .cm-content ::-moz-selection) {
+    background: #60a5fa !important;
+    opacity: 0.4 !important;
   }
   
   /* 분할자 */
