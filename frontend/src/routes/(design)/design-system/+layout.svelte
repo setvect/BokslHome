@@ -1,6 +1,5 @@
 <script lang="ts">
   import DesignSystemNav from '$lib/components/DesignSystemNav.svelte';
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import { page } from '$app/stores';
   import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '$lib/components/ui/breadcrumb';
   import Button from '$lib/components/ui/button/button.svelte';
@@ -221,9 +220,6 @@
             </Breadcrumb>
           {/if}
         </div>
-        
-        <!-- 테마 토글 -->
-        <ThemeToggle />
       </div>
     </header>
     
