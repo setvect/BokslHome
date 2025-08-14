@@ -222,25 +222,25 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-4">
             <div>
-              <label class="text-sm font-medium mb-2 block">기본 텍스트 영역</label>
-              <Textarea bind:value={sampleText} placeholder="여기에 입력하세요..." />
+              <label for="basic-textarea" class="text-sm font-medium mb-2 block">기본 텍스트 영역</label>
+              <Textarea id="basic-textarea" bind:value={sampleText} placeholder="여기에 입력하세요..." />
             </div>
             
             <div>
-              <label class="text-sm font-medium mb-2 block">크기 조절 가능</label>
-              <Textarea bind:value={resizableText} placeholder="모서리를 드래그하여 크기를 조절하세요" class="resize" />
+              <label for="resizable-textarea" class="text-sm font-medium mb-2 block">크기 조절 가능</label>
+              <Textarea id="resizable-textarea" bind:value={resizableText} placeholder="모서리를 드래그하여 크기를 조절하세요" class="resize" />
             </div>
           </div>
           
           <div class="space-y-4">
             <div>
-              <label class="text-sm font-medium mb-2 block">비활성화됨</label>
-              <Textarea disabled bind:value={disabledText} />
+              <label for="disabled-textarea" class="text-sm font-medium mb-2 block">비활성화됨</label>
+              <Textarea id="disabled-textarea" disabled bind:value={disabledText} />
             </div>
             
             <div>
-              <label class="text-sm font-medium mb-2 block">크기 조절 제한</label>
-              <Textarea placeholder="크기 조절이 제한된 텍스트 영역" class="resize-none" />
+              <label for="no-resize-textarea" class="text-sm font-medium mb-2 block">크기 조절 제한</label>
+              <Textarea id="no-resize-textarea" placeholder="크기 조절이 제한된 텍스트 영역" class="resize-none" />
             </div>
           </div>
         </div>

@@ -397,11 +397,23 @@
               <div class="flex flex-wrap gap-2">
                 <Badge class="cursor-pointer hover:bg-red-500 transition-colors flex items-center gap-1">
                   디자인
-                  <span onclick={() => alert('태그 삭제됨')}>×</span>
+                  <span 
+                    onclick={() => alert('태그 삭제됨')} 
+                    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? alert('태그 삭제됨') : null}
+                    role="button" 
+                    tabindex="0"
+                    aria-label="태그 삭제"
+                  >×</span>
                 </Badge>
                 <Badge class="cursor-pointer hover:bg-red-500 transition-colors flex items-center gap-1">
                   개발
-                  <span onclick={() => alert('태그 삭제됨')}>×</span>
+                  <span 
+                    onclick={() => alert('태그 삭제됨')} 
+                    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? alert('태그 삭제됨') : null}
+                    role="button" 
+                    tabindex="0"
+                    aria-label="태그 삭제"
+                  >×</span>
                 </Badge>
               </div>
             </div>

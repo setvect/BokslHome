@@ -3,6 +3,12 @@
   import { layout } from '$lib/stores/layout';
   import Header from '$lib/components/layout/Header.svelte';
 
+  interface Props {
+    children: any;
+  }
+
+  let { children }: Props = $props();
+
   // 레이아웃 상태 구독 (테마만 사용)
   let layoutState = $state({ currentTheme: 'dark', mounted: false });
 
@@ -33,6 +39,6 @@
 
   <!-- 디자인 시스템 콘텐츠 (자체 사이드바 포함) -->
   <div class="pt-16">
-    <slot />
+    {@render children()}
   </div>
 </div>

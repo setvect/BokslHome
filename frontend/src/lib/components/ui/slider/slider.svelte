@@ -2,13 +2,21 @@
 	import { Slider as SliderPrimitive } from "bits-ui";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils";
 
+	interface Props {
+		ref?: any;
+		value?: any;
+		orientation?: "horizontal" | "vertical";
+		class?: string;
+		[key: string]: any;
+	}
+
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
 		orientation = "horizontal",
 		class: className,
 		...restProps
-	}: WithoutChildrenOrChild<SliderPrimitive.RootProps> = $props();
+	}: Props = $props();
 </script>
 
 <!--

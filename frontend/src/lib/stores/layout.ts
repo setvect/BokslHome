@@ -35,9 +35,7 @@ function createLayoutStore() {
     init: () => {
       if (browser) {
         theme.init();
-        const storedSidebarState = localStorage.getItem('sidebarOpen') !== null 
-          ? localStorage.getItem('sidebarOpen') === 'true' 
-          : true; // 기본값을 true로 설정
+        const storedSidebarState = localStorage.getItem('sidebarOpen') !== null ? localStorage.getItem('sidebarOpen') === 'true' : true; // 기본값을 true로 설정
         const storedExpandedMenus = JSON.parse(localStorage.getItem('expandedMenus') || '[]');
 
         update((state) => ({

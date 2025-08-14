@@ -268,6 +268,7 @@
                   <button
                     class="w-full h-16 rounded-lg shadow-sm border border-border hover:scale-105 transition-transform bg-{colorGroup.prefix}-{shade} cursor-pointer"
                     onclick={() => copyToClipboard(`bg-${colorGroup.prefix}-${shade}`, `${colorGroup.prefix}-${shade}`)}
+                    aria-label="클릭하여 복사: bg-{colorGroup.prefix}-{shade}"
                     title="클릭하여 복사: bg-{colorGroup.prefix}-{shade}"
                   ></button>
                   <div class="mt-2 text-xs text-muted-foreground">

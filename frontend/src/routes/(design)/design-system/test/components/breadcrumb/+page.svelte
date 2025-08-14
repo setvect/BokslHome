@@ -418,7 +418,11 @@
             <h4 class="font-medium">미리 정의된 경로로 변경:</h4>
             {#each customPaths as path, index}
               <div class="p-2 bg-card border rounded cursor-pointer hover:bg-accent"
-                   onclick={() => currentPath = [...path]}>
+                   onclick={() => currentPath = [...path]}
+                   onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? currentPath = [...path] : null}
+                   role="button" 
+                   tabindex="0"
+                   aria-label="브레드크럼 경로 변경">
                 <Breadcrumb>
                   <BreadcrumbList>
                     {#each path as item, itemIndex}

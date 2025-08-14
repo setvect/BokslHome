@@ -266,13 +266,13 @@
             <div class="bg-card border rounded p-6">
               <div class="space-y-4">
                 <div class="space-y-2">
-                  <label class="text-sm font-medium">이메일</label>
-                  <input type="email" class="w-full p-2 border rounded" placeholder="example@email.com" />
+                  <label for="email-demo" class="text-sm font-medium">이메일</label>
+                  <input id="email-demo" type="email" class="w-full p-2 border rounded" placeholder="example@email.com" />
                 </div>
                 
                 <div class="space-y-2">
-                  <label class="text-sm font-medium">비밀번호</label>
-                  <input type="password" class="w-full p-2 border rounded" placeholder="••••••••" />
+                  <label for="password-demo" class="text-sm font-medium">비밀번호</label>
+                  <input id="password-demo" type="password" class="w-full p-2 border rounded" placeholder="••••••••" />
                 </div>
                 
                 <Button class="w-full mt-6">로그인</Button>
