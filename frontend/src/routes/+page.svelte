@@ -1,27 +1,62 @@
-<script>
-  import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-</script>
-
-<div class="p-8 bg-background text-foreground min-h-screen">
-  <div class="flex justify-between items-start mb-8">
-    <div>
-      <h1 class="text-4xl font-bold text-primary">Welcome to SvelteKit</h1>
-      <p class="text-lg text-muted-foreground mt-4">Visit <a href="https://kit.svelte.dev" class="text-primary underline">kit.svelte.dev</a> to read the documentation</p>
-    </div>
-    
-    <!-- 테마 토글 -->
-    <ThemeToggle />
+<div class="max-w-4xl mx-auto">
+  <!-- 헤더 -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-primary mb-4">복슬홈에 오신 것을 환영합니다!</h1>
+    <p class="text-lg text-muted-foreground">
+      새로운 레이아웃으로 구성된 복슬홈을 체험해보세요. 
+      좌측 메뉴에서 다양한 기능을 이용할 수 있습니다.
+    </p>
   </div>
 
-  <!-- Tailwind 테스트용 -->
-  <div class="mt-8 p-6 bg-red-500 text-white rounded-lg">
-    <h2 class="text-2xl font-semibold">Tailwind CSS v4.1 테스트</h2>
-    <p class="mt-2">이 박스가 빨간 배경색으로 표시되면 Tailwind가 정상 작동합니다!</p>
+  <!-- 기능 소개 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">📝 게시판</h3>
+      <p class="text-muted-foreground">일반 게시판, 공지사항, Q&A 등 다양한 게시판을 이용하세요.</p>
+    </div>
+    
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">📚 복슬지식</h3>
+      <p class="text-muted-foreground">기술 지식, 생활 정보, 학습 자료를 체계적으로 관리하세요.</p>
+    </div>
+    
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">📝 복슬노트</h3>
+      <p class="text-muted-foreground">개인 노트, 업무 노트, 프로젝트 노트를 정리하세요.</p>
+    </div>
+    
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">📋 복슬메모</h3>
+      <p class="text-muted-foreground">빠른 메모, 할일 목록, 아이디어를 간편하게 기록하세요.</p>
+    </div>
+    
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">👥 복슬관계</h3>
+      <p class="text-muted-foreground">인맥과 관계를 효과적으로 관리하세요.</p>
+    </div>
+    
+    <div class="p-6 bg-card border border-border rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">🎲 로또번호 생성</h3>
+      <p class="text-muted-foreground">랜덤한 로또 번호를 생성해보세요.</p>
+    </div>
+  </div>
+
+  <!-- 레이아웃 테스트 정보 -->
+  <div class="p-6 bg-muted rounded-lg">
+    <h2 class="text-2xl font-semibold mb-4">레이아웃 테스트</h2>
+    <div class="space-y-2 text-sm">
+      <p>✅ 헤더: 고정 위치, 메뉴 토글, 테마 변경, 사용자 메뉴</p>
+      <p>✅ 사이드바: 2depth 메뉴, 반응형 (모바일에서 오버레이)</p>
+      <p>✅ 콘텐츠: 스크롤 가능, 사이드바 상태에 따른 조정</p>
+      <p>✅ 반응형: 모바일(&lt;768px), 태블릿(768-1024px), 데스크톱(&gt;1024px)</p>
+    </div>
   </div>
 
   <!-- 디자인 시스템 링크 -->
   <div class="mt-8">
-    <a href="/design-system" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg text-lg">
+    <a href="/design-system" 
+       class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground 
+              rounded-lg hover:bg-primary/90 transition-colors font-medium">
       📚 디자인 시스템 보러가기
     </a>
   </div>

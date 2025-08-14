@@ -25,12 +25,16 @@ function getAppliedTheme(theme: Theme): 'light' | 'dark' {
 
 // 테마 store 생성
 function createThemeStore() {
-  const { subscribe, set, update } = writable<Theme>(getStoredTheme());
+  const { subscribe, set: setStore, update } = writable<Theme>(getStoredTheme());
+  let currentValue: Theme = getStoredTheme();
 
   return {
     subscribe,
+    // 현재 테마 값 가져오기
+    get: () => currentValue,
     // 테마 설정
-    setTheme: (theme: Theme) => {
+    set: (theme: Theme) => {
+      currentValue = theme;
       if (browser) {
         localStorage.setItem('theme', theme);
         
@@ -44,12 +48,13 @@ function createThemeStore() {
           root.classList.remove('dark');
         }
       }
-      set(theme);
+      setStore(theme);
     },
     // 테마 토글 (light ↔ dark)
     toggleTheme: () => {
       update(currentTheme => {
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        currentValue = currentTheme === 'light' ? 'dark' : 'light';
+        const newTheme = currentValue;
         
         if (browser) {
           localStorage.setItem('theme', newTheme);
@@ -70,9 +75,10 @@ function createThemeStore() {
     init: () => {
       if (browser) {
         const storedTheme = getStoredTheme();
+        currentValue = storedTheme;
         
         // HTML에서 이미 테마가 설정되어 있으므로 스토어 상태만 동기화
-        set(storedTheme);
+        setStore(storedTheme);
         
         // 시스템 테마 변경 감지
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

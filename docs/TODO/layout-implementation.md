@@ -14,17 +14,17 @@
 ## 작업 단계
 
 ### 1단계: 메인 레이아웃 컴포넌트 구조 설계
-- [ ] `src/app.html` 기본 HTML 템플릿 확인/수정
-- [ ] `src/routes/+layout.svelte` 메인 레이아웃 구조 구현
-- [ ] CSS Grid 또는 Flexbox를 이용한 레이아웃 기본 틀 구성
-- [ ] 반응형 브레이크포인트 정의 (모바일: <768px, 태블릿: 768-1024px, 데스크톱: >1024px)
+- [x] `src/app.html` 기본 HTML 템플릿 확인/수정
+- [x] `src/routes/+layout.svelte` 메인 레이아웃 구조 구현
+- [x] CSS Grid 또는 Flexbox를 이용한 레이아웃 기본 틀 구성
+- [x] 반응형 브레이크포인트 정의 (모바일: <768px, 태블릿: 768-1024px, 데스크톱: >1024px)
 
 ### 2단계: 좌측 사이드바 메뉴 컴포넌트 구현
-- [ ] `src/lib/components/layout/Sidebar.svelte` 생성
-- [ ] 2depth 메뉴 구조 구현 (collapsible 서브메뉴)
-- [ ] 메뉴 데이터 구조 정의 및 타입 선언
-- [ ] 현재 활성 메뉴 하이라이팅 기능
-- [ ] 모바일에서 오버레이 모달 형태로 표시
+- [x] `src/lib/components/layout/Sidebar.svelte` 생성
+- [x] 2depth 메뉴 구조 구현 (collapsible 서브메뉴)
+- [x] 메뉴 데이터 구조 정의 및 타입 선언
+- [x] 현재 활성 메뉴 하이라이팅 기능
+- [x] 모바일에서 오버레이 모달 형태로 표시
 
 ### 3단계: 상단 헤더 컴포넌트 구현
 - [ ] `src/lib/components/layout/Header.svelte` 생성

@@ -114,3 +114,77 @@
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
+
+/* 레이아웃 관련 유틸리티 클래스 */
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.layout-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4rem; /* 64px */
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
+  z-index: 40;
+}
+
+.layout-sidebar {
+  position: fixed;
+  left: 0;
+  top: 4rem;
+  bottom: 0;
+  width: 16rem; /* 256px */
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
+  z-index: 30;
+  overflow-y: auto;
+}
+
+.layout-main {
+  flex: 1;
+  padding-top: 4rem; /* 헤더 높이만큼 */
+}
+
+/* 반응형 브레이크포인트 정의 */
+/* 모바일: < 768px */
+@media (max-width: 767px) {
+  .layout-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .layout-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .layout-main {
+    margin-left: 0;
+  }
+}
+
+/* 태블릿: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .layout-sidebar {
+    width: 14rem; /* 224px */
+  }
+  
+  .layout-main {
+    margin-left: 14rem;
+  }
+}
+
+/* 데스크톱: >= 1024px */
+@media (min-width: 1024px) {
+  .layout-sidebar {
+    display: block;
+  }
+  
+  .layout-main {
+    margin-left: 16rem; /* 256px */
+  }
+}
