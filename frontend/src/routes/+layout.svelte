@@ -32,14 +32,15 @@
   <Header 
     currentTheme={layoutState.currentTheme}
     mounted={layoutState.mounted}
-    onToggleSidebar={layout.toggleSidebar}
     onToggleTheme={layout.toggleTheme}
+    onToggleSidebar={layout.toggleSidebar}
+    isSidebarOpen={layoutState.isSidebarOpen}
   />
 
   <!-- 사이드바 -->
   <Sidebar 
     isSidebarOpen={layoutState.isSidebarOpen} 
-    onClose={layout.closeSidebar} 
+    onClose={layout.closeSidebar}
   />
 
   <!-- 메인 콘텐츠 영역 -->

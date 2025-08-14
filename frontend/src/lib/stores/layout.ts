@@ -16,7 +16,7 @@ export interface LayoutState {
 // 레이아웃 상태 통합 관리
 function createLayoutStore() {
   const initialState: LayoutState = {
-    isSidebarOpen: false,
+    isSidebarOpen: true, // 데스크톱에서 기본적으로 열려있도록 변경
     currentTheme: 'dark',
     mounted: false,
     currentMenu: {
@@ -35,7 +35,9 @@ function createLayoutStore() {
     init: () => {
       if (browser) {
         theme.init();
-        const storedSidebarState = localStorage.getItem('sidebarOpen') === 'true';
+        const storedSidebarState = localStorage.getItem('sidebarOpen') !== null 
+          ? localStorage.getItem('sidebarOpen') === 'true' 
+          : true; // 기본값을 true로 설정
         const storedExpandedMenus = JSON.parse(localStorage.getItem('expandedMenus') || '[]');
 
         update((state) => ({

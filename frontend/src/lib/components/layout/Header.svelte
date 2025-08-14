@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { Menu, User, Sun, Moon, Settings, LogOut, KeyRound } from '@lucide/svelte';
+  import { User, Sun, Moon, Settings, LogOut, KeyRound, Menu } from '@lucide/svelte';
   import { Popover, PopoverContent, PopoverTrigger } from '$lib/components/ui/popover';
   import { Button } from '$lib/components/ui/button';
 
   interface Props {
     currentTheme: string;
     mounted: boolean;
-    onToggleSidebar: () => void;
     onToggleTheme: () => void;
+    onToggleSidebar: () => void;
+    isSidebarOpen?: boolean;
   }
 
-  let { currentTheme, mounted, onToggleSidebar, onToggleTheme }: Props = $props();
+  let { currentTheme, mounted, onToggleTheme, onToggleSidebar, isSidebarOpen = true }: Props = $props();
 
   // 사용자 액션 핸들러들
   function handleLogout() {
@@ -29,27 +30,20 @@
   }
 </script>
 
-<header class="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-40">
+<header class="fixed top-0 right-0 h-16 bg-card border-b border-border z-40 transition-all duration-300 ease-in-out {isSidebarOpen ? 'left-64' : 'left-0'}">
   <div class="flex items-center justify-between h-full px-4">
-    <!-- 좌측: 메뉴 토글 + 로고 -->
+    <!-- 좌측: 사이드바 토글 버튼 -->
     <div class="flex items-center gap-4">
       <Button
         variant="ghost"
         size="sm"
-        class="lg:hidden p-2"
+        class="p-2"
         onclick={mounted ? onToggleSidebar : undefined}
-        aria-label="메뉴 토글"
+        aria-label="사이드바 토글"
       >
         <Menu class="w-5 h-5 text-foreground" />
       </Button>
-      
-      <!-- 로고/타이틀 영역 -->
-      <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span class="text-primary-foreground font-bold text-sm">복</span>
-        </div>
-        <h1 class="text-xl font-bold text-foreground">복슬홈</h1>
-      </a>
+      <!-- 브레드크럼이나 페이지 제목 등을 여기에 추가할 수 있음 -->
     </div>
     
     <!-- 우측: 액션 버튼들 -->

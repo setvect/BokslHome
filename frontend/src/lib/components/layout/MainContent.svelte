@@ -23,9 +23,12 @@
   const contentMargin = $derived(() => {
     if (!layoutState.mounted) return 'lg:ml-64 ml-0'; // 기본값
     
-    // 데스크톱: 항상 사이드바 공간 확보
+    // 데스크톱: 사이드바 상태에 따라 마진 조정
     // 모바일/태블릿: 사이드바는 오버레이이므로 마진 없음
-    return isDesktop ? 'ml-64' : 'ml-0';
+    if (isDesktop) {
+      return layoutState.isSidebarOpen ? 'ml-64' : 'ml-0';
+    }
+    return 'ml-0';
   });
 
   onMount(() => {

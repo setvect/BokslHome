@@ -153,12 +153,23 @@
 </script>
 
 <aside 
-  class="fixed left-0 top-16 bottom-0 w-64 bg-card border-r border-border z-30 overflow-y-auto
+  class="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border z-30 overflow-y-auto
          transition-transform duration-300 ease-in-out
-         lg:translate-x-0 {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}"
+         {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}"
   role="navigation"
   aria-label="메인 네비게이션"
 >
+  <!-- 로고 영역 -->
+  <div class="h-16 flex items-center px-4 border-b border-border">
+    <!-- 로고 -->
+    <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span class="text-primary-foreground font-bold text-sm">복</span>
+      </div>
+      <span class="font-semibold text-foreground">복슬홈</span>
+    </a>
+  </div>
+
   <nav class="p-4">
     <div class="space-y-2">
       <!-- 메뉴 제목 -->
@@ -228,7 +239,6 @@
   <div 
     class="fixed inset-0 bg-background/80 backdrop-blur-sm z-20 lg:hidden"
     onclick={onClose}
-    onkeydown={(e) => e.key === 'Enter' && onClose?.()}
     role="button"
     tabindex="0"
     aria-label="사이드바 닫기"
