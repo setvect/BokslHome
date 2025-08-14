@@ -119,19 +119,6 @@
     }
   }
 
-  // ESC 키로 모바일 사이드바 닫기
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape' && isSidebarOpen && onClose) {
-      onClose();
-    }
-  }
-
-  onMount(() => {
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  });
 </script>
 
 <aside 
