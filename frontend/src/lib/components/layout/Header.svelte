@@ -1,23 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { Menu, User, Sun, Moon, Settings, LogOut, KeyRound } from '@lucide/svelte';
   import { Popover, PopoverContent, PopoverTrigger } from '$lib/components/ui/popover';
   import { Button } from '$lib/components/ui/button';
 
   interface Props {
     currentTheme: string;
+    mounted: boolean;
     onToggleSidebar: () => void;
     onToggleTheme: () => void;
   }
 
-  let { currentTheme, onToggleSidebar, onToggleTheme }: Props = $props();
-  
-  // 클라이언트에서만 테마 아이콘 렌더링
-  let mounted = $state(false);
-  
-  onMount(() => {
-    mounted = true;
-  });
+  let { currentTheme, mounted, onToggleSidebar, onToggleTheme }: Props = $props();
 
   // 사용자 액션 핸들러들
   function handleLogout() {

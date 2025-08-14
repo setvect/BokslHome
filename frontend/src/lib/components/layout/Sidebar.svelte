@@ -90,6 +90,14 @@
     'Dice1': Dice1
   };
 
+  // 아이콘 렌더링 헬퍼 함수
+  function getIconComponent(iconName: string | undefined) {
+    if (!iconName || !iconMap[iconName as keyof typeof iconMap]) {
+      return null;
+    }
+    return iconMap[iconName as keyof typeof iconMap];
+  }
+
   // 메뉴 토글 함수
   function toggleMenu(menuId: string) {
     menuItems = menuItems.map(item => {
@@ -154,8 +162,8 @@
               aria-expanded={item.children ? item.isExpanded : undefined}
             >
               <!-- 아이콘 -->
-              {#if item.icon && iconMap[item.icon]}
-                {@const IconComponent = iconMap[item.icon]}
+              {#if getIconComponent(item.icon)}
+                {@const IconComponent = getIconComponent(item.icon)}
                 <IconComponent class="w-4 h-4 flex-shrink-0 text-current" />
               {:else}
                 <div class="w-4 h-4 bg-muted rounded flex-shrink-0"></div>
