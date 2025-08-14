@@ -16,10 +16,10 @@
 ### 1️⃣ 데이터 구조 설계 및 타입 정의
 **목표**: 게시판 관리에 필요한 TypeScript 인터페이스와 타입 정의
 **세부 작업**:
-- [ ] TBBA_BOARD_MANAGER 테이블 기반 BoardManager 인터페이스 정의
-- [ ] 검색 조건을 위한 SearchFilter 타입 정의  
-- [ ] 페이지네이션을 위한 Pagination 타입 정의
-- [ ] 폼 검증을 위한 Validation 타입 정의
+- [x] TBBA_BOARD_MANAGER 테이블 기반 BoardManager 인터페이스 정의
+- [x] 검색 조건을 위한 SearchFilter 타입 정의  
+- [x] 페이지네이션을 위한 Pagination 타입 정의
+- [x] 폼 검증을 위한 Validation 타입 정의
 
 **예상 결과물**:
 ```typescript
