@@ -231,6 +231,11 @@ function insertAtCursor(text: string) {
 - **Svelte 5 문법 준수**: 절대 Svelte 4 문법 사용하지 말 것
 - **shadcn-svelte 컴포넌트**: 문제 발생 시 Popover 등 안정적인 대안 사용
 - **타입스크립트**: `<script lang="ts">` 태그 필수
+- **접근성 준수 (중요!)**: 
+  - 클릭 가능한 모든 요소에는 키보드 지원 필수
+  - `onclick` 속성이 있는 div에는 `onkeydown` 핸들러 추가
+  - `role="button"`, `tabindex="0"` 속성 설정
+  - 키보드 이벤트는 Enter키와 스페이스바 모두 처리 필수
 - **색상 테마 호환성**: 
   - 모든 텍스트는 `text-foreground` 계열 클래스 사용
   - `text-muted-foreground`, 고정 색상 클래스 사용 금지
@@ -449,11 +454,137 @@ text-white              /* 라이트모드에서 보이지 않음 */
 </div>
 ```
 
-#### 테마 지원
+##### 테마 지원
 - 모든 컴포넌트는 자동 라이트/다크 모드 지원
 - CSS 변수 기반 색상 시스템으로 테마 전환 시 일관성 보장
 - 새로운 컴포넌트 작성 시 반드시 시맨틱 색상 클래스 사용
 - 텍스트 가독성 테스트: 라이트/다크 모드에서 모두 확인 필수
+
+### 접근성 가이드라인 (필수 준수)
+
+#### 클릭 가능한 요소의 키보드 접근성
+**모든 클릭 가능한 요소는 키보드로도 조작 가능해야 합니다.**
+
+```svelte
+<!-- ✅ 올바른 접근성 패턴 -->
+<div 
+  onclick={handleClick}
+  onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? handleClick() : null}
+  role="button"
+  tabindex="0"
+  aria-label="설명적인 레이블"
+>
+  클릭 가능한 요소
+</div>
+
+<!-- 🚫 잘못된 패턴 - 키보드 접근성 누락 -->
+<div onclick={handleClick}>
+  클릭 가능한 요소
+</div>
+
+<!-- ✅ 더 나은 해결책 - 네이티브 button 사용 -->
+<button onclick={handleClick} class="styled-button">
+  클릭 가능한 요소
+</button>
+```
+
+#### 필수 접근성 속성
+- **`role="button"`**: div를 버튼으로 사용할 때 필수
+- **`tabindex="0"`**: 키보드로 포커스 가능하게 설정
+- **`aria-label`**: 시각적 텍스트가 없거나 불충분할 때
+- **`aria-expanded`**: 접히는/펼쳐지는 요소에서 상태 표시
+- **`aria-describedby`**: 추가 설명이 있을 때
+
+#### 키보드 이벤트 처리 패턴
+```typescript
+// ✅ 표준 키보드 접근성 핸들러
+function handleKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault(); // 스페이스바 스크롤 방지
+    handleAction();
+  }
+}
+
+// ✅ 화살표 키 네비게이션 (메뉴, 리스트 등)
+function handleArrowKeys(event: KeyboardEvent) {
+  switch (event.key) {
+    case 'ArrowUp':
+      event.preventDefault();
+      focusPrevious();
+      break;
+    case 'ArrowDown':
+      event.preventDefault();
+      focusNext();
+      break;
+    case 'Home':
+      event.preventDefault();
+      focusFirst();
+      break;
+    case 'End':
+      event.preventDefault();
+      focusLast();
+      break;
+  }
+}
+```
+
+#### 포커스 관리
+```svelte
+<!-- ✅ 포커스 표시 스타일링 -->
+<button class="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+  버튼
+</button>
+
+<!-- ✅ 모달/다이얼로그의 포커스 트랩 -->
+<script>
+  import { trapFocus } from '$lib/utils/focus';
+  
+  let dialogElement: HTMLElement;
+  
+  function openModal() {
+    isOpen = true;
+    // 모달 열릴 때 첫 번째 포커스 가능한 요소로 이동
+    setTimeout(() => trapFocus(dialogElement), 0);
+  }
+</script>
+```
+
+#### 의미론적 HTML 사용
+```svelte
+<!-- ✅ 적절한 HTML 요소 선택 -->
+<nav aria-label="메인 네비게이션">
+  <ul>
+    <li><a href="/">홈</a></li>
+    <li><button aria-expanded="false">메뉴</button></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>페이지 제목</h1>
+  <article>
+    <h2>섹션 제목</h2>
+    <p>내용...</p>
+  </article>
+</main>
+
+<!-- ✅ 폼 레이블 연결 -->
+<div>
+  <label for="email">이메일</label>
+  <input id="email" type="email" required aria-describedby="email-error" />
+  <div id="email-error" role="alert">유효하지 않은 이메일입니다</div>
+</div>
+```
+
+#### 색상 대비와 텍스트 크기
+- 최소 대비비 4.5:1 (일반 텍스트), 3:1 (큰 텍스트) 준수
+- 색상만으로 정보를 전달하지 않음
+- 텍스트 크기는 16px 이상 권장
+
+#### 접근성 테스트 방법
+1. **키보드만으로 탐색**: Tab, Shift+Tab, Enter, 스페이스바, 화살표 키로 모든 기능 사용 가능한지 확인
+2. **스크린 리더 테스트**: NVDA, JAWS 또는 브라우저 내장 스크린 리더로 테스트
+3. **자동 검사 도구**: axe-core, Lighthouse 접근성 감사 활용
+4. **포커스 표시**: 포커스가 현재 어디에 있는지 명확히 보이는지 확인
 
 ## 현재 상태
 

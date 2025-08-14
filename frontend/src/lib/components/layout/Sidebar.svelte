@@ -10,7 +10,25 @@
     StickyNote, 
     ClipboardList, 
     Users, 
-    Dice1
+    Dice1,
+    PawPrint,
+    Settings,
+    PenTool,
+    Book,
+    Music,
+    Film,
+    Camera,
+    Heart,
+    MessageCircle,
+    Lightbulb,
+    Moon,
+    GraduationCap,
+    BookMarked,
+    Dumbbell,
+    Brain,
+    NotebookPen,
+    Network,
+    MoreHorizontal
   } from '@lucide/svelte';
 
   interface Props {
@@ -39,52 +57,52 @@
       label: '게시판',
       icon: 'FileText',
       children: [
-        { id: 'board-general', label: '일반 게시판', href: '/board/general' },
-        { id: 'board-notice', label: '공지사항', href: '/board/notice' },
-        { id: 'board-qna', label: 'Q&A', href: '/board/qna' }
+        { id: 'board-manage', label: '게시판 관리', href: '/board/manage' },
+        { id: 'board-writing', label: '글', href: '/board/writing' },
+        { id: 'board-book', label: '책', href: '/board/book' },
+        { id: 'board-music', label: '음악', href: '/board/music' },
+        { id: 'board-movie', label: '영화', href: '/board/movie' },
+        { id: 'board-photo', label: '사진', href: '/board/photo' },
+        { id: 'board-memory', label: '기억', href: '/board/memory' },
+        { id: 'board-relationship', label: '인연', href: '/board/relationship' },
+        { id: 'board-talk', label: '잡담', href: '/board/talk' },
+        { id: 'board-dream', label: '꿈', href: '/board/dream' },
+        { id: 'board-tech', label: '기술사', href: '/board/tech' },
+        { id: 'board-novel', label: '소설', href: '/board/novel' },
+        { id: 'board-exercise', label: '운동', href: '/board/exercise' }
       ]
     },
     {
       id: 'knowledge',
-      label: '복슬지식',
-      icon: 'BookOpen',
-      children: [
-        { id: 'knowledge-tech', label: '기술 지식', href: '/knowledge/tech' },
-        { id: 'knowledge-life', label: '생활 정보', href: '/knowledge/life' },
-        { id: 'knowledge-study', label: '학습 자료', href: '/knowledge/study' }
-      ]
+      label: '지식',
+      icon: 'Brain',
+      href: '/knowledge'
     },
     {
       id: 'note',
-      label: '복슬노트',
-      icon: 'StickyNote',
-      children: [
-        { id: 'note-personal', label: '개인 노트', href: '/note/personal' },
-        { id: 'note-work', label: '업무 노트', href: '/note/work' },
-        { id: 'note-project', label: '프로젝트 노트', href: '/note/project' }
-      ]
+      label: '노트',
+      icon: 'NotebookPen',
+      href: '/note'
     },
     {
       id: 'memo',
-      label: '복슬메모',
-      icon: 'ClipboardList',
-      children: [
-        { id: 'memo-quick', label: '빠른 메모', href: '/memo/quick' },
-        { id: 'memo-todo', label: '할일 목록', href: '/memo/todo' },
-        { id: 'memo-idea', label: '아이디어', href: '/memo/idea' }
-      ]
+      label: '메모',
+      icon: 'StickyNote',
+      href: '/memo'
     },
     {
       id: 'network',
-      label: '복슬관계',
-      icon: 'Users',
+      label: '관계',
+      icon: 'Network',
       href: '/network'
     },
     {
-      id: 'lotto',
-      label: '로또번호 생성',
-      icon: 'Dice1',
-      href: '/lotto'
+      id: 'etc',
+      label: '이것저것',
+      icon: 'MoreHorizontal',
+      children: [
+        { id: 'etc-lotto', label: '로또', href: '/etc/lotto' }
+      ]
     }
   ];
 
@@ -109,7 +127,24 @@
     'StickyNote': StickyNote,
     'ClipboardList': ClipboardList,
     'Users': Users,
-    'Dice1': Dice1
+    'Dice1': Dice1,
+    'Settings': Settings,
+    'PenTool': PenTool,
+    'Book': Book,
+    'Music': Music,
+    'Film': Film,
+    'Camera': Camera,
+    'Heart': Heart,
+    'MessageCircle': MessageCircle,
+    'Lightbulb': Lightbulb,
+    'Moon': Moon,
+    'GraduationCap': GraduationCap,
+    'BookMarked': BookMarked,
+    'Dumbbell': Dumbbell,
+    'Brain': Brain,
+    'NotebookPen': NotebookPen,
+    'Network': Network,
+    'MoreHorizontal': MoreHorizontal
   };
 
   // 아이콘 렌더링 헬퍼 함수
@@ -123,14 +158,13 @@
   // 메뉴 클릭 처리
   function handleMenuClick(item: MenuItem) {
     if (item.children) {
-      // 중앙화된 스토어의 토글 메뉴 함수 사용
+      // 하위 메뉴가 있는 경우: 토글만 함
       layout.toggleMenu(item.id);
     } else if (item.href) {
-      // 활성 메뉴 설정
+      // 링크가 있는 메뉴: 네비게이션만 함
       layout.setActiveMenu(item.id);
-      // 실제 네비게이션은 나중에 구현
       console.log('Navigate to:', item.href);
-      if (onClose) onClose();
+      // 사이드바 닫지 않음
     }
   }
 
@@ -138,7 +172,7 @@
   function handleSubMenuClick(parentId: string, subItem: MenuItem) {
     layout.setActiveMenu(parentId, subItem.id);
     console.log('Navigate to:', subItem.href);
-    if (onClose) onClose();
+    // 서브메뉴 클릭 시에도 사이드바 닫지 않음
   }
 
   onMount(() => {
@@ -162,21 +196,16 @@
   <!-- 로고 영역 -->
   <div class="h-16 flex items-center px-4 border-b border-border">
     <!-- 로고 -->
-    <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+    <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
       <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-        <span class="text-primary-foreground font-bold text-sm">복</span>
+        <PawPrint class="w-5 h-5 text-primary-foreground" />
       </div>
-      <span class="font-semibold text-foreground">복슬홈</span>
+      <span class="font-semibold text-foreground">복슬이네</span>
     </a>
   </div>
 
   <nav class="p-4">
     <div class="space-y-2">
-      <!-- 메뉴 제목 -->
-      <div class="text-sm font-medium text-foreground/60 px-2 py-1">
-        메뉴
-      </div>
-      
       <!-- 메뉴 리스트 -->
       <div class="space-y-1">
         {#each menuItems as item (item.id)}
@@ -239,6 +268,7 @@
   <div 
     class="fixed inset-0 bg-background/80 backdrop-blur-sm z-20 lg:hidden"
     onclick={onClose}
+    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? onClose?.() : null}
     role="button"
     tabindex="0"
     aria-label="사이드바 닫기"
