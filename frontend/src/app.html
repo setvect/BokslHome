@@ -16,21 +16,10 @@
           }
         }
         
-        function getSystemTheme() {
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
+        // 저장된 테마가 없으면 다크 테마 기본값 사용
+        const theme = getStoredTheme() || 'dark';
         
-        function getAppliedTheme(theme) {
-          if (theme === 'system' || !theme) {
-            return getSystemTheme();
-          }
-          return theme;
-        }
-        
-        const storedTheme = getStoredTheme();
-        const appliedTheme = getAppliedTheme(storedTheme);
-        
-        if (appliedTheme === 'dark') {
+        if (theme === 'dark') {
           document.documentElement.classList.add('dark');
         }
       })();

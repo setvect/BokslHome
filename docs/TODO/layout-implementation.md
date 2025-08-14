@@ -27,11 +27,11 @@
 - [x] 모바일에서 오버레이 모달 형태로 표시
 
 ### 3단계: 상단 헤더 컴포넌트 구현
-- [ ] `src/lib/components/layout/Header.svelte` 생성
-- [ ] 메뉴 토글 버튼 (햄버거 메뉴) 구현
-- [ ] 사용자 액션 메뉴 (로그오프, 비밀번호 변경)
-- [ ] 다크/라이트 테마 토글 버튼
-- [ ] 로고/타이틀 영역
+- [x] `src/lib/components/layout/Header.svelte` 생성
+- [x] 메뉴 토글 버튼 (햄버거 메뉴) 구현
+- [x] 사용자 액션 메뉴 (로그오프, 비밀번호 변경)
+- [x] 다크/라이트 테마 토글 버튼
+- [x] 로고/타이틀 영역
 
 ### 4단계: 메인 콘텐츠 영역 및 반응형 구현
 - [ ] `src/lib/components/layout/MainContent.svelte` 생성

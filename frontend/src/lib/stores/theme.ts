@@ -1,32 +1,20 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-export type Theme = 'light' | 'dark' | 'system';
+export type Theme = 'light' | 'dark';
 
-// 시스템 다크 모드 감지
-function getSystemTheme(): 'light' | 'dark' {
-  if (!browser) return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-// localStorage에서 테마 불러오기
+// localStorage에서 테마 불러오기 (없으면 다크 테마 기본값)
 function getStoredTheme(): Theme {
-  if (!browser) return 'system';
-  return (localStorage.getItem('theme') as Theme) || 'system';
-}
-
-// 실제 적용될 테마 계산
-function getAppliedTheme(theme: Theme): 'light' | 'dark' {
-  if (theme === 'system') {
-    return getSystemTheme();
-  }
-  return theme;
+  if (!browser) return 'dark';
+  const stored = localStorage.getItem('theme') as Theme;
+  return stored || 'dark';
 }
 
 // 테마 store 생성
 function createThemeStore() {
-  const { subscribe, set: setStore, update } = writable<Theme>(getStoredTheme());
-  let currentValue: Theme = getStoredTheme();
+  const initialTheme = browser ? getStoredTheme() : 'dark';
+  const { subscribe, set: setStore, update } = writable<Theme>(initialTheme);
+  let currentValue: Theme = initialTheme;
 
   return {
     subscribe,
@@ -40,9 +28,7 @@ function createThemeStore() {
         
         // HTML 클래스 업데이트
         const root = document.documentElement;
-        const appliedTheme = getAppliedTheme(theme);
-        
-        if (appliedTheme === 'dark') {
+        if (theme === 'dark') {
           root.classList.add('dark');
         } else {
           root.classList.remove('dark');
@@ -79,30 +65,6 @@ function createThemeStore() {
         
         // HTML에서 이미 테마가 설정되어 있으므로 스토어 상태만 동기화
         setStore(storedTheme);
-        
-        // 시스템 테마 변경 감지
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleSystemThemeChange = () => {
-          update(currentTheme => {
-            if (currentTheme === 'system') {
-              const root = document.documentElement;
-              const newAppliedTheme = getAppliedTheme('system');
-              if (newAppliedTheme === 'dark') {
-                root.classList.add('dark');
-              } else {
-                root.classList.remove('dark');
-              }
-            }
-            return currentTheme;
-          });
-        };
-        
-        mediaQuery.addEventListener('change', handleSystemThemeChange);
-        
-        // 정리 함수 반환 (필요시 사용)
-        return () => {
-          mediaQuery.removeEventListener('change', handleSystemThemeChange);
-        };
       }
     }
   };

@@ -136,7 +136,7 @@
   <nav class="p-4">
     <div class="space-y-2">
       <!-- 메뉴 제목 -->
-      <div class="text-sm font-medium text-muted-foreground px-2 py-1">
+      <div class="text-sm font-medium text-foreground/60 px-2 py-1">
         메뉴
       </div>
       
@@ -156,7 +156,7 @@
               <!-- 아이콘 -->
               {#if item.icon && iconMap[item.icon]}
                 {@const IconComponent = iconMap[item.icon]}
-                <IconComponent class="w-4 h-4 flex-shrink-0" />
+                <IconComponent class="w-4 h-4 flex-shrink-0 text-current" />
               {:else}
                 <div class="w-4 h-4 bg-muted rounded flex-shrink-0"></div>
               {/if}
@@ -183,7 +183,7 @@
                     class="block px-3 py-2 rounded-md text-sm
                            hover:bg-accent hover:text-accent-foreground
                            transition-colors duration-200
-                           {subItem.isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}"
+                           {subItem.isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/70'}"
                     onclick={() => onClose?.()}
                   >
                     {subItem.label}

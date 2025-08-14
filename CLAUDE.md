@@ -27,9 +27,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 프론트엔드 (개발 중)
 - **언어**: TypeScript
-- **프레임워크**: SvelteKit + Svelte 5 Runes (`$state`, `$effect`, `$derived`)
+- **프레임워크**: SvelteKit + **Svelte 5 Runes** (`$state`, `$effect`, `$derived`) - **반드시 Svelte 5 문법 사용**
 - **스타일링**: Tailwind CSS 4.x (`@import "tailwindcss"` 신규 문법)
 - **UI 컴포넌트**: shadcn-svelte (헤드리스 UI 컴포넌트)
+- **아이콘**: @lucide/svelte (이미 설치됨)
 - **빌드 도구**: Vite
 - **에디터 컴포넌트**: 
   - TinyMCE (HTML 편집)
@@ -103,31 +104,64 @@ backend/src/main/kotlin/com/setvect/bokslhome/
 frontend/src/
 ├── lib/
 │   ├── components/
-│   │   ├── ui/                    # shadcn-svelte 컴포넌트
+│   │   ├── layout/               # 레이아웃 컴포넌트 (완성됨)
+│   │   │   ├── Header.svelte     # 상단 헤더 (Popover 기반 사용자 메뉴)
+│   │   │   ├── Sidebar.svelte    # 좌측 사이드바 (2depth 메뉴)
+│   │   │   └── MainContent.svelte # 메인 콘텐츠 영역
+│   │   ├── ui/                   # shadcn-svelte 컴포넌트 (25개+)
 │   │   │   ├── MarkdownEditor.svelte  # 고급 마크다운 에디터
 │   │   │   └── HtmlEditor.svelte      # TinyMCE 래퍼
 │   │   └── [공유 컴포넌트들]
 │   ├── stores/
 │   │   └── theme.ts              # 테마 관리 스토어
-│   └── utils.ts                  # 유틸리티 함수
+│   ├── types/
+│   │   └── menu.ts               # 메뉴 타입 정의
+│   └── utils.ts                  # 유틸리티 함수 (cn 등)
 └── routes/
+    ├── +layout.svelte            # 메인 레이아웃 (Header + Sidebar + MainContent)
     ├── design-system/            # 컴포넌트 문서
     └── [애플리케이션 라우트]
 ```
 
 ### 주요 기술 세부사항
 
-#### Svelte 5 Runes 사용법
+#### **Svelte 5 Runes 문법 (필수)**
+**이 프로젝트는 Svelte 5를 사용하므로 반드시 Runes 문법을 사용해야 합니다.**
+
 ```typescript
-// 항상 Svelte 5 runes 문법 사용
+// ✅ 올바른 Svelte 5 Runes 문법 - 반드시 사용
 let currentValue = $state(value);
 let previewHtml = $state('');
 let isDarkMode = $derived(detectTheme());
 
+// Props 정의 (Svelte 5)
+interface Props {
+  children: any;
+  title?: string;
+}
+let { children, title = 'Default' }: Props = $props();
+
+// 이벤트 핸들러
+function handleClick() {
+  currentValue = 'new value';
+}
+
 $effect(() => {
   // 반응형 효과 로직
+  console.log('Value changed:', currentValue);
 });
+
+// ❌ 절대 사용하지 말 것 - Svelte 4 문법
+// export let value; 
+// let: binding;
+// on:click={handler}
 ```
+
+**중요한 Svelte 5 변경사항:**
+- `export let` 대신 `$props()` 사용
+- `on:event` 대신 `onclick` 등의 속성 사용  
+- `<slot>` 대신 `{@render children()}` 사용
+- `<script>` 태그에 TypeScript 사용 시 `lang="ts"` 필수
 
 #### 테마 시스템
 - 자동 라이트/다크 모드 감지
@@ -191,6 +225,17 @@ function insertAtCursor(text: string) {
 
 ### TODO 관리
 복잡한 다단계 작업에는 TodoWrite 도구를 사용하여 진행 상황을 추적하고 사용자에게 가시성 제공
+
+### 프론트엔드 개발 시 주의사항
+- **package.json 확인**: 새로운 라이브러리 설치 전 이미 설치된 패키지 확인 (예: @lucide/svelte)
+- **Svelte 5 문법 준수**: 절대 Svelte 4 문법 사용하지 말 것
+- **shadcn-svelte 컴포넌트**: 문제 발생 시 Popover 등 안정적인 대안 사용
+- **타입스크립트**: `<script lang="ts">` 태그 필수
+- **색상 테마 호환성**: 
+  - 모든 텍스트는 `text-foreground` 계열 클래스 사용
+  - `text-muted-foreground`, 고정 색상 클래스 사용 금지
+  - 새 컴포넌트 작성 후 라이트/다크 모드에서 가독성 확인 필수
+  - 아이콘은 `text-current` 또는 `text-foreground` 사용
 
 ### 오류 처리  
 - 단계별 디버깅 접근법
@@ -266,9 +311,8 @@ import { Button } from '$lib/components/ui/button';
 import { Input } from '$lib/components/ui/input';
 import { Label } from '$lib/components/ui/label';
 
-// 아이콘 import
-import SearchIcon from "@lucide/svelte/icons/search";
-import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
+// 아이콘 import - @lucide/svelte 사용 (이미 package.json에 설치됨)
+import { Search, ChevronDown, Menu, User, Sun, Moon } from '@lucide/svelte';
 ```
 
 #### 폼 구성 예시
@@ -360,14 +404,66 @@ const paginatedItems = $derived(
 - CSS 변수와 통합된 색상 시스템
 - `text-foreground`, `bg-background`, `border-border` 등 시맨틱 색상 클래스 사용
 
+#### 다크모드 호환 색상 사용법 (중요!)
+**모든 텍스트와 UI 요소는 다크모드에서도 가독성을 확보해야 합니다.**
+
+```css
+/* ✅ 올바른 색상 클래스 - 테마에 따라 자동 조정됨 */
+text-foreground         /* 메인 텍스트 색상 */
+text-foreground/80      /* 약간 투명한 메인 텍스트 */
+text-foreground/70      /* 보조 텍스트 */
+text-foreground/60      /* 더 연한 보조 텍스트 */
+text-current            /* 아이콘에 현재 텍스트 색상 적용 */
+
+bg-background           /* 배경색 */
+bg-card                 /* 카드 배경색 */
+bg-muted                /* 음소거된 배경색 */
+border-border           /* 테두리 색상 */
+
+/* ❌ 피해야 할 색상 클래스 - 다크모드에서 가독성 문제 */
+text-muted-foreground   /* 다크모드에서 너무 어두움 */
+text-gray-500           /* 고정 색상은 테마 변경 시 문제 */
+text-black              /* 다크모드에서 보이지 않음 */
+text-white              /* 라이트모드에서 보이지 않음 */
+```
+
+#### 컴포넌트별 권장 색상 패턴
+```svelte
+<!-- 제목 텍스트 -->
+<h1 class="text-foreground">메인 제목</h1>
+<h2 class="text-foreground">소제목</h2>
+
+<!-- 본문 텍스트 -->
+<p class="text-foreground/80">일반 본문 내용</p>
+<span class="text-foreground/70">보조 설명 텍스트</span>
+
+<!-- 아이콘 -->
+<Icon class="text-foreground" />      <!-- 메인 아이콘 -->
+<Icon class="text-current" />         <!-- 부모 텍스트 색상 상속 -->
+<Icon class="text-foreground/60" />   <!-- 보조 아이콘 -->
+
+<!-- 카드/패널 -->
+<div class="bg-card border border-border">
+  <h3 class="text-foreground">카드 제목</h3>
+  <p class="text-foreground/70">카드 내용</p>
+</div>
+```
+
 #### 테마 지원
 - 모든 컴포넌트는 자동 라이트/다크 모드 지원
 - CSS 변수 기반 색상 시스템으로 테마 전환 시 일관성 보장
+- 새로운 컴포넌트 작성 시 반드시 시맨틱 색상 클래스 사용
+- 텍스트 가독성 테스트: 라이트/다크 모드에서 모두 확인 필수
 
 ## 현재 상태
 
 - ✅ **백엔드**: Spring Boot + Kotlin API 완료
 - ✅ **프론트엔드 기반**: SvelteKit + Tailwind CSS 4.x 설정 완료
+- ✅ **레이아웃 시스템**: Header, Sidebar, MainContent 컴포넌트 완료
+  - 반응형 3-영역 레이아웃 (헤더/사이드바/콘텐츠)
+  - 2depth 메뉴 시스템 (@lucide/svelte 아이콘)
+  - Popover 기반 사용자 액션 메뉴
+  - 테마 토글 (라이트/다크/시스템)
 - ✅ **디자인 시스템**: shadcn-svelte 컴포넌트 통합 완료 (25개+ 컴포넌트)
 - ✅ **테마 시스템**: CSS 변수를 이용한 라이트/다크 모드 완료
 - ✅ **에디터 컴포넌트**: CodeMirror 6 기반 고급 MarkdownEditor 완료
