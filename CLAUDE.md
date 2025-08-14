@@ -105,7 +105,7 @@ frontend/src/
 ├── lib/
 │   ├── components/
 │   │   ├── layout/               # 레이아웃 컴포넌트 (완성됨)
-│   │   │   ├── Header.svelte     # 상단 헤더 (Popover 기반 사용자 메뉴)
+│   │   │   ├── Header.svelte     # 상단 헤더 (테마 토글, 사용자 메뉴)
 │   │   │   ├── Sidebar.svelte    # 좌측 사이드바 (2depth 메뉴)
 │   │   │   └── MainContent.svelte # 메인 콘텐츠 영역
 │   │   ├── ui/                   # shadcn-svelte 컴포넌트 (25개+)
@@ -113,14 +113,54 @@ frontend/src/
 │   │   │   └── HtmlEditor.svelte      # TinyMCE 래퍼
 │   │   └── [공유 컴포넌트들]
 │   ├── stores/
-│   │   └── theme.ts              # 테마 관리 스토어
+│   │   ├── theme.ts              # 테마 관리 스토어  
+│   │   └── layout.ts             # 레이아웃 상태 관리
 │   ├── types/
 │   │   └── menu.ts               # 메뉴 타입 정의
 │   └── utils.ts                  # 유틸리티 함수 (cn 등)
 └── routes/
-    ├── +layout.svelte            # 메인 레이아웃 (Header + Sidebar + MainContent)
-    ├── design-system/            # 컴포넌트 문서
-    └── [애플리케이션 라우트]
+    ├── +layout.svelte            # 루트 레이아웃 (기본 CSS만)
+    ├── (app)/                    # 메인 애플리케이션 그룹
+    │   ├── +layout.svelte        # 앱 헤더 + 사이드바 레이아웃
+    │   └── +page.svelte          # 홈페이지 (/)
+    ├── (auth)/                   # 인증 페이지 그룹
+    │   ├── +layout.svelte        # 단순 레이아웃 (헤더/사이드바 없음)
+    │   └── login/                # 로그인 페이지 (/login)
+    └── (design)/                 # 디자인 시스템 그룹
+        ├── +layout.svelte        # 앱 헤더 + 디자인 시스템 사이드바
+        └── design-system/        # 컴포넌트 문서 (/design-system)
+```
+
+### 그룹 라우팅 구조 (Group Routes)
+
+프로젝트는 SvelteKit의 그룹 라우팅을 활용하여 레이아웃별로 깔끔하게 구조화되어 있습니다.
+
+#### 그룹별 특징
+
+**`(app)` 그룹 - 메인 애플리케이션**
+- 앱 헤더 (테마 토글, 사용자 메뉴 포함)
+- 앱 전용 사이드바 (메인 네비게이션)
+- 일반적인 애플리케이션 기능들
+- URL: `/`, `/board`, `/memo` 등
+
+**`(auth)` 그룹 - 인증 페이지**
+- 헤더/사이드바 없는 순수한 페이지
+- 로그인, 회원가입 등 인증 관련
+- URL: `/login` (그룹명은 URL에 포함되지 않음)
+
+**`(design)` 그룹 - 디자인 시스템**
+- 앱 헤더 (공통 테마 토글)
+- 디자인 시스템 전용 사이드바 (컴포넌트 네비게이션)
+- 기존 브레드크럼과 모든 기능 유지
+- URL: `/design-system`
+
+#### 그룹 라우팅 사용법
+```typescript
+// 새 페이지를 추가할 때 적절한 그룹을 선택
+routes/
+├── (app)/board/+page.svelte        # → /board (앱 레이아웃)
+├── (auth)/register/+page.svelte    # → /register (인증 레이아웃) 
+└── (design)/design-system/icons/+page.svelte # → /design-system/icons
 ```
 
 ### 주요 기술 세부사항
@@ -590,11 +630,16 @@ function handleArrowKeys(event: KeyboardEvent) {
 
 - ✅ **백엔드**: Spring Boot + Kotlin API 완료
 - ✅ **프론트엔드 기반**: SvelteKit + Tailwind CSS 4.x 설정 완료
+- ✅ **그룹 라우팅 구조**: 3개 그룹으로 레이아웃 분리 완료
+  - `(app)` - 메인 애플리케이션 (헤더 + 앱 사이드바)
+  - `(auth)` - 인증 페이지 (헤더/사이드바 없음)  
+  - `(design)` - 디자인 시스템 (헤더 + 디자인 시스템 사이드바)
 - ✅ **레이아웃 시스템**: Header, Sidebar, MainContent 컴포넌트 완료
   - 반응형 3-영역 레이아웃 (헤더/사이드바/콘텐츠)
   - 2depth 메뉴 시스템 (@lucide/svelte 아이콘)
   - Popover 기반 사용자 액션 메뉴
   - 테마 토글 (라이트/다크/시스템)
+- ✅ **인증 시스템**: 로그인 페이지 완료 (API 모킹)
 - ✅ **디자인 시스템**: shadcn-svelte 컴포넌트 통합 완료 (25개+ 컴포넌트)
 - ✅ **테마 시스템**: CSS 변수를 이용한 라이트/다크 모드 완료
 - ✅ **에디터 컴포넌트**: CodeMirror 6 기반 고급 MarkdownEditor 완료
