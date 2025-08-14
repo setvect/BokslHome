@@ -25,14 +25,57 @@
       ]
     },
     {
-      title: '컴포넌트',
+      title: 'Form 컴포넌트',
       items: [
         { name: 'Button', href: '/design-system/components/button', badge: 'stable' },
-        { name: 'Card', href: '/design-system/components/card', badge: 'stable' },
         { name: 'Input', href: '/design-system/components/input', badge: 'stable' },
+        { name: 'Textarea', href: '/design-system/components/textarea', badge: 'stable' },
         { name: 'Label', href: '/design-system/components/label', badge: 'stable' },
-        { name: 'Badge', href: '/design-system/components/badge', badge: 'stable' },
+        { name: 'Checkbox', href: '/design-system/components/checkbox', badge: 'stable' },
+        { name: 'Radio Group', href: '/design-system/components/radio-group', badge: 'stable' },
+        { name: 'Select', href: '/design-system/components/select', badge: 'stable' },
+        { name: 'Switch', href: '/design-system/components/switch', badge: 'stable' },
+        { name: 'Slider', href: '/design-system/components/slider', badge: 'stable' }
+      ]
+    },
+    {
+      title: 'Layout 컴포넌트',
+      items: [
+        { name: 'Card', href: '/design-system/components/card', badge: 'stable' },
+        { name: 'Table', href: '/design-system/components/table', badge: 'stable' }
+      ]
+    },
+    {
+      title: 'Modal/Dialog',
+      items: [
+        { name: 'Dialog', href: '/design-system/components/dialog', badge: 'stable' },
+        { name: 'Sheet', href: '/design-system/components/sheet', badge: 'stable' },
+        { name: 'Drawer', href: '/design-system/components/drawer', badge: 'stable' },
+        { name: 'Popover', href: '/design-system/components/popover', badge: 'stable' }
+      ]
+    },
+    {
+      title: 'Navigation',
+      items: [
         { name: 'Breadcrumb', href: '/design-system/components/breadcrumb', badge: 'stable' },
+        { name: 'Tabs', href: '/design-system/components/tabs', badge: 'stable' },
+        { name: 'Pagination', href: '/design-system/components/pagination', badge: 'stable' }
+      ]
+    },
+    {
+      title: 'Feedback/Status',
+      items: [
+        { name: 'Alert', href: '/design-system/components/alert', badge: 'stable' },
+        { name: 'Badge', href: '/design-system/components/badge', badge: 'stable' },
+        { name: 'Toast (Sonner)', href: '/design-system/components/sonner', badge: 'stable' },
+        { name: 'Tooltip', href: '/design-system/components/tooltip', badge: 'stable' },
+        { name: 'Progress', href: '/design-system/components/progress', badge: 'stable' },
+        { name: 'Skeleton', href: '/design-system/components/skeleton', badge: 'stable' }
+      ]
+    },
+    {
+      title: 'Editor 컴포넌트',
+      items: [
         { name: 'HtmlEditor', href: '/design-system/components/editor', badge: 'beta' },
         { name: 'MarkdownEditor', href: '/design-system/components/markdown', badge: 'alpha' }
       ]
@@ -50,14 +93,6 @@
   
   $: currentPath = $page.url.pathname;
   
-  function isActive(href: string): boolean {
-    // 정확한 경로 매칭
-    return currentPath === href;
-  }
-  
-  function isParentActive(items: any[]): boolean {
-    return items.some(item => isActive(item.href));
-  }
   
   
   function getBadgeVariant(badge: string) {

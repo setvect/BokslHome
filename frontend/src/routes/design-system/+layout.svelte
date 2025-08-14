@@ -56,6 +56,60 @@
         case 'badge':
           displayName = 'Badge';
           break;
+        case 'textarea':
+          displayName = 'Textarea';
+          break;
+        case 'checkbox':
+          displayName = 'Checkbox';
+          break;
+        case 'radio-group':
+          displayName = 'Radio Group';
+          break;
+        case 'select':
+          displayName = 'Select';
+          break;
+        case 'switch':
+          displayName = 'Switch';
+          break;
+        case 'slider':
+          displayName = 'Slider';
+          break;
+        case 'table':
+          displayName = 'Table';
+          break;
+        case 'dialog':
+          displayName = 'Dialog';
+          break;
+        case 'sheet':
+          displayName = 'Sheet';
+          break;
+        case 'drawer':
+          displayName = 'Drawer';
+          break;
+        case 'popover':
+          displayName = 'Popover';
+          break;
+        case 'tabs':
+          displayName = 'Tabs';
+          break;
+        case 'pagination':
+          displayName = 'Pagination';
+          break;
+        case 'alert':
+          displayName = 'Alert';
+          break;
+        case 'sonner':
+          displayName = 'Toast (Sonner)';
+          break;
+        case 'tooltip':
+          displayName = 'Tooltip';
+          break;
+        case 'progress':
+          displayName = 'Progress';
+          break;
+        case 'skeleton':
+          displayName = 'Skeleton';
+          break;
         case 'breadcrumb':
           displayName = 'Breadcrumb';
           break;

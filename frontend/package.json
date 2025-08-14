@@ -32,12 +32,14 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.46.0",
     "globals": "^16.3.0",
+    "mode-watcher": "^1.1.0",
     "postcss": "^8.5.6",
     "prettier": "^3.3.3",
     "prettier-plugin-svelte": "^3.2.7",
     "prosemirror-markdown": "^1.13.2",
     "svelte": "^5.2.9",
     "svelte-check": "^4.0.8",
+    "svelte-sonner": "^1.0.5",
     "svelte-tiptap": "^2.2.0",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^1.0.0",
@@ -45,6 +47,7 @@
     "tslib": "^2.8.1",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.39.0",
+    "vaul-svelte": "^1.0.0-next.7",
     "vite": "^6.0.1"
   },
   "dependencies": {
