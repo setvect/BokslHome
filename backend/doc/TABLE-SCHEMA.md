@@ -37,19 +37,20 @@
 
 - TBBB_BOARD_ARTICLE: 게시판 항목
 
-| Column Name  | Attribute Name | Key | Type     | Len | Not Null | Description            |
-|--------------|----------------| --- | -------- |-----| -------- |------------------------|
-| ARTICLE_SEQ  | 키              | PK  | integer  | 4   | Y        |                        |
-| BOARD_CODE   | 게시판 코드         | FK  | varchar  | 20  | Y        | TBBA_BOARD_MANAGER 외래키 |
-| USER_ID      | 아이디            |     | varchar  | 20  | Y        | TBAA_USER 외래키          |
-| TITLE        | 제목             |     | varchar  | 200 | Y        |                        |
-| CONTENT      | 본문             |     | TEXT     |     | Y        |                        |
-| IP           | 아이피            |     | varchar  | 20  | Y        |                        |
-| HIT_COUNT    | 조회수            |     | integer  |     | Y        |                        |
-| ENCRYPT_F    | 암호화 여부       |     | varchar  | 1   | Y        | Y, N                   |
-| ENCRYPT_TYPE | 암호화 유형       |     | varchar  | 20  | Y        | HEX, AES               |
-| REG_DATE     | 등록일            |     | datetime |     | Y        |                        |
-| DELETE_F     | 삭제여부           |     | varchar  | 1   | Y        | Y, N                   |
+| Column Name  | Attribute Name | Key | Type     | Len | Not Null | Description               |
+| ------------ | -------------- | --- | -------- | --- | -------- | ------------------------- |
+| ARTICLE_SEQ  | 키             | PK  | integer  | 4   | Y        |                           |
+| BOARD_CODE   | 게시판 코드    | FK  | varchar  | 20  | Y        | TBBA_BOARD_MANAGER 외래키 |
+| USER_ID      | 아이디         |     | varchar  | 20  | Y        | TBAA_USER 외래키          |
+| TITLE        | 제목           |     | varchar  | 200 | Y        |                           |
+| CONTENT      | 본문           |     | TEXT     |     | Y        |                           |
+| CONTENT_TYPE | 본문 유형      |     | varchar  | 20  | Y        | HTML, MARKDOWN            |
+| IP           | 아이피         |     | varchar  | 20  | Y        |                           |
+| HIT_COUNT    | 조회수         |     | integer  |     | Y        |                           |
+| ENCRYPT_F    | 암호화 여부    |     | varchar  | 1   | Y        | Y, N                      |
+| ENCRYPT_TYPE | 암호화 유형    |     | varchar  | 20  | Y        | HEX, AES                  |
+| REG_DATE     | 등록일         |     | datetime |     | Y        |                           |
+| DELETE_F     | 삭제여부       |     | varchar  | 1   | Y        | Y, N                      |
 
 ### 복슬메모
 
