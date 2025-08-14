@@ -9,5 +9,3 @@ declare module 'tinymce/plugins/lists';
 declare module 'tinymce/plugins/image';
 // 라이선스 키 매니저 플러그인 선언
 declare module 'tinymce/plugins/licensekeymanager';
-
-

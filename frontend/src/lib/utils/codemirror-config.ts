@@ -16,7 +16,7 @@ import { rust } from '@codemirror/legacy-modes/mode/rust';
 // 언어 맵 함수 생성 (CodeMirror가 요구하는 형식)
 export const codeLanguages = (info: string) => {
   const lang = info.toLowerCase();
-  
+
   switch (lang) {
     case 'javascript':
     case 'js':

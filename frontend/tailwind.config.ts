@@ -1,6 +1,6 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 export default {
-  content: ["./src/**/*.{html,js,svelte,ts}"],
-  darkMode: "class"
+  content: ['./src/**/*.{html,js,svelte,ts}'],
+  darkMode: 'class'
 } satisfies Config;

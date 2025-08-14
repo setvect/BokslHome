@@ -1,3 +1,3 @@
-import Pagination from "./pagination.svelte";
+import Pagination from './pagination.svelte';
 
 export { Pagination };

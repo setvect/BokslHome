@@ -40,11 +40,11 @@
 - [x] 모바일/태블릿/데스크톱별 레이아웃 최적화
 
 ### 5단계: 레이아웃 상태 관리 및 통합 테스트
-- [ ] `src/lib/stores/layout.ts` 레이아웃 상태 스토어 생성
-- [ ] 사이드바 토글 상태, 현재 메뉴 등 전역 상태 관리
-- [ ] 브라우저 localStorage를 통한 사이드바 상태 영속성
-- [ ] 다양한 화면 크기에서 레이아웃 테스트
-- [ ] shadcn-svelte 컴포넌트와의 통합 확인
+- [x] `src/lib/stores/layout.ts` 레이아웃 상태 스토어 생성
+- [x] 사이드바 토글 상태, 현재 메뉴 등 전역 상태 관리
+- [x] 브라우저 localStorage를 통한 사이드바 상태 영속성
+- [x] 다양한 화면 크기에서 레이아웃 테스트
+- [x] shadcn-svelte 컴포넌트와의 통합 확인
 
 ## 사용할 기술 스택
 - **Svelte 5 Runes**: $state, $derived, $effect 활용

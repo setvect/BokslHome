@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { MenuItem } from '$lib/types/menu';
+  import { layout, type LayoutState } from '$lib/stores/layout';
   import { 
     ChevronDown, 
     ChevronRight, 
@@ -19,8 +20,20 @@
 
   let { isSidebarOpen = false, onClose }: Props = $props();
 
-  // 메뉴 데이터 정의
-  let menuItems = $state<MenuItem[]>([
+  // 레이아웃 상태 구독  
+  let layoutState = $state<LayoutState>({
+    isSidebarOpen: false,
+    currentTheme: 'dark',
+    mounted: false,
+    currentMenu: {
+      expandedMenus: [],
+      activeMenuId: undefined,
+      activeSubMenuId: undefined
+    }
+  });
+
+  // 메뉴 데이터 정의 (정적 구조)
+  const baseMenuItems: MenuItem[] = [
     {
       id: 'board',
       label: '게시판',
@@ -29,8 +42,7 @@
         { id: 'board-general', label: '일반 게시판', href: '/board/general' },
         { id: 'board-notice', label: '공지사항', href: '/board/notice' },
         { id: 'board-qna', label: 'Q&A', href: '/board/qna' }
-      ],
-      isExpanded: false
+      ]
     },
     {
       id: 'knowledge',
@@ -40,8 +52,7 @@
         { id: 'knowledge-tech', label: '기술 지식', href: '/knowledge/tech' },
         { id: 'knowledge-life', label: '생활 정보', href: '/knowledge/life' },
         { id: 'knowledge-study', label: '학습 자료', href: '/knowledge/study' }
-      ],
-      isExpanded: false
+      ]
     },
     {
       id: 'note',
@@ -51,8 +62,7 @@
         { id: 'note-personal', label: '개인 노트', href: '/note/personal' },
         { id: 'note-work', label: '업무 노트', href: '/note/work' },
         { id: 'note-project', label: '프로젝트 노트', href: '/note/project' }
-      ],
-      isExpanded: false
+      ]
     },
     {
       id: 'memo',
@@ -62,8 +72,7 @@
         { id: 'memo-quick', label: '빠른 메모', href: '/memo/quick' },
         { id: 'memo-todo', label: '할일 목록', href: '/memo/todo' },
         { id: 'memo-idea', label: '아이디어', href: '/memo/idea' }
-      ],
-      isExpanded: false
+      ]
     },
     {
       id: 'network',
@@ -77,7 +86,20 @@
       icon: 'Dice1',
       href: '/lotto'
     }
-  ]);
+  ];
+
+  // 동적 메뉴 아이템 (확장 상태 포함)
+  const menuItems = $derived(
+    baseMenuItems.map(item => ({
+      ...item,
+      isExpanded: layoutState.currentMenu.expandedMenus.includes(item.id),
+      isActive: layoutState.currentMenu.activeMenuId === item.id,
+      children: item.children?.map(child => ({
+        ...child,
+        isActive: layoutState.currentMenu.activeSubMenuId === child.id
+      }))
+    }))
+  );
 
 
   // 아이콘 컴포넌트 매핑
@@ -98,26 +120,35 @@
     return iconMap[iconName as keyof typeof iconMap];
   }
 
-  // 메뉴 토글 함수
-  function toggleMenu(menuId: string) {
-    menuItems = menuItems.map(item => {
-      if (item.id === menuId && item.children) {
-        return { ...item, isExpanded: !item.isExpanded };
-      }
-      return item;
-    });
-  }
-
   // 메뉴 클릭 처리
   function handleMenuClick(item: MenuItem) {
     if (item.children) {
-      toggleMenu(item.id);
+      // 중앙화된 스토어의 토글 메뉴 함수 사용
+      layout.toggleMenu(item.id);
     } else if (item.href) {
+      // 활성 메뉴 설정
+      layout.setActiveMenu(item.id);
       // 실제 네비게이션은 나중에 구현
       console.log('Navigate to:', item.href);
       if (onClose) onClose();
     }
   }
+
+  // 서브메뉴 클릭 처리
+  function handleSubMenuClick(parentId: string, subItem: MenuItem) {
+    layout.setActiveMenu(parentId, subItem.id);
+    console.log('Navigate to:', subItem.href);
+    if (onClose) onClose();
+  }
+
+  onMount(() => {
+    // 레이아웃 상태 구독
+    const unsubscribe = layout.subscribe((state) => {
+      layoutState = state;
+    });
+    
+    return unsubscribe;
+  });
 
 </script>
 
@@ -173,16 +204,15 @@
             {#if item.children && item.isExpanded}
               <div class="ml-7 mt-1 space-y-1" role="group">
                 {#each item.children as subItem (subItem.id)}
-                  <a 
-                    href={subItem.href || '#'}
-                    class="block px-3 py-2 rounded-md text-sm
+                  <button 
+                    class="w-full text-left px-3 py-2 rounded-md text-sm
                            hover:bg-accent hover:text-accent-foreground
                            transition-colors duration-200
                            {subItem.isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/70'}"
-                    onclick={() => onClose?.()}
+                    onclick={() => handleSubMenuClick(item.id, subItem)}
                   >
                     {subItem.label}
-                  </a>
+                  </button>
                 {/each}
               </div>
             {/if}

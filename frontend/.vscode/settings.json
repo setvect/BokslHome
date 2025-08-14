@@ -4,9 +4,7 @@
   "files.associations": {
     "*.pcss": "css"
   },
-  "css.customData": [
-    "../.vscode/css-custom-data.json"
-  ],
+  "css.customData": ["../.vscode/css-custom-data.json"],
   "tailwindCSS.includeLanguages": {
     "postcss": "css",
     "css": "css",

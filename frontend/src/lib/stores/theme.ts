@@ -25,7 +25,7 @@ function createThemeStore() {
       currentValue = theme;
       if (browser) {
         localStorage.setItem('theme', theme);
-        
+
         // HTML 클래스 업데이트
         const root = document.documentElement;
         if (theme === 'dark') {
@@ -38,13 +38,13 @@ function createThemeStore() {
     },
     // 테마 토글 (light ↔ dark)
     toggleTheme: () => {
-      update(currentTheme => {
+      update((currentTheme) => {
         currentValue = currentTheme === 'light' ? 'dark' : 'light';
         const newTheme = currentValue;
-        
+
         if (browser) {
           localStorage.setItem('theme', newTheme);
-          
+
           // HTML 클래스 업데이트
           const root = document.documentElement;
           if (newTheme === 'dark') {
@@ -53,7 +53,7 @@ function createThemeStore() {
             root.classList.remove('dark');
           }
         }
-        
+
         return newTheme;
       });
     },
@@ -62,7 +62,7 @@ function createThemeStore() {
       if (browser) {
         const storedTheme = getStoredTheme();
         currentValue = storedTheme;
-        
+
         // HTML에서 이미 테마가 설정되어 있으므로 스토어 상태만 동기화
         setStore(storedTheme);
       }
