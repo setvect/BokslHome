@@ -17,18 +17,18 @@
       
       // 필요한 언어 로드
       if (language === 'svelte') {
-        await import('prismjs/components/prism-javascript');
-        await import('prismjs/components/prism-typescript');
+        await import('prismjs/components/prism-javascript' as any);
+        await import('prismjs/components/prism-typescript' as any);
         // Svelte는 HTML과 유사하게 처리
         language = 'markup';
       } else if (language === 'typescript' || language === 'ts') {
-        await import('prismjs/components/prism-typescript');
+        await import('prismjs/components/prism-typescript' as any);
         language = 'typescript';
       } else if (language === 'javascript' || language === 'js') {
-        await import('prismjs/components/prism-javascript');
+        await import('prismjs/components/prism-javascript' as any);
         language = 'javascript';
       } else if (language === 'css') {
-        await import('prismjs/components/prism-css');
+        await import('prismjs/components/prism-css' as any);
       }
       
       if (codeElement) {

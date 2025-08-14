@@ -1,21 +1,26 @@
 <script lang="ts">
-	import { Select as SelectPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
+
+	interface Props {
+		ref?: any;
+		class?: string;
+		placeholder?: string;
+		[key: string]: any;
+	}
 
 	let {
 		ref = $bindable(null),
 		class: className,
 		placeholder,
 		...restProps
-	}: SelectPrimitive.ValueProps & {
-		placeholder?: string;
-	} = $props();
+	}: Props = $props();
 </script>
 
-<SelectPrimitive.Value
-	bind:ref
+<div
+	bind:this={ref}
 	data-slot="select-value"
 	class={cn("block truncate", className)}
-	{placeholder}
 	{...restProps}
-/>
+>
+	{placeholder || ''}
+</div>

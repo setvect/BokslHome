@@ -2,10 +2,19 @@
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
-  import { layout } from '$lib/stores/layout';
+  import { layout, type LayoutState } from '$lib/stores/layout';
 
   // 레이아웃 상태 구독
-  let layoutState = $state({ isSidebarOpen: false, currentTheme: 'dark', mounted: false, currentMenu: { expandedMenus: [], activeMenuId: undefined, activeSubMenuId: undefined } });
+  let layoutState = $state<LayoutState>({ 
+    isSidebarOpen: false, 
+    currentTheme: 'dark', 
+    mounted: false, 
+    currentMenu: { 
+      expandedMenus: [], 
+      activeMenuId: undefined, 
+      activeSubMenuId: undefined 
+    } 
+  });
 
   $effect(() => {
     const unsubscribe = layout.subscribe((state) => {

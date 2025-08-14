@@ -36,6 +36,22 @@ function createThemeStore() {
       }
       setStore(theme);
     },
+    // 테마 설정 (별칭)
+    setTheme: (theme: Theme) => {
+      currentValue = theme;
+      if (browser) {
+        localStorage.setItem('theme', theme);
+
+        // HTML 클래스 업데이트
+        const root = document.documentElement;
+        if (theme === 'dark') {
+          root.classList.add('dark');
+        } else {
+          root.classList.remove('dark');
+        }
+      }
+      setStore(theme);
+    },
     // 테마 토글 (light ↔ dark)
     toggleTheme: () => {
       update((currentTheme) => {
