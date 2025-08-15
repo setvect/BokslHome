@@ -133,6 +133,9 @@
         case 'spacing':
           displayName = 'Spacing';
           break;
+        case 'form-validation':
+          displayName = 'Form Validation';
+          break;
       }
       
       breadcrumbs.push({

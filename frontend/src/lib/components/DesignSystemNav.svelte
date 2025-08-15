@@ -35,7 +35,8 @@
         { name: 'Radio Group', href: '/design-system/components/radio-group', badge: 'stable' },
         { name: 'Select', href: '/design-system/components/select', badge: 'stable' },
         { name: 'Switch', href: '/design-system/components/switch', badge: 'stable' },
-        { name: 'Slider', href: '/design-system/components/slider', badge: 'stable' }
+        { name: 'Slider', href: '/design-system/components/slider', badge: 'stable' },
+        { name: 'Form Validation', href: '/design-system/components/form-validation', badge: 'WIP' }
       ]
     },
     {
@@ -100,6 +101,7 @@
       case 'stable': return 'default';
       case 'beta': return 'secondary';
       case 'alpha': return 'outline';
+      case 'WIP': return 'destructive';
       default: return 'outline';
     }
   }
