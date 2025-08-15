@@ -39,11 +39,11 @@ interface BoardManager {
 **목표**: 게시판 관리 목록 화면 구현 (list.png 참고)
 
 **세부 작업**:
-- [ ] 상단 검색 영역 구현 (이름 드롭다운 + 검색어 입력 + 검색/만들기 버튼)
-- [ ] 게시판 목록 테이블 구현 (코드, 바로가기, 게시판이름, 기능)
-- [ ] 하단 페이지네이션 구현
-- [ ] 반응형 레이아웃 적용
-- [ ] shadcn-svelte 컴포넌트 활용 (Table, Button, Input, Select)
+- [x] 상단 검색 영역 구현 (이름 드롭다운 + 검색어 입력 + 검색/만들기 버튼)
+- [x] 게시판 목록 테이블 구현 (코드, 바로가기, 게시판이름, 기능)
+- [x] 하단 페이지네이션 구현
+- [x] 반응형 레이아웃 적용
+- [x] shadcn-svelte 컴포넌트 활용 (Table, Button, Input, Select)
 
 **파일 위치**: `/frontend/src/routes/(app)/board-manager/+page.svelte`
 

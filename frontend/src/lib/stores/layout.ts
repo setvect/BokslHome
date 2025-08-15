@@ -116,8 +116,8 @@ function createLayoutStore() {
         ...state,
         currentMenu: {
           ...state.currentMenu,
-          activeMenuId: menuId,
-          activeSubMenuId: subMenuId
+          activeMenuId: menuId || undefined,
+          activeSubMenuId: subMenuId || undefined
         }
       }));
     },

@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
   import type { MenuItem } from '$lib/types/menu';
   import { layout, type LayoutState } from '$lib/stores/layout';
   import { 
@@ -57,7 +59,7 @@
       label: '게시판',
       icon: 'FileText',
       children: [
-        { id: 'board-manage', label: '게시판 관리', href: '/board/manage' },
+        { id: 'board-manage', label: '게시판 관리', href: '/board-manager' },
         { id: 'board-writing', label: '글', href: '/board/writing' },
         { id: 'board-book', label: '책', href: '/board/book' },
         { id: 'board-music', label: '음악', href: '/board/music' },
@@ -161,19 +163,90 @@
       // 하위 메뉴가 있는 경우: 토글만 함
       layout.toggleMenu(item.id);
     } else if (item.href) {
-      // 링크가 있는 메뉴: 네비게이션만 함
+      // 링크가 있는 메뉴: 네비게이션 실행
       layout.setActiveMenu(item.id);
       console.log('Navigate to:', item.href);
-      // 사이드바 닫지 않음
+      goto(item.href);
     }
   }
 
   // 서브메뉴 클릭 처리
   function handleSubMenuClick(parentId: string, subItem: MenuItem) {
-    layout.setActiveMenu(parentId, subItem.id);
-    console.log('Navigate to:', subItem.href);
-    // 서브메뉴 클릭 시에도 사이드바 닫지 않음
+    if (subItem.href) {
+      layout.setActiveMenu(parentId, subItem.id);
+      console.log('Navigate to:', subItem.href);
+      goto(subItem.href);
+    }
   }
+
+  // 현재 경로에 따른 활성 메뉴 설정
+  function setActiveMenuFromPath(pathname: string) {
+    // 홈 페이지인 경우 모든 메뉴 비활성화
+    if (pathname === '/') {
+      const currentMenu = layoutState.currentMenu;
+      if (currentMenu.activeMenuId || currentMenu.activeSubMenuId) {
+        layout.setActiveMenu('', ''); // 빈 문자열로 모든 메뉴 비활성화
+      }
+      return;
+    }
+
+    // 경로별 메뉴 매핑
+    const pathMenuMap: Record<string, { parentId: string; subMenuId?: string }> = {
+      '/board-manager': { parentId: 'board', subMenuId: 'board-manage' },
+      '/board/writing': { parentId: 'board', subMenuId: 'board-writing' },
+      '/board/book': { parentId: 'board', subMenuId: 'board-book' },
+      '/board/music': { parentId: 'board', subMenuId: 'board-music' },
+      '/board/movie': { parentId: 'board', subMenuId: 'board-movie' },
+      '/board/photo': { parentId: 'board', subMenuId: 'board-photo' },
+      '/board/memory': { parentId: 'board', subMenuId: 'board-memory' },
+      '/board/relationship': { parentId: 'board', subMenuId: 'board-relationship' },
+      '/board/talk': { parentId: 'board', subMenuId: 'board-talk' },
+      '/board/dream': { parentId: 'board', subMenuId: 'board-dream' },
+      '/board/tech': { parentId: 'board', subMenuId: 'board-tech' },
+      '/board/novel': { parentId: 'board', subMenuId: 'board-novel' },
+      '/board/exercise': { parentId: 'board', subMenuId: 'board-exercise' },
+      '/knowledge': { parentId: 'knowledge' },
+      '/note': { parentId: 'note' },
+      '/memo': { parentId: 'memo' },
+      '/network': { parentId: 'network' }
+    };
+
+    const menuInfo = pathMenuMap[pathname];
+    if (menuInfo) {
+      // 현재 활성 메뉴와 다른 경우에만 업데이트
+      const currentMenu = layoutState.currentMenu;
+      const needsUpdate = 
+        currentMenu.activeMenuId !== menuInfo.parentId || 
+        currentMenu.activeSubMenuId !== menuInfo.subMenuId;
+      
+      if (needsUpdate) {
+        layout.setActiveMenu(menuInfo.parentId, menuInfo.subMenuId);
+        
+        // 서브메뉴가 있는 경우 부모 메뉴 확장
+        if (menuInfo.subMenuId && !currentMenu.expandedMenus.includes(menuInfo.parentId)) {
+          layout.toggleMenu(menuInfo.parentId);
+        }
+      }
+    } else {
+      // 매핑되지 않은 경로인 경우 모든 메뉴 비활성화
+      const currentMenu = layoutState.currentMenu;
+      if (currentMenu.activeMenuId || currentMenu.activeSubMenuId) {
+        layout.setActiveMenu('', '');
+      }
+    }
+  }
+
+  // 경로 추적용 변수
+  let currentPath = $state('');
+
+  // 경로 변경 감지하여 활성 메뉴 자동 설정
+  $effect(() => {
+    const pathname = page?.url?.pathname;
+    if (pathname && pathname !== currentPath) {
+      currentPath = pathname;
+      setActiveMenuFromPath(pathname);
+    }
+  });
 
   onMount(() => {
     // 레이아웃 상태 구독

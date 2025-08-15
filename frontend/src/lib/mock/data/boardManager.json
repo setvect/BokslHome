@@ -1,0 +1,162 @@
+[
+  {
+    "boardCode": "BDAAAA00",
+    "name": "메인화면",
+    "uploadLimit": 0,
+    "replyF": false,
+    "commentF": false,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA01",
+    "name": "글",
+    "uploadLimit": 1024,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA02",
+    "name": "책",
+    "uploadLimit": 2048,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA03",
+    "name": "음악",
+    "uploadLimit": 5120,
+    "replyF": true,
+    "commentF": false,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA04",
+    "name": "영화",
+    "uploadLimit": 10240,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA05",
+    "name": "사진",
+    "uploadLimit": 5120,
+    "replyF": false,
+    "commentF": false,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA06",
+    "name": "기억",
+    "uploadLimit": 1024,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": true,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA07",
+    "name": "인연",
+    "uploadLimit": 0,
+    "replyF": true,
+    "commentF": true,
+    "attachF": false,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA08",
+    "name": "잡담",
+    "uploadLimit": 2048,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA09",
+    "name": "꿈",
+    "uploadLimit": 1024,
+    "replyF": true,
+    "commentF": false,
+    "attachF": false,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA10",
+    "name": "여행",
+    "uploadLimit": 2048,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA11",
+    "name": "요리",
+    "uploadLimit": 3072,
+    "replyF": false,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA12",
+    "name": "스포츠",
+    "uploadLimit": 1536,
+    "replyF": true,
+    "commentF": false,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA13",
+    "name": "게임",
+    "uploadLimit": 4096,
+    "replyF": true,
+    "commentF": true,
+    "attachF": false,
+    "encryptF": false,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA14",
+    "name": "공부",
+    "uploadLimit": 512,
+    "replyF": false,
+    "commentF": false,
+    "attachF": true,
+    "encryptF": true,
+    "deleteF": false
+  },
+  {
+    "boardCode": "BDAAAA15",
+    "name": "취미",
+    "uploadLimit": 2560,
+    "replyF": true,
+    "commentF": true,
+    "attachF": true,
+    "encryptF": false,
+    "deleteF": false
+  }
+]

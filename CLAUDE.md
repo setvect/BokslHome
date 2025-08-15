@@ -118,19 +118,28 @@ frontend/src/
 │   │   │   └── MainContent.svelte # 메인 콘텐츠 영역
 │   │   ├── ui/                   # shadcn-svelte 컴포넌트 (25개+)
 │   │   │   ├── MarkdownEditor.svelte  # 고급 마크다운 에디터
-│   │   │   └── HtmlEditor.svelte      # TinyMCE 래퍼
+│   │   │   ├── HtmlEditor.svelte      # TinyMCE 래퍼
+│   │   │   └── pagination.svelte      # 재사용 가능한 페이지네이션
 │   │   └── [공유 컴포넌트들]
 │   ├── stores/
 │   │   ├── theme.ts              # 테마 관리 스토어  
 │   │   └── layout.ts             # 레이아웃 상태 관리
 │   ├── types/
-│   │   └── menu.ts               # 메뉴 타입 정의
-│   └── utils.ts                  # 유틸리티 함수 (cn 등)
+│   │   ├── common.ts             # 공통 타입 (Pagination, ApiErrorResponse 등)
+│   │   ├── menu.ts               # 메뉴 타입 정의
+│   │   └── [모듈명].ts           # 모듈별 타입 정의
+│   ├── utils/
+│   │   ├── [모듈명].ts           # 모듈별 유틸리티 함수
+│   │   └── common.ts             # 공통 유틸리티 함수 (cn 등)
+│   └── mock/                     # Mock 데이터 및 API
+│       ├── data/                 # JSON 테스트 데이터
+│       └── api/                  # Mock API 서비스
 └── routes/
     ├── +layout.svelte            # 루트 레이아웃 (기본 CSS만)
     ├── (app)/                    # 메인 애플리케이션 그룹
     │   ├── +layout.svelte        # 앱 헤더 + 사이드바 레이아웃
-    │   └── +page.svelte          # 홈페이지 (/)
+    │   ├── +page.svelte          # 홈페이지 (/)
+    │   └── [모듈명]/             # 모듈별 페이지 (예: board-manager/)
     ├── (auth)/                   # 인증 페이지 그룹
     │   ├── +layout.svelte        # 단순 레이아웃 (헤더/사이드바 없음)
     │   └── login/                # 로그인 페이지 (/login)
@@ -379,6 +388,141 @@ function insertAtCursor(text: string) {
 - `mermaid` 코드 블록을 위한 커스텀 marked.js 렌더러
 - 테마 지원과 함께 동적 SVG 렌더링
 - HTML 생성 후 DOM 기반 후처리
+
+### Mock 데이터 및 API 처리 패턴
+
+#### Mock 데이터 구조 (권장)
+```
+frontend/src/lib/mock/
+├── data/
+│   ├── boardManager.json      # 정적 테스트 데이터
+│   ├── users.json            # 사용자 데이터
+│   └── [모듈명].json          # 모듈별 테스트 데이터
+└── api/
+    ├── boardManagerApi.ts     # Mock API 서비스
+    ├── userApi.ts            # 사용자 API
+    └── [모듈명]Api.ts         # 모듈별 API 서비스
+```
+
+#### Mock API 서비스 패턴
+```typescript
+// ✅ Mock API 서비스 예시 (/lib/mock/api/boardManagerApi.ts)
+import mockData from '../data/boardManager.json';
+
+// 로딩 시뮬레이션
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// 완전한 CRUD 작업 지원
+export async function getBoardManagerList(query: BoardManagerQuery): Promise<BoardManagerListResponse> {
+  await delay(500); // 네트워크 지연 시뮬레이션
+  
+  // 검색 필터링
+  const filteredData = applySearchFilter(mockData, query.search);
+  
+  // 페이지네이션 적용
+  const result = applyPagination(filteredData, query.pagination);
+  
+  return result;
+}
+
+export async function createBoardManager(data: BoardManagerFormData): Promise<BoardManager> {
+  await delay(500);
+  // Mock 생성 로직
+  return newBoard;
+}
+```
+
+#### 실제 API 연동 준비
+```typescript
+// 컴포넌트에서 API 사용
+// Mock API (개발 중)
+import { getBoardManagerList } from '$lib/mock/api/boardManagerApi';
+
+// 실제 API (배포 시 - import만 변경)
+// import { getBoardManagerList } from '$lib/api/boardManagerApi';
+
+// 컴포넌트 코드는 동일하게 유지
+const response = await getBoardManagerList(query);
+```
+
+#### Mock 데이터 작성 규칙
+1. **실제 백엔드 응답과 동일한 구조** 사용
+2. **타입 안전성** 보장 (TypeScript 인터페이스 준수)
+3. **충분한 테스트 데이터** 제공 (페이지네이션, 검색 테스트 가능)
+4. **에러 케이스** 포함 (빈 결과, 네트워크 오류 등)
+
+#### Mock API 장점
+- **빠른 프론트엔드 개발**: 백엔드 완성 전에도 UI 개발 가능
+- **실제 사용자 경험**: 로딩 상태, 에러 처리 등 완전한 UX 테스트
+- **타입 안전성**: 실제 API와 동일한 타입 시스템
+- **쉬운 전환**: import 경로만 변경하면 실제 API로 전환
+
+### 공통 타입 시스템
+
+#### 타입 분리 원칙
+```typescript
+// ✅ /lib/types/common.ts - 프로젝트 전체에서 재사용되는 범용 타입
+export interface Pagination {
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface ApiErrorResponse {
+  timestamp: string;
+  status: number;
+  error: string;
+  message: string;
+  path: string;
+}
+
+export interface PagedListResponse<T> {
+  items: T[];
+  pagination: Pagination;
+}
+
+// ✅ /lib/types/boardManager.ts - 모듈별 특화 타입
+export interface BoardManager {
+  boardCode: string;
+  name: string;
+  // ... 모듈 특화 필드들
+}
+
+export interface BoardManagerQuery extends BaseQuery {
+  search?: BoardManagerSearchFilter;
+}
+```
+
+#### 타입 상속 패턴
+```typescript
+// 공통 타입을 상속받아 확장
+export interface BoardManagerSearchFilter extends BaseSearchFilter {
+  searchType: 'name' | 'boardCode';  // 모듈별 특화
+}
+
+export interface BoardManagerListResponse extends PagedListResponse<BoardManager> {}
+```
+
+#### API 응답 타입 표준화
+```typescript
+// HTTP 상태 코드 기반 응답 처리
+// 성공 (200): 직접 데이터 반환
+// 실패 (4xx, 5xx): ApiErrorResponse 타입
+
+// ✅ 성공 응답
+const boardList: BoardManagerListResponse = await getBoardManagerList();
+
+// ✅ 에러 응답 (자동 처리)
+try {
+  const board = await getBoardManager('INVALID');
+} catch (error) {
+  // error는 ApiErrorResponse 타입
+  console.log(error.message);
+}
+```
 
 ### API 문서 참조
 외부 라이브러리 작업 시 항상 공식 문서 참조:
@@ -842,6 +986,7 @@ function handleArrowKeys(event: KeyboardEvent) {
 - ✅ **접근성 향상**: 키보드 네비게이션, ARIA 속성, form label 연결 완료
 - ✅ **Svelte 5 호환성**: deprecated `<slot>` → `{@render children()}` 업그레이드
 - ✅ **코드 품질**: 전수 검사 워크플로우 확립, 빌드 테스트 통과
+- ✅ **게시판 관리 모듈**: 완전한 CRUD UI + Mock API 시스템 완료
 - 🔄 **애플리케이션 기능**: 개발 중 (백엔드 API 연동)
 
 ### 알려진 제한사항
