@@ -33,7 +33,7 @@
         <div class="flex gap-4">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 <Button variant="outline">툴팁 보기</Button>
               </TooltipTrigger>
               <TooltipContent>

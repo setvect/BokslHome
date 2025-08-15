@@ -17,7 +17,12 @@
     }
   }
   
-  const badgeVariants = [
+  const badgeVariants: Array<{
+    variant: "default" | "secondary" | "destructive" | "outline";
+    description: string;
+    code: string;
+    usage: string;
+  }> = [
     { 
       variant: 'default', 
       description: '주요 정보를 나타내는 기본 배지',

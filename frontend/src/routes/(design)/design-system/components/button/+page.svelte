@@ -20,7 +20,12 @@
     }
   }
   
-  const buttonVariants = [
+  const buttonVariants: Array<{
+    variant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+    description: string;
+    code: string;
+    usage: string;
+  }> = [
     { 
       variant: 'default', 
       description: '주요 액션에 사용하는 기본 버튼',
@@ -59,7 +64,12 @@
     }
   ];
   
-  const buttonSizes = [
+  const buttonSizes: Array<{
+    size: "default" | "sm" | "lg" | "icon";
+    description: string;
+    code: string;
+    usage: string;
+  }> = [
     { size: 'sm', description: '작은 버튼', code: '<Button size="sm">Small</Button>' },
     { size: 'default', description: '기본 버튼', code: '<Button>Default</Button>' },
     { size: 'lg', description: '큰 버튼', code: '<Button size="lg">Large</Button>' },
