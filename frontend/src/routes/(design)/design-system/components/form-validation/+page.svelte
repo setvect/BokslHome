@@ -8,6 +8,7 @@
   import { z } from 'zod';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
+  import { createFieldHandlers, shouldShowError, getAriaInvalid } from '$lib/utils/form';
 
   // 이메일 + 비밀번호 + 성별 + 약관 검증 스키마
   const formSchema = z.object({
@@ -43,6 +44,12 @@
 
   // 포커스 상태 추적
   let focusedField = $state<string | null>(null);
+  
+  // 포커스 상태를 객체 형태로 래핑 (유틸 함수와 호환성을 위해)
+  const focusedFieldRef = {
+    get current() { return focusedField; },
+    set current(value: string | null) { focusedField = value; }
+  };
 
   // Superforms 설정 (클라이언트 전용 모드)
   const { form, errors, enhance, validate } = superForm(initialData, {
@@ -84,17 +91,10 @@
               type="email"
               placeholder="example@email.com"
               bind:value={$form.email}
-              aria-invalid={$errors.email && focusedField !== 'email' ? 'true' : undefined}
-              onfocus={() => {
-                focusedField = 'email';
-                errors.update(errs => ({ ...errs, email: undefined }));
-              }}
-              onblur={() => {
-                focusedField = null;
-                validate('email');
-              }}
+              aria-invalid={getAriaInvalid($errors, 'email', focusedField)}
+              {...createFieldHandlers('email', focusedFieldRef, errors, validate)}
             />
-            {#if $errors.email && focusedField !== 'email'}
+            {#if shouldShowError($errors, 'email', focusedField)}
               <p class="text-sm text-destructive mt-1">{$errors.email}</p>
             {/if}
           </div>
@@ -108,21 +108,15 @@
               type="password"
               placeholder="8자 이상, 영문+숫자 포함"
               bind:value={$form.password}
-              aria-invalid={$errors.password && focusedField !== 'password' ? 'true' : undefined}
-              onfocus={() => {
-                focusedField = 'password';
-                errors.update(errs => ({ ...errs, password: undefined }));
-              }}
-              onblur={() => {
-                focusedField = null;
-                validate('password');
+              aria-invalid={getAriaInvalid($errors, 'password', focusedField)}
+              {...createFieldHandlers('password', focusedFieldRef, errors, validate, () => {
                 // 비밀번호 확인 필드도 재검증 (비밀번호가 변경되었으므로)
                 if ($form.confirmPassword) {
                   validate('confirmPassword');
                 }
-              }}
+              })}
             />
-            {#if $errors.password && focusedField !== 'password'}
+            {#if shouldShowError($errors, 'password', focusedField)}
               <p class="text-sm text-destructive mt-1">{$errors.password}</p>
             {/if}
           </div>
@@ -136,17 +130,10 @@
               type="password"
               placeholder="비밀번호를 다시 입력해주세요"
               bind:value={$form.confirmPassword}
-              aria-invalid={$errors.confirmPassword && focusedField !== 'confirmPassword' ? 'true' : undefined}
-              onfocus={() => {
-                focusedField = 'confirmPassword';
-                errors.update(errs => ({ ...errs, confirmPassword: undefined }));
-              }}
-              onblur={() => {
-                focusedField = null;
-                validate('confirmPassword');
-              }}
+              aria-invalid={getAriaInvalid($errors, 'confirmPassword', focusedField)}
+              {...createFieldHandlers('confirmPassword', focusedFieldRef, errors, validate)}
             />
-            {#if $errors.confirmPassword && focusedField !== 'confirmPassword'}
+            {#if shouldShowError($errors, 'confirmPassword', focusedField)}
               <p class="text-sm text-destructive mt-1">{$errors.confirmPassword}</p>
             {/if}
           </div>
@@ -156,20 +143,13 @@
             <Label>성별 <span class="text-destructive">*</span></Label>
             <RadioGroup
               bind:value={$form.gender}
-              onfocus={() => {
-                focusedField = 'gender';
-                errors.update(errs => ({ ...errs, gender: undefined }));
-              }}
+              {...createFieldHandlers('gender', focusedFieldRef, errors, validate)}
             >
               <div class="flex items-center space-x-2">
                 <RadioGroupItem
                   value="male"
                   id="male"
                   name="gender"
-                  onchange={() => {
-                    focusedField = null;
-                    validate('gender');
-                  }}
                 />
                 <Label for="male">남성</Label>
               </div>
@@ -178,15 +158,11 @@
                   value="female"
                   id="female"
                   name="gender"
-                  onchange={() => {
-                    focusedField = null;
-                    validate('gender');
-                  }}
                 />
                 <Label for="female">여성</Label>
               </div>
             </RadioGroup>
-            {#if $errors.gender && focusedField !== 'gender'}
+            {#if shouldShowError($errors, 'gender', focusedField)}
               <p class="text-sm text-destructive mt-1">{$errors.gender}</p>
             {/if}
           </div>
@@ -202,15 +178,8 @@
                   id="requiredTerms"
                   name="requiredTerms"
                   bind:checked={$form.requiredTerms}
-                  aria-invalid={$errors.requiredTerms && focusedField !== 'requiredTerms' ? 'true' : undefined}
-                  onfocus={() => {
-                    focusedField = 'requiredTerms';
-                    errors.update(errs => ({ ...errs, requiredTerms: undefined }));
-                  }}
-                  onblur={() => {
-                    focusedField = null;
-                    validate('requiredTerms');
-                  }}
+                  aria-invalid={getAriaInvalid($errors, 'requiredTerms', focusedField)}
+                  {...createFieldHandlers('requiredTerms', focusedFieldRef, errors, validate)}
                 />
                 <div class="grid gap-1.5 leading-none">
                   <Label 
@@ -224,7 +193,7 @@
                   </p>
                 </div>
               </div>
-              {#if $errors.requiredTerms && focusedField !== 'requiredTerms'}
+              {#if shouldShowError($errors, 'requiredTerms', focusedField)}
                 <p class="text-sm text-destructive mt-1 ml-7">{$errors.requiredTerms}</p>
               {/if}
             </div>
@@ -236,14 +205,7 @@
                   id="optionalTerms"
                   name="optionalTerms"
                   bind:checked={$form.optionalTerms}
-                  onfocus={() => {
-                    focusedField = 'optionalTerms';
-                    errors.update(errs => ({ ...errs, optionalTerms: undefined }));
-                  }}
-                  onblur={() => {
-                    focusedField = null;
-                    validate('optionalTerms');
-                  }}
+                  {...createFieldHandlers('optionalTerms', focusedFieldRef, errors, validate)}
                 />
                 <div class="grid gap-1.5 leading-none">
                   <Label 
@@ -257,7 +219,7 @@
                   </p>
                 </div>
               </div>
-              {#if $errors.optionalTerms && focusedField !== 'optionalTerms'}
+              {#if shouldShowError($errors, 'optionalTerms', focusedField)}
                 <p class="text-sm text-destructive mt-1 ml-7">{$errors.optionalTerms}</p>
               {/if}
             </div>
