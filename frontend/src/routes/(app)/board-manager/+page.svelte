@@ -111,7 +111,7 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-foreground">게시판 관리</h1>
 		<Button onclick={() => window.location.href = '/board-manager/create'}>
-			<Plus class="w-4 h-4 mr-2" />
+			<Plus class="w-4 h-4" />
 			만들기
 		</Button>
 	</div>
@@ -137,7 +137,7 @@
 					/>
 				</div>
 				<Button onclick={handleSearch} disabled={loading}>
-					<Search class="w-4 h-4 mr-2" />
+					<Search class="w-4 h-4" />
 					검색
 				</Button>
 			</div>
@@ -190,7 +190,7 @@
 										onclick={() => openBoard(board.boardCode)}
 										class="text-blue-600 hover:text-blue-800"
 									>
-										<ExternalLink class="w-4 h-4 mr-1" />
+										<ExternalLink class="w-4 h-4" />
 										바로가기
 									</Button>
 								</TableCell>

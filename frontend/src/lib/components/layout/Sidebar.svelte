@@ -59,51 +59,125 @@
       label: '게시판',
       icon: 'FileText',
       children: [
-        { id: 'board-manage', label: '게시판 관리', href: '/board-manager' },
-        { id: 'board-writing', label: '글', href: '/board/writing' },
-        { id: 'board-book', label: '책', href: '/board/book' },
-        { id: 'board-music', label: '음악', href: '/board/music' },
-        { id: 'board-movie', label: '영화', href: '/board/movie' },
-        { id: 'board-photo', label: '사진', href: '/board/photo' },
-        { id: 'board-memory', label: '기억', href: '/board/memory' },
-        { id: 'board-relationship', label: '인연', href: '/board/relationship' },
-        { id: 'board-talk', label: '잡담', href: '/board/talk' },
-        { id: 'board-dream', label: '꿈', href: '/board/dream' },
-        { id: 'board-tech', label: '기술사', href: '/board/tech' },
-        { id: 'board-novel', label: '소설', href: '/board/novel' },
-        { id: 'board-exercise', label: '운동', href: '/board/exercise' }
+        { 
+          id: 'board-manage', 
+          label: '게시판 관리', 
+          href: '/board-manager',
+          pathPattern: /^\/board-manager(\/.*)?$/
+        },
+        { 
+          id: 'board-writing', 
+          label: '글', 
+          href: '/board/writing',
+          pathPattern: /^\/board\/writing(\/.*)?$/
+        },
+        { 
+          id: 'board-book', 
+          label: '책', 
+          href: '/board/book',
+          pathPattern: /^\/board\/book(\/.*)?$/
+        },
+        { 
+          id: 'board-music', 
+          label: '음악', 
+          href: '/board/music',
+          pathPattern: /^\/board\/music(\/.*)?$/
+        },
+        { 
+          id: 'board-movie', 
+          label: '영화', 
+          href: '/board/movie',
+          pathPattern: /^\/board\/movie(\/.*)?$/
+        },
+        { 
+          id: 'board-photo', 
+          label: '사진', 
+          href: '/board/photo',
+          pathPattern: /^\/board\/photo(\/.*)?$/
+        },
+        { 
+          id: 'board-memory', 
+          label: '기억', 
+          href: '/board/memory',
+          pathPattern: /^\/board\/memory(\/.*)?$/
+        },
+        { 
+          id: 'board-relationship', 
+          label: '인연', 
+          href: '/board/relationship',
+          pathPattern: /^\/board\/relationship(\/.*)?$/
+        },
+        { 
+          id: 'board-talk', 
+          label: '잡담', 
+          href: '/board/talk',
+          pathPattern: /^\/board\/talk(\/.*)?$/
+        },
+        { 
+          id: 'board-dream', 
+          label: '꿈', 
+          href: '/board/dream',
+          pathPattern: /^\/board\/dream(\/.*)?$/
+        },
+        { 
+          id: 'board-tech', 
+          label: '기술사', 
+          href: '/board/tech',
+          pathPattern: /^\/board\/tech(\/.*)?$/
+        },
+        { 
+          id: 'board-novel', 
+          label: '소설', 
+          href: '/board/novel',
+          pathPattern: /^\/board\/novel(\/.*)?$/
+        },
+        { 
+          id: 'board-exercise', 
+          label: '운동', 
+          href: '/board/exercise',
+          pathPattern: /^\/board\/exercise(\/.*)?$/
+        }
       ]
     },
     {
       id: 'knowledge',
       label: '지식',
       icon: 'Brain',
-      href: '/knowledge'
+      href: '/knowledge',
+      pathPattern: /^\/knowledge(\/.*)?$/
     },
     {
       id: 'note',
       label: '노트',
       icon: 'NotebookPen',
-      href: '/note'
+      href: '/note',
+      pathPattern: /^\/note(\/.*)?$/
     },
     {
       id: 'memo',
       label: '메모',
       icon: 'StickyNote',
-      href: '/memo'
+      href: '/memo',
+      pathPattern: /^\/memo(\/.*)?$/
     },
     {
       id: 'network',
       label: '관계',
       icon: 'Network',
-      href: '/network'
+      href: '/network',
+      pathPattern: /^\/network(\/.*)?$/
     },
     {
       id: 'etc',
       label: '이것저것',
       icon: 'MoreHorizontal',
       children: [
-        { id: 'etc-lotto', label: '로또', href: '/etc/lotto' }
+        { 
+          id: 'etc-lotto', 
+          label: '로또', 
+          href: '/etc/lotto',
+          pathPattern: /^\/etc\/lotto(\/.*)?$/
+        }
       ]
     }
   ];
@@ -179,6 +253,28 @@
     }
   }
 
+  // 경로 패턴을 기반으로 활성 메뉴 찾기
+  function findActiveMenuByPath(pathname: string): { parentId: string; subMenuId?: string } | null {
+    // 모든 메뉴를 순회하면서 pathPattern과 매칭되는지 확인
+    for (const menuItem of baseMenuItems) {
+      // 1. 부모 메뉴 자체에 pathPattern이 있는 경우 (하위 메뉴 없음)
+      if (menuItem.pathPattern?.test(pathname)) {
+        return { parentId: menuItem.id };
+      }
+      
+      // 2. 하위 메뉴들의 pathPattern 확인
+      if (menuItem.children) {
+        for (const childItem of menuItem.children) {
+          if (childItem.pathPattern?.test(pathname)) {
+            return { parentId: menuItem.id, subMenuId: childItem.id };
+          }
+        }
+      }
+    }
+    
+    return null;
+  }
+
   // 현재 경로에 따른 활성 메뉴 설정
   function setActiveMenuFromPath(pathname: string) {
     // 홈 페이지인 경우 모든 메뉴 비활성화
@@ -190,28 +286,9 @@
       return;
     }
 
-    // 경로별 메뉴 매핑
-    const pathMenuMap: Record<string, { parentId: string; subMenuId?: string }> = {
-      '/board-manager': { parentId: 'board', subMenuId: 'board-manage' },
-      '/board/writing': { parentId: 'board', subMenuId: 'board-writing' },
-      '/board/book': { parentId: 'board', subMenuId: 'board-book' },
-      '/board/music': { parentId: 'board', subMenuId: 'board-music' },
-      '/board/movie': { parentId: 'board', subMenuId: 'board-movie' },
-      '/board/photo': { parentId: 'board', subMenuId: 'board-photo' },
-      '/board/memory': { parentId: 'board', subMenuId: 'board-memory' },
-      '/board/relationship': { parentId: 'board', subMenuId: 'board-relationship' },
-      '/board/talk': { parentId: 'board', subMenuId: 'board-talk' },
-      '/board/dream': { parentId: 'board', subMenuId: 'board-dream' },
-      '/board/tech': { parentId: 'board', subMenuId: 'board-tech' },
-      '/board/novel': { parentId: 'board', subMenuId: 'board-novel' },
-      '/board/exercise': { parentId: 'board', subMenuId: 'board-exercise' },
-      '/knowledge': { parentId: 'knowledge' },
-      '/note': { parentId: 'note' },
-      '/memo': { parentId: 'memo' },
-      '/network': { parentId: 'network' }
-    };
-
-    const menuInfo = pathMenuMap[pathname];
+    // pathPattern을 기반으로 활성 메뉴 찾기
+    const menuInfo = findActiveMenuByPath(pathname);
+    
     if (menuInfo) {
       // 현재 활성 메뉴와 다른 경우에만 업데이트
       const currentMenu = layoutState.currentMenu;

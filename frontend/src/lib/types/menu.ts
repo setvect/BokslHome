@@ -6,6 +6,7 @@ export interface MenuItem {
   children?: MenuItem[];
   isExpanded?: boolean;
   isActive?: boolean;
+  pathPattern?: RegExp; // 경로 패턴 매칭용
 }
 
 export interface MenuData {
