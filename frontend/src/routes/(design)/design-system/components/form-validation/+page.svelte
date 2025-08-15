@@ -7,11 +7,89 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import { RadioGroup, RadioGroupItem } from '$lib/components/ui/radio-group';
   import CodeBlock from '$lib/components/design-system/CodeBlock.svelte';
+  import { z } from 'zod';
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
 
-  // 폼 데이터 (순수 UI, validation 없음)
-  let formData = $state({
+  // 검증 스키마 (이메일, 비밀번호만)
+  const validationSchema = z.object({
+    email: z.string().min(1, '이메일을 입력하세요').email('유효한 이메일 주소를 입력하세요'),
+    password: z.string().min(1, '비밀번호를 입력하세요').min(8, '비밀번호는 8자 이상이어야 합니다')
+  });
+
+  // 초기 데이터
+  const initialData = {
     email: '',
-    password: '',
+    password: ''
+  };
+
+  // Superforms 상태 (클라이언트 사이드에서만 초기화)
+  let formStore = $state<any>(null);
+  let errorsStore = $state<any>(null);
+  let enhance = $state<any>(null);
+  let constraintsStore = $state<any>(null);
+
+  // Fallback 상태 (Superforms 로드 전)
+  let fallbackForm = $state(initialData);
+  let fallbackErrors = $state<Record<string, string>>({});
+
+  // 바인딩을 위한 getter/setter
+  let emailValue = $state({
+    get() {
+      return formStore ? $formStore.email : fallbackForm.email;
+    },
+    set(value: string) {
+      if (formStore) {
+        $formStore.email = value;
+      } else {
+        fallbackForm.email = value;
+      }
+    }
+  });
+
+  let passwordValue = $state({
+    get() {
+      return formStore ? $formStore.password : fallbackForm.password;
+    },
+    set(value: string) {
+      if (formStore) {
+        $formStore.password = value;
+      } else {
+        fallbackForm.password = value;
+      }
+    }
+  });
+
+  // 클라이언트 사이드에서만 Superforms 초기화
+  onMount(async () => {
+    if (browser) {
+      try {
+        const { superForm } = await import('sveltekit-superforms/client');
+        const { zod } = await import('sveltekit-superforms/adapters');
+        
+        const superFormInstance = superForm(initialData, {
+          validators: zod(validationSchema),
+          resetForm: true,
+          taintedMessage: null,
+          delayMs: 0,
+          onSubmit: ({ formData }) => {
+            console.log('폼 데이터:', Object.fromEntries(formData));
+            alert('폼이 제출되었습니다! (콘솔 확인)');
+          }
+        });
+
+        formStore = superFormInstance.form;
+        errorsStore = superFormInstance.errors;
+        enhance = superFormInstance.enhance;
+        constraintsStore = superFormInstance.constraints;
+      } catch (error) {
+        console.error('Superforms 로드 실패:', error);
+      }
+    }
+  });
+
+  // 다른 폼 데이터 (검증하지 않는 필드들)
+  let otherFormData = $state({
     confirmPassword: '',
     name: '',
     age: '',
@@ -21,16 +99,9 @@
     agreeMarketing: false
   });
 
-  // 임시 제출 핸들러 (아무 기능 없음)
-  function handleSubmit() {
-    console.log('폼 데이터:', formData);
-    alert('폼이 제출되었습니다! (콘솔 확인)');
-  }
-
   function resetForm() {
-    formData = {
-      email: '',
-      password: '',
+    // Superforms 초기화는 자동으로 처리됨
+    otherFormData = {
       confirmPassword: '',
       name: '',
       age: '',
@@ -57,22 +128,51 @@
     <CardHeader>
       <CardTitle>기본 회원가입 폼</CardTitle>
       <CardDescription>
-        순수 UI 컴포넌트만 사용한 회원가입 폼입니다. 아직 검증 로직은 없습니다.
+        Zod를 사용한 이메일 검증이 적용된 회원가입 폼입니다. 이메일을 입력하지 않고 제출하면 에러가 표시됩니다.
       </CardDescription>
     </CardHeader>
     <CardContent class="space-y-6">
-      <form class="space-y-4" onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+      <form 
+        class="space-y-4" 
+        use:enhance={enhance}
+        onsubmit={(e: SubmitEvent) => {
+          if (!enhance) {
+            e.preventDefault();
+            // Fallback 검증 로직
+            const emailResult = validationSchema.shape.email.safeParse(fallbackForm.email);
+            const passwordResult = validationSchema.shape.password.safeParse(fallbackForm.password);
+            
+            fallbackErrors = {};
+            if (!emailResult.success) {
+              fallbackErrors.email = emailResult.error.errors[0].message;
+            }
+            if (!passwordResult.success) {
+              fallbackErrors.password = passwordResult.error.errors[0].message;
+            }
+            
+            if (Object.keys(fallbackErrors).length === 0) {
+              console.log('폼 데이터:', fallbackForm);
+              alert('폼이 제출되었습니다! (콘솔 확인)');
+            }
+          }
+        }}
+      >
         <!-- 이메일 -->
         <div class="space-y-2">
           <Label for="email">이메일 <span class="text-destructive">*</span></Label>
           <Input
             id="email"
-            type="email"
+            name="email"
+            type="text"
             placeholder="example@email.com"
-            bind:value={formData.email}
-            required
+            bind:value={emailValue}
+            class={(errorsStore ? $errorsStore.email : fallbackErrors.email) ? 'border-destructive focus-visible:ring-destructive' : ''}
+            aria-invalid={(errorsStore ? $errorsStore.email : fallbackErrors.email) ? 'true' : undefined}
+            {...(constraintsStore ? $constraintsStore.email || {} : {})}
           />
-          <!-- 에러 표시 영역 (아직 비어있음) -->
+          {#if errorsStore ? $errorsStore.email : fallbackErrors.email}
+            <p class="text-sm text-destructive mt-1">{errorsStore ? $errorsStore.email : fallbackErrors.email}</p>
+          {/if}
         </div>
 
         <!-- 비밀번호 -->
@@ -80,12 +180,17 @@
           <Label for="password">비밀번호 <span class="text-destructive">*</span></Label>
           <Input
             id="password"
+            name="password"
             type="password"
             placeholder="8자 이상 입력"
-            bind:value={formData.password}
-            required
+            bind:value={passwordValue}
+            class={(errorsStore ? $errorsStore.password : fallbackErrors.password) ? 'border-destructive focus-visible:ring-destructive' : ''}
+            aria-invalid={(errorsStore ? $errorsStore.password : fallbackErrors.password) ? 'true' : undefined}
+            {...(constraintsStore ? $constraintsStore.password || {} : {})}
           />
-          <!-- 에러 표시 영역 (아직 비어있음) -->
+          {#if errorsStore ? $errorsStore.password : fallbackErrors.password}
+            <p class="text-sm text-destructive mt-1">{errorsStore ? $errorsStore.password : fallbackErrors.password}</p>
+          {/if}
         </div>
 
         <!-- 비밀번호 확인 -->
@@ -95,8 +200,7 @@
             id="confirmPassword"
             type="password"
             placeholder="비밀번호를 다시 입력"
-            bind:value={formData.confirmPassword}
-            required
+            bind:value={otherFormData.confirmPassword}
           />
           <!-- 에러 표시 영역 (아직 비어있음) -->
         </div>
@@ -108,8 +212,7 @@
             id="name"
             type="text"
             placeholder="홍길동"
-            bind:value={formData.name}
-            required
+            bind:value={otherFormData.name}
           />
           <!-- 에러 표시 영역 (아직 비어있음) -->
         </div>
@@ -121,7 +224,7 @@
             id="age"
             type="number"
             placeholder="25"
-            bind:value={formData.age}
+            bind:value={otherFormData.age}
             min="1"
             max="150"
           />
@@ -131,7 +234,7 @@
         <!-- 성별 (라디오 그룹) -->
         <div class="space-y-3">
           <Label>성별</Label>
-          <RadioGroup bind:value={formData.gender}>
+          <RadioGroup bind:value={otherFormData.gender}>
             <div class="flex items-center space-x-2">
               <RadioGroupItem value="male" id="male" />
               <Label for="male">남성</Label>
@@ -153,7 +256,7 @@
           <Textarea
             id="bio"
             placeholder="간단한 자기소개를 작성해주세요..."
-            bind:value={formData.bio}
+            bind:value={otherFormData.bio}
             rows={4}
           />
           <p class="text-sm text-foreground/60">최대 500자까지 입력 가능합니다.</p>
@@ -162,13 +265,13 @@
         <!-- 체크박스 동의 -->
         <div class="space-y-3">
           <div class="flex items-center space-x-2">
-            <Checkbox id="agreeTerms" bind:checked={formData.agreeTerms} />
+            <Checkbox id="agreeTerms" bind:checked={otherFormData.agreeTerms} />
             <Label for="agreeTerms" class="text-sm">
               이용약관에 동의합니다 <span class="text-destructive">*</span>
             </Label>
           </div>
           <div class="flex items-center space-x-2">
-            <Checkbox id="agreeMarketing" bind:checked={formData.agreeMarketing} />
+            <Checkbox id="agreeMarketing" bind:checked={otherFormData.agreeMarketing} />
             <Label for="agreeMarketing" class="text-sm">
               마케팅 정보 수신에 동의합니다 (선택)
             </Label>
@@ -195,7 +298,16 @@
       <CardDescription>실시간으로 폼 데이터 상태를 확인할 수 있습니다.</CardDescription>
     </CardHeader>
     <CardContent>
-      <CodeBlock language="json" code={JSON.stringify(formData, null, 2)} />
+      <CodeBlock 
+        language="json" 
+        code={JSON.stringify({
+          // Superforms 관리 필드
+          email: formStore ? $formStore.email : fallbackForm.email,
+          password: formStore ? $formStore.password : fallbackForm.password,
+          // 기타 필드
+          ...otherFormData
+        }, null, 2)} 
+      />
     </CardContent>
   </Card>
 

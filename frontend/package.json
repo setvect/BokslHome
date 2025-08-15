@@ -66,6 +66,8 @@
     "mermaid": "^11.9.0",
     "prismjs": "^1.30.0",
     "svelte-codemirror-editor": "^1.4.1",
-    "tinymce": "^8.0.1"
+    "sveltekit-superforms": "^2.27.1",
+    "tinymce": "^8.0.1",
+    "zod": "^3.25.76"
   }
 }
