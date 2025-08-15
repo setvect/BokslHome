@@ -5,6 +5,7 @@
 		ref?: any;
 		class?: string;
 		placeholder?: string;
+		value?: string;
 		[key: string]: any;
 	}
 
@@ -12,6 +13,7 @@
 		ref = $bindable(null),
 		class: className,
 		placeholder,
+		value,
 		...restProps
 	}: Props = $props();
 </script>
@@ -22,5 +24,5 @@
 	class={cn("block truncate", className)}
 	{...restProps}
 >
-	{placeholder || ''}
+	{value || placeholder || ''}
 </div>
