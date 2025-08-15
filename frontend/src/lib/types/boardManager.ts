@@ -3,6 +3,8 @@
  * TBBA_BOARD_MANAGER 테이블 기반
  */
 
+import type { Pagination, PagedListResponse, BaseSearchFilter, BaseQuery } from './common';
+
 // 게시판 관리자 정보 인터페이스
 export interface BoardManager {
   boardCode: string;     // BOARD_CODE (PK) - 게시판 코드 (예: BDMAIN01)
@@ -27,24 +29,12 @@ export interface BoardManagerFormData {
 }
 
 // 검색 조건 타입
-export interface BoardManagerSearchFilter {
+export interface BoardManagerSearchFilter extends BaseSearchFilter {
   searchType: 'name' | 'boardCode';  // 검색 유형 (이름 또는 코드)
-  searchKeyword: string;             // 검색 키워드
-}
-
-// 페이지네이션 타입
-export interface Pagination {
-  currentPage: number;    // 현재 페이지 (1부터 시작)
-  pageSize: number;       // 페이지당 항목 수
-  totalItems: number;     // 전체 항목 수
-  totalPages: number;     // 전체 페이지 수
 }
 
 // API 응답용 페이지네이션 포함 리스트 타입
-export interface BoardManagerListResponse {
-  items: BoardManager[];
-  pagination: Pagination;
-}
+export interface BoardManagerListResponse extends PagedListResponse<BoardManager> {}
 
 // 폼 검증 에러 타입
 export interface BoardManagerValidationErrors {
@@ -59,45 +49,14 @@ export interface ValidationResult {
   errors: BoardManagerValidationErrors;
 }
 
-// API 요청/응답 타입
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  errors?: Record<string, string[]>;
-}
-
-// 정렬 옵션 타입
-export interface SortOption {
-  field: keyof BoardManager;
-  direction: 'asc' | 'desc';
-}
-
-// 검색 및 정렬을 포함한 쿼리 타입
-export interface BoardManagerQuery {
+// 검색을 포함한 쿼리 타입
+export interface BoardManagerQuery extends BaseQuery {
   search?: BoardManagerSearchFilter;
-  pagination: Pick<Pagination, 'currentPage' | 'pageSize'>;
-  sort?: SortOption;
 }
 
-// DB Y/N ↔ boolean 변환 유틸리티 타입
-export type YNBoolean = 'Y' | 'N';
-
-// DB 응답용 게시판 관리자 정보 (백엔드에서 받는 형태)
-export interface BoardManagerDbResponse {
-  boardCode: string;
-  name: string;
-  uploadLimit: number;
-  replyF: YNBoolean;
-  commentF: YNBoolean;
-  attachF: YNBoolean;
-  encryptF: YNBoolean;
-  deleteF: YNBoolean;
-}
 
 // 상수 정의
 export const BOARD_MANAGER_CONSTANTS = {
-  DEFAULT_PAGE_SIZE: 10,
   MAX_UPLOAD_LIMIT: 10240, // 10MB in KB
   SEARCH_TYPES: [
     { value: 'name', label: '이름' },

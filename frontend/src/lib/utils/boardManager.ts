@@ -4,58 +4,10 @@
 
 import type { 
   BoardManager, 
-  BoardManagerDbResponse, 
   BoardManagerFormData, 
   BoardManagerValidationErrors,
-  ValidationResult,
-  YNBoolean 
+  ValidationResult
 } from '$lib/types/boardManager';
-
-/**
- * DB Y/N 값을 boolean으로 변환
- */
-export function ynToBoolean(value: YNBoolean): boolean {
-  return value === 'Y';
-}
-
-/**
- * boolean 값을 DB Y/N 값으로 변환
- */
-export function booleanToYN(value: boolean): YNBoolean {
-  return value ? 'Y' : 'N';
-}
-
-/**
- * DB 응답 데이터를 프론트엔드 BoardManager 타입으로 변환
- */
-export function convertDbResponseToBoardManager(dbData: BoardManagerDbResponse): BoardManager {
-  return {
-    boardCode: dbData.boardCode,
-    name: dbData.name,
-    uploadLimit: dbData.uploadLimit,
-    replyF: ynToBoolean(dbData.replyF),
-    commentF: ynToBoolean(dbData.commentF),
-    attachF: ynToBoolean(dbData.attachF),
-    encryptF: ynToBoolean(dbData.encryptF),
-    deleteF: ynToBoolean(dbData.deleteF)
-  };
-}
-
-/**
- * 프론트엔드 BoardManager 타입을 DB 저장용 형태로 변환
- */
-export function convertBoardManagerToDbFormat(boardManager: BoardManager): BoardManagerDbResponse {
-  return {
-    boardCode: boardManager.boardCode,
-    name: boardManager.name,
-    uploadLimit: boardManager.uploadLimit,
-    replyF: booleanToYN(boardManager.replyF),
-    commentF: booleanToYN(boardManager.commentF),
-    attachF: booleanToYN(boardManager.attachF),
-    encryptF: booleanToYN(boardManager.encryptF),
-    deleteF: booleanToYN(boardManager.deleteF)
-  };
-}
 
 /**
  * 폼 데이터를 BoardManager 타입으로 변환 (삭제 여부는 기본값 false)
