@@ -2,12 +2,7 @@
  * 게시판 관리 유틸리티 함수
  */
 
-import type { 
-  BoardManager, 
-  BoardManagerFormData, 
-  BoardManagerValidationErrors,
-  ValidationResult
-} from '$lib/types/boardManager';
+import type { BoardManager, BoardManagerFormData, BoardManagerValidationErrors, ValidationResult } from '$lib/types/boardManager';
 
 /**
  * 폼 데이터를 BoardManager 타입으로 변환 (삭제 여부는 기본값 false)
@@ -26,12 +21,12 @@ export function validateBoardCode(boardCode: string): string | null {
   if (!boardCode.trim()) {
     return '게시판 코드를 입력해주세요.';
   }
-  
+
   const codePattern = /^[A-Z0-9]{3,20}$/;
   if (!codePattern.test(boardCode)) {
     return '게시판 코드는 영문 대문자와 숫자로 3-20자 이내로 입력해주세요.';
   }
-  
+
   return null;
 }
 
@@ -42,11 +37,11 @@ export function validateBoardName(name: string): string | null {
   if (!name.trim()) {
     return '게시판 이름을 입력해주세요.';
   }
-  
+
   if (name.length > 50) {
     return '게시판 이름은 50자 이내로 입력해주세요.';
   }
-  
+
   return null;
 }
 
@@ -57,11 +52,12 @@ export function validateUploadLimit(uploadLimit: number): string | null {
   if (uploadLimit < 0) {
     return '업로드 제한 크기는 0 이상의 값을 입력해주세요.';
   }
-  
-  if (uploadLimit > 10240) { // 10MB
+
+  if (uploadLimit > 10240) {
+    // 10MB
     return '업로드 제한 크기는 10MB(10240KB) 이하로 설정해주세요.';
   }
-  
+
   return null;
 }
 
@@ -70,24 +66,24 @@ export function validateUploadLimit(uploadLimit: number): string | null {
  */
 export function validateBoardManagerForm(formData: BoardManagerFormData): ValidationResult {
   const errors: BoardManagerValidationErrors = {};
-  
+
   const boardCodeError = validateBoardCode(formData.boardCode);
   if (boardCodeError) {
     errors.boardCode = boardCodeError;
   }
-  
+
   const nameError = validateBoardName(formData.name);
   if (nameError) {
     errors.name = nameError;
   }
-  
+
   const uploadLimitError = validateUploadLimit(formData.uploadLimit);
   if (uploadLimitError) {
     errors.uploadLimit = uploadLimitError;
   }
-  
+
   const isValid = Object.keys(errors).length === 0;
-  
+
   return {
     isValid,
     errors
@@ -101,11 +97,11 @@ export function formatUploadLimit(limitInKB: number): string {
   if (limitInKB === 0) {
     return '제한 없음';
   }
-  
+
   if (limitInKB < 1024) {
     return `${limitInKB}KB`;
   }
-  
+
   const limitInMB = (limitInKB / 1024).toFixed(1);
   return `${limitInMB}MB`;
 }

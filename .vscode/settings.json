@@ -9,5 +9,7 @@
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore",
-  "postcss.validate": false
+  "postcss.validate": false,
+  "files.trimTrailingWhitespace": true,
+  "editor.trimWhitespaceOnDelete": true
 }
