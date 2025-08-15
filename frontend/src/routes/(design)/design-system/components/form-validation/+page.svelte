@@ -105,6 +105,19 @@
     }
   }
 
+  // 체크박스/라디오 필드 변경 시 자동 검증
+  $effect(() => {
+    if (touched.agreeTerms) {
+      handleFieldValidation('agreeTerms');
+    }
+  });
+
+  $effect(() => {
+    if (touched.gender) {
+      handleFieldValidation('gender');
+    }
+  });
+
   // 폼 제출 핸들러
   function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -264,24 +277,35 @@
           <!-- 성별 (라디오 그룹) -->
           <div class="space-y-3">
             <Label>성별 <span class="text-destructive">*</span></Label>
-            <RadioGroup 
-              bind:value={formData.gender}
-              class={getFieldClasses(!!errors.gender)}
-              onchange={() => {
-                touched.gender = true;
-                handleFieldValidation('gender');
-              }}
-            >
+            <RadioGroup bind:value={formData.gender}>
               <div class="flex items-center space-x-2">
-                <RadioGroupItem value="male" id="male" />
+                <RadioGroupItem 
+                  value="male" 
+                  id="male" 
+                  onclick={() => {
+                    touched.gender = true;
+                  }}
+                />
                 <Label for="male">남성</Label>
               </div>
               <div class="flex items-center space-x-2">
-                <RadioGroupItem value="female" id="female" />
+                <RadioGroupItem 
+                  value="female" 
+                  id="female"
+                  onclick={() => {
+                    touched.gender = true;
+                  }}
+                />
                 <Label for="female">여성</Label>
               </div>
               <div class="flex items-center space-x-2">
-                <RadioGroupItem value="other" id="other" />
+                <RadioGroupItem 
+                  value="other" 
+                  id="other"
+                  onclick={() => {
+                    touched.gender = true;
+                  }}
+                />
                 <Label for="other">기타</Label>
               </div>
             </RadioGroup>
@@ -316,9 +340,8 @@
               <Checkbox 
                 id="agreeTerms" 
                 bind:checked={formData.agreeTerms}
-                onchange={() => {
+                onclick={() => {
                   touched.agreeTerms = true;
-                  handleFieldValidation('agreeTerms');
                 }}
               />
               <Label for="agreeTerms" class="text-sm">
