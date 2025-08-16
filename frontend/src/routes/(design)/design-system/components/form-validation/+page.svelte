@@ -2,14 +2,12 @@
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
   import { RadioGroup, RadioGroupItem } from '$lib/components/ui/radio-group';
   import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Field, Control, Label as FormLabel, FieldErrors } from 'formsnap';
   import { z } from 'zod';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
-  import { createFieldHandlers, shouldShowError, getAriaInvalid } from '$lib/utils/form';
-
   // 이메일 + 비밀번호 + 성별 + 약관 검증 스키마
   const formSchema = z
     .object({
@@ -41,21 +39,10 @@
     optionalTerms: false
   };
 
-  // 포커스 상태 추적
-  let focusedField = $state<string | null>(null);
-
-  // 포커스 상태를 객체 형태로 래핑 (유틸 함수와 호환성을 위해)
-  const focusedFieldRef = {
-    get current() {
-      return focusedField;
-    },
-    set current(value: string | null) {
-      focusedField = value;
-    }
-  };
+  // Form.Field 패턴에서는 포커스 상태 관리가 자동으로 처리됨
 
   // Superforms 설정 (클라이언트 전용 모드)
-  const { form, errors, enhance, validate } = superForm(initialData, {
+  const superform = superForm(initialData, {
     SPA: true,
     validators: zod(formSchema),
     onUpdate: ({ form }) => {
@@ -65,9 +52,10 @@
       }
     }
   });
+  
+  const { form, errors, enhance, validate } = superform;
 
-  // 업계 표준 에러 메시지 헬퍼 함수
-  const showError = (field: string) => (shouldShowError($errors, field, focusedField) ? ($errors as any)[field] : null);
+  // Form.Field 패턴에서는 FormFieldErrors 컴포넌트가 자동으로 에러 처리
 </script>
 
 <div class="container mx-auto px-6 py-8 max-w-4xl">
@@ -87,133 +75,114 @@
       <CardContent class="space-y-6">
         <form class="space-y-4" method="POST" use:enhance novalidate>
           <!-- Email Field -->
-          <div class="space-y-2">
-            <Label for="email">이메일 주소 <span class="text-destructive">*</span></Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="example@email.com"
-              bind:value={$form.email}
-              aria-invalid={getAriaInvalid($errors, 'email', focusedField)}
-              {...createFieldHandlers('email', focusedFieldRef, errors, validate)}
-            />
-            {#if showError('email')}
-              <p class="text-sm text-destructive mt-1">{showError('email')}</p>
-            {/if}
-          </div>
+          <Field form={superform} name="email">
+            <Control let:attrs>
+              <FormLabel class="text-sm font-medium">이메일 주소 <span class="text-destructive">*</span></FormLabel>
+              <Input
+                {...attrs}
+                type="email"
+                placeholder="example@email.com"
+                bind:value={$form.email}
+              />
+            </Control>
+            <FieldErrors class="text-sm text-destructive" />
+          </Field>
 
           <!-- Password Field -->
-          <div class="space-y-2">
-            <Label for="password">비밀번호 <span class="text-destructive">*</span></Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="8자 이상, 영문+숫자 포함"
-              bind:value={$form.password}
-              aria-invalid={getAriaInvalid($errors, 'password', focusedField)}
-              {...createFieldHandlers('password', focusedFieldRef, errors, validate, () => {
-                // 비밀번호 확인 필드도 재검증 (비밀번호가 변경되었으므로)
-                if ($form.confirmPassword) {
-                  validate('confirmPassword');
-                }
-              })}
-            />
-            {#if showError('password')}
-              <p class="text-sm text-destructive mt-1">{showError('password')}</p>
-            {/if}
-          </div>
+          <Field form={superform} name="password">
+            <Control let:attrs>
+              <FormLabel class="text-sm font-medium">비밀번호 <span class="text-destructive">*</span></FormLabel>
+              <Input
+                {...attrs}
+                type="password"
+                placeholder="8자 이상, 영문+숫자 포함"
+                bind:value={$form.password}
+                oninput={() => {
+                  // 비밀번호 확인 필드도 재검증 (비밀번호가 변경되었으므로)
+                  if ($form.confirmPassword) {
+                    validate('confirmPassword');
+                  }
+                }}
+              />
+            </Control>
+            <FieldErrors class="text-sm text-destructive" />
+          </Field>
 
           <!-- Confirm Password Field -->
-          <div class="space-y-2">
-            <Label for="confirmPassword">비밀번호 확인 <span class="text-destructive">*</span></Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="비밀번호를 다시 입력해주세요"
-              bind:value={$form.confirmPassword}
-              aria-invalid={getAriaInvalid($errors, 'confirmPassword', focusedField)}
-              {...createFieldHandlers('confirmPassword', focusedFieldRef, errors, validate)}
-            />
-            {#if showError('confirmPassword')}
-              <p class="text-sm text-destructive mt-1">{showError('confirmPassword')}</p>
-            {/if}
-          </div>
+          <Field form={superform} name="confirmPassword">
+            <Control let:attrs>
+              <FormLabel class="text-sm font-medium">비밀번호 확인 <span class="text-destructive">*</span></FormLabel>
+              <Input
+                {...attrs}
+                type="password"
+                placeholder="비밀번호를 다시 입력해주세요"
+                bind:value={$form.confirmPassword}
+              />
+            </Control>
+            <FieldErrors class="text-sm text-destructive" />
+          </Field>
 
           <!-- Gender Field -->
-          <div class="space-y-3">
-            <Label>성별 <span class="text-destructive">*</span></Label>
-            <RadioGroup bind:value={$form.gender} {...createFieldHandlers('gender', focusedFieldRef, errors, validate)}>
-              <div class="flex items-center space-x-2">
-                <RadioGroupItem value="male" id="male" name="gender" />
-                <Label for="male">남성</Label>
-              </div>
-              <div class="flex items-center space-x-2">
-                <RadioGroupItem value="female" id="female" name="gender" />
-                <Label for="female">여성</Label>
-              </div>
-            </RadioGroup>
-            {#if showError('gender')}
-              <p class="text-sm text-destructive mt-1">{showError('gender')}</p>
-            {/if}
-          </div>
+          <Field form={superform} name="gender">
+            <Control let:attrs>
+              <FormLabel class="text-sm font-medium">성별 <span class="text-destructive">*</span></FormLabel>
+              <RadioGroup bind:value={$form.gender} {...attrs}>
+                <div class="flex items-center space-x-2">
+                  <RadioGroupItem value="male" id="male" name="gender" />
+                  <FormLabel>남성</FormLabel>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <RadioGroupItem value="female" id="female" name="gender" />
+                  <FormLabel>여성</FormLabel>
+                </div>
+              </RadioGroup>
+            </Control>
+            <FieldErrors class="text-sm text-destructive" />
+          </Field>
 
           <!-- Terms & Conditions -->
           <div class="space-y-4">
             <h3 class="text-lg font-medium text-foreground">약관 동의</h3>
 
             <!-- Required Terms -->
-            <div class="space-y-2">
-              <div class="flex items-start space-x-3">
-                <Checkbox
-                  id="requiredTerms"
-                  name="requiredTerms"
-                  bind:checked={$form.requiredTerms}
-                  aria-invalid={getAriaInvalid($errors, 'requiredTerms', focusedField)}
-                  {...createFieldHandlers('requiredTerms', focusedFieldRef, errors, validate)}
-                />
-                <div class="grid gap-1.5 leading-none">
-                  <Label
-                    for="requiredTerms"
-                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    <span class="text-primary underline cursor-pointer">이용약관</span> 및
-                    <span class="text-primary underline cursor-pointer">개인정보처리방침</span>에 동의합니다
-                    <span class="text-destructive">*</span>
-                  </Label>
-                  <p class="text-xs text-foreground/60">계정 생성 및 서비스 이용을 위해 필수로 동의해야 합니다.</p>
+            <Field form={superform} name="requiredTerms">
+              <Control let:attrs>
+                <div class="flex items-start space-x-3">
+                  <Checkbox
+                    {...attrs}
+                    bind:checked={$form.requiredTerms}
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <FormLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      <span class="text-primary underline cursor-pointer">이용약관</span> 및
+                      <span class="text-primary underline cursor-pointer">개인정보처리방침</span>에 동의합니다
+                      <span class="text-destructive">*</span>
+                    </FormLabel>
+                    <p class="text-xs text-foreground/60">계정 생성 및 서비스 이용을 위해 필수로 동의해야 합니다.</p>
+                  </div>
                 </div>
-              </div>
-              {#if showError('requiredTerms')}
-                <p class="text-sm text-destructive mt-1 ml-7">{showError('requiredTerms')}</p>
-              {/if}
-            </div>
+              </Control>
+              <FieldErrors class="text-sm text-destructive ml-7" />
+            </Field>
 
             <!-- Optional Terms -->
-            <div class="space-y-2">
-              <div class="flex items-start space-x-3">
-                <Checkbox
-                  id="optionalTerms"
-                  name="optionalTerms"
-                  bind:checked={$form.optionalTerms}
-                  {...createFieldHandlers('optionalTerms', focusedFieldRef, errors, validate)}
-                />
-                <div class="grid gap-1.5 leading-none">
-                  <Label
-                    for="optionalTerms"
-                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    마케팅 이메일 및 프로모션 정보 수신에 동의합니다
-                  </Label>
-                  <p class="text-xs text-foreground/60">선택사항 - 언제든지 구독을 해지할 수 있습니다.</p>
+            <Field form={superform} name="optionalTerms">
+              <Control let:attrs>
+                <div class="flex items-start space-x-3">
+                  <Checkbox
+                    {...attrs}
+                    bind:checked={$form.optionalTerms}
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <FormLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      마케팅 이메일 및 프로모션 정보 수신에 동의합니다
+                    </FormLabel>
+                    <p class="text-xs text-foreground/60">선택사항 - 언제든지 구독을 해지할 수 있습니다.</p>
+                  </div>
                 </div>
-              </div>
-              {#if showError('optionalTerms')}
-                <p class="text-sm text-destructive mt-1 ml-7">{showError('optionalTerms')}</p>
-              {/if}
-            </div>
+              </Control>
+              <FieldErrors class="text-sm text-destructive ml-7" />
+            </Field>
           </div>
 
           <div class="flex gap-3 pt-4">
