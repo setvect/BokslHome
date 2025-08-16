@@ -985,6 +985,135 @@ function handleArrowKeys(event: KeyboardEvent) {
 3. **자동 검사 도구**: axe-core, Lighthouse 접근성 감사 활용
 4. **포커스 표시**: 포커스가 현재 어디에 있는지 명확히 보이는지 확인
 
+## 폼 생성 및 유효성 검증 시스템
+
+### 표준 폼 생성 패턴
+프로젝트는 **Superforms + Zod**를 사용한 강력한 폼 유효성 검증 시스템을 구축했습니다. 새로운 폼을 생성할 때는 다음 패턴을 참고하세요.
+
+#### 참고 구현체
+**`/design-system/components/form-validation`** - 완전한 폼 유효성 검증 예제
+- Superforms + Zod 통합
+- 실시간 유효성 검증
+- 포커스 상태 기반 UX 최적화
+- 크로스 필드 검증 (비밀번호 일치)
+- 접근성 완전 지원
+
+#### 기본 폼 구조 패턴
+```typescript
+import { z } from 'zod';
+import { superForm } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { createFieldHandlers, shouldShowError, getAriaInvalid } from '$lib/utils/form';
+
+// 1. Zod 스키마 정의
+const formSchema = z.object({
+  email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
+  password: z.string().min(1, '비밀번호를 입력해주세요').min(8, '비밀번호는 8자 이상이어야 합니다')
+}).refine((data) => /* 크로스 필드 검증 */, { message: '검증 실패 메시지', path: ['targetField'] });
+
+// 2. 초기 데이터
+const initialData = { email: '', password: '' };
+
+// 3. 포커스 상태 관리
+let focusedField = $state<string | null>(null);
+const focusedFieldRef = {
+  get current() { return focusedField; },
+  set current(value: string | null) { focusedField = value; }
+};
+
+// 4. Superform 설정
+const { form, errors, enhance, validate } = superForm(initialData, {
+  SPA: true,
+  validators: zod(formSchema),
+  onUpdate: ({ form }) => {
+    if (form.valid) {
+      // 성공 처리
+    }
+  }
+});
+```
+
+#### 폼 필드 컴포넌트 패턴
+```svelte
+<!-- 표준 입력 필드 -->
+<div class="space-y-2">
+  <Label for="email">이메일 주소 <span class="text-destructive">*</span></Label>
+  <Input
+    id="email"
+    name="email"
+    type="email"
+    placeholder="example@email.com"
+    bind:value={$form.email}
+    aria-invalid={getAriaInvalid($errors, 'email', focusedField)}
+    {...createFieldHandlers('email', focusedFieldRef, errors, validate)}
+  />
+  {#if shouldShowError($errors, 'email', focusedField)}
+    <p class="text-sm text-destructive mt-1">{$errors.email}</p>
+  {/if}
+</div>
+
+<!-- 라디오 그룹 -->
+<div class="space-y-3">
+  <Label>성별 <span class="text-destructive">*</span></Label>
+  <RadioGroup
+    bind:value={$form.gender}
+    {...createFieldHandlers('gender', focusedFieldRef, errors, validate)}
+  >
+    <div class="flex items-center space-x-2">
+      <RadioGroupItem value="male" id="male" name="gender" />
+      <Label for="male">남성</Label>
+    </div>
+    <div class="flex items-center space-x-2">
+      <RadioGroupItem value="female" id="female" name="gender" />
+      <Label for="female">여성</Label>
+    </div>
+  </RadioGroup>
+  {#if shouldShowError($errors, 'gender', focusedField)}
+    <p class="text-sm text-destructive mt-1">{$errors.gender}</p>
+  {/if}
+</div>
+
+<!-- 체크박스 (약관 동의) -->
+<div class="flex items-start space-x-3">
+  <Checkbox
+    id="terms"
+    name="terms"
+    bind:checked={$form.terms}
+    aria-invalid={getAriaInvalid($errors, 'terms', focusedField)}
+    {...createFieldHandlers('terms', focusedFieldRef, errors, validate)}
+  />
+  <div class="grid gap-1.5 leading-none">
+    <Label for="terms">이용약관에 동의합니다 <span class="text-destructive">*</span></Label>
+  </div>
+</div>
+```
+
+#### 핵심 유틸리티 함수들 (`/lib/utils/form.ts`)
+
+1. **`createFieldHandlers()`** - 포커스/블러 핸들러 자동 생성
+   - 포커스 시 에러 숨김
+   - 블러 시 자동 검증
+   - 추가 로직 실행 지원
+
+2. **`shouldShowError()`** - 조건부 에러 표시
+   - 포커스된 필드는 에러 숨김
+   - UX 최적화
+
+3. **`getAriaInvalid()`** - 접근성 속성 자동 계산
+   - aria-invalid 값 계산
+   - 스크린 리더 지원
+
+#### 폼 생성 체크리스트
+새로운 폼 생성 시 다음을 확인하세요:
+
+1. **Zod 스키마 정의**: 모든 필드에 대한 검증 규칙
+2. **초기 데이터 설정**: TypeScript 타입과 일치
+3. **포커스 상태 관리**: `focusedField` + `focusedFieldRef` 패턴
+4. **Superform 설정**: SPA 모드, zod 어댑터, onUpdate 핸들러
+5. **접근성 준수**: Label 연결, aria-invalid, 키보드 지원
+6. **에러 표시 로직**: `shouldShowError()` 함수 활용
+7. **폼 제출 처리**: `enhance` 액션과 `onUpdate` 콜백
+
 ## 현재 상태
 
 - ✅ **백엔드**: Spring Boot + Kotlin API 완료
@@ -1008,6 +1137,7 @@ function handleArrowKeys(event: KeyboardEvent) {
 - ✅ **Svelte 5 호환성**: deprecated `<slot>` → `{@render children()}` 업그레이드
 - ✅ **코드 품질**: 전수 검사 워크플로우 확립, 빌드 테스트 통과
 - ✅ **게시판 관리 모듈**: 완전한 CRUD UI + Mock API 시스템 완료
+- ✅ **폼 유효성 검증 시스템**: Superforms + Zod 기반 완전한 폼 처리 시스템 구축
 - 🔄 **애플리케이션 기능**: 개발 중 (백엔드 API 연동)
 
 ### 알려진 제한사항
