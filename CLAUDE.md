@@ -461,7 +461,7 @@ const response = await getBoardManagerList(query);
 
 ### 폼 유효성 검사 시스템
 
-#### Superforms + Zod 패턴
+#### Superforms + Zod + Formsnap v2 패턴
 **프로젝트의 표준 폼 유효성 검사 방식입니다.**
 
 ```typescript
@@ -469,12 +469,26 @@ const response = await getBoardManagerList(query);
 import { superForm } from 'sveltekit-superforms';
 import { zodClient } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
+import * as Form from '$lib/components/ui/form';
 
-// 1. Zod 스키마 정의
+// 1. Zod 스키마 정의 (에러 메시지 우선순위 고려)
 const signupSchema = z.object({
-  email: z.string().min(1).email().max(100),
-  password: z.string().min(8).max(50),
-  name: z.string().min(2).max(50),
+  email: z.string({ required_error: '이메일은 필수 입력 항목입니다.' })
+    .refine((val) => {
+      if (!val || val.trim() === '') return false;
+      return true;
+    }, { message: '이메일을 입력해주세요.' })
+    .refine((val) => {
+      if (!val || val.trim() === '') return true; // 빈 값은 위에서 처리
+      return z.string().email().safeParse(val).success;
+    }, { message: '올바른 이메일 형식이 아닙니다.' }),
+  
+  password: z.string({ required_error: '비밀번호는 필수 입력 항목입니다.' })
+    .min(8, '비밀번호는 최소 8자 이상이어야 합니다.'),
+    
+  name: z.string({ required_error: '이름은 필수 입력 항목입니다.' })
+    .min(2, '이름은 최소 2자 이상이어야 합니다.'),
+    
   // 복합 검증 (비밀번호 확인 등)
 }).refine((data) => data.password === data.confirmPassword, {
   message: "비밀번호가 일치하지 않습니다",
@@ -482,35 +496,60 @@ const signupSchema = z.object({
 });
 
 // 2. Superforms 설정 (SPA 모드)
-const { form, errors, message, submitting, enhance } = superForm(initialData, {
+const superform = superForm(initialData, {
   validators: zodClient(signupSchema),
   SPA: true,                        // SPA 모드 - 서버 제출 없음
   validationMethod: 'oninput',      // 실시간 검증
   clearOnSubmit: 'errors-and-message'
 });
 
-// 3. 폼 제출 처리
-const handleSubmit = async () => {
-  // Mock API 또는 실제 API 호출
-  toast.success('회원가입이 완료되었습니다!');
-};
+const { form, errors, message, submitting, enhance } = superform;
 ```
 
-#### 폼 컴포넌트 구성
+#### Formsnap v2 + Svelte 5 Form 컴포넌트 패턴
 ```svelte
-<!-- ✅ shadcn-svelte 기본 컴포넌트 사용 (formsnap 대신) -->
-<form method="POST" use:enhance>
+<!-- ✅ Formsnap v2 + Svelte 5 snippet 패턴 -->
+<form use:enhance class="space-y-4" novalidate>
+  <!-- 각 필드를 div로 감싸고 여백 조정 -->
   <div class="space-y-2">
-    <Label for="email">이메일</Label>
-    <Input 
-      id="email" 
-      type="email" 
-      bind:value={$form.email}
-      aria-describedby="email-error"
-    />
-    {#if $errors.email}
-      <p id="email-error" class="text-sm text-red-500">{$errors.email[0]}</p>
-    {/if}
+    <Form.Field form={superform} name="email">
+      <Form.Control>
+        {#snippet children({ props }: { props: any })}
+          <Form.Label class="mb-2 block">이메일 *</Form.Label>
+          <Input {...props} bind:value={$form.email} type="email" placeholder="이메일을 입력하세요" />
+        {/snippet}
+      </Form.Control>
+      <Form.FieldErrors class="mt-1" />
+    </Form.Field>
+  </div>
+  
+  <!-- 비밀번호 필드 (토글 기능 포함) -->
+  <div class="space-y-2">
+    <Form.Field form={superform} name="password">
+      <Form.Control>
+        {#snippet children({ props }: { props: any })}
+          <Form.Label class="mb-2 block">비밀번호 *</Form.Label>
+          <div class="relative">
+            <Input 
+              {...props} 
+              bind:value={$form.password}
+              type={showPassword ? 'text' : 'password'}
+              placeholder="비밀번호를 입력하세요"
+              class="pr-10"
+            />
+            <button 
+              type="button"
+              onclick={() => (showPassword = !showPassword)}
+              class="absolute right-3 top-1/2 -translate-y-1/2"
+              aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+            >
+              {#if showPassword}<EyeOff />{:else}<Eye />{/if}
+            </button>
+          </div>
+        {/snippet}
+      </Form.Control>
+      <Form.FieldErrors class="mt-1" />
+    </Form.Field>
   </div>
   
   <Button type="submit" disabled={$submitting}>
@@ -519,17 +558,65 @@ const handleSubmit = async () => {
 </form>
 ```
 
-#### 유효성 검사 모범 사례
-1. **간단한 검증 규칙**: 사용자 친화적인 검증 (예: 비밀번호는 8자 이상만)
-2. **실시간 피드백**: `validationMethod: 'oninput'`로 즉시 검증
-3. **Toast 알림**: 성공/실패 상황에 svelte-sonner 사용
-4. **SPA 모드**: 백엔드 API 연동 전까지는 SPA 모드로 개발
-5. **접근성**: aria-describedby로 에러 메시지 연결
+#### Formsnap v2 + Svelte 5 핵심 구현 사항
 
-#### 디자인 시스템 예제에서 주의사항
-- **실시간 검증**: 백엔드 연동이 필요한 기능은 제거 (예: 이메일 중복 체크)
-- **단순화**: 복잡한 강도 체크나 실시간 피드백 UI는 피하기
-- **표준 레이아웃**: 다른 디자인 시스템 컴포넌트와 동일한 여백과 구조 사용
+**1. superForm 전체 객체 전달**
+```typescript
+// ❌ 잘못된 방식
+const { form, errors } = superForm(...);
+<Form.Field {form} name="email">
+
+// ✅ 올바른 방식  
+const superform = superForm(...);
+const { form, errors } = superform;
+<Form.Field form={superform} name="email">
+```
+
+**2. Svelte 5 snippet 패턴**
+```svelte
+<!-- Form.Control 컴포넌트 구현 -->
+<Control>
+  {#snippet children(attrs)}
+    {@render childrenSnippet({ props: attrs })}
+  {/snippet}
+</Control>
+```
+
+**3. 여백 조정 (페이지 레벨)**
+```svelte
+<!-- UI 컴포넌트 수정하지 않고 페이지에서 직접 조정 -->
+<div class="space-y-2">        <!-- 필드 전체 여백 -->
+  <Form.Label class="mb-2 block">  <!-- 라벨-입력 간격 -->
+  <Input />
+  <Form.FieldErrors class="mt-1" /> <!-- 입력-에러 간격 -->
+</div>
+```
+
+#### 유효성 검사 모범 사례
+
+**1. 에러 메시지 우선순위**
+- 빈 값 → 형식 오류 → 길이 제한 순으로 단계적 검증
+- 한 번에 하나의 명확한 메시지만 표시
+
+**2. 실시간 피드백**
+- `validationMethod: 'oninput'`로 즉시 검증
+- 시각적 피드백 (체크/X 아이콘) 활용
+
+**3. 접근성 준수**
+- `novalidate` 속성으로 HTML5 기본 검증 비활성화
+- `aria-label`, `aria-describedby` 적절히 사용
+- 키보드 네비게이션 지원
+
+**4. 사용자 경험**
+- Toast 알림으로 성공/실패 피드백
+- 로딩 상태 표시
+- 비밀번호 보기/숨기기 토글
+
+#### 주의사항
+- **Formsnap v2.0.1**: Svelte 5와 호환, snippet 패턴 필수 사용
+- **HTML5 검증 비활성화**: `novalidate` 속성으로 중복 메시지 방지
+- **타입 안전성**: TypeScript 인터페이스로 props 타입 명시
+- **컴포넌트 재사용성**: UI 컴포넌트는 기본 상태 유지, 페이지에서 스타일 조정
 
 ### 공통 타입 시스템
 
@@ -1081,7 +1168,11 @@ function handleArrowKeys(event: KeyboardEvent) {
 - ✅ **Svelte 5 호환성**: deprecated `<slot>` → `{@render children()}` 업그레이드
 - ✅ **코드 품질**: 전수 검사 워크플로우 확립, 빌드 테스트 통과
 - ✅ **게시판 관리 모듈**: 완전한 CRUD UI + Mock API 시스템 완료
-- ✅ **폼 유효성 검사**: Superforms + Zod 기반 완전한 회원가입 폼 예제 완료
+- ✅ **폼 유효성 검사**: Superforms + Zod + Formsnap v2 기반 완전한 회원가입 폼 예제 완료
+  - Svelte 5 snippet 패턴 적용
+  - 단일 에러 메시지 표시 (우선순위 기반)
+  - 비밀번호 토글, 시각적 피드백, 접근성 지원
+  - 페이지 레벨 여백 조정 패턴 확립
 - 🔄 **애플리케이션 기능**: 개발 중 (백엔드 API 연동)
 
 ### 알려진 제한사항

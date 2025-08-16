@@ -12,6 +12,7 @@
   import { Label } from '$lib/components/ui/label';
   import { RadioGroup, RadioGroupItem } from '$lib/components/ui/radio-group';
   import { Checkbox } from '$lib/components/ui/checkbox';
+  import * as Form from '$lib/components/ui/form';
   import { toast } from 'svelte-sonner';
   import { Check, X, AlertCircle, Eye, EyeOff } from '@lucide/svelte';
 
@@ -20,9 +21,18 @@
     .object({
       email: z
         .string({ required_error: '이메일은 필수 입력 항목입니다.' })
-        .min(1, '이메일을 입력해주세요.')
-        .email('올바른 이메일 형식이 아닙니다.')
-        .max(100, '이메일은 100자 이하로 입력해주세요.'),
+        .refine((val) => {
+          if (!val || val.trim() === '') return false;
+          return true;
+        }, { message: '이메일을 입력해주세요.' })
+        .refine((val) => {
+          if (!val || val.trim() === '') return true; // 빈 값은 위에서 처리
+          return z.string().email().safeParse(val).success;
+        }, { message: '올바른 이메일 형식이 아닙니다.' })
+        .refine((val) => {
+          if (!val) return true;
+          return val.length <= 100;
+        }, { message: '이메일은 100자 이하로 입력해주세요.' }),
 
       password: z
         .string({ required_error: '비밀번호는 필수 입력 항목입니다.' })
@@ -74,7 +84,7 @@
   };
 
   // Superforms 설정 (SPA 모드)
-  const { form, errors, message, submitting, enhance } = superForm(initialData, {
+  const superform = superForm(initialData, {
     validators: zodClient(signupSchema),
     SPA: true,
     validationMethod: 'oninput',
@@ -98,6 +108,9 @@
       });
     }
   });
+
+  // 개별 속성 추출
+  const { form, errors, message, submitting, enhance } = superform;
 
   // 반응형 상태
   let showPassword = $state(false);
@@ -147,186 +160,187 @@
           <CardDescription>아래 정보를 입력하여 계정을 생성하세요.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form use:enhance bind:this={formContainer} class="space-y-6">
+          <form use:enhance bind:this={formContainer} class="space-y-4" novalidate>
             <!-- 이메일 -->
             <div class="space-y-2">
-              <Label for="email" class="text-foreground">이메일 *</Label>
-              <div class="relative">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="이메일을 입력하세요"
-                  bind:value={$form.email}
-                  aria-describedby="email-error"
-                />
-              </div>
-              {#if $errors.email}
-                <p id="email-error" class="text-sm text-red-500">{$errors.email[0]}</p>
-              {/if}
+              <Form.Field form={superform} name="email">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <Form.Label class="mb-2 block">이메일 *</Form.Label>
+                    <Input {...props} bind:value={$form.email} type="email" placeholder="이메일을 입력하세요" />
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors class="mt-1" />
+              </Form.Field>
             </div>
 
             <!-- 비밀번호 -->
             <div class="space-y-2">
-              <Label for="password" class="text-foreground">비밀번호 *</Label>
-              <div class="space-y-2">
-                <div class="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="비밀번호를 입력하세요"
-                    bind:value={$form.password}
-                    aria-describedby="password-error"
-                    class="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onclick={() => (showPassword = !showPassword)}
-                    onkeydown={(e) => handleKeyDown(e, () => (showPassword = !showPassword))}
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground"
-                    aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
-                    tabindex="0"
-                  >
-                    {#if showPassword}
-                      <EyeOff class="h-4 w-4" />
-                    {:else}
-                      <Eye class="h-4 w-4" />
-                    {/if}
-                  </button>
-                </div>
-              </div>
-              {#if $errors.password}
-                <p id="password-error" class="text-sm text-red-500">{$errors.password[0]}</p>
-              {/if}
+              <Form.Field form={superform} name="password">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <Form.Label class="mb-2 block">비밀번호 *</Form.Label>
+                    <div class="relative">
+                      <Input
+                        {...props}
+                        bind:value={$form.password}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="비밀번호를 입력하세요"
+                        class="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onclick={() => (showPassword = !showPassword)}
+                        onkeydown={(e) => handleKeyDown(e, () => (showPassword = !showPassword))}
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground"
+                        aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                        tabindex="0"
+                      >
+                        {#if showPassword}
+                          <EyeOff class="h-4 w-4" />
+                        {:else}
+                          <Eye class="h-4 w-4" />
+                        {/if}
+                      </button>
+                    </div>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors class="mt-1" />
+              </Form.Field>
             </div>
 
             <!-- 비밀번호 확인 -->
             <div class="space-y-2">
-              <Label for="confirmPassword" class="text-foreground">비밀번호 확인 *</Label>
-              <div class="relative">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="비밀번호를 다시 입력하세요"
-                  bind:value={$form.confirmPassword}
-                  aria-describedby="confirmPassword-error"
-                  class="pr-10"
-                />
-                <button
-                  type="button"
-                  onclick={() => (showConfirmPassword = !showConfirmPassword)}
-                  onkeydown={(e) => handleKeyDown(e, () => (showConfirmPassword = !showConfirmPassword))}
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground"
-                  aria-label={showConfirmPassword ? '비밀번호 확인 숨기기' : '비밀번호 확인 보기'}
-                  tabindex="0"
-                >
-                  {#if showConfirmPassword}
-                    <EyeOff class="h-4 w-4" />
-                  {:else}
-                    <Eye class="h-4 w-4" />
-                  {/if}
-                </button>
-                {#if $form.confirmPassword && $form.password}
-                  <div class="absolute right-12 top-1/2 -translate-y-1/2">
-                    {#if $form.password === $form.confirmPassword}
-                      <Check class="h-4 w-4 text-green-500" />
-                    {:else}
-                      <X class="h-4 w-4 text-red-500" />
-                    {/if}
-                  </div>
-                {/if}
-              </div>
-              {#if $errors.confirmPassword}
-                <p id="confirmPassword-error" class="text-sm text-red-500">{$errors.confirmPassword[0]}</p>
-              {/if}
+              <Form.Field form={superform} name="confirmPassword">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <Form.Label class="mb-2 block">비밀번호 확인 *</Form.Label>
+                    <div class="relative">
+                      <Input
+                        {...props}
+                        bind:value={$form.confirmPassword}
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="비밀번호를 다시 입력하세요"
+                        class="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onclick={() => (showConfirmPassword = !showConfirmPassword)}
+                        onkeydown={(e) => handleKeyDown(e, () => (showConfirmPassword = !showConfirmPassword))}
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground"
+                        aria-label={showConfirmPassword ? '비밀번호 확인 숨기기' : '비밀번호 확인 보기'}
+                        tabindex="0"
+                      >
+                        {#if showConfirmPassword}
+                          <EyeOff class="h-4 w-4" />
+                        {:else}
+                          <Eye class="h-4 w-4" />
+                        {/if}
+                      </button>
+                      {#if $form.confirmPassword && $form.password}
+                        <div class="absolute right-12 top-1/2 -translate-y-1/2">
+                          {#if $form.password === $form.confirmPassword}
+                            <Check class="h-4 w-4 text-green-500" />
+                          {:else}
+                            <X class="h-4 w-4 text-red-500" />
+                          {/if}
+                        </div>
+                      {/if}
+                    </div>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors class="mt-1" />
+              </Form.Field>
             </div>
 
             <!-- 이름 -->
             <div class="space-y-2">
-              <Label for="name" class="text-foreground">이름 *</Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="이름을 입력하세요"
-                bind:value={$form.name}
-                aria-describedby="name-error"
-              />
-              {#if $errors.name}
-                <p id="name-error" class="text-sm text-red-500">{$errors.name[0]}</p>
-              {/if}
+              <Form.Field form={superform} name="name">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <Form.Label class="mb-2 block">이름 *</Form.Label>
+                    <Input {...props} bind:value={$form.name} type="text" placeholder="이름을 입력하세요" />
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors class="mt-1" />
+              </Form.Field>
             </div>
 
             <!-- 성별 -->
             <div class="space-y-2">
-              <Label class="text-foreground">성별 *</Label>
-              <RadioGroup bind:value={$form.gender} class="flex flex-row space-x-6">
-                <div class="flex items-center space-x-2">
-                  <RadioGroupItem value="male" id="male" />
-                  <Label for="male" class="text-foreground">남성</Label>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <RadioGroupItem value="female" id="female" />
-                  <Label for="female" class="text-foreground">여성</Label>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <RadioGroupItem value="other" id="other" />
-                  <Label for="other" class="text-foreground">기타</Label>
-                </div>
-              </RadioGroup>
-              {#if $errors.gender}
-                <p class="text-sm text-red-500">{$errors.gender[0]}</p>
-              {/if}
+              <Form.Field form={superform} name="gender">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <Form.Label class="mb-2 block">성별 *</Form.Label>
+                    <RadioGroup {...props} bind:value={$form.gender} class="flex flex-row space-x-6">
+                      <div class="flex items-center space-x-2">
+                        <RadioGroupItem value="male" id="male" />
+                        <Label for="male" class="text-foreground">남성</Label>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <RadioGroupItem value="female" id="female" />
+                        <Label for="female" class="text-foreground">여성</Label>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <RadioGroupItem value="other" id="other" />
+                        <Label for="other" class="text-foreground">기타</Label>
+                      </div>
+                    </RadioGroup>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors class="mt-1" />
+              </Form.Field>
             </div>
 
             <!-- 약관 동의 -->
             <div class="space-y-4">
               <!-- 서비스 이용약관 -->
-              <div class="space-y-2">
-                <div class="flex items-start space-x-2">
-                  <Checkbox id="agreeToTerms" bind:checked={$form.agreeToTerms} aria-describedby="agreeToTerms-error" />
-                  <div class="grid gap-1.5 leading-none">
-                    <Label for="agreeToTerms" class="text-sm font-medium text-foreground cursor-pointer"
-                      >서비스 이용약관 동의 (필수) *</Label
-                    >
-                    <p class="text-xs text-foreground/60">서비스 이용을 위해 약관에 동의해주세요.</p>
-                  </div>
-                </div>
-                {#if $errors.agreeToTerms}
-                  <p id="agreeToTerms-error" class="text-sm text-red-500">{$errors.agreeToTerms[0]}</p>
-                {/if}
-              </div>
+              <Form.Field form={superform} name="agreeToTerms">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <div class="flex items-start space-x-2">
+                      <Checkbox {...props} id="agreeToTerms" bind:checked={$form.agreeToTerms} />
+                      <div class="grid gap-1.5 leading-none">
+                        <Form.Label class="text-sm font-medium text-foreground cursor-pointer">서비스 이용약관 동의 (필수) *</Form.Label>
+                        <p class="text-xs text-foreground/60">서비스 이용을 위해 약관에 동의해주세요.</p>
+                      </div>
+                    </div>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors />
+              </Form.Field>
 
               <!-- 개인정보 처리방침 -->
-              <div class="space-y-2">
-                <div class="flex items-start space-x-2">
-                  <Checkbox id="agreeToPrivacy" bind:checked={$form.agreeToPrivacy} aria-describedby="agreeToPrivacy-error" />
-                  <div class="grid gap-1.5 leading-none">
-                    <Label for="agreeToPrivacy" class="text-sm font-medium text-foreground cursor-pointer">
-                      개인정보 처리방침 동의 (필수) *
-                    </Label>
-                    <p class="text-xs text-foreground/60">개인정보 보호를 위한 처리방침에 동의해주세요.</p>
-                  </div>
-                </div>
-                {#if $errors.agreeToPrivacy}
-                  <p id="agreeToPrivacy-error" class="text-sm text-red-500">{$errors.agreeToPrivacy[0]}</p>
-                {/if}
-              </div>
+              <Form.Field form={superform} name="agreeToPrivacy">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <div class="flex items-start space-x-2">
+                      <Checkbox {...props} id="agreeToPrivacy" bind:checked={$form.agreeToPrivacy} />
+                      <div class="grid gap-1.5 leading-none">
+                        <Form.Label class="text-sm font-medium text-foreground cursor-pointer">개인정보 처리방침 동의 (필수) *</Form.Label>
+                        <p class="text-xs text-foreground/60">개인정보 보호를 위한 처리방침에 동의해주세요.</p>
+                      </div>
+                    </div>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors />
+              </Form.Field>
 
               <!-- 마케팅 정보 수신 동의 -->
-              <div class="space-y-2">
-                <div class="flex items-start space-x-2">
-                  <Checkbox id="agreeToMarketing" bind:checked={$form.agreeToMarketing} />
-                  <div class="grid gap-1.5 leading-none">
-                    <Label for="agreeToMarketing" class="text-sm font-medium text-foreground cursor-pointer">
-                      마케팅 정보 수신 동의 (선택)
-                    </Label>
-                    <p class="text-xs text-foreground/60">이벤트, 프로모션 등의 마케팅 정보를 받아보시겠습니까?</p>
-                  </div>
-                </div>
-              </div>
+              <Form.Field form={superform} name="agreeToMarketing">
+                <Form.Control>
+                  {#snippet children({ props }: { props: any })}
+                    <div class="flex items-start space-x-2">
+                      <Checkbox {...props} id="agreeToMarketing" bind:checked={$form.agreeToMarketing} />
+                      <div class="grid gap-1.5 leading-none">
+                        <Form.Label class="text-sm font-medium text-foreground cursor-pointer">마케팅 정보 수신 동의 (선택)</Form.Label>
+                        <p class="text-xs text-foreground/60">이벤트, 프로모션 등의 마케팅 정보를 받아보시겠습니까?</p>
+                      </div>
+                    </div>
+                  {/snippet}
+                </Form.Control>
+                <Form.FieldErrors />
+              </Form.Field>
             </div>
 
             <!-- 폼 상태 표시 -->
@@ -440,7 +454,8 @@
               <ul class="space-y-1 text-foreground/80">
                 <li>• sveltekit-superforms (SPA 모드)</li>
                 <li>• zod 스키마 검증</li>
-                <li>• shadcn-svelte 기본 컴포넌트</li>
+                <li>• shadcn-svelte Form 컴포넌트</li>
+                <li>• formsnap v2.0.1 (Svelte 5 호환)</li>
                 <li>• Svelte 5 Runes</li>
               </ul>
             </div>

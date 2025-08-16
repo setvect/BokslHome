@@ -4,9 +4,11 @@
   interface Props {
     children: any;
   }
-  let { children }: Props = $props();
+  let { children: childrenSnippet }: Props = $props();
 </script>
 
-<Control let:attrs>
-  {@render children({ props: attrs })}
+<Control>
+  {#snippet children(attrs)}
+    {@render childrenSnippet({ props: attrs })}
+  {/snippet}
 </Control>
