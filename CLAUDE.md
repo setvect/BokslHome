@@ -1033,9 +1033,18 @@ const { form, errors, enhance, validate } = superForm(initialData, {
 });
 ```
 
-#### 폼 필드 컴포넌트 패턴
+#### 에러 메시지 표시 패턴 (업계 표준)
+
+**업계 표준 헬퍼 함수 패턴 적용** - React의 `{error && <Component />}` 패턴과 유사
+
+```typescript
+// 업계 표준 에러 메시지 헬퍼 함수
+const showError = (field: string) => 
+  shouldShowError($errors, field, focusedField) ? ($errors as any)[field] : null;
+```
+
 ```svelte
-<!-- 표준 입력 필드 -->
+<!-- 표준 입력 필드 - 간소화된 에러 표시 -->
 <div class="space-y-2">
   <Label for="email">이메일 주소 <span class="text-destructive">*</span></Label>
   <Input
@@ -1047,8 +1056,8 @@ const { form, errors, enhance, validate } = superForm(initialData, {
     aria-invalid={getAriaInvalid($errors, 'email', focusedField)}
     {...createFieldHandlers('email', focusedFieldRef, errors, validate)}
   />
-  {#if shouldShowError($errors, 'email', focusedField)}
-    <p class="text-sm text-destructive mt-1">{$errors.email}</p>
+  {#if showError('email')}
+    <p class="text-sm text-destructive mt-1">{showError('email')}</p>
   {/if}
 </div>
 
@@ -1068,8 +1077,8 @@ const { form, errors, enhance, validate } = superForm(initialData, {
       <Label for="female">여성</Label>
     </div>
   </RadioGroup>
-  {#if shouldShowError($errors, 'gender', focusedField)}
-    <p class="text-sm text-destructive mt-1">{$errors.gender}</p>
+  {#if showError('gender')}
+    <p class="text-sm text-destructive mt-1">{showError('gender')}</p>
   {/if}
 </div>
 
@@ -1085,6 +1094,9 @@ const { form, errors, enhance, validate } = superForm(initialData, {
   <div class="grid gap-1.5 leading-none">
     <Label for="terms">이용약관에 동의합니다 <span class="text-destructive">*</span></Label>
   </div>
+  {#if showError('terms')}
+    <p class="text-sm text-destructive mt-1">{showError('terms')}</p>
+  {/if}
 </div>
 ```
 
@@ -1103,6 +1115,14 @@ const { form, errors, enhance, validate } = superForm(initialData, {
    - aria-invalid 값 계산
    - 스크린 리더 지원
 
+#### 에러 메시지 처리 장점
+
+**업계 표준 헬퍼 함수 패턴의 장점:**
+- **가독성 향상**: 에러 표시 로직이 간결해짐
+- **유지보수성**: 에러 표시 조건 변경 시 한 곳만 수정하면 됨 
+- **일관성**: 모든 필드에서 동일한 패턴 사용
+- **업계 표준**: React의 `{error && <Component />}` 패턴과 유사한 방식
+
 #### 폼 생성 체크리스트
 새로운 폼 생성 시 다음을 확인하세요:
 
@@ -1111,7 +1131,7 @@ const { form, errors, enhance, validate } = superForm(initialData, {
 3. **포커스 상태 관리**: `focusedField` + `focusedFieldRef` 패턴
 4. **Superform 설정**: SPA 모드, zod 어댑터, onUpdate 핸들러
 5. **접근성 준수**: Label 연결, aria-invalid, 키보드 지원
-6. **에러 표시 로직**: `shouldShowError()` 함수 활용
+6. **에러 표시 로직**: `showError()` 헬퍼 함수 패턴 활용
 7. **폼 제출 처리**: `enhance` 액션과 `onUpdate` 콜백
 
 ## 현재 상태

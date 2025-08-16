@@ -11,5 +11,27 @@
   "less.lint.unknownAtRules": "ignore",
   "postcss.validate": false,
   "files.trimTrailingWhitespace": true,
-  "editor.trimWhitespaceOnDelete": true
+  "editor.trimWhitespaceOnDelete": true,
+  "editor.formatOnSave": true,
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.formatOnSave": true
+  },
+  "[html]": {
+    "editor.formatOnSave": true
+  }
 }
