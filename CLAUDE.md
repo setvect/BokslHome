@@ -612,11 +612,43 @@ const { form, errors } = superform;
 - 로딩 상태 표시
 - 비밀번호 보기/숨기기 토글
 
+#### 유효성 검사 핵심 패턴 (중요!)
+**`onSubmit` vs `onUpdate` 차이점을 반드시 이해해야 합니다:**
+
+```typescript
+// ❌ 문제가 있는 패턴 - onSubmit 사용
+const superform = superForm(initialData, {
+  validators: zodClient(schema),
+  onSubmit: async ({ cancel }) => {
+    // 🚨 유효성 검사 실패해도 여기가 실행됨
+    // Form.FieldErrors에 오류가 표시되지 않는 문제 발생
+  }
+});
+
+// ✅ 올바른 패턴 - onUpdate 사용  
+const superform = superForm(initialData, {
+  validators: zodClient(schema),
+  validationMethod: 'oninput',
+  async onUpdate({ form }) {
+    if (form.valid) {
+      // ✅ 유효성 검사 통과 후에만 실행
+      // Form.FieldErrors가 정상 작동함
+    }
+  }
+});
+```
+
+**핵심 차이점:**
+- **onSubmit**: 유효성 검사 결과와 관계없이 항상 실행 (검증 실패 시에도 호출)
+- **onUpdate**: 유효성 검사 통과 후에만 실행 (`form.valid === true`일 때만)
+- **Form.FieldErrors**: onUpdate 패턴에서만 정상적으로 에러 표시
+
 #### 주의사항
 - **Formsnap v2.0.1**: Svelte 5와 호환, snippet 패턴 필수 사용
 - **HTML5 검증 비활성화**: `novalidate` 속성으로 중복 메시지 방지
 - **타입 안전성**: TypeScript 인터페이스로 props 타입 명시
 - **컴포넌트 재사용성**: UI 컴포넌트는 기본 상태 유지, 페이지에서 스타일 조정
+- **디버깅 시**: 작동하는 예제 코드를 먼저 분석하여 패턴 파악 후 적용
 
 ### 공통 타입 시스템
 
