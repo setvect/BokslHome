@@ -459,6 +459,78 @@ const response = await getBoardManagerList(query);
 - **타입 안전성**: 실제 API와 동일한 타입 시스템
 - **쉬운 전환**: import 경로만 변경하면 실제 API로 전환
 
+### 폼 유효성 검사 시스템
+
+#### Superforms + Zod 패턴
+**프로젝트의 표준 폼 유효성 검사 방식입니다.**
+
+```typescript
+// ✅ 표준 폼 구현 패턴
+import { superForm } from 'sveltekit-superforms';
+import { zodClient } from 'sveltekit-superforms/adapters';
+import { z } from 'zod';
+
+// 1. Zod 스키마 정의
+const signupSchema = z.object({
+  email: z.string().min(1).email().max(100),
+  password: z.string().min(8).max(50),
+  name: z.string().min(2).max(50),
+  // 복합 검증 (비밀번호 확인 등)
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "비밀번호가 일치하지 않습니다",
+  path: ["confirmPassword"]
+});
+
+// 2. Superforms 설정 (SPA 모드)
+const { form, errors, message, submitting, enhance } = superForm(initialData, {
+  validators: zodClient(signupSchema),
+  SPA: true,                        // SPA 모드 - 서버 제출 없음
+  validationMethod: 'oninput',      // 실시간 검증
+  clearOnSubmit: 'errors-and-message'
+});
+
+// 3. 폼 제출 처리
+const handleSubmit = async () => {
+  // Mock API 또는 실제 API 호출
+  toast.success('회원가입이 완료되었습니다!');
+};
+```
+
+#### 폼 컴포넌트 구성
+```svelte
+<!-- ✅ shadcn-svelte 기본 컴포넌트 사용 (formsnap 대신) -->
+<form method="POST" use:enhance>
+  <div class="space-y-2">
+    <Label for="email">이메일</Label>
+    <Input 
+      id="email" 
+      type="email" 
+      bind:value={$form.email}
+      aria-describedby="email-error"
+    />
+    {#if $errors.email}
+      <p id="email-error" class="text-sm text-red-500">{$errors.email[0]}</p>
+    {/if}
+  </div>
+  
+  <Button type="submit" disabled={$submitting}>
+    {$submitting ? '처리 중...' : '제출'}
+  </Button>
+</form>
+```
+
+#### 유효성 검사 모범 사례
+1. **간단한 검증 규칙**: 사용자 친화적인 검증 (예: 비밀번호는 8자 이상만)
+2. **실시간 피드백**: `validationMethod: 'oninput'`로 즉시 검증
+3. **Toast 알림**: 성공/실패 상황에 svelte-sonner 사용
+4. **SPA 모드**: 백엔드 API 연동 전까지는 SPA 모드로 개발
+5. **접근성**: aria-describedby로 에러 메시지 연결
+
+#### 디자인 시스템 예제에서 주의사항
+- **실시간 검증**: 백엔드 연동이 필요한 기능은 제거 (예: 이메일 중복 체크)
+- **단순화**: 복잡한 강도 체크나 실시간 피드백 UI는 피하기
+- **표준 레이아웃**: 다른 디자인 시스템 컴포넌트와 동일한 여백과 구조 사용
+
 ### 공통 타입 시스템
 
 #### 타입 분리 원칙
@@ -1009,6 +1081,7 @@ function handleArrowKeys(event: KeyboardEvent) {
 - ✅ **Svelte 5 호환성**: deprecated `<slot>` → `{@render children()}` 업그레이드
 - ✅ **코드 품질**: 전수 검사 워크플로우 확립, 빌드 테스트 통과
 - ✅ **게시판 관리 모듈**: 완전한 CRUD UI + Mock API 시스템 완료
+- ✅ **폼 유효성 검사**: Superforms + Zod 기반 완전한 회원가입 폼 예제 완료
 - 🔄 **애플리케이션 기능**: 개발 중 (백엔드 API 연동)
 
 ### 알려진 제한사항
