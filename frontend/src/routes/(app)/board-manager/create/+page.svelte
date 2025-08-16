@@ -143,7 +143,7 @@
 <div class="container mx-auto py-6 space-y-6">
   <!-- 페이지 제목 -->
   <div class="flex items-center gap-4">
-    <Button variant="ghost" size="sm" onclick={() => goto('/board-manager')}>
+    <Button variant="ghost" size="sm" onclick={() => goto('/board-manager')} class="text-foreground hover:text-foreground">
       <ArrowLeft class="w-4 h-4" />
       목록으로
     </Button>
