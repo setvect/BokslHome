@@ -9,12 +9,12 @@
 ## 할일 목록
 
 ### 3.1 기본 레이아웃 구조 설계
-- [ ] `src/lib/components/layout/` 디렉토리 생성
-- [ ] 레이아웃 컴포넌트 파일 구조 계획:
-  - [ ] `Header.svelte` - 상단 헤더 (모든 그룹에서 공유)
-  - [ ] `Sidebar.svelte` - 메인 앱용 좌측 사이드바
-  - [ ] `DesignSystemSidebar.svelte` - 디자인 시스템용 사이드바 (4단계에서 구현)
-  - [ ] `MainContent.svelte` - 메인 콘텐츠 영역
+- [x] `src/lib/components/layout/` 디렉토리 생성
+- [x] 레이아웃 컴포넌트 파일 구조 계획:
+  - [x] `Header.svelte` - 상단 헤더 (모든 그룹에서 공유)
+  - [x] `Sidebar.svelte` - 메인 앱용 좌측 사이드바
+  - [x] `DesignSystemSidebar.svelte` - 디자인 시스템용 사이드바 (4단계에서 구현)
+  - [x] `MainContent.svelte` - 메인 콘텐츠 영역
 
 ### 3.2 기본 헤더 컴포넌트 구현
 - [ ] `src/lib/components/layout/Header.svelte` 생성
