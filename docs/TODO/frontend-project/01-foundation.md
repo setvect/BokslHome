@@ -55,7 +55,14 @@
 
 ### 1.6 개발 환경 도구 설정
 - [ ] `.prettierrc` 설정 파일 생성
-- [ ] `.eslintrc.cjs` 설정 확인
+- [ ] `.eslintrc.cjs` 설정 확인 및 접근성 경고 무시 설정 추가:
+  ```json
+  {
+    "rules": {
+      "a11y-*": "off"
+    }
+  }
+  ```
 - [ ] `package.json` scripts 확인
 
 ### 1.7 기본 유틸리티 설정
