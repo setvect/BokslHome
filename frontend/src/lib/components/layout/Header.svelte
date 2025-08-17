@@ -1,7 +1,7 @@
 <script lang="ts">
   let props = $props<{
     title?: string;
-    actions?: unknown;
+    actions?: () => unknown;
     onToggleSidebar?: () => void;
     onSetLight?: () => void;
     onSetDark?: () => void;
@@ -24,6 +24,6 @@
     >
     <button type="button" class="px-3 py-1 rounded border" aria-label="다크 테마로 변경" onclick={() => props.onSetDark?.()}>Dark</button>
 
-    {@render (props as any).actions?.()}
+    {@render props.actions?.()}
   </div>
 </header>

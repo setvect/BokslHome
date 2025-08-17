@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
-  let props = $props<{ visibleOnMobile?: boolean; onNavigate?: () => void } & { children?: unknown }>();
+  let props = $props<{ visibleOnMobile?: boolean; onNavigate?: () => void; children?: () => unknown }>();
   const containerClass = $derived(() => (props.visibleOnMobile ? 'block' : 'hidden lg:block'));
 
   let pathname = $state('');
@@ -32,9 +32,9 @@
     <a href="/" aria-label="BokslHome">BokslHome</a>
   </div>
   <nav class="space-y-2">
-    {#each links as item}
+    {#each links as item (item.href)}
       <a href={item.href} class={linkClass(item.href)} onclick={handleNavigate}>{item.label}</a>
     {/each}
   </nav>
-  {@render (props as any).children?.()}
+  {@render props.children?.()}
 </aside>
