@@ -30,6 +30,7 @@
         <a href="/design-system/components" class="block hover:underline" onclick={handleNavigate}>Overview</a>
         <a href="/design-system/components/buttons" class="block hover:underline" onclick={handleNavigate}>Buttons</a>
         <a href="/design-system/components/forms" class="block hover:underline" onclick={handleNavigate}>Forms</a>
+        <a href="/design-system/components/forms-raw" class="block hover:underline" onclick={handleNavigate}>Forms (Raw)</a>
       </div>
     </div>
 
