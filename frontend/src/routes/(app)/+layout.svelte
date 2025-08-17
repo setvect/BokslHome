@@ -91,7 +91,7 @@
   <aside
     class={`app-sidebar ${sidebarOpen ? 'block' : 'hidden'} fixed z-50 top-0 left-0 h-dvh w-64 border-r bg-background lg:static lg:z-auto lg:h-auto lg:block`}
   >
-    <Sidebar visibleOnMobile={sidebarOpen} onNavigate={() => !matchDesktop() && closeSidebar()} />
+    <Sidebar onNavigate={() => !matchDesktop() && closeSidebar()} />
   </aside>
   <!-- 우측 헤더 + 메인 -->
   <div class="flex-1 flex flex-col">

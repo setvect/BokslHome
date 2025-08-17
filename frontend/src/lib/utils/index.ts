@@ -2,13 +2,13 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export function noop(): void { }
+export function noop(): void {}
 
 export function isDefined<T>(value: T | null | undefined): value is T {
-    return value !== null && value !== undefined;
+  return value !== null && value !== undefined;
 }
 
 // Tailwind 클래스 병합 유틸
 export function cn(...inputs: ClassValue[]): string {
-    return twMerge(clsx(...inputs));
+  return twMerge(clsx(...inputs));
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
-  let props = $props<{ open?: boolean; children?: () => unknown }>();
+  import type { RenderFn } from '$lib/types/common';
+  let props = $props<{ open?: boolean; children?: RenderFn }>();
   // children은 부모에서 전달된 기본 콘텐츠를 렌더링하기 위한 함수
 </script>
 

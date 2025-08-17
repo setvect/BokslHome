@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { RenderFn } from '$lib/types/common';
   let props = $props<{
     title?: string;
-    actions?: () => unknown;
+    actions?: RenderFn;
     onToggleSidebar?: () => void;
     onSetLight?: () => void;
     onSetDark?: () => void;

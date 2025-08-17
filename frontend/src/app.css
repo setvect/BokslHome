@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* 애니메이션 플러그인은 추후 필요 시 추가 설치 후 활성화
    예) @plugin "tailwindcss-animate";

@@ -91,10 +91,10 @@
 - [x] SSR 호환성 확인
 
 ### 3.12 코드 품질 검증
-- [ ] TypeScript 오류 해결
-- [ ] ESLint 경고 해결
-- [ ] Prettier 포맷팅 적용
-- [ ] 컴포넌트 간 props 타입 정의
+- [x] TypeScript 오류 해결
+- [x] ESLint 경고 해결
+- [x] Prettier 포맷팅 적용
+- [x] 컴포넌트 간 props 타입 정의
 
 ---
 

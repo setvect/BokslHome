@@ -1,7 +1,7 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
-  let props = $props<{ visibleOnMobile?: boolean; onNavigate?: () => void; children?: () => unknown }>();
-  const containerClass = $derived(() => (props.visibleOnMobile ? 'block' : 'hidden lg:block'));
+  import type { RenderFn } from '$lib/types/common';
+  let props = $props<{ onNavigate?: () => void; children?: RenderFn }>();
 
   let pathname = $state('');
   $effect(() => {
@@ -27,13 +27,15 @@
   }
 </script>
 
-<aside class={`w-64 border-r min-h-dvh p-4 ${containerClass}`}>
+<aside class="w-64 border-r min-h-dvh p-4">
   <div class="mb-4 font-semibold">
     <a href="/" aria-label="BokslHome">BokslHome</a>
   </div>
   <nav class="space-y-2">
     {#each links as item (item.href)}
-      <a href={item.href} class={linkClass(item.href)} onclick={handleNavigate}>{item.label}</a>
+      <a href={item.href} class={linkClass(item.href)} aria-current={pathname === item.href ? 'page' : undefined} onclick={handleNavigate}
+        >{item.label}</a
+      >
     {/each}
   </nav>
   {@render props.children?.()}
