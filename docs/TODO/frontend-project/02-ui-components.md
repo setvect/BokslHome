@@ -26,13 +26,48 @@
 - [ ] `src/app.css`에 테마 CSS 변수 정의
 - [ ] 테마 토글 기능 구현
 
-### 2.3 핵심 UI 컴포넌트 설치
+### 2.3 shadcn-svelte 컴포넌트 설치 (전체)
+
+#### 기본 컴포넌트 (Base Components)
 - [ ] Button 컴포넌트: `npx shadcn-svelte@latest add button`
 - [ ] Input 컴포넌트: `npx shadcn-svelte@latest add input`
 - [ ] Label 컴포넌트: `npx shadcn-svelte@latest add label`
+- [ ] Textarea 컴포넌트: `npx shadcn-svelte@latest add textarea`
+- [ ] Separator 컴포넌트: `npx shadcn-svelte@latest add separator`
+
+#### 폼 컴포넌트 (Form Components)
+- [ ] Checkbox 컴포넌트: `npx shadcn-svelte@latest add checkbox`
+- [ ] Radio Group 컴포넌트: `npx shadcn-svelte@latest add radio-group`
+- [ ] Select 컴포넌트: `npx shadcn-svelte@latest add select`
+- [ ] Switch 컴포넌트: `npx shadcn-svelte@latest add switch`
+- [ ] Slider 컴포넌트: `npx shadcn-svelte@latest add slider`
+- [ ] Form 컴포넌트: `npx shadcn-svelte@latest add form`
+
+#### 레이아웃 컴포넌트 (Layout Components)
 - [ ] Card 컴포넌트: `npx shadcn-svelte@latest add card`
-- [ ] Badge 컴포넌트: `npx shadcn-svelte@latest add badge`
+- [ ] Table 컴포넌트: `npx shadcn-svelte@latest add table`
+- [ ] Tabs 컴포넌트: `npx shadcn-svelte@latest add tabs`
+- [ ] Breadcrumb 컴포넌트: `npx shadcn-svelte@latest add breadcrumb`
+
+#### 피드백 컴포넌트 (Feedback Components)
 - [ ] Alert 컴포넌트: `npx shadcn-svelte@latest add alert`
+- [ ] Badge 컴포넌트: `npx shadcn-svelte@latest add badge`
+- [ ] Progress 컴포넌트: `npx shadcn-svelte@latest add progress`
+- [ ] Skeleton 컴포넌트: `npx shadcn-svelte@latest add skeleton`
+- [ ] Sonner (Toast) 컴포넌트: `npx shadcn-svelte@latest add sonner`
+- [ ] Tooltip 컴포넌트: `npx shadcn-svelte@latest add tooltip`
+
+#### 오버레이 컴포넌트 (Overlay Components)
+- [ ] Dialog 컴포넌트: `npx shadcn-svelte@latest add dialog`
+- [ ] Sheet 컴포넌트: `npx shadcn-svelte@latest add sheet`
+- [ ] Drawer 컴포넌트: `npx shadcn-svelte@latest add drawer`
+- [ ] Popover 컴포넌트: `npx shadcn-svelte@latest add popover`
+
+#### 네비게이션 컴포넌트 (Navigation Components)
+- [ ] Pagination 컴포넌트: `npx shadcn-svelte@latest add pagination`
+
+#### 커스텀 컴포넌트 (Custom Components)
+- [ ] pagination.svelte 파일 별도 생성 (기존 프로젝트 참조)
 
 ### 2.4 아이콘 시스템 설정
 - [ ] Lucide Svelte 설치: `npm install @lucide/svelte`
@@ -46,24 +81,50 @@
 
 ### 2.6 기본 컴포넌트 테스트 페이지 생성
 - [ ] `src/routes/test-ui/+page.svelte` 생성
-- [ ] 설치된 모든 컴포넌트 테스트
-- [ ] 테마 전환 테스트
-- [ ] 반응형 동작 테스트
+- [ ] 설치된 모든 컴포넌트 예시 코드 작성
+- [ ] 각 컴포넌트별 사용법 예시 구현
 
 ### 2.7 Svelte 5 Runes 호환성 확인
 - [ ] 모든 컴포넌트에서 Svelte 5 문법 사용 확인
 - [ ] `$props()`, `$state()`, `$derived()` 올바른 사용
 - [ ] `on:` 이벤트 대신 `onclick` 등 속성 사용 확인
+- [ ] deprecated 경고 해결
 
 ### 2.8 접근성 기본 설정
 - [ ] 모든 버튼에 적절한 aria-label 설정
-- [ ] 키보드 네비게이션 테스트
-- [ ] 색상 대비 확인 (라이트/다크 모드)
+- [ ] 키보드 이벤트 핸들러 추가 (Enter, Space)
+- [ ] role, tabindex 속성 적절히 설정
 - [ ] 포커스 표시 스타일 확인
 
-### 2.9 최종 검증
+### 2.9 코드 품질 검증
+- [ ] `npm run check` TypeScript 오류 해결
+- [ ] `npm run lint` ESLint 경고 해결
+- [ ] `npm run format` 코드 포맷팅 적용
+
+---
+
+## 사용자 확인 필요 항목
+
+다음 항목들은 실제 브라우저에서 시각적/기능적 확인이 필요하여 사용자가 직접 테스트해야 합니다:
+
+### 개발 서버 및 빌드 테스트
 - [ ] `npm run dev` 정상 실행 확인
-- [ ] `npm run build` 성공 확인
-- [ ] `npm run check` TypeScript 오류 0개 확인
+- [ ] `npm run build` 성공 확인  
+- [ ] 개발 서버 콘솔 오류 없음 확인
+
+### 시각적 확인 항목
 - [ ] 모든 컴포넌트 정상 렌더링 확인
-- [ ] 테마 전환 정상 동작 확인
+- [ ] 테마 전환 정상 동작 확인 (라이트/다크 모드)
+- [ ] 반응형 동작 테스트 (모바일/태블릿/데스크톱)
+- [ ] 색상 대비 확인 (라이트/다크 모드에서 가독성)
+
+### 기능적 확인 항목  
+- [ ] 키보드 네비게이션 테스트 (Tab, Enter, Space, 화살표)
+- [ ] 폼 컴포넌트 상호작용 테스트 (입력, 선택, 토글)
+- [ ] 오버레이 컴포넌트 동작 테스트 (Dialog, Sheet, Popover)
+- [ ] Toast 알림 표시 테스트
+
+### 브라우저 호환성 테스트
+- [ ] Chrome/Edge 테스트
+- [ ] Firefox 테스트  
+- [ ] Safari 테스트 (가능한 경우)
