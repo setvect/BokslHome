@@ -9,33 +9,33 @@
 ## 할일 목록
 
 ### 1.1 기존 프론트엔드 디렉토리 정리
-- [ ] `frontend/` 디렉토리가 프로젝트 루트
-- [ ] 새로운 프론트엔드 프로젝트 생성 준비
+- [x] `frontend/` 디렉토리가 프로젝트 루트
+- [x] 새로운 프론트엔드 프로젝트 생성 준비
 
 ### 1.2 SvelteKit 프로젝트 초기화
-- [ ] `npm create svelte@latest frontend` 실행
-- [ ] 프로젝트 설정 선택:
-  - [ ] Skeleton project 선택
-  - [ ] TypeScript 활성화
-  - [ ] ESLint 활성화
-  - [ ] Prettier 활성화
-  - [ ] Playwright 비활성화
-  - [ ] Vitest 비활성화
-- [ ] `cd frontend && npm install` 실행
-- [ ] 기본 개발 서버 실행 테스트: `npm run dev`
+- [x] `npm create svelte@latest frontend` 실행
+- [x] 프로젝트 설정 선택:
+  - [x] Skeleton project 선택
+  - [x] TypeScript 활성화
+  - [x] ESLint 활성화
+  - [x] Prettier 활성화
+  - [x] Playwright 비활성화
+  - [x] Vitest 비활성화
+- [x] `cd frontend && npm install` 실행
+- [x] 기본 개발 서버 실행 테스트: `npm run dev`
 
 ### 1.3 TypeScript 설정
-- [ ] `tsconfig.json` 확인
-- [ ] `src/app.d.ts` 타입 정의 확인
+- [x] `tsconfig.json` 확인
+- [x] `src/app.d.ts` 타입 정의 확인
 
 ### 1.4 Tailwind CSS 4.x 설정
-- [ ] Tailwind CSS 4.x 설치: `npm install tailwindcss@next @tailwindcss/vite@next`
-- [ ] `vite.config.js`에 Tailwind 플러그인 추가
-- [ ] `src/app.css` 생성:
+- [x] Tailwind CSS 4.x 설치: `npm install -D tailwindcss @tailwindcss/vite`
+- [x] `vite.config.ts`에 Tailwind 플러그인 추가
+- [x] `src/app.css` 생성:
   ```css
   @import "tailwindcss";
   ```
-- [ ] `src/app.html`에서 CSS 임포트 확인
+- [x] `+layout.svelte`에서 CSS 임포트 적용
 - [ ] 기본 테마 변수 설정
 
 ### 1.5 기본 폴더 구조 생성
@@ -65,7 +65,7 @@
       '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
       'svelte/valid-compile': 'error',
       'svelte/no-at-debug-tags': 'warn'
-      // 참고: a11y 경고는 eslint-plugin-svelte에서 자동으로 포함되므로 
+      // 참고: a11y 경고는 eslint-plugin-svelte에서 자동으로 포함되므로
       // 필요시 개별적으로 비활성화: 'svelte/a11y-*': 'off'
     }
   }
