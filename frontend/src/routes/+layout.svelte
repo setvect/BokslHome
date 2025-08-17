@@ -1,6 +1,7 @@
 <script lang="ts">
   import favicon from '$lib/assets/favicon.svg';
   import '../app.css';
+  // 전역 레이아웃에서는 그룹 레이아웃이 렌더링됨
 
   let { children } = $props();
 
@@ -28,17 +29,34 @@
     theme = 'dark';
     if (typeof localStorage !== 'undefined') localStorage.setItem('theme', 'dark');
   }
+
+  // 사이드바/헤더는 (app) 그룹 레이아웃에서 관리
 </script>
 
 <svelte:head>
   <link rel="icon" href={favicon} />
   <title>BokslHome</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (t === 'light') {
+          document.documentElement.classList.remove('dark');
+        }
+        try {
+          var mq = window.matchMedia('(min-width: 1024px)').matches;
+          if (mq) {
+            var v = localStorage.getItem('layout:sidebar-open:desktop');
+            if (v === '0') document.documentElement.classList.add('sidebar-closed');
+          }
+        } catch (e2) {}
+      } catch (e) {}
+    })();
+  </script>
 </svelte:head>
 
 <div class="min-h-dvh">
-  <header class="p-4 flex gap-2 justify-end">
-    <button type="button" aria-label="라이트 테마로 변경" class="px-3 py-1 rounded border" onclick={setLight}>Light</button>
-    <button type="button" aria-label="다크 테마로 변경" class="px-3 py-1 rounded border" onclick={setDark}>Dark</button>
-  </header>
   {@render children?.()}
 </div>
