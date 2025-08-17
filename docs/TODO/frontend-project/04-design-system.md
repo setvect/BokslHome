@@ -65,22 +65,21 @@
   - [x] 코드 복사 기능 (공용 `CodeBlock`)
 - [x] 컴포넌트 검색 기능
 
-## 4.4 폼 시스템 (기본)
+## 4.4 폼 시스템 (기본) — CSR 기반 유효성 검증
 - [ ] 필요 패키지 설치:
   ```bash
   npm install sveltekit-superforms zod formsnap
   ```
 - [ ] 기본 폼 스키마 작성 (`src/lib/schemas/`)
-- [ ] Formsnap v2 + Svelte 5 패턴 확립
+- [ ] Formsnap v2 + Svelte 5 패턴 확립 (CSR)
 - [ ] 표준 폼 컴포넌트 생성
   - [ ] FormField 래퍼
   - [ ] FormLabel
   - [ ] FormError 표시
-- [ ] 유효성 검사 패턴 확립
+- [ ] 유효성 검사 패턴 확립 (CSR)
   - [ ] Zod 스키마 작성 패턴 정의
   - [ ] 에러 메시지 우선순위 로직
   - [ ] 실시간 검증 vs 제출 시 검증
-  - [ ] 다국어 에러 메시지 구조 (한국어)
   - [ ] 복합 검증 패턴 (비밀번호 확인 등)
 
 ## 4.5 폼 시스템 (고급)
