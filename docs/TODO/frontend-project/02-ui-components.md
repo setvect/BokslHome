@@ -26,44 +26,46 @@
 - [ ] `src/app.css`에 테마 CSS 변수 정의
 - [ ] 테마 토글 기능 구현
 
-### 2.3 shadcn-svelte 컴포넌트 설치 (전체)
+### 2.3 shadcn-svelte 컴포넌트 설치 (의존성 기준 최적화)
 
-#### 기본 컴포넌트 (Base Components)
+#### 1차: 기본 컴포넌트 (Base Components) - 다른 컴포넌트의 기반
 - [ ] Button 컴포넌트: `npx shadcn-svelte@latest add button`
-- [ ] Input 컴포넌트: `npx shadcn-svelte@latest add input`
-- [ ] Label 컴포넌트: `npx shadcn-svelte@latest add label`
-- [ ] Textarea 컴포넌트: `npx shadcn-svelte@latest add textarea`
+- [ ] Label 컴포넌트: `npx shadcn-svelte@latest add label` 
 - [ ] Separator 컴포넌트: `npx shadcn-svelte@latest add separator`
 
-#### 폼 컴포넌트 (Form Components)
+#### 2차: 입력 컴포넌트 (Input Components) - Button, Label 의존
+- [ ] Input 컴포넌트: `npx shadcn-svelte@latest add input`
+- [ ] Textarea 컴포넌트: `npx shadcn-svelte@latest add textarea`
 - [ ] Checkbox 컴포넌트: `npx shadcn-svelte@latest add checkbox`
-- [ ] Radio Group 컴포넌트: `npx shadcn-svelte@latest add radio-group`
-- [ ] Select 컴포넌트: `npx shadcn-svelte@latest add select`
 - [ ] Switch 컴포넌트: `npx shadcn-svelte@latest add switch`
-- [ ] Slider 컴포넌트: `npx shadcn-svelte@latest add slider`
-- [ ] Form 컴포넌트: `npx shadcn-svelte@latest add form`
 
-#### 레이아웃 컴포넌트 (Layout Components)
+#### 3차: 고급 입력 컴포넌트 (Advanced Input) - 기본 입력 컴포넌트 의존
+- [ ] Radio Group 컴포넌트: `npx shadcn-svelte@latest add radio-group`
+- [ ] Slider 컴포넌트: `npx shadcn-svelte@latest add slider`
+- [ ] Select 컴포넌트: `npx shadcn-svelte@latest add select`
+
+#### 4차: 레이아웃 컴포넌트 (Layout Components) - 기본 컴포넌트 의존
 - [ ] Card 컴포넌트: `npx shadcn-svelte@latest add card`
 - [ ] Table 컴포넌트: `npx shadcn-svelte@latest add table`
 - [ ] Tabs 컴포넌트: `npx shadcn-svelte@latest add tabs`
-- [ ] Breadcrumb 컴포넌트: `npx shadcn-svelte@latest add breadcrumb`
 
-#### 피드백 컴포넌트 (Feedback Components)
+#### 5차: 피드백 컴포넌트 (Feedback Components) - 독립적이거나 Button 의존
 - [ ] Alert 컴포넌트: `npx shadcn-svelte@latest add alert`
 - [ ] Badge 컴포넌트: `npx shadcn-svelte@latest add badge`
 - [ ] Progress 컴포넌트: `npx shadcn-svelte@latest add progress`
 - [ ] Skeleton 컴포넌트: `npx shadcn-svelte@latest add skeleton`
-- [ ] Sonner (Toast) 컴포넌트: `npx shadcn-svelte@latest add sonner`
 - [ ] Tooltip 컴포넌트: `npx shadcn-svelte@latest add tooltip`
 
-#### 오버레이 컴포넌트 (Overlay Components)
+#### 6차: 오버레이 컴포넌트 (Overlay Components) - Button, Card 등 의존
+- [ ] Popover 컴포넌트: `npx shadcn-svelte@latest add popover` (먼저 설치 - 다른 오버레이의 기반)
 - [ ] Dialog 컴포넌트: `npx shadcn-svelte@latest add dialog`
 - [ ] Sheet 컴포넌트: `npx shadcn-svelte@latest add sheet`
 - [ ] Drawer 컴포넌트: `npx shadcn-svelte@latest add drawer`
-- [ ] Popover 컴포넌트: `npx shadcn-svelte@latest add popover`
 
-#### 네비게이션 컴포넌트 (Navigation Components)
+#### 7차: 고급 기능 컴포넌트 (Advanced Features) - 여러 컴포넌트 의존
+- [ ] Form 컴포넌트: `npx shadcn-svelte@latest add form`
+- [ ] Sonner (Toast) 컴포넌트: `npx shadcn-svelte@latest add sonner`
+- [ ] Breadcrumb 컴포넌트: `npx shadcn-svelte@latest add breadcrumb`
 - [ ] Pagination 컴포넌트: `npx shadcn-svelte@latest add pagination`
 
 #### 커스텀 컴포넌트 (Custom Components)

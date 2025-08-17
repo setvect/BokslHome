@@ -33,7 +33,11 @@
 - [ ] 테마 시스템 통합 (라이트/다크 모드)
 
 ### A.4 MarkdownEditor 최적화 및 마무리
-- [ ] 지연 로딩 구현 (Mermaid, Prism.js)
+- [ ] **번들 최적화 전략**:
+  - [ ] Mermaid 동적 import: `import('mermaid').then(m => m.default)`
+  - [ ] Prism.js 언어별 동적 로딩: `import('prismjs/components/prism-{language}')`
+  - [ ] CodeMirror 확장 기능 지연 로딩
+  - [ ] 번들 분할을 위한 별도 chunk 설정 (`vite.config.js` 수정)
 - [ ] 메모리 관리 (언마운트 시 정리)
 - [ ] 반응형 레이아웃 (모바일/데스크톱)
 - [ ] 이미지 업로드 시스템 (드래그 앤 드롭, 클립보드)
@@ -62,7 +66,11 @@
 - [ ] 이미지 업로드 핸들링
 
 ### B.3 HtmlEditor 최적화 및 마무리
-- [ ] TinyMCE 지연 로딩 최적화
+- [ ] **번들 최적화 전략**:
+  - [ ] TinyMCE 완전 동적 import: `import('tinymce/tinymce')`
+  - [ ] TinyMCE 플러그인 온디맨드 로딩
+  - [ ] TinyMCE CDN 옵션 고려 (번들 크기 최소화)
+  - [ ] 별도 chunk 설정으로 초기 로딩 시간 단축
 - [ ] 메모리 관리 (언마운트 시 정리)
 - [ ] 반응형 레이아웃 (모바일/데스크톱)
 - [ ] 타입 정의 확장 (`src/lib/types/editor.ts` - HtmlEditor 부분)
@@ -86,7 +94,12 @@
 - [ ] Markdown ↔ HTML 변환 기능
 - [ ] 성능 테스트 (대용량 텍스트, 복잡한 다이어그램)
 
-### C.3 최종 점검
+### C.3 최종 점검 및 번들 최적화 검증
+- [ ] **Vite 번들 분석 및 최적화**:
+  - [ ] `npm run build -- --mode analyze` 실행
+  - [ ] 에디터 관련 chunk 크기 확인
+  - [ ] Tree-shaking 효과 검증
+  - [ ] 초기 로딩 시간 측정 및 개선
 - [ ] TypeScript 오류 해결
 - [ ] ESLint 경고 해결 (접근성 제외)
 - [ ] 전체 기능 통합 테스트

@@ -56,10 +56,17 @@
 ### 1.6 개발 환경 도구 설정
 - [ ] `.prettierrc` 설정 파일 생성
 - [ ] `.eslintrc.cjs` 설정 확인 및 접근성 경고 무시 설정 추가:
-  ```json
-  {
-    "rules": {
-      "a11y-*": "off"
+  ```javascript
+  // .eslintrc.cjs
+  module.exports = {
+    // ... 기존 설정들
+    rules: {
+      // 접근성 관련 모든 규칙 비활성화
+      '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+      'svelte/valid-compile': 'error',
+      'svelte/no-at-debug-tags': 'warn'
+      // 참고: a11y 경고는 eslint-plugin-svelte에서 자동으로 포함되므로 
+      // 필요시 개별적으로 비활성화: 'svelte/a11y-*': 'off'
     }
   }
   ```
