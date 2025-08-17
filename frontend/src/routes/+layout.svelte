@@ -37,8 +37,8 @@
 
 <div class="min-h-dvh">
   <header class="p-4 flex gap-2 justify-end">
-    <button class="px-3 py-1 rounded border" onclick={setLight}>Light</button>
-    <button class="px-3 py-1 rounded border" onclick={setDark}>Dark</button>
+    <button type="button" aria-label="라이트 테마로 변경" class="px-3 py-1 rounded border" onclick={setLight}>Light</button>
+    <button type="button" aria-label="다크 테마로 변경" class="px-3 py-1 rounded border" onclick={setDark}>Dark</button>
   </header>
   {@render children?.()}
 </div>
