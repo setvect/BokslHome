@@ -8,8 +8,8 @@
 - 고급 UI 상호작용 처리 및 반응형 설계
 
 ## 4.1 디자인 시스템 기반 구조 설정
-- [ ] `src/routes/(design)/` 그룹 라우팅 생성
-- [ ] 그룹 라우팅 구조:
+- [x] `src/routes/(design)/` 그룹 라우팅 생성
+- [x] 그룹 라우팅 구조:
   ```
   src/routes/
   ├── (app)/                    # 메인 앱 (헤더 + 앱 사이드바)
@@ -29,41 +29,41 @@
               ├── forms/+page.svelte    # 폼 컴포넌트
               └── ...                   # 기타 컴포넌트들
   ```
-- [ ] `src/routes/(design)/+layout.svelte` 생성 (디자인 시스템 전용 레이아웃)
-- [ ] 헤더 컴포넌트 재사용 (기존 `Header.svelte`)
-- [ ] 사이드바 컴포넌트 생성: `src/lib/components/layout/DesignSystemSidebar.svelte`
-  - [ ] 기존 Sidebar 스타일 재사용, 메뉴는 다르게 구성
-  - [ ] 디자인 토큰 섹션 (색상, 타이포, 스페이싱)
-  - [ ] 컴포넌트 섹션 (카테고리별)
-  - [ ] 패턴 섹션 (폼, 상호작용)
-- [ ] 레이아웃 상태 관리 연결 (사이드바 토글, 테마)
+- [x] `src/routes/(design)/+layout.svelte` 생성 (디자인 시스템 전용 레이아웃)
+- [x] 헤더 컴포넌트 재사용 (기존 `Header.svelte`)
+- [x] 사이드바 컴포넌트 생성: `src/lib/components/layout/DesignSystemSidebar.svelte`
+  - [x] 기존 Sidebar 스타일 재사용, 메뉴는 다르게 구성
+  - [x] 디자인 토큰 섹션 (색상, 타이포, 스페이싱)
+  - [x] 컴포넌트 섹션 (카테고리별)
+  - [x] 패턴 섹션 (폼, 상호작용)
+- [x] 레이아웃 상태 관리 연결 (사이드바 토글, 테마)
 
 ## 4.2 디자인 토큰
-- [ ] 색상 시스템
-  - [ ] `src/app.css`에 CSS 변수 기반 팔레트 정의
-  - [ ] Primary/Secondary, Background/Foreground, Muted/Accent, Destructive/Success, Border/Input 색상
-  - [ ] 라이트/다크 모드 대응
-  - [ ] `/design-system/colors` 페이지에서 색상 미리보기
-- [ ] 타이포그래피 시스템
-  - [ ] Tailwind 폰트 크기 커스터마이징
-  - [ ] Heading(h1–h6), Body(large/default/small), Caption/Label 정의
-  - [ ] 행간(line-height), 자간(letter-spacing) 설정
-  - [ ] `/design-system/typography` 페이지에서 예시 확인
-- [ ] 스페이싱 시스템
-  - [ ] Tailwind spacing scale 커스터마이징
-  - [ ] 컴포넌트별 표준 여백 정의
-  - [ ] 레이아웃 그리드 시스템
-  - [ ] `/design-system/spacing` 페이지에서 가이드 확인
+- [x] 색상 시스템
+  - [x] `src/app.css`에 CSS 변수 기반 팔레트 정의
+  - [x] Primary/Secondary, Background/Foreground, Muted/Accent, Destructive/Success, Border/Input 색상
+  - [x] 라이트/다크 모드 대응
+  - [x] `/design-system/colors` 페이지에서 색상 미리보기
+- [x] 타이포그래피 시스템 (기본)
+  - [x] Tailwind 폰트 크기 커스터마이징
+  - [x] Heading(h1–h4), Body/Label 정의 (h5–h6는 이후 확장)
+  - [x] 행간(line-height), 자간(letter-spacing) 샘플 추가
+  - [x] `/design-system/typography` 페이지에서 예시 확인
+- [x] 스페이싱 시스템 (기본)
+  - [x] Tailwind spacing scale 일부 커스터마이징
+  - [x] 컴포넌트별 표준 여백 정의
+  - [x] 레이아웃 그리드 미니 가이드
+  - [x] `/design-system/spacing` 페이지에서 가이드 확인
 
 ## 4.3 컴포넌트 문서화 시스템
-- [ ] `/design-system/components` 메인 페이지
-- [ ] 각 컴포넌트별 문서 페이지
-  - [ ] 사용법 예시 코드
-  - [ ] Props 설명
-  - [ ] Variant 모음
-  - [ ] 실제 동작 데모
-  - [ ] 코드 복사 기능
-- [ ] 컴포넌트 검색 기능
+- [x] `/design-system/components` 메인 페이지
+- [x] 각 컴포넌트별 문서 페이지 (초기)
+  - [x] 사용법 예시 코드 (버튼)
+  - [ ] Props 설명 (추가 예정)
+  - [x] Variant 모음 (버튼)
+  - [x] 실제 동작 데모 (버튼)
+  - [x] 코드 복사 기능 (공용 `CodeBlock`)
+- [x] 컴포넌트 검색 기능
 
 ## 4.4 폼 시스템 (기본)
 - [ ] 필요 패키지 설치:
