@@ -39,7 +39,7 @@
 - [ ] 기본 테마 변수 설정
 
 ### 1.5 기본 폴더 구조 생성
-- [ ] `src/lib/` 하위 구조 생성:
+- [x] `src/lib/` 하위 구조 생성:
   ```
   src/lib/
   ├── components/
@@ -48,41 +48,44 @@
   ├── stores/
   ├── types/
   ├── utils/
+  ├── schemas/
+  ├── hooks/
+  ├── constants/
   └── mock/
       ├── data/
       └── api/
   ```
 
 ### 1.6 개발 환경 도구 설정
-- [ ] `.prettierrc` 설정 파일 생성
-- [ ] `.eslintrc.cjs` 설정 확인 및 접근성 경고 무시 설정 추가:
+- [x] `.prettierrc` 설정 파일 생성
+- [x] ESLint Flat config(`eslint.config.js`) 규칙 보강 및 충돌 제거:
   ```javascript
-  // .eslintrc.cjs
-  module.exports = {
-    // ... 기존 설정들
-    rules: {
-      // 접근성 관련 모든 규칙 비활성화
-      '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
-      'svelte/valid-compile': 'error',
-      'svelte/no-at-debug-tags': 'warn'
-      // 참고: a11y 경고는 eslint-plugin-svelte에서 자동으로 포함되므로
-      // 필요시 개별적으로 비활성화: 'svelte/a11y-*': 'off'
+  // eslint.config.js
+  export default ts.config(
+    // ...
+    {
+      rules: {
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        'svelte/valid-compile': 'error',
+        'svelte/no-at-debug-tags': 'warn',
+        'no-undef': 'off'
+      }
     }
-  }
+  );
   ```
-- [ ] `package.json` scripts 확인
+- [x] `package.json` scripts 확인 (lint/format/check 유지)
 
 ### 1.7 기본 유틸리티 설정
-- [ ] `src/lib/utils/index.ts` 생성 (cn 함수)
-- [ ] `src/lib/types/common.ts` 생성 (기본 타입들)
+- [x] `src/lib/utils/index.ts` 생성 (기본 유틸 추가)
+- [x] `src/lib/types/common.ts` 생성 (기본 타입들)
 
 ### 1.8 기본 페이지 생성
-- [ ] `src/routes/+layout.svelte` 기본 레이아웃 생성
-- [ ] `src/routes/+page.svelte` 홈페이지 생성
-- [ ] Tailwind CSS 테스트용 스타일 적용
+- [x] `src/routes/+layout.svelte` 기본 레이아웃 생성 (favicon, title 적용)
+- [x] `src/routes/+page.svelte` 홈페이지 생성
+- [x] Tailwind CSS 테스트용 스타일 적용
 
 ### 1.9 최종 검증
-- [ ] `npm run dev` 정상 실행 확인
-- [ ] `npm run build` 성공 확인
-- [ ] `npm run lint` 통과 확인
-- [ ] `npm run check` TypeScript 오류 0개 확인
+- [x] `npm run dev` 정상 실행 확인
+- [x] `npm run build` 성공 확인
+- [x] `npm run lint` 통과 확인
+- [x] `npm run check` TypeScript 오류 0개 확인
