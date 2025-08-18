@@ -38,7 +38,7 @@
       <div class="mb-1 font-medium text-muted-foreground">Patterns</div>
       <div class="space-y-1">
         <a href="/design-system/patterns/forms" class="block hover:underline" onclick={handleNavigate}>Form Patterns</a>
-        <a href="/design-system/patterns/interaction" class="block hover:underline" onclick={handleNavigate}>Interaction</a>
+        <a href="/design-system/components/interactions" class="block hover:underline" onclick={handleNavigate}>Interactions</a>
       </div>
     </div>
   </nav>

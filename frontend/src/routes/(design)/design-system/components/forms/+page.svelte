@@ -2,6 +2,8 @@
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
   import { FormField } from '$lib/components/form-lite';
+  import CodeBlock from '$lib/components/docs/CodeBlock.svelte';
+  import PropsTable from '$lib/components/docs/PropsTable.svelte';
   import { z } from 'zod';
 
   // 4.4: 기본 폼 (Login / Register)
@@ -160,6 +162,17 @@
     tagsErrors = tags.map((t) => (!t.trim() ? '값을 입력하세요.' : ''));
     return tagsErrors.every((m) => !m);
   }
+
+  // 문서화: FormField 사용 예시 및 Props 정의
+  const exampleFormField = `<script lang=\"ts\">\n  import { FormField } from '$lib/components/form-lite';\n  import { Input } from '$lib/components/ui/input';\n  let form = $state({ email: '' });\n  let errors = $state<{ email?: string }>({});\n<\/script>\n\n<FormField id=\"email\" label=\"Email\" required error={errors.email}>\n  <Input\n    id=\"email\"\n    type=\"email\"\n    value={form.email}\n    oninput={(e) => {\n      form.email = (e.target as HTMLInputElement).value;\n    }}\n  />\n<\/FormField>`;
+
+  const formFieldPropsRows = [
+    { name: 'id', type: 'string', default: '—', description: '라벨의 for와 자식 input의 id를 연결' },
+    { name: 'label', type: 'string', default: '—', description: '필드 라벨 텍스트' },
+    { name: 'required', type: 'boolean | undefined', default: 'false', description: '필수 표시(*) 여부' },
+    { name: 'error', type: 'string | undefined', default: 'undefined', description: '에러 메시지 (있을 때만 표시)' },
+    { name: 'children', type: 'RenderFn | undefined', default: 'undefined', description: '입력 요소 렌더 슬롯 (@render)' }
+  ];
 </script>
 
 <h1 class="text-2xl font-bold mb-6">Forms (CSR Validation)</h1>
@@ -345,5 +358,21 @@
         }}>Validate</Button
       >
     </div>
+  </div>
+</section>
+
+<!-- FormField 문서화 -->
+<section class="space-y-4 mt-10">
+  <h2 class="text-lg font-semibold">FormField</h2>
+  <div class="space-y-2">
+    <div class="text-sm text-muted-foreground">Usage</div>
+    <CodeBlock code={exampleFormField} language="svelte" />
+  </div>
+  <div class="space-y-2">
+    <div class="text-sm text-muted-foreground">Props</div>
+    <PropsTable rows={formFieldPropsRows} />
+  </div>
+  <div class="text-xs text-muted-foreground">
+    ※ 접근성: `label for`와 입력의 `id`를 동일하게 맞춰주세요. `aria-invalid` 속성은 에러 상태에 따라 제어합니다.
   </div>
 </section>
