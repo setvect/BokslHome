@@ -9,5 +9,6 @@
     <li><a class="underline" href="/design-system/colors">Colors</a></li>
     <li><a class="underline" href="/design-system/typography">Typography</a></li>
     <li><a class="underline" href="/design-system/spacing">Spacing</a></li>
+    <li><a class="underline" href="/design-system/patterns/responsive">Responsive Patterns</a></li>
   </ul>
 </section>

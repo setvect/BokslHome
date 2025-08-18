@@ -115,11 +115,11 @@
 - [x] 데스크톱/모바일 다른 컴포넌트 변형
 
 ## 4.8 코드 품질 및 표준화
-- [ ] 컴포넌트 네이밍 컨벤션 정의
-- [ ] Props 타입 표준화
-- [ ] 컴포넌트 재사용성 가이드라인
-- [ ] TypeScript 오류 해결
-- [ ] ESLint 경고 해결 (접근성 제외)
+- [x] 컴포넌트 네이밍 컨벤션 정의 (PascalCase 컴포넌트, kebab-case 파일명 허용)
+- [x] Props 타입 표준화 (`ComponentBaseProps`, `FieldBaseProps` 추가)
+- [x] 컴포넌트 재사용성 가이드라인 (문서 페이지에 반영)
+- [x] TypeScript 오류 해결
+- [x] ESLint 경고 해결 (접근성 제외)
 
 ## 사용자 확인 필요 항목
 
