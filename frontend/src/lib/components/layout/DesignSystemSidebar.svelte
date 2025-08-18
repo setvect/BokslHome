@@ -34,6 +34,7 @@
         <div class="mt-2 text-muted-foreground">Editors</div>
         <a href="/design-system/components/markdown" class="block hover:underline" onclick={handleNavigate}>Markdown Editor</a>
         <a href="/design-system/components/editor" class="block hover:underline" onclick={handleNavigate}>HTML Editor</a>
+        <a href="/design-system/components/editors/test" class="block hover:underline" onclick={handleNavigate}>Editors Test</a>
       </div>
     </div>
 

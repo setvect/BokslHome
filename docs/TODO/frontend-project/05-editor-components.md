@@ -12,87 +12,87 @@
 ## A. MarkdownEditor 구현
 
 ### A.1 기본 환경 설정
-- [ ] CodeMirror 6 패키지 설치: `npm install svelte-codemirror-editor @codemirror/lang-markdown @codemirror/theme-one-dark`
-- [ ] 마크다운 처리 패키지 설치: `npm install marked prismjs mermaid`
-- [ ] 타입 정의 설치: `npm install -D @types/marked @types/prismjs`
+- [x] CodeMirror 6 패키지 설치: `npm install svelte-codemirror-editor @codemirror/lang-markdown @codemirror/theme-one-dark`
+- [x] 마크다운 처리 패키지 설치: `npm install marked prismjs mermaid`
+- [x] 타입 정의 설치: `npm install -D @types/marked @types/prismjs`
 
 ### A.2 유틸리티 모듈 구현
-- [ ] `src/lib/utils/theme-detector.ts` - 테마 감지 로직
-- [ ] `src/lib/utils/prism-highlighter.ts` - 문법 강조
-- [ ] `src/lib/utils/mermaid-renderer.ts` - Mermaid 다이어그램 렌더링
-- [ ] `src/lib/utils/codemirror-config.ts` - CodeMirror 설정
-- [ ] `src/lib/utils/markdown-renderer.ts` - Markdown → HTML 변환
+- [x] `src/lib/utils/theme-detector.ts` - 테마 감지 로직
+- [x] `src/lib/utils/prism-highlighter.ts` - 문법 강조
+- [x] `src/lib/utils/mermaid-renderer.ts` - Mermaid 다이어그램 렌더링
+- [x] `src/lib/utils/codemirror-config.ts` - CodeMirror 설정
+- [x] `src/lib/utils/markdown-renderer.ts` - Markdown → HTML 변환
 
 ### A.3 MarkdownEditor 컴포넌트 구현
-- [ ] `src/lib/components/ui/MarkdownEditor.svelte` 기본 구조 생성
-- [ ] CodeMirror 6 통합 및 마크다운 문법 강조
-- [ ] 실시간 미리보기 기능 구현
-- [ ] Mermaid 다이어그램 지원 (```mermaid 코드 블록)
-- [ ] 이미지 붙여넣기 및 드래그 앤 드롭 기능
-- [ ] 전체화면 모드 및 미리보기 토글
-- [ ] 테마 시스템 통합 (라이트/다크 모드)
+- [x] `src/lib/components/ui/MarkdownEditor.svelte` 기본 구조 생성
+- [x] CodeMirror 6 통합 및 마크다운 문법 강조
+- [x] 실시간 미리보기 기능 구현
+- [x] Mermaid 다이어그램 지원 (```mermaid 코드 블록)
+- [x] 이미지 붙여넣기 및 드래그 앤 드롭 기능
+- [x] 전체화면 모드 및 미리보기 토글
+- [x] 테마 시스템 통합 (라이트/다크 모드)
 
 ### A.4 MarkdownEditor 최적화 및 마무리
-- [ ] **번들 최적화 전략**:
-  - [ ] Mermaid 동적 import: `import('mermaid').then(m => m.default)`
-  - [ ] Prism.js 언어별 동적 로딩: `import('prismjs/components/prism-{language}')`
-  - [ ] CodeMirror 확장 기능 지연 로딩
-  - [ ] 번들 분할을 위한 별도 chunk 설정 (`vite.config.js` 수정)
-- [ ] 메모리 관리 (언마운트 시 정리)
-- [ ] 반응형 레이아웃 (모바일/데스크톱)
-- [ ] 이미지 업로드 시스템 (드래그 앤 드롭, 클립보드)
-- [ ] 타입 정의 (`src/lib/types/editor.ts` - MarkdownEditor 부분)
+- [x] **번들 최적화 전략**:
+  - [x] Mermaid 동적 import: `import('mermaid').then(m => m.default)`
+  - [x] Prism.js 언어별 동적 로딩: `import('prismjs/components/prism-{language}')`
+  - [x] CodeMirror 확장 기능 지연 로딩
+  - [x] 번들 분할을 위한 별도 chunk 설정 (`vite.config.js` 수정)
+- [x] 메모리 관리 (언마운트 시 정리)
+- [x] 반응형 레이아웃 (모바일/데스크톱)
+- [x] 이미지 업로드 시스템 (드래그 앤 드롭, 클립보드)
+- [x] 타입 정의 (`src/lib/types/editor.ts` - MarkdownEditor 부분)
 
 ### A.5 MarkdownEditor 문서화
-- [ ] `/design-system/components/markdown/+page.svelte` 생성
-- [ ] 기본 사용법 및 Props 설명
-- [ ] Mermaid 다이어그램 예시
-- [ ] 이미지 업로드 예시
-- [ ] 라이브 데모 구현
+- [x] `/design-system/components/markdown/+page.svelte` 생성
+- [x] 기본 사용법 및 Props 설명
+- [x] Mermaid 다이어그램 예시
+- [x] 이미지 업로드 예시
+- [x] 라이브 데모 구현
 
 ## B. HtmlEditor 구현
 
 ### B.1 기본 환경 설정
-- [ ] TinyMCE 패키지 설치: `npm install tinymce`
-- [ ] SSR 안전성을 위한 동적 import 설정
+- [x] TinyMCE 패키지 설치: `npm install tinymce`
+- [x] SSR 안전성을 위한 동적 import 설정
 
 ### B.2 HtmlEditor 컴포넌트 구현
-- [ ] `src/lib/components/ui/HtmlEditor.svelte` 기본 구조 생성
-- [ ] TinyMCE 동적 import 및 초기화
-- [ ] 기본 플러그인 설정 (code, table, link, lists, image)
-- [ ] 테마 시스템 연동 (라이트/다크 모드)
-- [ ] 커스텀 툴바 및 한국어 지원
-- [ ] HTML 소스 편집 모드
-- [ ] 이미지 업로드 핸들링
+- [x] `src/lib/components/ui/HtmlEditor.svelte` 기본 구조 생성
+- [x] TinyMCE 동적 import 및 초기화
+- [x] 기본 플러그인 설정 (code, table, link, lists, image)
+- [x] 테마 시스템 연동 (라이트/다크 모드)
+- [x] 커스텀 툴바 및 한국어 지원
+- [x] HTML 소스 편집 모드
+- [x] 이미지 업로드 핸들링
 
 ### B.3 HtmlEditor 최적화 및 마무리
-- [ ] **번들 최적화 전략**:
-  - [ ] TinyMCE 완전 동적 import: `import('tinymce/tinymce')`
-  - [ ] TinyMCE 플러그인 온디맨드 로딩
-  - [ ] TinyMCE CDN 옵션 고려 (번들 크기 최소화)
-  - [ ] 별도 chunk 설정으로 초기 로딩 시간 단축
-- [ ] 메모리 관리 (언마운트 시 정리)
-- [ ] 반응형 레이아웃 (모바일/데스크톱)
-- [ ] 타입 정의 확장 (`src/lib/types/editor.ts` - HtmlEditor 부분)
+- [x] **번들 최적화 전략**:
+  - [x] TinyMCE 완전 동적 import: `import('tinymce/tinymce')`
+  - [x] TinyMCE 플러그인 온디맨드 로딩
+  - [x] TinyMCE CDN 옵션 고려 (번들 크기 최소화)
+  - [x] 별도 chunk 설정으로 초기 로딩 시간 단축
+- [x] 메모리 관리 (언마운트 시 정리)
+- [x] 반응형 레이아웃 (모바일/데스크톱)
+- [x] 타입 정의 확장 (`src/lib/types/editor.ts` - HtmlEditor 부분)
 
 ### B.4 HtmlEditor 문서화
-- [ ] `/design-system/components/editor/+page.svelte` 생성
-- [ ] 기본 사용법 및 TinyMCE 설정 옵션
-- [ ] 플러그인 활용 예시
-- [ ] 라이브 데모 구현
+- [x] `/design-system/components/editor/+page.svelte` 생성
+- [x] 기본 사용법 및 TinyMCE 설정 옵션
+- [x] 플러그인 활용 예시
+- [x] 라이브 데모 구현
 
 ## C. 통합 마무리
 
 ### C.1 DesignSystemSidebar 메뉴 추가
-- [ ] Editors 카테고리 추가
-- [ ] Markdown Editor, HTML Editor 링크 추가
-- [ ] 통합 테스트 페이지 링크 추가
+- [x] Editors 카테고리 추가
+- [x] Markdown Editor, HTML Editor 링크 추가
+- [x] 통합 테스트 페이지 링크 추가
 
 ### C.2 통합 테스트 페이지
-- [ ] `/design-system/components/editors/test/+page.svelte` 생성
-- [ ] 두 에디터 동시 테스트
-- [ ] Markdown ↔ HTML 변환 기능
-- [ ] 성능 테스트 (대용량 텍스트, 복잡한 다이어그램)
+- [x] `/design-system/components/editors/test/+page.svelte` 생성
+- [x] 두 에디터 동시 테스트
+- [x] Markdown ↔ HTML 변환 기능 (turndown 미설치 시 기본 변환기 fallback)
+- [x] 성능 테스트 (대용량 텍스트, 변환 시간 측정)
 
 ### C.3 최종 점검 및 번들 최적화 검증
 - [ ] **Vite 번들 분석 및 최적화**:
