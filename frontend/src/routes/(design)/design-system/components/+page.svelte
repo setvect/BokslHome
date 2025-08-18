@@ -2,7 +2,9 @@
   type Item = { href: string; label: string; keywords: string[] };
   let components = $state<Item[]>([
     { href: '/design-system/components/buttons', label: 'Buttons', keywords: ['button', '버튼'] },
-    { href: '/design-system/components/forms', label: 'Forms', keywords: ['form', 'input', 'label', '폼'] }
+    { href: '/design-system/components/forms', label: 'Forms', keywords: ['form', 'input', 'label', '폼'] },
+    { href: '/design-system/components/markdown', label: 'Markdown Editor', keywords: ['markdown', 'editor', 'md', '에디터'] },
+    { href: '/design-system/components/editor', label: 'HTML Editor', keywords: ['html', 'tinymce', 'editor', '에디터'] }
   ]);
   let query = $state('');
   let filtered: Item[] = $derived(

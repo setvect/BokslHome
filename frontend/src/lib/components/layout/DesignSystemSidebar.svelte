@@ -31,6 +31,9 @@
         <a href="/design-system/components/buttons" class="block hover:underline" onclick={handleNavigate}>Buttons</a>
         <a href="/design-system/components/forms" class="block hover:underline" onclick={handleNavigate}>Forms</a>
         <a href="/design-system/components/forms-raw" class="block hover:underline" onclick={handleNavigate}>Forms (Raw)</a>
+        <div class="mt-2 text-muted-foreground">Editors</div>
+        <a href="/design-system/components/markdown" class="block hover:underline" onclick={handleNavigate}>Markdown Editor</a>
+        <a href="/design-system/components/editor" class="block hover:underline" onclick={handleNavigate}>HTML Editor</a>
       </div>
     </div>
 
