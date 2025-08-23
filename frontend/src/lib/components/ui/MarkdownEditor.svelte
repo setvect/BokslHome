@@ -4,9 +4,8 @@
   import CodeMirror from 'svelte-codemirror-editor';
 
   // 분리된 유틸리티 모듈들
-  import { getCurrentTheme, onThemeChange } from '$lib/utils/theme-detector';
-  import type { ThemeType } from '$lib/types/theme';
-  import { ThemeUtils } from '$lib/types/theme';
+  import type { ThemeType } from '$lib/utils/theme';
+  import { ThemeUtils, getCurrentTheme, onThemeChange } from '$lib/utils/theme';
   import { initPrism, applySyntaxHighlighting } from '$lib/utils/prism-highlighter';
   import { initMermaid, renderMermaidDiagrams, refreshMermaidTheme } from '$lib/utils/mermaid-renderer';
   import { createEditorExtensions } from '$lib/utils/codemirror-config';

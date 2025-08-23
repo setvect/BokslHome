@@ -19,9 +19,8 @@
     class?: string;
   }>();
 
-  import { getCurrentTheme, onThemeChange } from '$lib/utils/theme-detector';
-  import type { ThemeType } from '$lib/types/theme';
-  import { ThemeUtils } from '$lib/types/theme';
+  import type { ThemeType } from '$lib/utils/theme';
+  import { ThemeUtils, getCurrentTheme, onThemeChange } from '$lib/utils/theme';
   
   let elementId = $state(`tinymce-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   let editorInstance: any = null;

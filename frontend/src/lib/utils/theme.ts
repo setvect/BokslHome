@@ -1,4 +1,6 @@
-// 테마 관련 타입과 상수 정의
+// 테마 관련 유틸리티 - 모든 테마 기능을 통합 관리
+
+// ===== 타입 정의 =====
 
 // 테마 enum (Java enum과 유사)
 export enum Theme {
@@ -30,6 +32,8 @@ export type ThemeChangeHandler = (theme: ThemeType) => void;
 //   PURPLE = 'purple'
 // }
 
+// ===== 유틸리티 함수 =====
+
 // 테마 관련 유틸리티 함수들
 export const ThemeUtils = {
   // 테마가 다크인지 확인
@@ -49,3 +53,21 @@ export const ThemeUtils = {
   // 기본 테마 반환
   getDefaultTheme: (): ThemeType => THEME.LIGHT
 };
+
+// ===== DOM 기반 함수들 =====
+
+// 테마 감지 유틸: 라이트/다크 모드 문자열 반환
+export function getCurrentTheme(): ThemeType {
+  if (typeof document === 'undefined') return THEME.LIGHT;
+  const cls = document.documentElement.classList;
+  return cls.contains('dark') ? THEME.DARK : THEME.LIGHT;
+}
+
+export function onThemeChange(callback: ThemeChangeHandler): () => void {
+  // 간단한 MutationObserver로 html class 변경 감지
+  if (typeof document === 'undefined') return () => {};
+  const target = document.documentElement;
+  const observer = new MutationObserver(() => callback(getCurrentTheme()));
+  observer.observe(target, { attributes: true, attributeFilter: ['class'] });
+  return () => observer.disconnect();
+}

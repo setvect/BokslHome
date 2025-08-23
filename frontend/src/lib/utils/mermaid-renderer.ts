@@ -1,7 +1,7 @@
 // Mermaid 다이어그램 렌더링 유틸리티
 import mermaid from 'mermaid';
-import type { ThemeType } from '$lib/types/theme';
-import { ThemeUtils } from '$lib/types/theme';
+import type { ThemeType } from '$lib/utils/theme';
+import { ThemeUtils } from '$lib/utils/theme';
 
 // Mermaid 초기화
 export function initMermaid(theme: ThemeType) {

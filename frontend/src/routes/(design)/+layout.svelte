@@ -11,8 +11,8 @@
     matchDesktop,
     onDesktopChange
   } from '$lib/stores/layout';
-  import type { ThemeType } from '$lib/types/theme';
-  import { THEME } from '$lib/types/theme';
+  import type { ThemeType } from '$lib/utils/theme';
+  import { THEME } from '$lib/utils/theme';
 
   let { children } = $props();
 

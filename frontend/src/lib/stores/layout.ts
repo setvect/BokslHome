@@ -1,8 +1,8 @@
 // 레이아웃/테마 관련 유틸리티 (Svelte Runes 사용 금지)
 // - Svelte 5 Runes는 .svelte 파일 내에서만 사용 가능하므로 이 파일은 순수 TS 헬퍼만 제공합니다.
 
-import type { ThemeType } from '$lib/types/theme';
-import { THEME, ThemeUtils } from '$lib/types/theme';
+import type { ThemeType } from '$lib/utils/theme';
+import { THEME, ThemeUtils } from '$lib/utils/theme';
 
 // @deprecated - ThemeType을 사용하세요
 export type Theme = ThemeType;
