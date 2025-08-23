@@ -28,10 +28,35 @@
       <div class="mb-1 font-medium text-muted-foreground">Components</div>
       <div class="space-y-1">
         <a href="/design-system/components" class="block hover:underline" onclick={handleNavigate}>Overview</a>
+
+        <!-- 기본 컴포넌트 -->
         <a href="/design-system/components/buttons" class="block hover:underline" onclick={handleNavigate}>Buttons</a>
         <a href="/design-system/components/forms" class="block hover:underline" onclick={handleNavigate}>Forms</a>
         <a href="/design-system/components/forms-raw" class="block hover:underline" onclick={handleNavigate}>Forms (Raw)</a>
-        <div class="mt-2 text-muted-foreground">Editors</div>
+
+        <!-- 핵심 데이터 컴포넌트 -->
+        <div class="mt-2 text-xs text-muted-foreground">Data Display</div>
+        <a href="/design-system/components/table" class="block hover:underline" onclick={handleNavigate}>Table</a>
+        <a href="/design-system/components/card" class="block hover:underline" onclick={handleNavigate}>Card</a>
+        <a href="/design-system/components/pagination" class="block hover:underline" onclick={handleNavigate}>Pagination</a>
+        <a href="/design-system/components/badge" class="block hover:underline" onclick={handleNavigate}>Badge</a>
+
+        <!-- 네비게이션 & 인터랙션 -->
+        <div class="mt-2 text-xs text-muted-foreground">Navigation</div>
+        <a href="/design-system/components/breadcrumb" class="block hover:underline" onclick={handleNavigate}>Breadcrumb</a>
+        <a href="/design-system/components/tabs" class="block hover:underline" onclick={handleNavigate}>Tabs</a>
+        <a href="/design-system/components/accordion" class="block hover:underline" onclick={handleNavigate}>Accordion</a>
+
+        <!-- 입력 & 피드백 -->
+        <div class="mt-2 text-xs text-muted-foreground">Input & Feedback</div>
+        <a href="/design-system/components/search" class="block hover:underline" onclick={handleNavigate}>Search Bar</a>
+        <a href="/design-system/components/select" class="block hover:underline" onclick={handleNavigate}>Select</a>
+        <a href="/design-system/components/dialog" class="block hover:underline" onclick={handleNavigate}>Dialog</a>
+        <a href="/design-system/components/toast" class="block hover:underline" onclick={handleNavigate}>Toast</a>
+        <a href="/design-system/components/skeleton" class="block hover:underline" onclick={handleNavigate}>Skeleton</a>
+
+        <!-- 에디터 -->
+        <div class="mt-2 text-xs text-muted-foreground">Editors</div>
         <a href="/design-system/components/markdown" class="block hover:underline" onclick={handleNavigate}>Markdown Editor</a>
         <a href="/design-system/components/editor" class="block hover:underline" onclick={handleNavigate}>HTML Editor</a>
       </div>
