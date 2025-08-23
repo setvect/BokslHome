@@ -1,8 +1,6 @@
 {
   "java.compile.nullAnalysis.mode": "automatic",
-  "css.customData": [
-    "./css-custom-data.json"
-  ],
+  "css.customData": ["./css-custom-data.json"],
   "files.associations": {
     "*.pcss": "css"
   },
@@ -15,6 +13,9 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
+  // "breadcrumbs.enabled": true,
+  // "breadcrumbs.filePath": "on",
+  "workbench.editor.labelFormat": "short",
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
