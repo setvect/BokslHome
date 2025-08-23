@@ -1,14 +1,15 @@
 // Mermaid 다이어그램 렌더링 유틸리티
 import mermaid from 'mermaid';
-
+import type { ThemeType } from '$lib/types/theme';
+import { ThemeUtils } from '$lib/types/theme';
 
 // Mermaid 초기화
-export function initMermaid(theme: 'light' | 'dark') {
+export function initMermaid(theme: ThemeType) {
   try {
     // 항상 새로운 설정으로 초기화 (테마 변경 시)
     mermaid.initialize({
       startOnLoad: false,
-      theme: theme === 'dark' ? 'dark' : 'default',
+      theme: ThemeUtils.isDark(theme) ? 'dark' : 'default',
       securityLevel: 'loose',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       flowchart: {
@@ -112,7 +113,7 @@ ${decodedCode.trim()}
 }
 
 // 테마 변경 시 Mermaid 재초기화 및 렌더링
-export async function refreshMermaidTheme(theme: 'light' | 'dark') {
+export async function refreshMermaidTheme(theme: ThemeType) {
   initMermaid(theme);
   await renderMermaidDiagrams();
 }

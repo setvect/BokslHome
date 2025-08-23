@@ -1,7 +1,11 @@
 // 레이아웃/테마 관련 유틸리티 (Svelte Runes 사용 금지)
 // - Svelte 5 Runes는 .svelte 파일 내에서만 사용 가능하므로 이 파일은 순수 TS 헬퍼만 제공합니다.
 
-export type Theme = 'light' | 'dark';
+import type { ThemeType } from '$lib/types/theme';
+import { THEME, ThemeUtils } from '$lib/types/theme';
+
+// @deprecated - ThemeType을 사용하세요
+export type Theme = ThemeType;
 
 export const THEME_KEY = 'theme';
 export const SIDEBAR_KEY = 'layout:sidebar-open:desktop';
@@ -12,20 +16,20 @@ export function isBrowser(): boolean {
 }
 
 // 테마 헬퍼
-export function readTheme(): Theme | null {
+export function readTheme(): ThemeType | null {
   if (!isBrowser()) return null;
   const saved = localStorage.getItem(THEME_KEY);
-  return saved === 'light' || saved === 'dark' ? saved : null;
+  return saved === THEME.LIGHT || saved === THEME.DARK ? (saved as ThemeType) : null;
 }
 
-export function saveTheme(theme: Theme): void {
+export function saveTheme(theme: ThemeType): void {
   if (!isBrowser()) return;
   localStorage.setItem(THEME_KEY, theme);
 }
 
-export function applyThemeToDocument(theme: Theme): void {
+export function applyThemeToDocument(theme: ThemeType): void {
   if (!isBrowser()) return;
-  document.documentElement.classList.toggle('dark', theme === 'dark');
+  document.documentElement.classList.toggle('dark', ThemeUtils.isDark(theme));
 }
 
 // 사이드바(데스크톱) 헬퍼

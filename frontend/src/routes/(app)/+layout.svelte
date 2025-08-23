@@ -11,11 +11,13 @@
     matchDesktop,
     onDesktopChange
   } from '$lib/stores/layout';
+  import type { ThemeType } from '$lib/types/theme';
+  import { THEME } from '$lib/types/theme';
 
   let { children } = $props();
 
   // 테마 (라이트/다크)
-  let theme: 'light' | 'dark' = $state('light');
+  let theme: ThemeType = $state(THEME.LIGHT);
   $effect(() => {
     const saved = readTheme();
     if (saved) theme = saved;
@@ -24,12 +26,12 @@
     applyThemeToDocument(theme);
   });
   function setLight() {
-    theme = 'light';
-    saveTheme('light');
+    theme = THEME.LIGHT;
+    saveTheme(THEME.LIGHT);
   }
   function setDark() {
-    theme = 'dark';
-    saveTheme('dark');
+    theme = THEME.DARK;
+    saveTheme(THEME.DARK);
   }
 
   // 사이드바 상태 (모바일 기본 닫힘, 데스크톱 기본 열림) + 데스크톱 지속성

@@ -5,6 +5,8 @@
 
   // 분리된 유틸리티 모듈들
   import { getCurrentTheme, onThemeChange } from '$lib/utils/theme-detector';
+  import type { ThemeType } from '$lib/types/theme';
+  import { ThemeUtils } from '$lib/types/theme';
   import { initPrism, applySyntaxHighlighting } from '$lib/utils/prism-highlighter';
   import { initMermaid, renderMermaidDiagrams, refreshMermaidTheme } from '$lib/utils/mermaid-renderer';
   import { createEditorExtensions } from '$lib/utils/codemirror-config';
@@ -31,12 +33,12 @@
   let currentValue = $state(value);
   let previewVisible = $state(showPreview);
   let previewHtml = $state('');
-  let currentTheme = $state<'light' | 'dark'>('light');
+  let currentTheme = $state<ThemeType>('light');
   let isFullscreen = $state(false);
   let editorView: any; // CodeMirror EditorView 인스턴스
 
   // CodeMirror 확장 설정 (테마 반응형)
-  const extensions = $derived(createEditorExtensions(currentTheme === 'dark'));
+  const extensions = $derived(createEditorExtensions(ThemeUtils.isDark(currentTheme)));
 
   // 값 변경 핸들러
   function handleValueChange(newValue: string) {

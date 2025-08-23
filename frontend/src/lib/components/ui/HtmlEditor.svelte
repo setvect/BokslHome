@@ -20,10 +20,13 @@
   }>();
 
   import { getCurrentTheme, onThemeChange } from '$lib/utils/theme-detector';
+  import type { ThemeType } from '$lib/types/theme';
+  import { ThemeUtils } from '$lib/types/theme';
+  
   let elementId = $state(`tinymce-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   let editorInstance: any = null;
   let tinymceRef: any = null;
-  let theme = $state<'light' | 'dark'>(getCurrentTheme());
+  let theme = $state<ThemeType>(getCurrentTheme());
 
   async function initTiny() {
     if (typeof window === 'undefined') return;
@@ -34,7 +37,7 @@
     await import('tinymce/themes/silver');
     await import('tinymce/models/dom');
     // 스킨/콘텐츠 CSS 직접 import (Vite 번들에 포함)
-    if (theme === 'dark') {
+    if (ThemeUtils.isDark(theme)) {
       await import('tinymce/skins/ui/oxide-dark/skin.min.css');
     } else {
       await import('tinymce/skins/ui/oxide/skin.min.css');
