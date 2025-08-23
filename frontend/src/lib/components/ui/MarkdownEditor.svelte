@@ -35,6 +35,7 @@
   let currentTheme = $state<ThemeType>('light');
   let isFullscreen = $state(false);
   let editorView: any; // CodeMirror EditorView 인스턴스
+  let isMounted = $state(false); // 컴포넌트 마운트 상태 추적
 
   // CodeMirror 확장 설정 (테마 반응형)
   const extensions = $derived(createEditorExtensions(ThemeUtils.isDark(currentTheme)));
@@ -55,6 +56,11 @@
 
   // 실시간 미리보기 업데이트
   $effect(() => {
+    // 컴포넌트가 마운트되지 않았으면 렌더링하지 않음
+    if (!isMounted) {
+      return;
+    }
+
     convertMarkdownToHtml(currentValue).then(async (html) => {
       previewHtml = html;
 
@@ -95,6 +101,23 @@
       }
     };
     window.addEventListener('keydown', handleKeydown);
+
+    // 마운트 완료 후 초기 렌더링 트리거
+    isMounted = true;
+
+    // 초기 HTML 생성 및 렌더링 (비동기로 실행)
+    (async () => {
+      const html = await convertMarkdownToHtml(currentValue);
+      previewHtml = html;
+
+      // 다음 틱에서 하이라이팅 및 Mermaid 렌더링
+      setTimeout(async () => {
+        await applySyntaxHighlighting();
+        if (html.includes('mermaid-diagram')) {
+          await renderMermaidDiagrams();
+        }
+      }, 50);
+    })();
 
     // 정리 함수
     return () => {
