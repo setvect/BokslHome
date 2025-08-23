@@ -44,21 +44,23 @@
   function validateLogin() {
     const r = loginSchema.safeParse(login);
     loginErrors = {};
-    if (!r.success)
+    if (!r.success) {
       for (const i of r.error.issues) {
         const k = i.path[0] as keyof typeof loginErrors;
         loginErrors[k] ||= i.message;
       }
+    }
     return r.success;
   }
   function validateRegister() {
     const r = registerSchema.safeParse(register);
     registerErrors = {};
-    if (!r.success)
+    if (!r.success) {
       for (const i of r.error.issues) {
         const k = i.path[0] as keyof typeof registerErrors;
         registerErrors[k] ||= i.message;
       }
+    }
     return r.success;
   }
 
@@ -66,7 +68,9 @@
     e.preventDefault();
     loginSubmitted = true;
     loginMessage = null;
-    if (!validateLogin()) return;
+    if (!validateLogin()) {
+      return;
+    }
     loginLoading = true;
     await new Promise((r) => setTimeout(r, 700));
     loginLoading = false;
@@ -76,7 +80,9 @@
     e.preventDefault();
     registerSubmitted = true;
     registerMessage = null;
-    if (!validateRegister()) return;
+    if (!validateRegister()) {
+      return;
+    }
     registerLoading = true;
     await new Promise((r) => setTimeout(r, 900));
     registerLoading = false;
@@ -100,27 +106,33 @@
     stepErrors = {};
     if (cur === 1) {
       const r = step1Schema.safeParse({ email: stepForm.email });
-      if (!r.success)
+      if (!r.success) {
         for (const i of r.error.issues) {
           const k = i.path[0] as keyof typeof stepErrors;
           stepErrors[k] ||= i.message;
         }
+      }
       return r.success;
     } else {
       const r = step2Schema.safeParse({ password: stepForm.password });
-      if (!r.success)
+      if (!r.success) {
         for (const i of r.error.issues) {
           const k = i.path[0] as keyof typeof stepErrors;
           stepErrors[k] ||= i.message;
         }
+      }
       return r.success;
     }
   }
   function nextStep() {
-    if (validateStep(step === 1 ? 1 : 2)) step = step === 1 ? 2 : 3;
+    if (validateStep(step === 1 ? 1 : 2)) {
+      step = step === 1 ? 2 : 3;
+    }
   }
   function prevStep() {
-    if (step > 1) step = step === 3 ? 2 : 1;
+    if (step > 1) {
+      step = step === 3 ? 2 : 1;
+    }
   }
   async function submitStepForm() {
     if (!validateStep(2)) {
@@ -141,11 +153,16 @@
     const f = (e.target as HTMLInputElement).files?.[0] ?? null;
     file = f;
     fileError = null;
-    if (!f) return;
+    if (!f) {
+      return;
+    }
     const max = 2 * 1024 * 1024; // 2MB
     const okType = ['image/png', 'image/jpeg'];
-    if (!okType.includes(f.type)) fileError = 'PNG/JPEG만 업로드 가능합니다.';
-    else if (f.size > max) fileError = '파일 용량은 2MB 이하여야 합니다.';
+    if (!okType.includes(f.type)) {
+      fileError = 'PNG/JPEG만 업로드 가능합니다.';
+    } else if (f.size > max) {
+      fileError = '파일 용량은 2MB 이하여야 합니다.';
+    }
   }
 
   // 4.5: 고급 - 동적 필드 (추가/제거)
@@ -190,7 +207,9 @@
           value={login.email}
           oninput={(e) => {
             login.email = (e.target as HTMLInputElement).value;
-            if (loginSubmitted) validateLogin();
+            if (loginSubmitted) {
+              validateLogin();
+            }
           }}
           aria-invalid={!!loginErrors.email}
         />
@@ -202,7 +221,9 @@
           value={login.password}
           oninput={(e) => {
             login.password = (e.target as HTMLInputElement).value;
-            if (loginSubmitted) validateLogin();
+            if (loginSubmitted) {
+              validateLogin();
+            }
           }}
           aria-invalid={!!loginErrors.password}
         />
@@ -226,7 +247,9 @@
           value={register.email}
           oninput={(e) => {
             register.email = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.email}
         />
@@ -238,7 +261,9 @@
           value={register.password}
           oninput={(e) => {
             register.password = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.password}
         />
@@ -250,7 +275,9 @@
           value={register.confirmPassword}
           oninput={(e) => {
             register.confirmPassword = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.confirmPassword}
         />
@@ -354,7 +381,9 @@
       <Button
         type="button"
         onclick={() => {
-          if (validateTags()) alert('태그 검증 통과');
+          if (validateTags()) {
+            alert('태그 검증 통과');
+          }
         }}>Validate</Button
       >
     </div>

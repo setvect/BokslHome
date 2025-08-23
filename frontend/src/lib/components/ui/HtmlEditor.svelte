@@ -21,14 +21,16 @@
 
   import type { ThemeType } from '$lib/utils/theme';
   import { ThemeUtils, getCurrentTheme, onThemeChange } from '$lib/utils/theme';
-  
+
   let elementId = $state(`tinymce-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   let editorInstance: any = null;
   let tinymceRef: any = null;
   let theme = $state<ThemeType>(getCurrentTheme());
 
   async function initTiny() {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
     const tinymce = (await import('tinymce/tinymce')).default;
     tinymceRef = tinymce;
     // 필수 에셋 로드
@@ -90,7 +92,9 @@
   });
 
   function buildContentStyle(): string {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === 'undefined') {
+      return '';
+    }
     const root = getComputedStyle(document.documentElement);
     const bg = root.getPropertyValue('--color-background').trim() || '#0b1220';
     const fg = root.getPropertyValue('--color-foreground').trim() || '#e5e7eb';

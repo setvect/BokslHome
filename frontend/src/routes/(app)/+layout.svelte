@@ -20,7 +20,9 @@
   let theme: ThemeType = $state(THEME.LIGHT);
   $effect(() => {
     const saved = readTheme();
-    if (saved) theme = saved;
+    if (saved) {
+      theme = saved;
+    }
   });
   $effect(() => {
     applyThemeToDocument(theme);
@@ -56,17 +58,23 @@
   });
   // 문서 클래스와 동기화하여 초기/토글 시 플래시 방지 (초기 프리셋이 적용될 때까지는 건드리지 않음)
   $effect(() => {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {
+      return;
+    }
     if (!matchDesktop()) {
       document.documentElement.classList.remove('sidebar-closed');
       return;
     }
-    if (!sidebarPrefReady) return;
+    if (!sidebarPrefReady) {
+      return;
+    }
     const closed = !sidebarOpen;
     document.documentElement.classList.toggle('sidebar-closed', closed);
   });
   function persistIfDesktop(next: boolean) {
-    if (matchDesktop()) saveDesktopSidebarPref(next);
+    if (matchDesktop()) {
+      saveDesktopSidebarPref(next);
+    }
   }
   function toggleSidebar() {
     const next = !sidebarOpen;

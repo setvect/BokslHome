@@ -17,40 +17,54 @@ export function isBrowser(): boolean {
 
 // 테마 헬퍼
 export function readTheme(): ThemeType | null {
-  if (!isBrowser()) return null;
+  if (!isBrowser()) {
+    return null;
+  }
   const saved = localStorage.getItem(THEME_KEY);
   return saved === THEME.LIGHT || saved === THEME.DARK ? (saved as ThemeType) : null;
 }
 
 export function saveTheme(theme: ThemeType): void {
-  if (!isBrowser()) return;
+  if (!isBrowser()) {
+    return;
+  }
   localStorage.setItem(THEME_KEY, theme);
 }
 
 export function applyThemeToDocument(theme: ThemeType): void {
-  if (!isBrowser()) return;
+  if (!isBrowser()) {
+    return;
+  }
   document.documentElement.classList.toggle('dark', ThemeUtils.isDark(theme));
 }
 
 // 사이드바(데스크톱) 헬퍼
 export function readDesktopSidebarPref(): boolean | null {
-  if (!isBrowser()) return null;
+  if (!isBrowser()) {
+    return null;
+  }
   const saved = localStorage.getItem(SIDEBAR_KEY);
   return saved == null ? null : saved === '1';
 }
 
 export function saveDesktopSidebarPref(open: boolean): void {
-  if (!isBrowser()) return;
+  if (!isBrowser()) {
+    return;
+  }
   localStorage.setItem(SIDEBAR_KEY, open ? '1' : '0');
 }
 
 export function matchDesktop(): boolean {
-  if (!isBrowser()) return false;
+  if (!isBrowser()) {
+    return false;
+  }
   return window.matchMedia(DESKTOP_MEDIA_QUERY).matches;
 }
 
 export function onDesktopChange(handler: (isDesktop: boolean) => void): () => void {
-  if (!isBrowser()) return () => {};
+  if (!isBrowser()) {
+    return () => {};
+  }
   const mq = window.matchMedia(DESKTOP_MEDIA_QUERY);
   const listener = () => handler(mq.matches);
   mq.addEventListener('change', listener);

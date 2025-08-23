@@ -5,7 +5,9 @@ let prismInitialized = false;
 
 // Prism.js 초기화
 export async function initPrism() {
-  if (prismInitialized || typeof window === 'undefined') return;
+  if (prismInitialized || typeof window === 'undefined') {
+    return;
+  }
 
   try {
     // Prism.js와 필요한 언어 컴포넌트들 동적 로드
@@ -51,7 +53,9 @@ export async function initPrism() {
 
 // Prism.js 코드 하이라이팅 적용
 export async function applySyntaxHighlighting() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    return;
+  }
 
   // Prism 초기화
   await initPrism();
@@ -66,7 +70,9 @@ export async function applySyntaxHighlighting() {
     const htmlElement = codeBlock as HTMLElement;
     const lang = htmlElement.getAttribute('data-lang') || '';
 
-    if (!lang) continue;
+    if (!lang) {
+      continue;
+    }
 
     try {
       // 언어별 매핑 (일부 언어는 다른 이름으로 등록됨)

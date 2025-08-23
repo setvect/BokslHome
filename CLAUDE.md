@@ -57,8 +57,12 @@ cd frontend
 npm run dev
 npm run build
 npm run check    # TypeScript 검사
-npm run lint     # ESLint (접근성 경고 무시)
-npm run format   # Prettier
+npm run lint     # ESLint + Prettier 검사
+npm run format   # Prettier 포맷팅
+
+# 코드 자동 수정 (ESLint 규칙 적용)
+npx eslint --config ./eslint.config.js . --fix
+npx prettier --write .
 ```
 
 ### 3.4. Docker 배포
@@ -225,6 +229,7 @@ mcp__ide__getDiagnostics({ uri: "file:///path/to/file.svelte" })
 - **Svelte 5 문법 준수**: 절대 Svelte 4 문법 사용하지 말 것
 - **shadcn-svelte 컴포넌트**: 문제 발생 시 Popover 등 안정적인 대안 사용
 - **타입스크립트**: `<script lang="ts">` 태그 필수
+- **ESLint 규칙 준수**:
 - **색상 테마 호환성**:
   - 모든 텍스트는 `text-foreground` 계열 클래스 사용
   - `text-muted-foreground`, 고정 색상 클래스 사용 금지

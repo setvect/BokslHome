@@ -10,7 +10,9 @@
   let filtered: Item[] = $derived(
     (() => {
       const q = query.trim().toLowerCase();
-      if (!q) return components;
+      if (!q) {
+        return components;
+      }
       return components.filter((c) => [c.label.toLowerCase(), ...(c.keywords ?? [])].some((k) => k.toLowerCase().includes(q)));
     })()
   );

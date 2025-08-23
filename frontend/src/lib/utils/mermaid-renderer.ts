@@ -32,7 +32,9 @@ export function initMermaid(theme: ThemeType) {
 
 // Mermaid 다이어그램 렌더링
 export async function renderMermaidDiagrams() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    return;
+  }
 
   // 다양한 선택자로 mermaid 요소 찾기
   const selectors = ['.preview-content .mermaid-diagram', '.mermaid-diagram', '[data-id*="mermaid"]'];
@@ -40,7 +42,9 @@ export async function renderMermaidDiagrams() {
   let mermaidElements: NodeListOf<Element> | null = null;
   for (const selector of selectors) {
     mermaidElements = document.querySelectorAll(selector);
-    if (mermaidElements.length > 0) break;
+    if (mermaidElements.length > 0) {
+      break;
+    }
   }
 
   if (!mermaidElements || mermaidElements.length === 0) {

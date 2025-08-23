@@ -24,6 +24,8 @@ export default ts.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'svelte/valid-compile': 'error',
       'svelte/no-at-debug-tags': 'warn',
+      // 모든 if, for, while 등에 중괄호 강제
+      curly: ['error', 'all'],
       // typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
       // see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
       'no-undef': 'off'

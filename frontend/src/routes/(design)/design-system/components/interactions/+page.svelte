@@ -24,9 +24,13 @@
       alert(kind === 'success' ? '성공 메시지' : kind === 'error' ? '에러 메시지' : '일반 메시지');
       return;
     }
-    if (kind === 'success') toast('성공!', { description: '작업이 완료되었습니다.' });
-    else if (kind === 'error') toast('에러', { description: '문제가 발생했습니다.' });
-    else toast('안내', { description: '일반 알림입니다.' });
+    if (kind === 'success') {
+      toast('성공!', { description: '작업이 완료되었습니다.' });
+    } else if (kind === 'error') {
+      toast('에러', { description: '문제가 발생했습니다.' });
+    } else {
+      toast('안내', { description: '일반 알림입니다.' });
+    }
   }
 
   // Select (단일 선택 제어)
@@ -69,8 +73,12 @@
         for (const o of sortOrders) {
           const va = a[o.key].toLowerCase();
           const vb = b[o.key].toLowerCase();
-          if (va < vb) return o.asc ? -1 : 1;
-          if (va > vb) return o.asc ? 1 : -1;
+          if (va < vb) {
+            return o.asc ? -1 : 1;
+          }
+          if (va > vb) {
+            return o.asc ? 1 : -1;
+          }
         }
         return 0;
       });

@@ -5,7 +5,9 @@
 
   let pathname = $state('');
   $effect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
     const setPath = () => (pathname = window.location.pathname);
     setPath();
     afterNavigate(setPath);

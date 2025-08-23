@@ -44,7 +44,9 @@
   function onSubmitLogin(e: SubmitEvent) {
     e.preventDefault();
     loginSubmitted = true;
-    if (validateLogin()) alert('로그인(raw) 폼 검증 통과');
+    if (validateLogin()) {
+      alert('로그인(raw) 폼 검증 통과');
+    }
   }
 
   // Register (raw)
@@ -65,7 +67,9 @@
   function onSubmitRegister(e: SubmitEvent) {
     e.preventDefault();
     registerSubmitted = true;
-    if (validateRegister()) alert('회원가입(raw) 폼 검증 통과');
+    if (validateRegister()) {
+      alert('회원가입(raw) 폼 검증 통과');
+    }
   }
 </script>
 
@@ -84,7 +88,9 @@
           value={login.email}
           oninput={(e) => {
             login.email = (e.target as HTMLInputElement).value;
-            if (loginSubmitted) validateLogin();
+            if (loginSubmitted) {
+              validateLogin();
+            }
           }}
           aria-invalid={!!loginErrors.email}
         />
@@ -100,7 +106,9 @@
           value={login.password}
           oninput={(e) => {
             login.password = (e.target as HTMLInputElement).value;
-            if (loginSubmitted) validateLogin();
+            if (loginSubmitted) {
+              validateLogin();
+            }
           }}
           aria-invalid={!!loginErrors.password}
         />
@@ -124,7 +132,9 @@
           value={register.email}
           oninput={(e) => {
             register.email = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.email}
         />
@@ -140,7 +150,9 @@
           value={register.password}
           oninput={(e) => {
             register.password = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.password}
         />
@@ -156,7 +168,9 @@
           value={register.confirmPassword}
           oninput={(e) => {
             register.confirmPassword = (e.target as HTMLInputElement).value;
-            if (registerSubmitted) validateRegister();
+            if (registerSubmitted) {
+              validateRegister();
+            }
           }}
           aria-invalid={!!registerErrors.confirmPassword}
         />

@@ -185,17 +185,23 @@
 
   // 클립보드 paste 이벤트 핸들러
   async function handlePaste(event: ClipboardEvent) {
-    if (readOnly) return;
+    if (readOnly) {
+      return;
+    }
 
     const items = event.clipboardData?.items;
-    if (!items) return;
+    if (!items) {
+      return;
+    }
 
     for (const item of items) {
       if (item.type.startsWith('image/')) {
         event.preventDefault();
 
         const file = item.getAsFile();
-        if (!file) continue;
+        if (!file) {
+          continue;
+        }
 
         try {
           // 사용자 정의 업로드 함수가 있으면 사용, 없으면 기본 모킹 함수 사용
