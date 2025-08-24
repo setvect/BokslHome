@@ -20,7 +20,7 @@
       image: null
     },
     {
-      id: 2, 
+      id: 2,
       title: '복슬홈 UI 디자인 시스템',
       excerpt: 'shadcn-svelte와 Tailwind CSS를 활용한 일관성 있는 디자인 시스템 구축 과정을 공유합니다.',
       author: '박디자인',
@@ -75,19 +75,27 @@
 
   function getDifficultyBadgeVariant(difficulty: string) {
     switch (difficulty) {
-      case 'Beginner': return 'secondary';
-      case 'Intermediate': return 'default';
-      case 'Advanced': return 'destructive';
-      default: return 'outline';
+      case 'Beginner':
+        return 'secondary';
+      case 'Intermediate':
+        return 'default';
+      case 'Advanced':
+        return 'destructive';
+      default:
+        return 'outline';
     }
   }
 
   function getDifficultyText(difficulty: string) {
     switch (difficulty) {
-      case 'Beginner': return '초급';
-      case 'Intermediate': return '중급';
-      case 'Advanced': return '고급';
-      default: return difficulty;
+      case 'Beginner':
+        return '초급';
+      case 'Intermediate':
+        return '중급';
+      case 'Advanced':
+        return '고급';
+      default:
+        return difficulty;
     }
   }
 </script>
@@ -315,7 +323,8 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
@@ -352,7 +361,8 @@
       작성자 · 2024-01-15
     </div>
   </Card.Footer>
-</Card.Root>`}</code></pre>
+</Card.Root>`}</code
+        ></pre>
     </div>
   </div>
 </section>
@@ -364,7 +374,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;

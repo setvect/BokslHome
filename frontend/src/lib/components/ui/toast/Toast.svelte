@@ -53,10 +53,7 @@
   const IconComponent = getIcon(toast.type);
 </script>
 
-<div
-  class="flex items-start gap-3 rounded-lg border p-4 shadow-sm transition-all {getColorClasses(toast.type)}"
-  role="alert"
->
+<div class="flex items-start gap-3 rounded-lg border p-4 shadow-sm transition-all {getColorClasses(toast.type)}" role="alert">
   <IconComponent class="h-5 w-5 flex-shrink-0 {getIconColorClass(toast.type)}" />
   <div class="flex-1 space-y-1">
     <p class="font-medium text-sm">{toast.title}</p>
@@ -64,12 +61,7 @@
       <p class="text-sm opacity-90">{toast.description}</p>
     {/if}
   </div>
-  <Button
-    variant="ghost"
-    size="sm"
-    class="h-6 w-6 p-0 hover:bg-black/10"
-    onclick={() => removeToast(toast.id)}
-  >
+  <Button variant="ghost" size="sm" class="h-6 w-6 p-0 hover:bg-black/10" onclick={() => removeToast(toast.id)}>
     <X class="h-4 w-4" />
   </Button>
 </div>

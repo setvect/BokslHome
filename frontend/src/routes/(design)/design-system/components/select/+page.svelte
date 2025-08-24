@@ -37,11 +37,16 @@
 
   function getRoleBadgeVariant(role: string) {
     switch (role) {
-      case 'admin': return 'destructive';
-      case 'developer': return 'default';
-      case 'designer': return 'secondary';
-      case 'user': return 'outline';
-      default: return 'outline';
+      case 'admin':
+        return 'destructive';
+      case 'developer':
+        return 'default';
+      case 'designer':
+        return 'secondary';
+      case 'user':
+        return 'outline';
+      default:
+        return 'outline';
     }
   }
 </script>
@@ -60,7 +65,7 @@
           <Label>카테고리 선택</Label>
           <Select.Root bind:selected={basicSelection}>
             <Select.Trigger>
-              {basicSelection || "카테고리를 선택하세요"}
+              {basicSelection || '카테고리를 선택하세요'}
             </Select.Trigger>
             <Select.Content>
               <Select.Group>
@@ -84,7 +89,7 @@
           <Label>사용자 역할 선택</Label>
           <Select.Root bind:selected={userRoleSelection}>
             <Select.Trigger>
-              {userRoles.find(role => role.value === userRoleSelection)?.label || "역할을 선택하세요"}
+              {userRoles.find((role) => role.value === userRoleSelection)?.label || '역할을 선택하세요'}
             </Select.Trigger>
             <Select.Content>
               <Select.Group>
@@ -101,10 +106,10 @@
           {#if userRoleSelection}
             <div class="flex items-center gap-2 mt-2">
               <Badge variant={getRoleBadgeVariant(userRoleSelection)}>
-                {userRoles.find(role => role.value === userRoleSelection)?.label}
+                {userRoles.find((role) => role.value === userRoleSelection)?.label}
               </Badge>
               <span class="text-sm text-muted-foreground">
-                {userRoles.find(role => role.value === userRoleSelection)?.description}
+                {userRoles.find((role) => role.value === userRoleSelection)?.description}
               </span>
             </div>
           {/if}
@@ -119,7 +124,7 @@
           <Label>정렬 옵션</Label>
           <Select.Root bind:selected={sortSelection}>
             <Select.Trigger>
-              {sortOptions.find(option => option.value === sortSelection)?.label || "정렬 방식을 선택하세요"}
+              {sortOptions.find((option) => option.value === sortSelection)?.label || '정렬 방식을 선택하세요'}
             </Select.Trigger>
             <Select.Content>
               <Select.ScrollUpButton />
@@ -152,7 +157,7 @@
             <Label>카테고리</Label>
             <Select.Root bind:selected={categorySelection}>
               <Select.Trigger>
-                {categories.find(cat => cat.value === categorySelection)?.label || "카테고리를 선택하세요"}
+                {categories.find((cat) => cat.value === categorySelection)?.label || '카테고리를 선택하세요'}
               </Select.Trigger>
               <Select.Content>
                 <Select.Group>
@@ -173,9 +178,7 @@
           <div class="grid gap-2">
             <Label>공개 설정</Label>
             <Select.Root>
-              <Select.Trigger>
-                공개 범위를 선택하세요
-              </Select.Trigger>
+              <Select.Trigger>공개 범위를 선택하세요</Select.Trigger>
               <Select.Content>
                 <Select.Item value="public">전체 공개</Select.Item>
                 <Select.Item value="members">회원만</Select.Item>
@@ -187,9 +190,7 @@
           <div class="grid gap-2">
             <Label>알림 설정</Label>
             <Select.Root>
-              <Select.Trigger>
-                알림 수준을 선택하세요
-              </Select.Trigger>
+              <Select.Trigger>알림 수준을 선택하세요</Select.Trigger>
               <Select.Content>
                 <Select.Item value="all">모든 알림</Select.Item>
                 <Select.Item value="mentions">멘션만</Select.Item>
@@ -211,7 +212,7 @@
           <Label>필터</Label>
           <Select.Root bind:selected={filterSelection}>
             <Select.Trigger class="w-[180px]">
-              {filterSelection || "필터 선택"}
+              {filterSelection || '필터 선택'}
             </Select.Trigger>
             <Select.Content>
               <Select.Item value="all">전체</Select.Item>
@@ -226,7 +227,7 @@
           <Label>정렬</Label>
           <Select.Root bind:selected={sortSelection}>
             <Select.Trigger class="w-[180px]">
-              {sortOptions.find(option => option.value === sortSelection)?.label || "정렬 방식"}
+              {sortOptions.find((option) => option.value === sortSelection)?.label || '정렬 방식'}
             </Select.Trigger>
             <Select.Content>
               {#each sortOptions as option}
@@ -238,24 +239,20 @@
 
         <Button>적용</Button>
       </div>
-      
+
       {#if filterSelection || sortSelection}
         <div class="flex gap-2 items-center">
           <span class="text-sm text-muted-foreground">적용된 필터:</span>
           {#if filterSelection}
             <Badge variant="secondary">
               필터: {filterSelection}
-              <Button variant="ghost" size="sm" class="h-4 w-4 p-0 ml-1" onclick={() => filterSelection = ''}>
-                ×
-              </Button>
+              <Button variant="ghost" size="sm" class="h-4 w-4 p-0 ml-1" onclick={() => (filterSelection = '')}>×</Button>
             </Badge>
           {/if}
           {#if sortSelection}
             <Badge variant="secondary">
-              정렬: {sortOptions.find(option => option.value === sortSelection)?.label}
-              <Button variant="ghost" size="sm" class="h-4 w-4 p-0 ml-1" onclick={() => sortSelection = ''}>
-                ×
-              </Button>
+              정렬: {sortOptions.find((option) => option.value === sortSelection)?.label}
+              <Button variant="ghost" size="sm" class="h-4 w-4 p-0 ml-1" onclick={() => (sortSelection = '')}>×</Button>
             </Badge>
           {/if}
         </div>
@@ -268,9 +265,7 @@
         <div>
           <Label>비활성 셀렉트</Label>
           <Select.Root disabled>
-            <Select.Trigger>
-              비활성 상태
-            </Select.Trigger>
+            <Select.Trigger>비활성 상태</Select.Trigger>
             <Select.Content>
               <Select.Item value="option1">옵션 1</Select.Item>
               <Select.Item value="option2">옵션 2</Select.Item>
@@ -282,7 +277,8 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import * as Select from '$lib/components/ui/select/index.js';
   import { Label } from '$lib/components/ui/label/index.js';
   
@@ -344,7 +340,8 @@
     </Select.Group>
     <Select.ScrollDownButton />
   </Select.Content>
-</Select.Root>`}</code></pre>
+</Select.Root>`}</code
+        ></pre>
     </div>
   </div>
 </section>

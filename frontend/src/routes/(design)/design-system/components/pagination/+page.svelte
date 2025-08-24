@@ -43,11 +43,7 @@
                   </Pagination.Item>
                 {:else}
                   <Pagination.Item>
-                    <Pagination.Link
-                      {page}
-                      isActive={paginationCurrentPage === page.value}
-                      onclick={() => handlePageChange(page.value)}
-                    >
+                    <Pagination.Link {page} isActive={paginationCurrentPage === page.value} onclick={() => handlePageChange(page.value)}>
                       {page.value}
                     </Pagination.Link>
                   </Pagination.Item>
@@ -103,7 +99,7 @@
       <div class="rounded-md border p-4 bg-muted">
         <h3 class="font-medium mb-2">게시판 목록</h3>
         <div class="space-y-2">
-          {#each Array.from({length: itemsPerPage}, (_, i) => i + 1 + (currentPage - 1) * itemsPerPage) as item}
+          {#each Array.from({ length: itemsPerPage }, (_, i) => i + 1 + (currentPage - 1) * itemsPerPage) as item}
             <div class="p-2 border rounded bg-background">
               <span class="text-sm font-medium">게시글 #{item}</span>
               <span class="text-xs text-muted-foreground ml-2">복슬홈 게시판 샘플 데이터</span>
@@ -146,7 +142,8 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import * as Pagination from '$lib/components/ui/pagination/index.js';
   
   let currentPage = $state(1);
@@ -185,7 +182,8 @@
       </Pagination.Item>
     </Pagination.Content>
   {/snippet}
-</Pagination.Root>`}</code></pre>
+</Pagination.Root>`}</code
+        ></pre>
     </div>
   </div>
 </section>

@@ -6,7 +6,7 @@
 
   // 현재 경로 시뮬레이션
   let currentPath = $state('/design-system/components/breadcrumb');
-  
+
   function handleNavigation(path: string) {
     console.log('Navigate to:', path);
     // 실제로는 router.push(path) 등을 사용
@@ -71,7 +71,9 @@
                 <ChevronRight class="h-4 w-4" />
               </Breadcrumb.Separator>
               <Breadcrumb.Item>
-                <Breadcrumb.Link href="/design-system/components" onclick={() => handleNavigation('/design-system/components')}>컴포넌트</Breadcrumb.Link>
+                <Breadcrumb.Link href="/design-system/components" onclick={() => handleNavigation('/design-system/components')}
+                  >컴포넌트</Breadcrumb.Link
+                >
               </Breadcrumb.Item>
               <Breadcrumb.Separator>
                 <ChevronRight class="h-4 w-4" />
@@ -140,13 +142,18 @@
                 <ChevronRight class="h-4 w-4" />
               </Breadcrumb.Separator>
               <Breadcrumb.Item>
-                <Breadcrumb.Link href="/admin/users/permissions/roles" onclick={() => handleNavigation('/admin/users/permissions/roles')}>역할 관리</Breadcrumb.Link>
+                <Breadcrumb.Link href="/admin/users/permissions/roles" onclick={() => handleNavigation('/admin/users/permissions/roles')}
+                  >역할 관리</Breadcrumb.Link
+                >
               </Breadcrumb.Item>
               <Breadcrumb.Separator>
                 <ChevronRight class="h-4 w-4" />
               </Breadcrumb.Separator>
               <Breadcrumb.Item>
-                <Breadcrumb.Link href="/admin/users/permissions/roles/dev-team" onclick={() => handleNavigation('/admin/users/permissions/roles/dev-team')}>개발팀 역할</Breadcrumb.Link>
+                <Breadcrumb.Link
+                  href="/admin/users/permissions/roles/dev-team"
+                  onclick={() => handleNavigation('/admin/users/permissions/roles/dev-team')}>개발팀 역할</Breadcrumb.Link
+                >
               </Breadcrumb.Item>
               <Breadcrumb.Separator>
                 <ChevronRight class="h-4 w-4" />
@@ -234,7 +241,8 @@
                   </Breadcrumb.Item>
                   <Breadcrumb.Separator>/</Breadcrumb.Separator>
                   <Breadcrumb.Item>
-                    <Breadcrumb.Link href="/design-system" onclick={() => handleNavigation('/design-system')}>디자인 시스템</Breadcrumb.Link>
+                    <Breadcrumb.Link href="/design-system" onclick={() => handleNavigation('/design-system')}>디자인 시스템</Breadcrumb.Link
+                    >
                   </Breadcrumb.Item>
                   <Breadcrumb.Separator>/</Breadcrumb.Separator>
                   <Breadcrumb.Item>
@@ -254,7 +262,8 @@
                   </Breadcrumb.Item>
                   <Breadcrumb.Separator>•</Breadcrumb.Separator>
                   <Breadcrumb.Item>
-                    <Breadcrumb.Link href="/design-system" onclick={() => handleNavigation('/design-system')}>디자인 시스템</Breadcrumb.Link>
+                    <Breadcrumb.Link href="/design-system" onclick={() => handleNavigation('/design-system')}>디자인 시스템</Breadcrumb.Link
+                    >
                   </Breadcrumb.Item>
                   <Breadcrumb.Separator>•</Breadcrumb.Separator>
                   <Breadcrumb.Item>
@@ -274,7 +283,7 @@
         <Card.Content class="p-6">
           <div class="space-y-4">
             <p class="text-sm text-muted-foreground">모바일에서는 마지막 2-3개 항목만 표시</p>
-            
+
             <!-- 데스크톱 버전 -->
             <div class="hidden md:block">
               <Breadcrumb.Root>
@@ -314,7 +323,10 @@
                     <ChevronRight class="h-4 w-4" />
                   </Breadcrumb.Separator>
                   <Breadcrumb.Item>
-                    <Breadcrumb.Link href="/admin/users/permissions/roles/dev-team" onclick={() => handleNavigation('/admin/users/permissions/roles/dev-team')}>개발팀 역할</Breadcrumb.Link>
+                    <Breadcrumb.Link
+                      href="/admin/users/permissions/roles/dev-team"
+                      onclick={() => handleNavigation('/admin/users/permissions/roles/dev-team')}>개발팀 역할</Breadcrumb.Link
+                    >
                   </Breadcrumb.Item>
                   <Breadcrumb.Separator>
                     <ChevronRight class="h-4 w-4" />
@@ -332,7 +344,8 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
   import { ChevronRight, Home } from '@lucide/svelte';
   
@@ -406,7 +419,8 @@
       <Breadcrumb.Page>현재 페이지</Breadcrumb.Page>
     </Breadcrumb.Item>
   </Breadcrumb.List>
-</Breadcrumb.Root>`}</code></pre>
+</Breadcrumb.Root>`}</code
+        ></pre>
     </div>
   </div>
 </section>

@@ -31,21 +31,18 @@
 
   let filteredItems = $derived(() => {
     let items = allItems;
-    
+
     // 타입 필터링
     if (selectedFilter !== 'all') {
-      items = items.filter(item => item.type === selectedFilter);
+      items = items.filter((item) => item.type === selectedFilter);
     }
-    
+
     // 검색어 필터링
     if (filterSearch.trim()) {
       const query = filterSearch.toLowerCase();
-      items = items.filter(item => 
-        item.title.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query)
-      );
+      items = items.filter((item) => item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
     }
-    
+
     return items;
   });
 
@@ -82,19 +79,27 @@
 
   function getTypeBadgeVariant(type: string) {
     switch (type) {
-      case 'post': return 'default';
-      case 'knowledge': return 'secondary'; 
-      case 'note': return 'outline';
-      default: return 'outline';
+      case 'post':
+        return 'default';
+      case 'knowledge':
+        return 'secondary';
+      case 'note':
+        return 'outline';
+      default:
+        return 'outline';
     }
   }
 
   function getTypeText(type: string) {
     switch (type) {
-      case 'post': return '게시글';
-      case 'knowledge': return '지식';
-      case 'note': return '노트';
-      default: return type;
+      case 'post':
+        return '게시글';
+      case 'knowledge':
+        return '지식';
+      case 'note':
+        return '노트';
+      default:
+        return type;
     }
   }
 </script>
@@ -109,12 +114,7 @@
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">기본 검색 바</h2>
       <div class="space-y-4 max-w-md">
-        <SearchBar
-          placeholder="게시글, 지식, 노트 검색..."
-          bind:value={basicSearch}
-          onsearch={handleBasicSearch}
-          onclear={handleClear}
-        />
+        <SearchBar placeholder="게시글, 지식, 노트 검색..." bind:value={basicSearch} onsearch={handleBasicSearch} onclear={handleClear} />
         {#if basicSearch}
           <p class="text-sm text-muted-foreground">검색어: "{basicSearch}"</p>
         {/if}
@@ -142,13 +142,9 @@
       <div class="space-y-4">
         <div>
           <h3 class="text-lg font-medium mb-2">기본 스타일</h3>
-          <SearchBar
-            class="max-w-md"
-            placeholder="기본 검색 바"
-            bind:value={basicSearch}
-          />
+          <SearchBar class="max-w-md" placeholder="기본 검색 바" bind:value={basicSearch} />
         </div>
-        
+
         <div>
           <h3 class="text-lg font-medium mb-2">고스트 스타일</h3>
           <SearchBar
@@ -159,7 +155,7 @@
             onsearch={handleGhostSearch}
           />
         </div>
-        
+
         <div>
           <h3 class="text-lg font-medium mb-2">아웃라인 스타일</h3>
           <SearchBar
@@ -178,29 +174,17 @@
       <div class="space-y-4">
         <div>
           <h3 class="text-lg font-medium mb-2">작은 크기</h3>
-          <SearchBar
-            class="max-w-sm"
-            size="sm"
-            placeholder="작은 검색 바"
-          />
+          <SearchBar class="max-w-sm" size="sm" placeholder="작은 검색 바" />
         </div>
-        
+
         <div>
           <h3 class="text-lg font-medium mb-2">기본 크기</h3>
-          <SearchBar
-            class="max-w-md"
-            size="md"
-            placeholder="기본 크기 검색 바"
-          />
+          <SearchBar class="max-w-md" size="md" placeholder="기본 크기 검색 바" />
         </div>
-        
+
         <div>
           <h3 class="text-lg font-medium mb-2">큰 크기</h3>
-          <SearchBar
-            class="max-w-lg"
-            size="lg"
-            placeholder="큰 크기 검색 바"
-          />
+          <SearchBar class="max-w-lg" size="lg" placeholder="큰 크기 검색 바" />
         </div>
       </div>
     </div>
@@ -216,32 +200,20 @@
             oninput={handleFilterSearch}
           />
           <div class="flex gap-2">
-            <Button
-              variant={selectedFilter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onclick={() => selectedFilter = 'all'}
-            >
+            <Button variant={selectedFilter === 'all' ? 'default' : 'outline'} size="sm" onclick={() => (selectedFilter = 'all')}>
               전체
             </Button>
-            <Button
-              variant={selectedFilter === 'post' ? 'default' : 'outline'}
-              size="sm"
-              onclick={() => selectedFilter = 'post'}
-            >
+            <Button variant={selectedFilter === 'post' ? 'default' : 'outline'} size="sm" onclick={() => (selectedFilter = 'post')}>
               게시글
             </Button>
             <Button
               variant={selectedFilter === 'knowledge' ? 'default' : 'outline'}
               size="sm"
-              onclick={() => selectedFilter = 'knowledge'}
+              onclick={() => (selectedFilter = 'knowledge')}
             >
               지식
             </Button>
-            <Button
-              variant={selectedFilter === 'note' ? 'default' : 'outline'}
-              size="sm"
-              onclick={() => selectedFilter = 'note'}
-            >
+            <Button variant={selectedFilter === 'note' ? 'default' : 'outline'} size="sm" onclick={() => (selectedFilter = 'note')}>
               노트
             </Button>
           </div>
@@ -293,11 +265,7 @@
           </Card.Header>
           <Card.Content class="space-y-4">
             <div class="flex flex-col sm:flex-row gap-4">
-              <SearchBar
-                class="flex-1"
-                placeholder="통합 검색..."
-                size="md"
-              />
+              <SearchBar class="flex-1" placeholder="통합 검색..." size="md" />
               <div class="flex gap-2">
                 <Button variant="outline" size="sm">
                   <Filter class="h-4 w-4 mr-2" />
@@ -336,16 +304,13 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">비활성 상태</h2>
-      <SearchBar
-        class="max-w-md"
-        placeholder="비활성 상태 검색 바"
-        disabled
-      />
+      <SearchBar class="max-w-md" placeholder="비활성 상태 검색 바" disabled />
     </div>
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import { SearchBar } from '$lib/components/ui/search-bar/index.js';
   
   let searchValue = $state('');
@@ -387,7 +352,8 @@
 <SearchBar size="lg" placeholder="큰 크기" />
 
 <!-- 비활성 상태 -->
-<SearchBar disabled placeholder="비활성 상태" />`}</code></pre>
+<SearchBar disabled placeholder="비활성 상태" />`}</code
+        ></pre>
     </div>
   </div>
 </section>

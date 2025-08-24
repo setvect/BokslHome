@@ -81,7 +81,7 @@
   <div class="absolute left-3 flex items-center justify-center">
     <Search class="h-4 w-4 text-muted-foreground" />
   </div>
-  
+
   <input
     type="text"
     {placeholder}

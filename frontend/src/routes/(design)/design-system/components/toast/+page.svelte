@@ -115,9 +115,7 @@
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">커스텀 토스트</h2>
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Button variant="outline" onclick={showCustomToast}>
-          이모지 토스트
-        </Button>
+        <Button variant="outline" onclick={showCustomToast}>이모지 토스트</Button>
         <Button variant="outline" onclick={showActionToast} class="flex items-center gap-2">
           <Download class="h-4 w-4" />
           액션 토스트
@@ -135,9 +133,7 @@
         <p class="text-sm text-muted-foreground">
           비동기 작업의 진행 상태를 자동으로 표시하는 토스트입니다. 로딩, 성공, 실패 상태를 자동으로 관리합니다.
         </p>
-        <Button onclick={showPromiseToast}>
-          비동기 작업 시작
-        </Button>
+        <Button onclick={showPromiseToast}>비동기 작업 시작</Button>
       </div>
     </div>
 
@@ -172,39 +168,54 @@
         <div class="p-4 border rounded-lg">
           <h3 class="font-semibold mb-2">복슬홈 시나리오</h3>
           <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
-            <Button size="sm" onclick={() => {
-              toast.success('게시글 발행됨', {
-                description: 'SvelteKit 가이드가 성공적으로 발행되었습니다.'
-              });
-            }}>
+            <Button
+              size="sm"
+              onclick={() => {
+                toast.success('게시글 발행됨', {
+                  description: 'SvelteKit 가이드가 성공적으로 발행되었습니다.'
+                });
+              }}
+            >
               게시글 발행
             </Button>
-            
-            <Button size="sm" variant="outline" onclick={() => {
-              toast.info('지식 베이스 업데이트', {
-                description: 'TypeScript 가이드에 새 섹션이 추가되었습니다.'
-              });
-            }}>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onclick={() => {
+                toast.info('지식 베이스 업데이트', {
+                  description: 'TypeScript 가이드에 새 섹션이 추가되었습니다.'
+                });
+              }}
+            >
               지식 업데이트
             </Button>
-            
-            <Button size="sm" variant="outline" onclick={() => {
-              toast.info('새 댓글', {
-                description: '김개발님이 댓글을 남겼습니다.'
-              });
-            }}>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onclick={() => {
+                toast.info('새 댓글', {
+                  description: '김개발님이 댓글을 남겼습니다.'
+                });
+              }}
+            >
               댓글 알림
             </Button>
-            
-            <Button size="sm" variant="outline" onclick={() => {
-              toast.warning('저장되지 않음', {
-                description: '5분 동안 비활성 상태입니다. 작업을 저장하세요.'
-              });
-              // 2초 후 저장 완료 토스트 표시
-              setTimeout(() => {
-                toast.success('저장 완료');
-              }, 2000);
-            }}>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onclick={() => {
+                toast.warning('저장되지 않음', {
+                  description: '5분 동안 비활성 상태입니다. 작업을 저장하세요.'
+                });
+                // 2초 후 저장 완료 토스트 표시
+                setTimeout(() => {
+                  toast.success('저장 완료');
+                }, 2000);
+              }}
+            >
               자동저장 경고
             </Button>
           </div>
@@ -215,23 +226,27 @@
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">위치 및 스타일</h2>
       <div class="space-y-4">
-        <p class="text-sm text-muted-foreground">
-          토스트의 위치는 전역적으로 설정되며, 다양한 위치에 표시할 수 있습니다.
-        </p>
+        <p class="text-sm text-muted-foreground">토스트의 위치는 전역적으로 설정되며, 다양한 위치에 표시할 수 있습니다.</p>
         <div class="grid gap-2 md:grid-cols-3">
-          <Button size="sm" variant="outline" onclick={() => {
-            toast.success('상단 중앙');
-          }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => {
+              toast.success('상단 중앙');
+            }}
+          >
             상단 중앙
           </Button>
-          <Button size="sm" variant="outline" onclick={() => {
-            toast.success('상단 오른쪽');
-          }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => {
+              toast.success('상단 오른쪽');
+            }}
+          >
             상단 오른쪽
           </Button>
-          <Button size="sm" variant="outline" onclick={showPositionedToast}>
-            하단 오른쪽
-          </Button>
+          <Button size="sm" variant="outline" onclick={showPositionedToast}>하단 오른쪽</Button>
         </div>
       </div>
     </div>
@@ -240,14 +255,14 @@
       <h2 class="text-xl font-semibold">설치 및 설정</h2>
       <div class="space-y-4">
         <p class="text-sm text-muted-foreground">
-          복슬홈에서는 svelte-sonner를 사용하여 토스트 알림을 구현했습니다. 
-          root layout에 Toaster 컴포넌트를 추가해야 합니다.
+          복슬홈에서는 svelte-sonner를 사용하여 토스트 알림을 구현했습니다. root layout에 Toaster 컴포넌트를 추가해야 합니다.
         </p>
-        
+
         <div class="space-y-4">
           <div>
             <h4 class="font-semibold mb-2">1. Layout에 Toaster 추가</h4>
-            <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<!-- src/routes/+layout.svelte -->
+            <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+                >{`<!-- src/routes/+layout.svelte -->
 <script>
   import { Toaster } from 'svelte-sonner';
 </script>
@@ -256,12 +271,14 @@
   {#render children?.()}
 </main>
 
-<Toaster richColors position="top-right" />`}</code></pre>
+<Toaster richColors position="top-right" />`}</code
+              ></pre>
           </div>
-          
+
           <div>
             <h4 class="font-semibold mb-2">2. 컴포넌트에서 사용</h4>
-            <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script>
+            <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+                >{`<script>
   import { toast } from 'svelte-sonner';
   
   function showToast() {
@@ -273,7 +290,8 @@
 
 <button onclick={showToast}>
   토스트 표시
-</button>`}</code></pre>
+</button>`}</code
+              ></pre>
           </div>
         </div>
       </div>
@@ -281,7 +299,8 @@
 
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">코드 예제</h2>
-      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code>{`<script lang="ts">
+      <pre class="text-sm bg-muted p-4 rounded-md overflow-x-auto"><code
+          >{`<script lang="ts">
   import { toast } from 'svelte-sonner';
   import { Button } from '$lib/components/ui/button/index.js';
   
@@ -357,7 +376,8 @@
   <Button onclick={showWithAction}>액션</Button>
   <Button onclick={showPromise}>Promise</Button>
   <Button onclick={showPersistent}>지속</Button>
-</div>`}</code></pre>
+</div>`}</code
+        ></pre>
     </div>
 
     <div class="space-y-4">

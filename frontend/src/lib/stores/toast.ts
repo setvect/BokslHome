@@ -44,84 +44,84 @@ function createToast(toast: Omit<Toast, 'id'>): Toast {
 export const toast = {
   success: (title: string, options?: { description?: string; duration?: number }) => {
     initializeToastContainer(); // Toast 사용 시 컨테이너 초기화
-    
+
     const newToast = createToast({
       type: 'success',
       title,
       ...options
     });
-    
-    toasts.update(all => [...all, newToast]);
-    
+
+    toasts.update((all) => [...all, newToast]);
+
     if (newToast.duration && newToast.duration !== Infinity) {
       setTimeout(() => {
         removeToast(newToast.id);
       }, newToast.duration);
     }
-    
+
     return newToast.id;
   },
-  
+
   error: (title: string, options?: { description?: string; duration?: number }) => {
     initializeToastContainer();
-    
+
     const newToast = createToast({
       type: 'error',
       title,
       ...options
     });
-    
-    toasts.update(all => [...all, newToast]);
-    
+
+    toasts.update((all) => [...all, newToast]);
+
     if (newToast.duration && newToast.duration !== Infinity) {
       setTimeout(() => {
         removeToast(newToast.id);
       }, newToast.duration);
     }
-    
+
     return newToast.id;
   },
-  
+
   warning: (title: string, options?: { description?: string; duration?: number }) => {
     initializeToastContainer();
-    
+
     const newToast = createToast({
       type: 'warning',
       title,
       ...options
     });
-    
-    toasts.update(all => [...all, newToast]);
-    
+
+    toasts.update((all) => [...all, newToast]);
+
     if (newToast.duration && newToast.duration !== Infinity) {
       setTimeout(() => {
         removeToast(newToast.id);
       }, newToast.duration);
     }
-    
+
     return newToast.id;
   },
-  
+
   info: (title: string, options?: { description?: string; duration?: number }) => {
     initializeToastContainer();
-    
+
     const newToast = createToast({
       type: 'info',
       title,
       ...options
     });
-    
-    toasts.update(all => [...all, newToast]);
-    
+
+    toasts.update((all) => [...all, newToast]);
+
     if (newToast.duration && newToast.duration !== Infinity) {
       setTimeout(() => {
         removeToast(newToast.id);
       }, newToast.duration);
     }
-    
+
     return newToast.id;
   },
-  
+
   promise: async <T>(
     promise: Promise<T>,
     options: {
@@ -131,15 +131,15 @@ export const toast = {
     }
   ) => {
     initializeToastContainer();
-    
+
     const loadingId = createToast({
       type: 'info',
       title: options.loading,
       duration: Infinity
     });
-    
-    toasts.update(all => [...all, loadingId]);
-    
+
+    toasts.update((all) => [...all, loadingId]);
+
     try {
       const result = await promise;
       removeToast(loadingId.id);
@@ -154,5 +154,5 @@ export const toast = {
 };
 
 export function removeToast(id: string) {
-  toasts.update(all => all.filter(toast => toast.id !== id));
+  toasts.update((all) => all.filter((toast) => toast.id !== id));
 }
