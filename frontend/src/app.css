@@ -136,6 +136,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   }
 
   /* 전역 스크롤바 테마 적용 */
