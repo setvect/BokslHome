@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PawPrint } from '@lucide/svelte';
   import type { RenderFn } from '$lib/types/common';
   let props = $props<{ open?: boolean; onNavigate?: () => void; children?: RenderFn }>();
   // children은 부모에서 전달된 기본 콘텐츠를 렌더링하기 위한 함수
@@ -7,8 +8,19 @@
   }
 </script>
 
-<aside class="w-64 border-r min-h-dvh p-4">
-  <div class="font-semibold mb-4">Design System</div>
+<aside class="w-64 border-r min-h-dvh pt-0">
+  <div class="h-14 flex items-center px-4 border-b border-border">
+    <a
+      href="/"
+      class="flex items-center gap-3 text-lg font-bold text-primary hover:text-primary/80 transition-colors group"
+      aria-label="복슬홈"
+    >
+      <PawPrint class="w-6 h-6 group-hover:scale-110 transition-transform" />
+      <span class="tracking-wide">복슬홈</span>
+    </a>
+  </div>
+  <div class="p-4">
+    <div class="font-semibold mb-4">Design System</div>
   <nav class="space-y-4 text-sm">
     <div>
       <div class="mb-1 font-medium text-muted-foreground">Overview</div>
@@ -71,5 +83,6 @@
       </div>
     </div>
   </nav>
+  </div>
   {@render props.children?.()}
 </aside>
