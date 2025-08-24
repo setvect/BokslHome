@@ -1,11 +1,13 @@
 <script lang="ts">
   import type { RenderFn } from '$lib/types/common';
+  import { Sun, Moon } from '@lucide/svelte';
+  
   let props = $props<{
     title?: string;
     actions?: RenderFn;
     onToggleSidebar?: () => void;
-    onSetLight?: () => void;
-    onSetDark?: () => void;
+    onToggleTheme?: () => void;
+    isDarkMode?: boolean;
   }>();
   // actions: 이름 있는 슬롯 대체 렌더 함수
 </script>
@@ -20,10 +22,20 @@
   <div class="text-lg font-semibold" aria-hidden="true"></div>
   <div class="ml-auto flex items-center gap-2">
     <!-- 테마 토글 버튼 -->
-    <button type="button" class="px-3 py-1 rounded border" aria-label="라이트 테마로 변경" onclick={() => props.onSetLight?.()}
-      >Light</button
+    <button 
+      type="button" 
+      class="flex items-center gap-2 px-3 py-1 rounded border hover:bg-accent hover:text-accent-foreground transition-colors" 
+      aria-label={props.isDarkMode ? "라이트 모드로 변경" : "다크 모드로 변경"} 
+      onclick={() => props.onToggleTheme?.()}
     >
-    <button type="button" class="px-3 py-1 rounded border" aria-label="다크 테마로 변경" onclick={() => props.onSetDark?.()}>Dark</button>
+      {#if props.isDarkMode}
+        <Sun class="w-4 h-4" />
+        <span>Light</span>
+      {:else}
+        <Moon class="w-4 h-4" />
+        <span>Dark</span>
+      {/if}
+    </button>
 
     {@render props.actions?.()}
   </div>

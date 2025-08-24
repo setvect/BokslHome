@@ -27,13 +27,10 @@
   $effect(() => {
     applyThemeToDocument(theme);
   });
-  function setLight() {
-    theme = THEME.LIGHT;
-    saveTheme(THEME.LIGHT);
-  }
-  function setDark() {
-    theme = THEME.DARK;
-    saveTheme(THEME.DARK);
+  function toggleTheme() {
+    const newTheme = theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
+    theme = newTheme;
+    saveTheme(newTheme);
   }
 
   // 사이드바 상태 (모바일 기본 닫힘, 데스크톱 기본 열림) + 데스크톱 지속성
@@ -104,7 +101,7 @@
   </aside>
   <!-- 우측 헤더 + 메인 -->
   <div class="flex-1 flex flex-col">
-    <Header onToggleSidebar={toggleSidebar} onSetLight={setLight} onSetDark={setDark} />
+    <Header onToggleSidebar={toggleSidebar} onToggleTheme={toggleTheme} isDarkMode={theme === THEME.DARK} />
     <MainContent>
       {@render children?.()}
     </MainContent>
