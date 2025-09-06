@@ -124,12 +124,19 @@ npm run build       # 빌드 성공 확인
 - **파일 삭제/이동**: Git을 통한 버전 관리를 신뢰하고 직접 파일 조작
 - **변경 추적**: 모든 변경사항은 Git 히스토리를 통해 추적 가능
 
-### 8.3 금지사항
+### 8.3 개발 서버 관리 원칙
+- **Claude Code 자동 관리**: Claude Code가 백그라운드에서 `npm run dev` 자동 실행
+- **중복 실행 금지**: 추가로 `npm run dev` 실행하지 않기 (포트 충돌 방지)
+- **빌드/검증만**: 필요시 `npm run build`, `npm run type-check`, `npm run lint`만 실행
+- **포트 확인**: Claude Code가 관리하는 개발 서버 포트 사용 (보통 3000, 3001)
+
+### 8.4 금지사항
 - Svelte/Vue 등 다른 프레임워크 문법 사용 금지
 - 하드코딩된 색상 값 사용 금지 (CSS 변수 사용)
 - 접근성을 완전히 무시하는 구현 금지
 - TypeScript any 타입 남용 금지
 - **백업 파일 생성 금지**: `.backup`, `.bak`, `.old` 등의 백업 파일 생성하지 않기
+- **개발 서버 중복 실행 금지**: Claude Code 자동 관리 개발 서버와 중복 실행하지 않기
 
 ## 9. 참고 문서
 - **Next.js 공식 문서**: https://nextjs.org/docs
