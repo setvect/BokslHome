@@ -51,6 +51,31 @@ const navigation = [
         href: '/design-system/components/forms',
         icon: Code2,
       },
+      {
+        name: 'Dialog & Modal',
+        href: '/design-system/components/dialog',
+        icon: Code2,
+      },
+      {
+        name: 'Table',
+        href: '/design-system/components/table',
+        icon: Code2,
+      },
+      {
+        name: 'Alert & Toast',
+        href: '/design-system/components/alert',
+        icon: Code2,
+      },
+      {
+        name: 'Navigation',
+        href: '/design-system/components/navigation',
+        icon: Code2,
+      },
+      {
+        name: 'Data Display',
+        href: '/design-system/components/data-display',
+        icon: Code2,
+      },
     ],
   },
   {
