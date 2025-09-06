@@ -22,7 +22,7 @@
   - [ ] App Router 사용 (권장)
   - [ ] import alias 설정 (`@/*`)
 - [ ] `cd frontend && npm install` 실행
-- [ ] 기본 개발 서버 실행 테스트: `npm run dev`
+- [ ] 기본 개발 서버 실행 확인: `npm run dev`
 
 ### 1.3 TypeScript 설정
 - [ ] `tsconfig.json` 확인 및 커스터마이징
@@ -70,7 +70,7 @@
 ### 1.8 기본 페이지 생성
 - [ ] `src/app/layout.tsx` 루트 레이아웃 설정
 - [ ] `src/app/page.tsx` 홈페이지 생성
-- [ ] Tailwind CSS 테스트용 스타일 적용
+- [ ] Tailwind CSS 기본 스타일 적용
 - [ ] 메타데이터 및 SEO 기본 설정
 
 ### 1.9 최종 검증
