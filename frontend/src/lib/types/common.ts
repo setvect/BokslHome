@@ -6,7 +6,7 @@ export interface User {
   email: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T;
   message?: string;
   status: 'success' | 'error';
