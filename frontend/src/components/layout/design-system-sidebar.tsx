@@ -47,8 +47,23 @@ const navigation = [
         icon: Code2,
       },
       {
-        name: '폼',
+        name: '폼 개요',
         href: '/design-system/components/forms',
+        icon: Code2,
+      },
+      {
+        name: '입력 필드',
+        href: '/design-system/components/forms/input',
+        icon: Code2,
+      },
+      {
+        name: '선택 컴포넌트',
+        href: '/design-system/components/forms/select',
+        icon: Code2,
+      },
+      {
+        name: '통합 폼 예제',
+        href: '/design-system/components/forms/complete',
         icon: Code2,
       },
       {

@@ -1,366 +1,300 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Badge } from '@/components/ui/badge';
-import { Copy, Check } from 'lucide-react';
-import { loginSchema } from '@/lib/schemas/form-schemas';
+import { ArrowRight, Type, CheckSquare, ToggleLeft, MousePointer } from 'lucide-react';
 
-const FormExample = ({ 
-  title, 
-  description, 
-  children, 
-  code 
-}: { 
-  title: string; 
-  description: string; 
-  children: React.ReactNode; 
-  code: string; 
-}) => {
-  const [copied, setCopied] = useState(false);
+const formCategories = [
+  {
+    title: '입력 필드',
+    description: '텍스트, 이메일, 비밀번호 등 기본적인 사용자 입력을 받는 컴포넌트들',
+    href: '/design-system/components/forms/input',
+    icon: Type,
+    components: ['Input', 'Textarea', 'Label'],
+    examples: '텍스트 입력, 비밀번호, 이메일, 전화번호',
+  },
+  {
+    title: '선택 컴포넌트',
+    description: '드롭다운, 라디오, 체크박스 등 선택을 위한 컴포넌트들',
+    href: '/design-system/components/forms/select',
+    icon: CheckSquare,
+    components: ['Select', 'RadioGroup', 'Checkbox', 'Switch'],
+    examples: '드롭다운 선택, 라디오 버튼, 체크박스, 토글',
+  },
+  {
+    title: '통합 폼 예제',
+    description: 'React Hook Form + Zod를 활용한 완전한 폼 검증 시스템',
+    href: '/design-system/components/forms/complete',
+    icon: MousePointer,
+    components: ['Form', 'FormField', 'FormControl', 'FormMessage'],
+    examples: '실시간 검증, 오류 처리, 폼 제출',
+  },
+];
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+const quickStartSteps = [
+  {
+    step: '1',
+    title: '컴포넌트 import',
+    description: 'shadcn/ui 폼 컴포넌트들을 import합니다.',
+    code: `import { Input, Label, Button } from '@/components/ui/...'`,
+  },
+  {
+    step: '2',
+    title: 'React Hook Form 설정',
+    description: 'useForm 훅과 Zod 스키마를 설정합니다.',
+    code: `const form = useForm({ resolver: zodResolver(schema) })`,
+  },
+  {
+    step: '3',
+    title: '폼 구현',
+    description: 'FormField와 FormControl을 사용해 폼을 구현합니다.',
+    code: `<FormField control={form.control} name="email" ... />`,
+  },
+];
 
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg">{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={copyToClipboard}
-            className="shrink-0"
-          >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* 미리보기 */}
-        <div className="p-4 border border-border rounded-lg bg-muted/30">
-          {children}
-        </div>
-        
-        {/* 코드 */}
-        <div className="bg-muted p-3 rounded-lg">
-          <pre className="text-sm font-mono overflow-x-auto">
-            <code>{code}</code>
-          </pre>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-export default function FormsPage() {
-  // React Hook Form 예시
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      rememberMe: false,
-    },
-  });
-
-  const onSubmit = (data: unknown) => {
-    console.log('폼 제출:', data);
-    // 실제로는 API 호출 등을 수행
-  };
-
+export default function FormsOverviewPage() {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">폼</h1>
+        <h1 className="text-3xl font-bold text-foreground">폼 컴포넌트</h1>
         <p className="text-muted-foreground">
-          사용자 입력을 받기 위한 폼 컴포넌트와 유효성 검사 시스템입니다.
+          사용자 입력을 받고 검증하기 위한 폼 컴포넌트들입니다. React Hook Form과 Zod를 활용한 타입 안전한 검증을 지원합니다.
         </p>
       </div>
 
-      {/* 기본 입력 필드 */}
-      <FormExample
-        title="기본 입력 필드"
-        description="라벨과 함께 사용되는 기본 입력 필드"
-        code={`<div className="space-y-2">
-  <Label htmlFor="email">이메일</Label>
-  <Input 
-    id="email"
-    type="email" 
-    placeholder="이메일을 입력하세요" 
-  />
-</div>
-<div className="space-y-2">
-  <Label htmlFor="password">비밀번호</Label>
-  <Input 
-    id="password"
-    type="password" 
-    placeholder="비밀번호를 입력하세요" 
-  />
-</div>`}
-      >
-        <div className="space-y-4 max-w-sm">
-          <div className="space-y-2">
-            <Label htmlFor="email">이메일</Label>
-            <Input 
-              id="email"
-              type="email" 
-              placeholder="이메일을 입력하세요" 
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">비밀번호</Label>
-            <Input 
-              id="password"
-              type="password" 
-              placeholder="비밀번호를 입력하세요" 
-            />
-          </div>
-        </div>
-      </FormExample>
-
-      {/* 입력 필드 상태 */}
-      <FormExample
-        title="입력 필드 상태"
-        description="다양한 상태의 입력 필드들"
-        code={`<Input placeholder="기본 상태" />
-<Input placeholder="비활성화" disabled />
-<Input placeholder="오류 상태" className="border-destructive" />
-<Input placeholder="성공 상태" className="border-green-500" />`}
-      >
-        <div className="space-y-3 max-w-sm">
-          <Input placeholder="기본 상태" />
-          <Input placeholder="비활성화" disabled />
-          <Input placeholder="오류 상태" className="border-destructive" />
-          <Input placeholder="성공 상태" className="border-green-500" />
-        </div>
-      </FormExample>
-
-      {/* React Hook Form과 Zod */}
-      <FormExample
-        title="React Hook Form + Zod 검증"
-        description="유효성 검사가 포함된 완전한 폼 예시"
-        code={`const form = useForm<LoginFormData>({
-  resolver: zodResolver(loginSchema),
-  defaultValues: { email: '', password: '', rememberMe: false },
-});
-
-<Form {...form}>
-  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-    <FormField
-      control={form.control}
-      name="email"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>이메일</FormLabel>
-          <FormControl>
-            <Input placeholder="이메일을 입력하세요" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <Button type="submit">로그인</Button>
-  </form>
-</Form>`}
-      >
-        <div className="max-w-sm">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>이메일</FormLabel>
-                    <FormControl>
-                      <Input placeholder="이메일을 입력하세요" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      로그인에 사용할 이메일 주소를 입력하세요.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>비밀번호</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="비밀번호를 입력하세요" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? '로그인 중...' : '로그인'}
-              </Button>
-            </form>
-          </Form>
-        </div>
-      </FormExample>
-
-      {/* 폼 컴포넌트 Props */}
+      {/* 빠른 시작 */}
       <Card>
         <CardHeader>
-          <CardTitle>Input Props</CardTitle>
-          <CardDescription>Input 컴포넌트에서 사용 가능한 주요 속성들</CardDescription>
+          <CardTitle>빠른 시작</CardTitle>
+          <CardDescription>
+            폼 컴포넌트를 사용하기 위한 기본 설정과 사용 방법입니다.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-2 font-medium">속성</th>
-                  <th className="text-left p-2 font-medium">타입</th>
-                  <th className="text-left p-2 font-medium">기본값</th>
-                  <th className="text-left p-2 font-medium">설명</th>
-                </tr>
-              </thead>
-              <tbody className="text-muted-foreground">
-                <tr className="border-b border-border">
-                  <td className="p-2 font-mono">type</td>
-                  <td className="p-2">string</td>
-                  <td className="p-2">&quot;text&quot;</td>
-                  <td className="p-2">입력 필드 타입</td>
-                </tr>
-                <tr className="border-b border-border">
-                  <td className="p-2 font-mono">placeholder</td>
-                  <td className="p-2">string</td>
-                  <td className="p-2">-</td>
-                  <td className="p-2">플레이스홀더 텍스트</td>
-                </tr>
-                <tr className="border-b border-border">
-                  <td className="p-2 font-mono">disabled</td>
-                  <td className="p-2">boolean</td>
-                  <td className="p-2">false</td>
-                  <td className="p-2">입력 필드 비활성화</td>
-                </tr>
-                <tr className="border-b border-border">
-                  <td className="p-2 font-mono">value</td>
-                  <td className="p-2">string</td>
-                  <td className="p-2">-</td>
-                  <td className="p-2">입력값 (제어 컴포넌트)</td>
-                </tr>
-                <tr>
-                  <td className="p-2 font-mono">onChange</td>
-                  <td className="p-2">function</td>
-                  <td className="p-2">-</td>
-                  <td className="p-2">값 변경 핸들러</td>
-                </tr>
-              </tbody>
-            </table>
+        <CardContent className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-3">
+            {quickStartSteps.map((step) => (
+              <div key={step.step} className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-medium">
+                    {step.step}
+                  </div>
+                  <h3 className="font-medium text-foreground">{step.title}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+                <div className="bg-muted p-3 rounded-lg">
+                  <code className="text-sm font-mono">{step.code}</code>
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* 폼 패턴 */}
+      {/* 폼 컴포넌트 카테고리 */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-foreground">컴포넌트 카테고리</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {formCategories.map((category) => {
+            const Icon = category.icon;
+            return (
+              <Card key={category.title} className="group cursor-pointer hover:shadow-md transition-shadow">
+                <Link href={category.href}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="rounded-lg p-2 bg-primary text-primary-foreground">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{category.title}</CardTitle>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-sm leading-relaxed mb-3">
+                      {category.description}
+                    </CardDescription>
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">포함 컴포넌트:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {category.components.map(component => (
+                            <Badge key={component} variant="secondary" className="text-xs">
+                              {component}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">사용 예시:</p>
+                        <p className="text-xs text-muted-foreground">{category.examples}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 주요 특징 */}
       <Card>
         <CardHeader>
-          <CardTitle>폼 패턴</CardTitle>
-          <CardDescription>일반적인 폼 사용 패턴과 모범 사례</CardDescription>
+          <CardTitle>주요 특징</CardTitle>
+          <CardDescription>복슬홈 폼 시스템의 핵심 기능들</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <h4 className="font-medium text-foreground mb-3">유효성 검사</h4>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary">실시간</Badge>
-                  <span className="text-sm text-muted-foreground">입력 중 즉시 검증</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary">제출시</Badge>
-                  <span className="text-sm text-muted-foreground">폼 제출 시점 검증</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary">조건부</Badge>
-                  <span className="text-sm text-muted-foreground">상황에 따른 검증</span>
-                </div>
-              </div>
+              <h4 className="font-medium text-foreground mb-3">타입 안전성</h4>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>TypeScript와 Zod 스키마로 완전한 타입 안전성 보장</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>컴파일 타임에 오류 검출 및 자동완성 지원</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>런타임 검증과 타입 추론의 완벽한 조화</span>
+                </li>
+              </ul>
             </div>
             <div>
-              <h4 className="font-medium text-foreground mb-3">에러 처리</h4>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Badge variant="destructive">필드 오류</Badge>
-                  <span className="text-sm text-muted-foreground">개별 필드 오류 메시지</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="destructive">폼 오류</Badge>
-                  <span className="text-sm text-muted-foreground">전체 폼 오류 메시지</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant="destructive">서버 오류</Badge>
-                  <span className="text-sm text-muted-foreground">서버 응답 오류</span>
-                </div>
-              </div>
+              <h4 className="font-medium text-foreground mb-3">사용자 경험</h4>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>실시간 입력 검증과 즉각적인 피드백</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>명확하고 구체적인 오류 메시지</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>접근성과 키보드 네비게이션 완벽 지원</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-foreground mb-3">성능 최적화</h4>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>불필요한 리렌더링 최소화</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>비제어 컴포넌트를 활용한 최적화된 성능</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>지연 검증과 디바운싱으로 효율적인 처리</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-foreground mb-3">개발자 경험</h4>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>일관된 API와 직관적인 사용법</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>포괄적인 문서화와 코드 예시</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span>모듈식 설계로 필요한 컴포넌트만 사용</span>
+                </li>
+              </ul>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Zod 스키마 예시 */}
+      {/* 기술 스택 */}
       <Card>
         <CardHeader>
-          <CardTitle>Zod 스키마 예시</CardTitle>
-          <CardDescription>유효성 검사를 위한 스키마 정의 방법</CardDescription>
+          <CardTitle>기술 스택</CardTitle>
+          <CardDescription>폼 시스템에서 사용되는 주요 라이브러리들</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="bg-muted p-4 rounded-lg">
-            <pre className="text-sm font-mono overflow-x-auto">
-              <code>{`import { z } from 'zod';
-
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, '이메일을 입력해주세요.')
-    .email('유효한 이메일 주소를 입력해주세요.'),
-  password: z
-    .string()
-    .min(1, '비밀번호를 입력해주세요.')
-    .min(6, '비밀번호는 최소 6자 이상이어야 합니다.'),
-  rememberMe: z.boolean().default(false),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;`}</code>
-            </pre>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 mx-auto bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+                RHF
+              </div>
+              <h4 className="font-medium text-foreground">React Hook Form</h4>
+              <p className="text-xs text-muted-foreground">성능 최적화된 폼 라이브러리</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 mx-auto bg-secondary text-secondary-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+                Z
+              </div>
+              <h4 className="font-medium text-foreground">Zod</h4>
+              <p className="text-xs text-muted-foreground">타입 안전한 스키마 검증</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 mx-auto bg-accent text-accent-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+                UI
+              </div>
+              <h4 className="font-medium text-foreground">shadcn/ui</h4>
+              <p className="text-xs text-muted-foreground">현대적인 UI 컴포넌트</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 mx-auto bg-muted text-muted-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+                TS
+              </div>
+              <h4 className="font-medium text-foreground">TypeScript</h4>
+              <p className="text-xs text-muted-foreground">정적 타입 시스템</p>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 접근성 */}
+      {/* 시작하기 */}
       <Card>
         <CardHeader>
-          <CardTitle>접근성</CardTitle>
-          <CardDescription>폼 접근성을 위한 고려사항</CardDescription>
+          <CardTitle>시작하기</CardTitle>
+          <CardDescription>
+            아래 링크를 통해 각 컴포넌트의 상세한 사용법을 확인하세요.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <ul className="text-sm text-muted-foreground space-y-2">
-            <li>• <strong>라벨 연결:</strong> 모든 입력 필드에 적절한 라벨 제공</li>
-            <li>• <strong>오류 알림:</strong> 스크린 리더가 인식할 수 있는 오류 메시지</li>
-            <li>• <strong>키보드 네비게이션:</strong> Tab 순서와 Enter/Space 키 지원</li>
-            <li>• <strong>ARIA 속성:</strong> required, invalid, describedby 등 적절한 속성 사용</li>
-            <li>• <strong>포커스 관리:</strong> 오류 발생 시 해당 필드로 포커스 이동</li>
-          </ul>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button asChild className="flex-1">
+              <Link href="/design-system/components/forms/input">
+                <Type className="w-4 h-4 mr-2" />
+                입력 필드 보기
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="flex-1">
+              <Link href="/design-system/components/forms/select">
+                <CheckSquare className="w-4 h-4 mr-2" />
+                선택 컴포넌트 보기
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="flex-1">
+              <Link href="/design-system/components/forms/complete">
+                <MousePointer className="w-4 h-4 mr-2" />
+                통합 예제 보기
+              </Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

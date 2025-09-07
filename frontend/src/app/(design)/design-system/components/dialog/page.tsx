@@ -117,6 +117,9 @@ const DialogExample = () => {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>상세 정보</DialogTitle>
+                  <DialogDescription>
+                    사용자에게 중요한 정보나 상세 내용을 표시하는 다이얼로그입니다.
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <p className="text-sm text-muted-foreground leading-relaxed">
