@@ -12,30 +12,38 @@
 ## A. MarkdownEditor 구현
 
 ### A.1 기본 환경 설정
-- [ ] CodeMirror 6 패키지 설치 (@uiw/react-codemirror, @codemirror/lang-markdown, @codemirror/theme-one-dark)
-- [ ] 마크다운 처리 패키지 설치 (marked, prismjs, mermaid)
-- [ ] 타입 정의 등 개발 의존성 설치
+- [ ] **핵심 CodeMirror 패키지**: @uiw/react-codemirror, @codemirror/lang-markdown
+- [ ] **테마 패키지**: @codemirror/theme-one-dark, @fsegurai/codemirror-theme-github-light
+- [ ] **CodeMirror 기능 패키지**: @codemirror/commands, @codemirror/search, @codemirror/autocomplete, @codemirror/view
+- [ ] **문법 강조**: @lezer/highlight (태그 정의용)
+- [ ] **마크다운 처리**: marked, prismjs, mermaid
+- [ ] **타입 정의**: @types/marked, @types/prismjs
 
-### A.2 유틸리티 모듈 구현
+### A.2 유틸리티 모듈 구현 ⚠️ **핵심: 단순화 우선**
 - [ ] `src/lib/utils/theme-detector.ts` - 테마 감지 로직
 - [ ] useTheme 훅 활용하여 isDarkMode 상태 반환
 - [ ] system 테마 고려한 다크 모드 감지
-- [ ] `src/lib/utils/prism-highlighter.ts` - 문법 강조
+- [ ] `src/lib/utils/codemirror-config.ts` - **간단한 테마 설정 우선**
+  - [ ] **중요**: 기본 테마(oneDark, githubLight) 우선 사용
+  - [ ] 커스텀 스타일은 폰트, 패딩, 스크롤만 최소한으로
+  - [ ] 색상은 테마에 완전히 위임
 - [ ] `src/lib/utils/mermaid-renderer.ts` - Mermaid 다이어그램 렌더링
-- [ ] `src/lib/utils/codemirror-config.ts` - CodeMirror 설정
 - [ ] `src/lib/utils/markdown-renderer.ts` - Markdown → HTML 변환
+- [ ] `src/lib/utils/prism-highlighter.ts` - 문법 강조 (필요시)
 
-### A.3 MarkdownEditor 컴포넌트 구현
+### A.3 MarkdownEditor 컴포넌트 구현 ⚠️ **핵심: 테마 적용 단순화**
 - [ ] `src/components/ui/markdown-editor.tsx` 기본 구조 생성
 - [ ] MarkdownEditorProps 인터페이스 정의
 - [ ] showPreview, isFullscreen, previewHtml 상태 관리
 - [ ] 툴바 영역 (미리보기 토글, 전체화면 버튼)
 - [ ] CodeMirror 에디터 영역 및 미리보기 영역 분할
-- [ ] 테마에 따른 CodeMirror 테마 적용
+- [ ] **중요**: 테마에 따른 CodeMirror extensions 재계산 최적화
+  - [ ] useMemo 의존성 배열에 isDarkMode 포함
+  - [ ] 테마 전환 시 깜빡임 방지
 - [ ] prose 스타일링으로 미리보기 표시
 - [ ] 실시간 미리보기 기능 구현
 - [ ] Mermaid 다이어그램 지원 (```mermaid 코드 블록)
-- [ ] 이미지 붙여넣기 및 드래그 앤 드롭 기능
+- [ ] **단순화**: 이미지 붙여넣기는 후순위 (기본 기능 우선)
 - [ ] 전체화면 모드 및 미리보기 토글
 
 ### A.4 MarkdownEditor 최적화 및 마무리
@@ -52,9 +60,28 @@
 - [ ] `/design-system/components/markdown/page.tsx` 생성
 - [ ] 마크다운 에디터 문서 페이지 구성
 - [ ] Tabs 컴포넌트로 데모/Props/예시 섹션 구성
-- [ ] 기본 마크다운 컨텐츠 샘플 작성
+- [ ] 기본 마크다운 컨텐츠 샘플 작성 (Mermaid 문법 주의)
 - [ ] 라이브 데모 구현 (실시간 편집 및 미리보기)
 - [ ] Props 설명 및 사용 예시 추가
+
+---
+
+## ⚠️ **경험상 주의사항 (롤백 전 참고)**
+
+### **테마 적용 문제 해결법**
+1. **기본 테마 우선**: 커스텀 스타일보다 검증된 테마 라이브러리 사용
+2. **단순한 구조**: commonTheme(레이아웃) + 테마별 색상 분리
+3. **순서 중요**: 테마 → 공통 스타일 순서로 적용
+
+### **자주 발생하는 문제들**
+- **글자 크기 불일치**: 공통 스타일에서 fontSize 통합 관리
+- **배경색 충돌**: 색상은 테마에만 위임, 커스텀 스타일에서 제거
+- **HTML 엔티티**: Mermaid에 전달 전 `&gt;` → `>` 디코딩 필수
+
+### **권장 개발 순서**
+1. **기본 테마 먼저**: 라이트/다크 테마 정상 작동 확인
+2. **기능 추가**: 테마 안정화 후 Mermaid, 미리보기 등 추가
+3. **점진적 개선**: 한 번에 모든 기능보다 단계적 구현
 
 ## B. HtmlEditor 구현
 
