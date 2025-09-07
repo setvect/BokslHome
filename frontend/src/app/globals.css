@@ -217,3 +217,51 @@
     @apply max-w-full h-auto rounded;
   }
 }
+
+/* HTML Editor Styles */
+@layer components {
+  .html-editor [contenteditable]:empty:before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground pointer-events-none;
+  }
+
+  .html-editor [contenteditable]:focus:before {
+    content: '';
+  }
+
+  .html-editor [contenteditable] {
+    @apply focus:outline-none;
+  }
+
+  .html-editor [contenteditable] blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
+  }
+
+  .html-editor [contenteditable] ul {
+    @apply list-disc ml-6 my-2;
+  }
+
+  .html-editor [contenteditable] ol {
+    @apply list-decimal ml-6 my-2;
+  }
+
+  .html-editor [contenteditable] li {
+    @apply my-1;
+  }
+
+  .html-editor [contenteditable] h1,
+  .html-editor [contenteditable] h2,
+  .html-editor [contenteditable] h3,
+  .html-editor [contenteditable] h4,
+  .html-editor [contenteditable] h5,
+  .html-editor [contenteditable] h6 {
+    @apply font-bold my-4 first:mt-0;
+  }
+
+  .html-editor [contenteditable] h1 { @apply text-2xl; }
+  .html-editor [contenteditable] h2 { @apply text-xl; }
+  .html-editor [contenteditable] h3 { @apply text-lg; }
+  .html-editor [contenteditable] p {
+    @apply my-2;
+  }
+}

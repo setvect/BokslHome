@@ -101,6 +101,11 @@ const navigation = [
         href: '/design-system/components/markdown',
         icon: Edit3,
       },
+      {
+        name: 'HTML Editor',
+        href: '/design-system/components/html-editor',
+        icon: Code2,
+      },
     ],
   },
   {
