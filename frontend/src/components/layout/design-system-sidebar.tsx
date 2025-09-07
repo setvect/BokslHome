@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { X, Palette, Type, Space, Layers, Code2, Zap } from 'lucide-react';
+import { X, Palette, Type, Space, Layers, Code2, Zap, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -90,6 +90,16 @@ const navigation = [
         name: 'Data Display',
         href: '/design-system/components/data-display',
         icon: Code2,
+      },
+    ],
+  },
+  {
+    category: '에디터',
+    items: [
+      {
+        name: 'Markdown Editor',
+        href: '/design-system/components/markdown',
+        icon: Edit3,
       },
     ],
   },

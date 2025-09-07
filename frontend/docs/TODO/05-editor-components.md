@@ -12,76 +12,47 @@
 ## A. MarkdownEditor 구현
 
 ### A.1 기본 환경 설정
-- [ ] **핵심 CodeMirror 패키지**: @uiw/react-codemirror, @codemirror/lang-markdown
-- [ ] **테마 패키지**: @codemirror/theme-one-dark, @fsegurai/codemirror-theme-github-light
-- [ ] **CodeMirror 기능 패키지**: @codemirror/commands, @codemirror/search, @codemirror/autocomplete, @codemirror/view
-- [ ] **문법 강조**: @lezer/highlight (태그 정의용)
-- [ ] **마크다운 처리**: marked, prismjs, mermaid
-- [ ] **타입 정의**: @types/marked, @types/prismjs
+- [ ] CodeMirror 6 패키지 설치 (@uiw/react-codemirror, @codemirror/lang-markdown, @codemirror/theme-one-dark)
+- [ ] 마크다운 처리 패키지 설치 (marked, prismjs, mermaid)
+- [ ] 타입 정의 등 개발 의존성 설치
 
-### A.2 유틸리티 모듈 구현 ⚠️ **핵심: 단순화 우선**
-- [ ] `src/lib/utils/theme-detector.ts` - 테마 감지 로직
-- [ ] useTheme 훅 활용하여 isDarkMode 상태 반환
-- [ ] system 테마 고려한 다크 모드 감지
-- [ ] `src/lib/utils/codemirror-config.ts` - **간단한 테마 설정 우선**
-  - [ ] **중요**: 기본 테마(oneDark, githubLight) 우선 사용
-  - [ ] 커스텀 스타일은 폰트, 패딩, 스크롤만 최소한으로
-  - [ ] 색상은 테마에 완전히 위임
-- [ ] `src/lib/utils/mermaid-renderer.ts` - Mermaid 다이어그램 렌더링
-- [ ] `src/lib/utils/markdown-renderer.ts` - Markdown → HTML 변환
-- [ ] `src/lib/utils/prism-highlighter.ts` - 문법 강조 (필요시)
-
-### A.3 MarkdownEditor 컴포넌트 구현 ⚠️ **핵심: 테마 적용 단순화**
+### A.2 기본 MarkdownEditor 컴포넌트 구현
 - [ ] `src/components/ui/markdown-editor.tsx` 기본 구조 생성
 - [ ] MarkdownEditorProps 인터페이스 정의
-- [ ] showPreview, isFullscreen, previewHtml 상태 관리
-- [ ] 툴바 영역 (미리보기 토글, 전체화면 버튼)
-- [ ] CodeMirror 에디터 영역 및 미리보기 영역 분할
-- [ ] **중요**: 테마에 따른 CodeMirror extensions 재계산 최적화
-  - [ ] useMemo 의존성 배열에 isDarkMode 포함
-  - [ ] 테마 전환 시 깜빡임 방지
+- [ ] 기본 CodeMirror 에디터 설정 및 렌더링
+- [ ] 기본 툴바 영역 구성
+- [ ] 기본 레이아웃 구조 (에디터 영역)
+
+### A.3 테마 시스템 연동
+- [ ] 테마 감지 로직 구현 (`src/lib/utils/theme-detector.ts`)
+- [ ] useTheme 훅 활용하여 isDarkMode 상태 반환
+- [ ] system 테마 고려한 다크 모드 감지
+- [ ] 테마에 따른 CodeMirror 테마 적용
+- [ ] 라이트/다크 모드에서 에디터 스타일 검증
+
+### A.4 미리보기 기능 구현
+- [ ] showPreview 상태 관리 추가
+- [ ] 마크다운 렌더링 유틸리티 구현 (`src/lib/utils/markdown-renderer.ts`)
+- [ ] Marked 라이브러리 설정 및 기본 HTML 변환
+- [ ] 에디터/미리보기 분할 레이아웃 구성
 - [ ] prose 스타일링으로 미리보기 표시
-- [ ] 실시간 미리보기 기능 구현
-- [ ] Mermaid 다이어그램 지원 (```mermaid 코드 블록)
-- [ ] **단순화**: 이미지 붙여넣기는 후순위 (기본 기능 우선)
-- [ ] 전체화면 모드 및 미리보기 토글
+- [ ] 실시간 미리보기 기능 (타이핑 시 자동 업데이트)
+- [ ] 미리보기 토글 버튼 구현
 
-### A.4 MarkdownEditor 최적화 및 마무리
-- [ ] 동적 import 활용:
-  - [ ] Mermaid 동적 import
-  - [ ] Prism.js 언어별 동적 로딩
-  - [ ] CodeMirror 확장 기능 지연 로딩
-- [ ] 메모리 관리 (언마운트 시 정리)
-- [ ] 반응형 레이아웃 (모바일/데스크톱)
-- [ ] 이미지 업로드 시스템 (드래그 앤 드롭, 클립보드)
-- [ ] 타입 정의 (`src/lib/types/editor.ts` - MarkdownEditor 부분)
+### A.5 Mermaid 다이어그램 지원
+- [ ] Mermaid 렌더링 유틸리티 구현 (`src/lib/utils/mermaid-renderer.ts`)
+- [ ] ```mermaid 코드 블록 감지 및 처리
+- [ ] 다이어그램 테마 적용 (라이트/다크 모드)
+- [ ] 다이어그램 렌더링 오류 처리
 
-### A.5 MarkdownEditor 문서화
-- [ ] `/design-system/components/markdown/page.tsx` 생성
-- [ ] 마크다운 에디터 문서 페이지 구성
-- [ ] Tabs 컴포넌트로 데모/Props/예시 섹션 구성
-- [ ] 기본 마크다운 컨텐츠 샘플 작성 (Mermaid 문법 주의)
-- [ ] 라이브 데모 구현 (실시간 편집 및 미리보기)
-- [ ] Props 설명 및 사용 예시 추가
+### A.6 고급 기능 구현
+- [ ] 전체화면 모드 상태 관리 (isFullscreen)
+- [ ] 전체화면 모드 토글 및 스타일링
+- [ ] 이미지 붙여넣기 기능 구현
+- [ ] 드래그 앤 드롭 이미지 업로드 처리
+- [ ] 문법 강조 최적화 (`src/lib/utils/prism-highlighter.ts`)
+- [ ] CodeMirror 확장 설정 (`src/lib/utils/codemirror-config.ts`)
 
----
-
-## ⚠️ **경험상 주의사항 (롤백 전 참고)**
-
-### **테마 적용 문제 해결법**
-1. **기본 테마 우선**: 커스텀 스타일보다 검증된 테마 라이브러리 사용
-2. **단순한 구조**: commonTheme(레이아웃) + 테마별 색상 분리
-3. **순서 중요**: 테마 → 공통 스타일 순서로 적용
-
-### **자주 발생하는 문제들**
-- **글자 크기 불일치**: 공통 스타일에서 fontSize 통합 관리
-- **배경색 충돌**: 색상은 테마에만 위임, 커스텀 스타일에서 제거
-- **HTML 엔티티**: Mermaid에 전달 전 `&gt;` → `>` 디코딩 필수
-
-### **권장 개발 순서**
-1. **기본 테마 먼저**: 라이트/다크 테마 정상 작동 확인
-2. **기능 추가**: 테마 안정화 후 Mermaid, 미리보기 등 추가
-3. **점진적 개선**: 한 번에 모든 기능보다 단계적 구현
 
 ## B. HtmlEditor 구현
 

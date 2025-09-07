@@ -120,3 +120,100 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Markdown Preview Styles */
+@layer components {
+  .markdown-preview {
+    @apply max-w-none text-foreground;
+  }
+
+  .markdown-preview h1,
+  .markdown-preview h2,
+  .markdown-preview h3,
+  .markdown-preview h4,
+  .markdown-preview h5,
+  .markdown-preview h6 {
+    @apply font-bold text-foreground mt-6 mb-4 first:mt-0;
+  }
+
+  .markdown-preview h1 { @apply text-2xl; }
+  .markdown-preview h2 { @apply text-xl; }
+  .markdown-preview h3 { @apply text-lg; }
+  .markdown-preview h4 { @apply text-base; }
+  .markdown-preview h5 { @apply text-sm font-semibold; }
+  .markdown-preview h6 { @apply text-sm font-medium; }
+
+  .markdown-preview p {
+    @apply mb-4 text-foreground leading-relaxed;
+  }
+
+  .markdown-preview strong {
+    @apply font-bold text-foreground;
+  }
+
+  .markdown-preview em {
+    @apply italic text-foreground;
+  }
+
+  .markdown-preview a {
+    @apply text-primary underline hover:text-primary/80;
+  }
+
+  .markdown-preview ul,
+  .markdown-preview ol {
+    @apply mb-4 pl-6 text-foreground;
+  }
+
+  .markdown-preview li {
+    @apply mb-2;
+  }
+
+  .markdown-preview ul li {
+    @apply list-disc;
+  }
+
+  .markdown-preview ol li {
+    @apply list-decimal;
+  }
+
+  .markdown-preview blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground mb-4;
+  }
+
+  .markdown-preview code.inline-code {
+    @apply bg-muted px-2 py-1 rounded text-sm font-mono text-foreground;
+  }
+
+  .markdown-preview pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto mb-4;
+  }
+
+  .markdown-preview pre code {
+    @apply text-foreground font-mono text-sm;
+  }
+
+  .markdown-preview .markdown-table {
+    @apply w-full border-collapse border border-border mb-4;
+  }
+
+  .markdown-preview .markdown-table th,
+  .markdown-preview .markdown-table td {
+    @apply border border-border px-4 py-2 text-left;
+  }
+
+  .markdown-preview .markdown-table th {
+    @apply bg-muted font-medium text-foreground;
+  }
+
+  .markdown-preview .markdown-table td {
+    @apply text-foreground;
+  }
+
+  .markdown-preview hr {
+    @apply border-border my-6;
+  }
+
+  .markdown-preview img {
+    @apply max-w-full h-auto rounded;
+  }
+}
