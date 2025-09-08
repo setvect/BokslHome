@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Maximize2, Minimize2, Code2, Bold, Italic, Underline, List, ListOrdered, Quote, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { HtmlEditorProps } from '@/lib/types/editor'
-import { uploadImageFile } from '@/lib/utils/mock-upload-api'
+import { useClipboardImageUpload } from '@/lib/hooks/use-clipboard-image-upload'
 
 export function HtmlEditor({
   value = '',
@@ -66,20 +66,6 @@ export function HtmlEditor({
     editorRef.current?.focus()
   }
 
-  // 이미지 업로드 처리
-  const handleImageUpload = async (file: File) => {
-    try {
-      const result = await uploadImageFile(file)
-
-      if (result.success && result.url) {
-        // 에디터에 이미지 삽입
-        insertImageToEditor(result.url, file.name)
-      }
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error)
-    }
-  }
-
   // 에디터에 이미지 삽입
   const insertImageToEditor = (url: string, alt: string) => {
     if (editorRef.current) {
@@ -105,23 +91,11 @@ export function HtmlEditor({
     }
   }
 
-  // 클립보드 paste 이벤트 처리
-  const handlePaste = (e: React.ClipboardEvent) => {
-    const items = e.clipboardData?.items
-    if (!items) return
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      if (item.type.indexOf('image') === 0) {
-        e.preventDefault()
-        const file = item.getAsFile()
-        if (file) {
-          handleImageUpload(file)
-        }
-        break
-      }
-    }
-  }
+  // 클립보드 이미지 업로드 훅 사용
+  const { handlePaste } = useClipboardImageUpload({
+    onImageInsert: insertImageToEditor,
+    onError: (error) => console.error('HTML Editor 이미지 업로드 오류:', error)
+  })
 
   // 툴바 버튼 구성
   const getToolbarButtons = () => {

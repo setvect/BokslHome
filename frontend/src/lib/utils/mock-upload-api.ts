@@ -13,8 +13,7 @@ export interface UploadProgress {
 }
 
 export const mockUploadFile = async (
-  file: File,
-  onProgress?: (progress: UploadProgress) => void
+  file: File
 ): Promise<UploadResult> => {
   // 파일 크기 제한 (10MB)
   const maxSize = 10 * 1024 * 1024
