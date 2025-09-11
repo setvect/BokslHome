@@ -13,7 +13,7 @@ export interface HeaderProps {
 export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
+      <div className="flex h-14 w-full items-center justify-between px-4">
         {/* 좌측: 메뉴 버튼 + 로고 */}
         <div className="flex items-center space-x-2">
           {showMenuButton && (
@@ -34,7 +34,7 @@ export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
         </div>
 
         {/* 우측: 테마 토글 */}
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex items-center">
           <ThemeToggle />
         </div>
       </div>
