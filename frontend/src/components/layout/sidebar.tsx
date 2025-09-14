@@ -52,7 +52,7 @@ const navigation: MenuItem[] = [
     href: '/board',
     icon: FileText,
     children: [
-      { name: '게시판 관리', href: '/board/admin', icon: Settings },
+      { name: '게시판 관리', href: '/board-manage', icon: Settings },
       { name: '글', href: '/board/posts', icon: FileText },
       { name: '책', href: '/board/books', icon: BookOpen },
       { name: '음악', href: '/board/music', icon: Music },
