@@ -3,41 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-type BoardDetail = {
-  code: string;
-  name: string;
-  uploadLimit: number;
-  allowComments: boolean;
-  allowFiles: boolean;
-  allowEncryptedPosts: boolean;
-};
-
-const boardDetails: Record<string, BoardDetail> = {
-  BDAAAA00: {
-    code: "BDAAAA00",
-    name: "메인화면",
-    uploadLimit: 0,
-    allowComments: false,
-    allowFiles: true,
-    allowEncryptedPosts: false,
-  },
-  BDAAAA01: {
-    code: "BDAAAA01",
-    name: "글",
-    uploadLimit: 100,
-    allowComments: true,
-    allowFiles: false,
-    allowEncryptedPosts: false,
-  },
-  BDAAAA02: {
-    code: "BDAAAA02",
-    name: "책",
-    uploadLimit: 300,
-    allowComments: false,
-    allowFiles: true,
-    allowEncryptedPosts: true,
-  },
-};
+import { getBoardDetail } from "../_data/board-details";
 
 const booleanToText = (value: boolean) => (value ? "true" : "false");
 
@@ -46,16 +12,7 @@ export default function BoardDetailPage({
 }: {
   params: { code: string };
 }) {
-  const paramCode = params.code?.toUpperCase();
-  const detail: BoardDetail =
-    boardDetails[paramCode] ?? {
-      code: paramCode ?? "",
-      name: "게시판",
-      uploadLimit: 0,
-      allowComments: false,
-      allowFiles: false,
-      allowEncryptedPosts: false,
-    };
+  const detail = getBoardDetail(params.code);
 
   return (
     <div className="space-y-6">
@@ -127,7 +84,7 @@ export default function BoardDetailPage({
           </Button>
           <div className="flex w-full justify-end gap-2 sm:w-auto">
             <Button variant="secondary" asChild className="w-full sm:w-auto">
-              <Link href="#">수정</Link>
+              <Link href={`/board-manage/${detail.code}/edit`}>수정</Link>
             </Button>
             <Button variant="destructive" className="w-full sm:w-auto">
               삭제
@@ -138,3 +95,4 @@ export default function BoardDetailPage({
     </div>
   );
 }
+

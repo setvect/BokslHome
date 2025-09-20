@@ -129,7 +129,7 @@ export default function BoardAdminPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button variant="link" className="h-auto px-0" asChild>
-                            <Link href={detailPath}>수정</Link>
+                            <Link href={`/board-manage/${board.code}/edit`}>수정</Link>
                           </Button>
                           <Button
                             variant="link"
