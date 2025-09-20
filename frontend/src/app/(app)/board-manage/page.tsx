@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
+import { PaginationInfo, PaginationNav } from "@/components/ui/pagination-nav";
 import { BoardDeleteDialog } from "./_components/board-delete-dialog";
 import {
   Select,
@@ -48,6 +44,15 @@ const boardList = [
 ];
 
 export default function BoardAdminPage() {
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+  const totalCount = boardList.length;
+
+  const paginatedBoards = useMemo(() => {
+    const startIndex = (page - 1) * pageSize;
+    return boardList.slice(startIndex, startIndex + pageSize);
+  }, [page]);
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -109,7 +114,7 @@ export default function BoardAdminPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {boardList.map((board) => {
+                {paginatedBoards.map((board) => {
                   const detailPath = `/board-manage/${board.code}`;
                   return (
                     <TableRow key={board.code}>
@@ -152,40 +157,14 @@ export default function BoardAdminPage() {
             </Table>
           </div>
 
-          <Pagination className="pt-2">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationLink href="#" size="default" aria-label="첫 페이지">
-                  «
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" size="default" aria-label="이전 페이지">
-                  ‹
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" size="default" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" size="default">
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" size="default" aria-label="다음 페이지">
-                  ›
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" size="default" aria-label="마지막 페이지">
-                  »
-                </PaginationLink>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="flex flex-col gap-3 pt-2 lg:flex-row lg:items-center lg:justify-between">
+            <PaginationNav
+              page={page}
+              total={totalCount}
+              pageSize={pageSize}
+              onPageChange={setPage}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

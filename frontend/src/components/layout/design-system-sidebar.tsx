@@ -82,8 +82,13 @@ const navigation = [
         icon: Code2,
       },
       {
-        name: 'Navigation',
-        href: '/design-system/components/navigation',
+        name: 'Breadcrumb',
+        href: '/design-system/components/navigation/breadcrumb',
+        icon: Code2,
+      },
+      {
+        name: 'Pagination',
+        href: '/design-system/components/navigation/pagination',
         icon: Code2,
       },
       {

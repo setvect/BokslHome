@@ -20,13 +20,11 @@ import {
   Heart,
   MessageCircle,
   Sparkles,
-  GraduationCap,
-  BookOpenCheck,
-  Activity,
   Dice6,
   Code2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BOARD_CATEGORIES } from '@/lib/constants/board';
 import { cn } from '@/lib/utils';
 
 export interface SidebarProps {
@@ -41,6 +39,27 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
+const BOARD_ICON_MAP: Record<string, MenuItem['icon']> = {
+  posts: FileText,
+  books: BookOpen,
+  music: Music,
+  movies: Film,
+  photos: Camera,
+  memories: Heart,
+  relationships: Users,
+  chat: MessageCircle,
+  dreams: Sparkles,
+};
+
+const boardChildren: MenuItem[] = [
+  { name: '게시판 관리', href: '/board-manage', icon: Settings },
+  ...BOARD_CATEGORIES.map((category) => ({
+    name: category.name,
+    href: `/board/${category.code}`,
+    icon: BOARD_ICON_MAP[category.slug] ?? FileText,
+  })),
+];
+
 const navigation: MenuItem[] = [
   {
     name: '홈',
@@ -51,21 +70,7 @@ const navigation: MenuItem[] = [
     name: '게시판',
     href: '/board',
     icon: FileText,
-    children: [
-      { name: '게시판 관리', href: '/board-manage', icon: Settings },
-      { name: '글', href: '/board/posts', icon: FileText },
-      { name: '책', href: '/board/books', icon: BookOpen },
-      { name: '음악', href: '/board/music', icon: Music },
-      { name: '영화', href: '/board/movies', icon: Film },
-      { name: '사진', href: '/board/photos', icon: Camera },
-      { name: '기억', href: '/board/memories', icon: Heart },
-      { name: '인연', href: '/board/relationships', icon: Users },
-      { name: '잡담', href: '/board/chat', icon: MessageCircle },
-      { name: '꿈', href: '/board/dreams', icon: Sparkles },
-      { name: '기술사', href: '/board/tech', icon: GraduationCap },
-      { name: '소설', href: '/board/novels', icon: BookOpenCheck },
-      { name: '운동', href: '/board/exercise', icon: Activity },
-    ],
+    children: boardChildren,
   },
   {
     name: '지식',

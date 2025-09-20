@@ -154,10 +154,26 @@ export function HtmlEditor({
         className
       )}
     >
-        {/* 상단 툴바 */}
-        <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/50">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">HTML Editor</span>
+        <div className="flex items-center justify-between gap-2 px-3 py-2 border-b bg-background">
+          <div className="flex flex-wrap items-center gap-1">
+            {!showSourceCode && !readOnly
+              ? getToolbarButtons().map((button, index) => {
+                  const Icon = button.icon
+                  return (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => execCommand(button.command, (button as any).value)}
+                      className="h-8 px-2"
+                      title={button.title}
+                      type="button"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </Button>
+                  )
+                })
+              : null}
           </div>
           <div className="flex items-center gap-1">
             <Button
@@ -166,6 +182,7 @@ export function HtmlEditor({
               onClick={handleSourceCodeToggle}
               className="h-8 px-2"
               title={showSourceCode ? 'WYSIWYG 모드' : '소스 코드 모드'}
+              type="button"
             >
               <Code2 className="h-4 w-4" />
             </Button>
@@ -175,36 +192,12 @@ export function HtmlEditor({
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="h-8 px-2"
               title={isFullscreen ? '일반 모드' : '전체화면 모드'}
+              type="button"
             >
-              {isFullscreen ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
+              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
           </div>
         </div>
-
-        {/* 편집 툴바 */}
-        {!showSourceCode && !readOnly && (
-          <div className="flex items-center gap-1 px-3 py-2 border-b bg-background">
-            {getToolbarButtons().map((button, index) => {
-              const Icon = button.icon
-              return (
-                <Button
-                  key={index}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => execCommand(button.command, (button as any).value)}
-                  className="h-8 px-2"
-                  title={button.title}
-                >
-                  <Icon className="h-4 w-4" />
-                </Button>
-              )
-            })}
-          </div>
-        )}
 
         {/* 에디터 영역 */}
         <div className="relative">

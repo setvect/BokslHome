@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MousePointer, Type, Layout, Zap } from 'lucide-react';
+import { ArrowRight, Compass, MousePointer, Type, Layout, Zap } from 'lucide-react';
 
 const componentCategories = [
   {
@@ -74,6 +74,25 @@ const componentCategories = [
         href: '#',
         description: '알림과 피드백 메시지',
         count: '4개 타입',
+      },
+    ],
+  },
+  {
+    title: '네비게이션',
+    description: '사용자의 이동 경로를 안내하는 컴포넌트들',
+    icon: Compass,
+    components: [
+      {
+        name: 'Breadcrumb',
+        href: '/design-system/components/navigation/breadcrumb',
+        description: '계층 구조 경로를 보여주는 컴포넌트',
+        count: '2개 예제',
+      },
+      {
+        name: 'Pagination',
+        href: '/design-system/components/navigation/pagination',
+        description: '목록을 페이지 단위로 탐색하는 컴포넌트',
+        count: '2개 예제',
       },
     ],
   },
