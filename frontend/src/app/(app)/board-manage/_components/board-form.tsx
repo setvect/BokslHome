@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent } from "react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -20,16 +30,35 @@ const YES_NO_OPTIONS = [
   { label: "아니오", value: "no" },
 ] as const;
 
-type YesNoValue = (typeof YES_NO_OPTIONS)[number]["value"];
+const boardFormSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, "코드를 입력하세요")
+    .max(8, "코드는 8자 이내로 입력하세요")
+    .regex(/^[A-Za-z0-9]+$/, "영문자와 숫자만 사용할 수 있습니다"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "이름을 입력하세요")
+    .max(20, "이름은 20자 이내로 입력하세요"),
+  uploadLimit: z
+    .string()
+    .trim()
+    .min(1, "업로드 용량을 입력하세요")
+    .refine((val) => /^\d+$/.test(val), {
+      message: "숫자만 입력하세요",
+    })
+    .refine((val) => {
+      const value = Number(val);
+      return value >= 0 && value <= 10000;
+    }, "0에서 10,000 사이의 값을 입력하세요"),
+  allowComments: z.enum(["yes", "no"]),
+  allowFiles: z.enum(["yes", "no"]),
+  allowEncryptedPosts: z.enum(["yes", "no"]),
+});
 
-type BoardFormValues = {
-  code: string;
-  name: string;
-  uploadLimit: string;
-  allowComments: YesNoValue;
-  allowFiles: YesNoValue;
-  allowEncryptedPosts: YesNoValue;
-};
+type BoardFormValues = z.infer<typeof boardFormSchema>;
 
 type BoardFormProps = {
   mode: "create" | "edit";
@@ -44,157 +73,237 @@ export function BoardForm({
   cancelHref = "/board-manage",
   submitLabel,
 }: BoardFormProps) {
-  const defaults: BoardFormValues = {
-    code: "",
-    name: "",
-    uploadLimit: "",
-    allowComments: "no",
-    allowFiles: "yes",
-    allowEncryptedPosts: "no",
-    ...initialValues,
-  };
-
   const isEdit = mode === "edit";
+
+  const form = useForm<BoardFormValues>({
+    resolver: zodResolver(boardFormSchema),
+    defaultValues: {
+      code: "",
+      name: "",
+      uploadLimit: "",
+      allowComments: "no",
+      allowFiles: "yes",
+      allowEncryptedPosts: "no",
+      ...initialValues,
+    },
+    mode: "onBlur",
+  });
+
   const resolvedSubmitLabel = submitLabel ?? (isEdit ? "저장" : "확인");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // 아직 실제 저장 로직이 없으므로 기본 동작을 막아두고 종료.
+  const onSubmit = (values: BoardFormValues) => {
+    // TODO: 실제 API 연동 시 데이터 전송 로직 구현
+    console.log("board form submit", {
+      ...values,
+      uploadLimit: Number(values.uploadLimit),
+    });
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader>
-          <CardTitle>게시판 정보</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-[160px_1fr] md:items-center">
-            <Label htmlFor="board-code" className="text-sm font-medium md:text-base">
-              코드
-            </Label>
-            <Input
-              id="board-code"
+    <Form {...form}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+        <Card>
+          <CardHeader>
+            <CardTitle>게시판 정보</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
               name="code"
-              placeholder="예: BDAAAA10"
-              className="md:max-w-md"
-              defaultValue={defaults.code}
-              readOnly={isEdit}
+              render={({ field }) => (
+                <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                  <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                    코드
+                  </FormLabel>
+                  <div className="space-y-2">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="예: BDAAAA10"
+                        className="md:max-w-md"
+                        readOnly={isEdit}
+                        disabled={isEdit}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="grid gap-4 md:grid-cols-[160px_1fr] md:items-center">
-            <Label htmlFor="board-name" className="text-sm font-medium md:text-base">
-              이름
-            </Label>
-            <Input
-              id="board-name"
+            <FormField
+              control={form.control}
               name="name"
-              placeholder="게시판 이름을 입력하세요"
-              className="md:max-w-md"
-              defaultValue={defaults.name}
+              render={({ field }) => (
+                <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                  <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                    이름
+                  </FormLabel>
+                  <div className="space-y-2">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="게시판 이름을 입력하세요"
+                        className="md:max-w-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="grid gap-4 md:grid-cols-[160px_1fr] md:items-center">
-            <Label htmlFor="upload-limit" className="text-sm font-medium md:text-base">
-              업로드 용량제한
-            </Label>
-            <Input
-              id="upload-limit"
+            <FormField
+              control={form.control}
               name="uploadLimit"
-              type="number"
-              min={0}
-              placeholder="숫자로 입력"
-              className="md:max-w-xs"
-              defaultValue={defaults.uploadLimit}
+              render={({ field }) => (
+                <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                  <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                    업로드 용량제한 (KB)
+                  </FormLabel>
+                  <div className="space-y-2">
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          {...field}
+                          type="number"
+                          value={field.value ?? ""}
+                          placeholder="0 ~ 10,000"
+                          className="md:max-w-xs"
+                          inputMode="numeric"
+                          min={0}
+                          max={10000}
+                          step={1}
+                        />
+                        <span className="text-sm text-muted-foreground">KB</span>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
             />
-          </div>
 
-          <fieldset className="space-y-4">
-            <legend className="text-sm font-medium text-muted-foreground">
-              사용 설정
-            </legend>
-            <div className="space-y-4">
-              <div className="grid gap-3 md:grid-cols-[160px_1fr] md:items-center">
-                <Label className="text-sm font-medium md:text-base">댓글 사용</Label>
-                <RadioGroup
-                  defaultValue={defaults.allowComments}
-                  className="flex flex-wrap gap-4"
-                  aria-label="댓글 사용 여부"
-                  name="allowComments"
-                >
-                  {YES_NO_OPTIONS.map((option) => {
-                    const id = `allow-comments-${option.value}`;
-                    return (
-                      <div key={option.value} className="flex items-center gap-2">
-                        <RadioGroupItem id={id} value={option.value} />
-                        <Label htmlFor={id} className="cursor-pointer text-sm">
-                          {option.label}
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
+            <fieldset className="space-y-4">
+              <legend className="text-sm font-medium text-muted-foreground">
+                사용 설정
+              </legend>
 
-              <div className="grid gap-3 md:grid-cols-[160px_1fr] md:items-center">
-                <Label className="text-sm font-medium md:text-base">파일 업로드</Label>
-                <RadioGroup
-                  defaultValue={defaults.allowFiles}
-                  className="flex flex-wrap gap-4"
-                  aria-label="파일 업로드 사용 여부"
-                  name="allowFiles"
-                >
-                  {YES_NO_OPTIONS.map((option) => {
-                    const id = `allow-upload-${option.value}`;
-                    return (
-                      <div key={option.value} className="flex items-center gap-2">
-                        <RadioGroupItem id={id} value={option.value} />
-                        <Label htmlFor={id} className="cursor-pointer text-sm">
-                          {option.label}
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
+              <FormField
+                control={form.control}
+                name="allowComments"
+                render={({ field }) => (
+                  <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                      댓글 사용
+                    </FormLabel>
+                    <div className="space-y-2">
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-wrap gap-4"
+                        >
+                          {YES_NO_OPTIONS.map((option) => {
+                            const id = `allow-comments-${option.value}`;
+                            return (
+                              <div key={option.value} className="flex items-center gap-2">
+                                <RadioGroupItem id={id} value={option.value} />
+                                <Label htmlFor={id} className="cursor-pointer text-sm">
+                                  {option.label}
+                                </Label>
+                              </div>
+                            );
+                          })}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-              <div className="grid gap-3 md:grid-cols-[160px_1fr] md:items-center">
-                <Label className="text-sm font-medium md:text-base">암호화 글 등록</Label>
-                <RadioGroup
-                  defaultValue={defaults.allowEncryptedPosts}
-                  className="flex flex-wrap gap-4"
-                  aria-label="암호화 글 등록 사용 여부"
-                  name="allowEncryptedPosts"
-                >
-                  {YES_NO_OPTIONS.map((option) => {
-                    const id = `allow-encrypted-${option.value}`;
-                    return (
-                      <div key={option.value} className="flex items-center gap-2">
-                        <RadioGroupItem id={id} value={option.value} />
-                        <Label htmlFor={id} className="cursor-pointer text-sm">
-                          {option.label}
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
+              <FormField
+                control={form.control}
+                name="allowFiles"
+                render={({ field }) => (
+                  <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                      파일 업로드
+                    </FormLabel>
+                    <div className="space-y-2">
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-wrap gap-4"
+                        >
+                          {YES_NO_OPTIONS.map((option) => {
+                            const id = `allow-upload-${option.value}`;
+                            return (
+                              <div key={option.value} className="flex items-center gap-2">
+                                <RadioGroupItem id={id} value={option.value} />
+                                <Label htmlFor={id} className="cursor-pointer text-sm">
+                                  {option.label}
+                                </Label>
+                              </div>
+                            );
+                          })}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="allowEncryptedPosts"
+                render={({ field }) => (
+                  <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
+                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
+                      암호화 글 등록
+                    </FormLabel>
+                    <div className="space-y-2">
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-wrap gap-4"
+                        >
+                          {YES_NO_OPTIONS.map((option) => {
+                            const id = `allow-encrypted-${option.value}`;
+                            return (
+                              <div key={option.value} className="flex items-center gap-2">
+                                <RadioGroupItem id={id} value={option.value} />
+                                <Label htmlFor={id} className="cursor-pointer text-sm">
+                                  {option.label}
+                                </Label>
+                              </div>
+                            );
+                          })}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </fieldset>
+          </CardContent>
+          <CardFooter>
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Button variant="outline" asChild className="w-full sm:w-auto">
+                <Link href={cancelHref}>취소</Link>
+              </Button>
+              <Button type="submit" className="w-full sm:w-auto">
+                {resolvedSubmitLabel}
+              </Button>
             </div>
-          </fieldset>
-        </CardContent>
-        <CardFooter>
-          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <Button variant="outline" asChild className="w-full sm:w-auto">
-              <Link href={cancelHref}>취소</Link>
-            </Button>
-            <Button type="submit" className="w-full sm:w-auto">
-              {resolvedSubmitLabel}
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
-    </form>
+          </CardFooter>
+        </Card>
+      </form>
+    </Form>
   );
 }

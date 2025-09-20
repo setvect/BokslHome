@@ -47,7 +47,7 @@ export default function BoardDetailPage({
                 업로드 용량제한
               </span>
               <span className="text-sm text-foreground md:text-base">
-                {detail.uploadLimit}
+                {detail.uploadLimit} KB
               </span>
             </div>
 
