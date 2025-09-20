@@ -36,5 +36,6 @@
   },
   "[html]": {
     "editor.formatOnSave": true
-  }
+  },
+  "chatgpt.openOnStartup": true
 }
