@@ -20,6 +20,7 @@
 - **UI 컴포넌트**: shadcn/ui
 - **아이콘**: lucide-react
 - **폼 처리**: React Hook Form + Zod
+- **폼 유효성 검사**: React Hook Form + Zod 조합으로 스키마를 정의하고, `FormField`/`FormControl`/`FormMessage` 컴포넌트로 에러 메시지를 표준화한다. 기본 예시는 게시판 관리 폼(`frontend/src/app/(app)/board-manage/_components/board-form.tsx`)에 있으며, 다른 모듈에서도 동일한 패턴을 확장해 사용한다.
 - **테마 관리**: next-themes
 - **상태 관리**: React Context + useState/useReducer
 
