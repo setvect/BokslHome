@@ -12,6 +12,7 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
+import { BoardDeleteDialog } from "./_components/board-delete-dialog";
 import {
   Select,
   SelectContent,
@@ -131,12 +132,17 @@ export default function BoardAdminPage() {
                           <Button variant="link" className="h-auto px-0" asChild>
                             <Link href={`/board-manage/${board.code}/edit`}>수정</Link>
                           </Button>
-                          <Button
-                            variant="link"
-                            className="h-auto px-0 text-destructive"
-                          >
-                            삭제
-                          </Button>
+                          <BoardDeleteDialog
+                            boardName={board.name}
+                            trigger={
+                              <Button
+                                variant="link"
+                                className="h-auto px-0 text-destructive"
+                              >
+                                삭제
+                              </Button>
+                            }
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
