@@ -216,6 +216,18 @@
   .markdown-preview img {
     @apply max-w-full h-auto rounded;
   }
+
+  .html-editor__content table {
+    border-collapse: collapse;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .html-editor__content th,
+  .html-editor__content td {
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+  }
 }
 
 /* HTML Editor Styles */

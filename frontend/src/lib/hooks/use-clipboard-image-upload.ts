@@ -28,8 +28,17 @@ export const useClipboardImageUpload = ({ onImageInsert, onError }: ClipboardIma
 
   // 클립보드 paste 이벤트 처리
   const handlePaste = useCallback((e: React.ClipboardEvent | ClipboardEvent) => {
-    const items = e.clipboardData?.items
-    if (!items) return
+    const clipboard = e.clipboardData
+    const items = clipboard?.items
+    if (!clipboard || !items) return
+
+    const hasHtml = Boolean(clipboard.getData('text/html'))
+    const hasRichText = Boolean(clipboard.getData('text/rtf'))
+
+    // 텍스트/표 데이터가 존재하면 기본 붙여넣기를 유지한다.
+    if (hasHtml || hasRichText) {
+      return
+    }
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i]

@@ -226,7 +226,7 @@ export function HtmlEditor({
               onInput={handleEditorInput}
               onPaste={handlePaste}
               className={cn(
-                "w-full p-4 border-none outline-none bg-background text-foreground overflow-y-auto",
+                "html-editor__content w-full p-4 border-none outline-none bg-background text-foreground overflow-y-auto",
                 isFullscreen ? "h-[calc(100vh-160px)]" : `h-[${height}]`,
                 readOnly && "cursor-default",
                 "prose prose-sm max-w-none",
