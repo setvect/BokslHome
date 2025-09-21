@@ -31,7 +31,9 @@ export function BoardListView({ category, list }: BoardListViewProps) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      </header>
       <section className="space-y-6 rounded-3xl border border-border bg-card p-6 shadow-sm transition-colors">
         <BoardListFilterBar category={category} onSearch={handleSearch} />
         <BoardTable

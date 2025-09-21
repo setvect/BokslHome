@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { BoardDeleteDialog } from "../_components/board-delete-dialog";
 import { getBoardDetail } from "../_data/board-details";
@@ -17,69 +16,55 @@ export default function BoardDetailPage({
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">{detail.name}</h1>
-      </div>
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{detail.name}</h1>
+      </header>
 
-      <Card>
-        <CardContent className="space-y-6 py-6">
-          <div className="space-y-4">
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                코드
-              </span>
-              <span className="text-sm font-semibold text-foreground md:text-base">
-                {detail.code}
-              </span>
-            </div>
-
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                이름
-              </span>
-              <span className="text-sm text-foreground md:text-base">
-                {detail.name}
-              </span>
-            </div>
-
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                업로드 용량제한
-              </span>
-              <span className="text-sm text-foreground md:text-base">
-                {detail.uploadLimit} KB
-              </span>
-            </div>
-
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                댓글 사용
-              </span>
-              <span className="text-sm text-foreground md:text-base">
-                {booleanToText(detail.allowComments)}
-              </span>
-            </div>
-
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                파일 업로드
-              </span>
-              <span className="text-sm text-foreground md:text-base">
-                {booleanToText(detail.allowFiles)}
-              </span>
-            </div>
-
-            <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-              <span className="text-sm font-medium text-muted-foreground md:text-base">
-                암호화 글
-              </span>
-              <span className="text-sm text-foreground md:text-base">
-                {booleanToText(detail.allowEncryptedPosts)}
-              </span>
-            </div>
+      <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">
+        <div className="space-y-4 p-6">
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">코드</span>
+            <span className="text-sm font-semibold text-foreground md:text-base">
+              {detail.code}
+            </span>
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3 border-t bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between">
+
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">이름</span>
+            <span className="text-sm text-foreground md:text-base">{detail.name}</span>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">
+              업로드 용량제한
+            </span>
+            <span className="text-sm text-foreground md:text-base">
+              {detail.uploadLimit} KB
+            </span>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">댓글 사용</span>
+            <span className="text-sm text-foreground md:text-base">
+              {booleanToText(detail.allowComments)}
+            </span>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">파일 업로드</span>
+            <span className="text-sm text-foreground md:text-base">
+              {booleanToText(detail.allowFiles)}
+            </span>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-[160px_1fr]">
+            <span className="text-sm font-medium text-muted-foreground md:text-base">암호화 글</span>
+            <span className="text-sm text-foreground md:text-base">
+              {booleanToText(detail.allowEncryptedPosts)}
+            </span>
+          </div>
+        </div>
+        <footer className="flex flex-col gap-3 border-t border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between">
           <Button variant="outline" asChild className="w-full sm:w-auto">
             <Link href="/board-manage">목록</Link>
           </Button>
@@ -96,9 +81,8 @@ export default function BoardDetailPage({
               }
             />
           </div>
-        </CardFooter>
-      </Card>
+        </footer>
+      </section>
     </div>
   );
 }
-

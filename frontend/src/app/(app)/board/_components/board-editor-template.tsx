@@ -26,7 +26,9 @@ export async function BoardEditorTemplate({ code, postId }: BoardEditorTemplateP
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      </header>
       <BoardForm category={category} post={post} mode={post ? "edit" : "create"} />
     </div>
   )
