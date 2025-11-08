@@ -4,7 +4,7 @@ import { BOARD_CATEGORY_BY_CODE } from "@/lib/constants/board"
 import { BOARD_LIST_MOCK, getMockBoardPost } from "@/lib/mock/data/board"
 import type { BoardCode } from "@/lib/types/board"
 
-import { BoardEditorTemplate } from "../../../_components/board-editor-template"
+import { BoardForm } from "../../../_components/board-form"
 
 interface BoardEditPageProps {
   params: {
@@ -25,7 +25,8 @@ export default function BoardEditPage({ params }: BoardEditPageProps) {
   const normalizedCode = params.code.toUpperCase() as BoardCode
   const postId = Number(params.postId)
 
-  if (!BOARD_CATEGORY_BY_CODE[normalizedCode] || Number.isNaN(postId)) {
+  const category = BOARD_CATEGORY_BY_CODE[normalizedCode]
+  if (!category || Number.isNaN(postId)) {
     notFound()
   }
 
@@ -34,5 +35,12 @@ export default function BoardEditPage({ params }: BoardEditPageProps) {
     notFound()
   }
 
-  return <BoardEditorTemplate code={normalizedCode} postId={postId} />
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      </header>
+      <BoardForm category={category} post={post} mode="edit" />
+    </div>
+  )
 }

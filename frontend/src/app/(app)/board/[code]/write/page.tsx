@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { BOARD_CATEGORIES, BOARD_CATEGORY_BY_CODE } from "@/lib/constants/board"
 import type { BoardCode } from "@/lib/types/board"
 
-import { BoardEditorTemplate } from "../../_components/board-editor-template"
+import { BoardForm } from "../../_components/board-form"
 
 interface BoardWritePageProps {
   params: {
@@ -20,9 +20,17 @@ export function generateStaticParams() {
 export default function BoardWritePage({ params }: BoardWritePageProps) {
   const normalizedCode = params.code.toUpperCase() as BoardCode
 
-  if (!BOARD_CATEGORY_BY_CODE[normalizedCode]) {
+  const category = BOARD_CATEGORY_BY_CODE[normalizedCode]
+  if (!category) {
     notFound()
   }
 
-  return <BoardEditorTemplate code={normalizedCode} />
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      </header>
+      <BoardForm category={category} mode="create" />
+    </div>
+  )
 }
