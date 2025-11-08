@@ -15,7 +15,7 @@ export default function BoardDetailPage({
   const detail = getBoardDetail(params.code);
 
   return (
-    <div className="space-y-6">
+    <>
       <header>
         <h1 className="text-3xl font-semibold text-foreground">{detail.name}</h1>
       </header>
@@ -83,6 +83,6 @@ export default function BoardDetailPage({
           </div>
         </footer>
       </section>
-    </div>
+    </>
   );
 }

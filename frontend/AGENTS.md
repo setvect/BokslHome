@@ -93,6 +93,18 @@ frontend/src/
 - React Hook Form: https://react-hook-form.com
 - Zod: https://zod.dev
 
+## 9. 모듈 작업 가이드라인
+
+- **레이아웃**: 각 세그먼트(예: `board`, `board-manage`, 신규 모듈)는 `layout.tsx`를 통해 공통 래퍼와 메타 구성을 정의한다. 하위 `page.tsx`는 비즈니스 로직과 템플릿 조합에 집중한다.
+- **템플릿 구조**: 목록·상세·폼 등 화면 단위는 `_components/templates` 또는 역할별 하위 디렉터리로 분리해 재사용한다. 페이지는 템플릿에 데이터만 주입하도록 얇게 유지한다.
+- **라우팅 패턴**: `create`, `[code]`, `[code]/edit`, `[code]/[postId]` 등 세그먼트 네이밍을 공통 규칙으로 삼고, 가능하면 `generateStaticParams`, `dynamicParams`, `generateMetadata`를 활용해 정적/동적 처리를 통일한다.
+- **컴포넌트 타입**: 서버 컴포넌트를 기본으로 하고, 상태·이벤트 처리가 필요한 최소 범위만 클라이언트 컴포넌트(`"use client"`)로 분리한다.
+- **스타일 가이드**: Tailwind 유틸리티와 프로젝트 공통 토큰(`space-y-*`, `rounded-*`, `border-border`, `bg-card` 등)을 우선 사용한다. 반복되는 구조는 공통 컴포넌트나 클래스 추출을 우선 검토한다.
+- **데이터 계층**: 상수·타입·목데이터는 `src/lib/` 하위 도메인 폴더(`constants`, `types`, `mock`)에 위치시키고, 페이지 내부 선언을 피한다.
+- **명명 규칙**: 컴포넌트는 PascalCase, 세그먼트는 kebab-case, 유틸 함수는 camelCase, 상수는 UPPER_SNAKE_CASE로 통일하며, 도메인 접두사(예: `BoardListTemplate`)를 활용해 충돌을 방지한다.
+- **검증 책임 분리**: 파라미터 검증과 예외 처리(`notFound`, `redirect`)는 페이지 수준에서 수행하고, 템플릿 컴포넌트는 표현 로직에 집중한다. 폼 검증은 React Hook Form + Zod 패턴을 기본으로 한다.
+- **확장성 기록**: 신규 모듈을 추가할 때는 위 규칙을 적용한 기본 디렉터리 구조를 먼저 마련하고, 의도적으로 다른 구성이 필요한 경우 해당 이유를 주석 또는 문서화한다.
+
 ---
 
 필요 시 이 문서를 업데이트하여 Codex 작업 지침을 최신 상태로 유지한다.

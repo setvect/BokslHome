@@ -11,7 +11,7 @@ export default function BoardEditPage({
   const detail = getBoardDetail(params.code);
 
   return (
-    <div className="space-y-6">
+    <>
       <header>
         <h1 className="text-3xl font-semibold text-foreground">게시판 수정</h1>
       </header>
@@ -28,6 +28,6 @@ export default function BoardEditPage({
           allowEncryptedPosts: toYesNo(detail.allowEncryptedPosts),
         }}
       />
-    </div>
+    </>
   );
 }
