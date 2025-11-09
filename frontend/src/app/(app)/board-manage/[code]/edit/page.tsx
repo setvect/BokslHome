@@ -1,4 +1,4 @@
-import { BoardForm } from '../../_components/board-form';
+import { BoardForm } from '../../_components/board-manage-form';
 import { getBoardDetail } from '../../_data/board-details';
 
 const toYesNo = (value: boolean) => (value ? 'yes' : 'no');

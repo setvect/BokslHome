@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
-import { BoardDeleteDialog } from '../_components/board-delete-dialog';
+import { BoardDeleteDialog } from '../_components/board-manage-delete-dialog';
 import { getBoardDetail } from '../_data/board-details';
 
 const booleanToText = (value: boolean) => (value ? 'true' : 'false');

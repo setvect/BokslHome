@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import type { BoardManageSummary } from '../_data/board-list';
-import { BoardDeleteDialog } from './board-delete-dialog';
+import { BoardDeleteDialog } from './board-manage-delete-dialog';
 
 const SEARCH_FIELDS = [
   { label: '이름', value: 'name' },
