@@ -123,8 +123,8 @@ export default function ColorsPage() {
           <div>
             <h4 className="font-medium text-foreground mb-2">테마 호환성</h4>
             <p className="text-sm text-muted-foreground">
-              모든 색상은 CSS 변수로 정의되어 라이트/다크 테마 전환 시 자동으로 적절한 색상으로 변경됩니다. 
-              하드코딩된 색상값 대신 반드시 정의된 색상 토큰을 사용해주세요.
+              모든 색상은 CSS 변수로 정의되어 라이트/다크 테마 전환 시 자동으로 적절한 색상으로 변경됩니다. 하드코딩된 색상값 대신 반드시
+              정의된 색상 토큰을 사용해주세요.
             </p>
           </div>
         </CardContent>

@@ -1,17 +1,17 @@
-import Link from "next/link"
+import Link from 'next/link';
 
-import { Download, Paperclip } from "lucide-react"
+import { Download, Paperclip } from 'lucide-react';
 
-import type { BoardAttachmentMock } from "@/lib/types/board"
+import type { BoardAttachmentMock } from '@/lib/types/board';
 
 type BoardAttachmentListProps = {
-  attachments?: BoardAttachmentMock[]
-  showDownload?: boolean
-}
+  attachments?: BoardAttachmentMock[];
+  showDownload?: boolean;
+};
 
 export function BoardAttachmentList({ attachments, showDownload = false }: BoardAttachmentListProps) {
   if (!attachments?.length) {
-    return null
+    return null;
   }
 
   return (
@@ -39,15 +39,15 @@ export function BoardAttachmentList({ attachments, showDownload = false }: Board
         ))}
       </ul>
     </div>
-  )
+  );
 }
 
 function formatSize(size: number) {
   if (size >= 1_048_576) {
-    return `${(size / 1_048_576).toFixed(1)} MB`
+    return `${(size / 1_048_576).toFixed(1)} MB`;
   }
   if (size >= 1024) {
-    return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024).toFixed(1)} KB`;
   }
-  return `${size} B`
+  return `${size} B`;
 }

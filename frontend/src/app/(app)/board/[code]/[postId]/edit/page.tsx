@@ -1,38 +1,36 @@
-import { notFound } from "next/navigation"
+import { notFound } from 'next/navigation';
 
-import { BOARD_CATEGORY_BY_CODE } from "@/lib/constants/board"
-import { BOARD_LIST_MOCK, getMockBoardPost } from "@/lib/mock/data/board"
-import type { BoardCode } from "@/lib/types/board"
+import { BOARD_CATEGORY_BY_CODE } from '@/lib/constants/board';
+import { BOARD_LIST_MOCK, getMockBoardPost } from '@/lib/mock/data/board';
+import type { BoardCode } from '@/lib/types/board';
 
-import { BoardForm } from "../../../_components/board-form"
+import { BoardForm } from '../../../_components/board-form';
 
 interface BoardEditPageProps {
   params: {
-    code: string
-    postId: string
-  }
+    code: string;
+    postId: string;
+  };
 }
 
-export const dynamicParams = false
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return BOARD_LIST_MOCK.flatMap((list) =>
-    list.posts.map((post) => ({ code: post.code, postId: String(post.id) }))
-  )
+  return BOARD_LIST_MOCK.flatMap((list) => list.posts.map((post) => ({ code: post.code, postId: String(post.id) })));
 }
 
 export default function BoardEditPage({ params }: BoardEditPageProps) {
-  const normalizedCode = params.code.toUpperCase() as BoardCode
-  const postId = Number(params.postId)
+  const normalizedCode = params.code.toUpperCase() as BoardCode;
+  const postId = Number(params.postId);
 
-  const category = BOARD_CATEGORY_BY_CODE[normalizedCode]
+  const category = BOARD_CATEGORY_BY_CODE[normalizedCode];
   if (!category || Number.isNaN(postId)) {
-    notFound()
+    notFound();
   }
 
-  const post = getMockBoardPost(normalizedCode, postId)
+  const post = getMockBoardPost(normalizedCode, postId);
   if (!post) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -42,5 +40,5 @@ export default function BoardEditPage({ params }: BoardEditPageProps) {
       </header>
       <BoardForm category={category} post={post} mode="edit" />
     </div>
-  )
+  );
 }

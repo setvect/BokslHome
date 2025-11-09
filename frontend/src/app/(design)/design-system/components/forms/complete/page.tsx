@@ -19,38 +19,43 @@ import { CheckCircle, XCircle, AlertCircle, Copy, CheckCheck } from 'lucide-reac
 import { toast } from 'sonner';
 
 // 전체 폼 검증 스키마
-const completeFormSchema = z.object({
-  // 기본 정보
-  firstName: z.string().min(1, '이름은 필수 입력 항목입니다').min(2, '이름은 최소 2글자 이상이어야 합니다'),
-  lastName: z.string().min(1, '성은 필수 입력 항목입니다'),
-  email: z.string().min(1, '이메일은 필수 입력 항목입니다').email('유효한 이메일 주소를 입력해주세요'),
-  phone: z.string().min(1, '전화번호는 필수 입력 항목입니다').regex(/^01[0-9]-\d{3,4}-\d{4}$/, '올바른 전화번호 형식으로 입력해주세요 (010-1234-5678)'),
-  
-  // 비밀번호
-  password: z.string()
-    .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
-           '비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다'),
-  confirmPassword: z.string().min(1, '비밀번호 확인은 필수 입력 항목입니다'),
-  
-  // 선택 옵션들
-  gender: z.enum(['male', 'female', 'other'], { message: '성별을 선택해주세요' }),
-  country: z.string().min(1, '국가를 선택해주세요'),
-  interests: z.array(z.string()).min(1, '최소 하나의 관심사를 선택해주세요'),
-  
-  // 추가 정보
-  bio: z.string().max(500, '자기소개는 500자 이내로 작성해주세요').optional(),
-  newsletter: z.boolean(),
-  notifications: z.boolean(),
-  
-  // 약관 동의
-  terms: z.boolean().refine(val => val === true, '서비스 이용약관에 동의해주세요'),
-  privacy: z.boolean().refine(val => val === true, '개인정보 처리방침에 동의해주세요'),
-  marketing: z.boolean().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: '비밀번호가 일치하지 않습니다',
-  path: ['confirmPassword']
-});
+const completeFormSchema = z
+  .object({
+    // 기본 정보
+    firstName: z.string().min(1, '이름은 필수 입력 항목입니다').min(2, '이름은 최소 2글자 이상이어야 합니다'),
+    lastName: z.string().min(1, '성은 필수 입력 항목입니다'),
+    email: z.string().min(1, '이메일은 필수 입력 항목입니다').email('유효한 이메일 주소를 입력해주세요'),
+    phone: z
+      .string()
+      .min(1, '전화번호는 필수 입력 항목입니다')
+      .regex(/^01[0-9]-\d{3,4}-\d{4}$/, '올바른 전화번호 형식으로 입력해주세요 (010-1234-5678)'),
+
+    // 비밀번호
+    password: z
+      .string()
+      .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, '비밀번호는 대소문자, 숫자, 특수문자를 포함해야 합니다'),
+    confirmPassword: z.string().min(1, '비밀번호 확인은 필수 입력 항목입니다'),
+
+    // 선택 옵션들
+    gender: z.enum(['male', 'female', 'other'], { message: '성별을 선택해주세요' }),
+    country: z.string().min(1, '국가를 선택해주세요'),
+    interests: z.array(z.string()).min(1, '최소 하나의 관심사를 선택해주세요'),
+
+    // 추가 정보
+    bio: z.string().max(500, '자기소개는 500자 이내로 작성해주세요').optional(),
+    newsletter: z.boolean(),
+    notifications: z.boolean(),
+
+    // 약관 동의
+    terms: z.boolean().refine((val) => val === true, '서비스 이용약관에 동의해주세요'),
+    privacy: z.boolean().refine((val) => val === true, '개인정보 처리방침에 동의해주세요'),
+    marketing: z.boolean().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: '비밀번호가 일치하지 않습니다',
+    path: ['confirmPassword'],
+  });
 
 type CompleteFormData = z.infer<typeof completeFormSchema>;
 
@@ -59,7 +64,7 @@ const countries = [
   { value: 'us', label: '미국' },
   { value: 'jp', label: '일본' },
   { value: 'cn', label: '중국' },
-  { value: 'other', label: '기타' }
+  { value: 'other', label: '기타' },
 ];
 
 const interestOptions = [
@@ -70,7 +75,7 @@ const interestOptions = [
   { id: 'education', label: '교육' },
   { id: 'health', label: '건강' },
   { id: 'travel', label: '여행' },
-  { id: 'music', label: '음악' }
+  { id: 'music', label: '음악' },
 ];
 
 export default function CompleteFormPage() {
@@ -97,37 +102,38 @@ export default function CompleteFormPage() {
       privacy: false,
       marketing: false,
     },
-    mode: 'onBlur' // 실시간 검증을 위한 모드 설정
+    mode: 'onBlur', // 실시간 검증을 위한 모드 설정
   });
 
-  const { formState: { errors, isValid, touchedFields } } = form;
+  const {
+    formState: { errors, isValid, touchedFields },
+  } = form;
 
   const onSubmit = async (data: CompleteFormData) => {
     setIsSubmitting(true);
-    
+
     try {
       // 실제로는 API 호출
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       setSubmissionResult({
         success: true,
         message: '회원가입이 성공적으로 완료되었습니다!',
         data: {
           ...data,
           password: '[보안상 숨김]',
-          confirmPassword: '[보안상 숨김]'
-        }
+          confirmPassword: '[보안상 숨김]',
+        },
       });
-      
+
       toast.success('폼이 성공적으로 제출되었습니다!');
-      
     } catch (error) {
       setSubmissionResult({
         success: false,
         message: '오류가 발생했습니다. 다시 시도해주세요.',
-        error: error
+        error: error,
       });
-      
+
       toast.error('폼 제출 중 오류가 발생했습니다.');
     } finally {
       setIsSubmitting(false);
@@ -149,9 +155,9 @@ export default function CompleteFormPage() {
   // 현재 폼 상태 정보
   const formStats = {
     totalFields: Object.keys(form.getValues()).length,
-    validFields: Object.keys(touchedFields).filter(key => !errors[key as keyof typeof errors]).length,
+    validFields: Object.keys(touchedFields).filter((key) => !errors[key as keyof typeof errors]).length,
     errorFields: Object.keys(errors).length,
-    completionRate: Math.round((Object.keys(touchedFields).length / Object.keys(form.getValues()).length) * 100)
+    completionRate: Math.round((Object.keys(touchedFields).length / Object.keys(form.getValues()).length) * 100),
   };
 
   return (
@@ -191,7 +197,7 @@ export default function CompleteFormPage() {
               <div className="text-sm text-muted-foreground">완성도</div>
             </div>
           </div>
-          
+
           <div className="mt-4 flex items-center space-x-2">
             <div className="text-sm text-muted-foreground">폼 유효성:</div>
             {isValid ? (
@@ -213,16 +219,14 @@ export default function CompleteFormPage() {
       <Card>
         <CardHeader>
           <CardTitle>회원가입 폼</CardTitle>
-          <CardDescription>
-            모든 필드는 실시간 검증되며, 오류 메시지가 즉시 표시됩니다.
-          </CardDescription>
+          <CardDescription>모든 필드는 실시간 검증되며, 오류 메시지가 즉시 표시됩니다.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* 기본 정보 섹션 */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">기본 정보</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">이름 *</Label>
@@ -232,11 +236,9 @@ export default function CompleteFormPage() {
                     className={errors.firstName ? 'border-red-500' : ''}
                     placeholder="홍길동"
                   />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-600">{errors.firstName.message}</p>
-                  )}
+                  {errors.firstName && <p className="text-sm text-red-600">{errors.firstName.message}</p>}
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="lastName">성 *</Label>
                   <Input
@@ -245,9 +247,7 @@ export default function CompleteFormPage() {
                     className={errors.lastName ? 'border-red-500' : ''}
                     placeholder="홍"
                   />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-600">{errors.lastName.message}</p>
-                  )}
+                  {errors.lastName && <p className="text-sm text-red-600">{errors.lastName.message}</p>}
                 </div>
               </div>
 
@@ -260,9 +260,7 @@ export default function CompleteFormPage() {
                   className={errors.email ? 'border-red-500' : ''}
                   placeholder="hong@example.com"
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -273,9 +271,7 @@ export default function CompleteFormPage() {
                   className={errors.phone ? 'border-red-500' : ''}
                   placeholder="010-1234-5678"
                 />
-                {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone.message}</p>
-                )}
+                {errors.phone && <p className="text-sm text-red-600">{errors.phone.message}</p>}
                 <p className="text-xs text-muted-foreground">형식: 010-1234-5678</p>
               </div>
             </div>
@@ -283,7 +279,7 @@ export default function CompleteFormPage() {
             {/* 비밀번호 섹션 */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">비밀번호</h3>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">비밀번호 *</Label>
                 <Input
@@ -293,9 +289,7 @@ export default function CompleteFormPage() {
                   className={errors.password ? 'border-red-500' : ''}
                   placeholder="대소문자, 숫자, 특수문자 포함 8자 이상"
                 />
-                {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password.message}</p>
-                )}
+                {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -307,16 +301,14 @@ export default function CompleteFormPage() {
                   className={errors.confirmPassword ? 'border-red-500' : ''}
                   placeholder="비밀번호를 다시 입력하세요"
                 />
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-                )}
+                {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
               </div>
             </div>
 
             {/* 개인 정보 섹션 */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">개인 정보</h3>
-              
+
               <div className="space-y-2">
                 <Label>성별 *</Label>
                 <RadioGroup
@@ -336,9 +328,7 @@ export default function CompleteFormPage() {
                     <Label htmlFor="other">기타</Label>
                   </div>
                 </RadioGroup>
-                {errors.gender && (
-                  <p className="text-sm text-red-600">{errors.gender.message}</p>
-                )}
+                {errors.gender && <p className="text-sm text-red-600">{errors.gender.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -348,22 +338,20 @@ export default function CompleteFormPage() {
                     <SelectValue placeholder="국가를 선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
-                    {countries.map(country => (
+                    {countries.map((country) => (
                       <SelectItem key={country.value} value={country.value}>
                         {country.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.country && (
-                  <p className="text-sm text-red-600">{errors.country.message}</p>
-                )}
+                {errors.country && <p className="text-sm text-red-600">{errors.country.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label>관심사 * (복수 선택 가능)</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {interestOptions.map(interest => (
+                  {interestOptions.map((interest) => (
                     <div key={interest.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={interest.id}
@@ -373,7 +361,10 @@ export default function CompleteFormPage() {
                           if (checked) {
                             form.setValue('interests', [...currentInterests, interest.id]);
                           } else {
-                            form.setValue('interests', currentInterests.filter(i => i !== interest.id));
+                            form.setValue(
+                              'interests',
+                              currentInterests.filter((i) => i !== interest.id)
+                            );
                           }
                         }}
                       />
@@ -383,9 +374,7 @@ export default function CompleteFormPage() {
                     </div>
                   ))}
                 </div>
-                {errors.interests && (
-                  <p className="text-sm text-red-600">{errors.interests.message}</p>
-                )}
+                {errors.interests && <p className="text-sm text-red-600">{errors.interests.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -398,12 +387,8 @@ export default function CompleteFormPage() {
                   rows={3}
                 />
                 <div className="flex justify-between">
-                  {errors.bio && (
-                    <p className="text-sm text-red-600">{errors.bio.message}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground text-right">
-                    {form.watch('bio')?.length || 0}/500자
-                  </p>
+                  {errors.bio && <p className="text-sm text-red-600">{errors.bio.message}</p>}
+                  <p className="text-xs text-muted-foreground text-right">{form.watch('bio')?.length || 0}/500자</p>
                 </div>
               </div>
             </div>
@@ -411,32 +396,22 @@ export default function CompleteFormPage() {
             {/* 알림 설정 섹션 */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">알림 설정</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>뉴스레터 수신</Label>
-                    <p className="text-sm text-muted-foreground">
-                      새로운 소식과 업데이트를 이메일로 받아보세요
-                    </p>
+                    <p className="text-sm text-muted-foreground">새로운 소식과 업데이트를 이메일로 받아보세요</p>
                   </div>
-                  <Switch
-                    checked={form.watch('newsletter')}
-                    onCheckedChange={(checked) => form.setValue('newsletter', checked)}
-                  />
+                  <Switch checked={form.watch('newsletter')} onCheckedChange={(checked) => form.setValue('newsletter', checked)} />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>푸시 알림</Label>
-                    <p className="text-sm text-muted-foreground">
-                      중요한 알림을 실시간으로 받아보세요
-                    </p>
+                    <p className="text-sm text-muted-foreground">중요한 알림을 실시간으로 받아보세요</p>
                   </div>
-                  <Switch
-                    checked={form.watch('notifications')}
-                    onCheckedChange={(checked) => form.setValue('notifications', checked)}
-                  />
+                  <Switch checked={form.watch('notifications')} onCheckedChange={(checked) => form.setValue('notifications', checked)} />
                 </div>
               </div>
             </div>
@@ -444,7 +419,7 @@ export default function CompleteFormPage() {
             {/* 약관 동의 섹션 */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">약관 동의</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex items-start space-x-2">
                   <Checkbox
@@ -458,9 +433,7 @@ export default function CompleteFormPage() {
                     </Label>
                   </div>
                 </div>
-                {errors.terms && (
-                  <p className="text-sm text-red-600 ml-6">{errors.terms.message}</p>
-                )}
+                {errors.terms && <p className="text-sm text-red-600 ml-6">{errors.terms.message}</p>}
 
                 <div className="flex items-start space-x-2">
                   <Checkbox
@@ -474,9 +447,7 @@ export default function CompleteFormPage() {
                     </Label>
                   </div>
                 </div>
-                {errors.privacy && (
-                  <p className="text-sm text-red-600 ml-6">{errors.privacy.message}</p>
-                )}
+                {errors.privacy && <p className="text-sm text-red-600 ml-6">{errors.privacy.message}</p>}
 
                 <div className="flex items-start space-x-2">
                   <Checkbox
@@ -488,9 +459,7 @@ export default function CompleteFormPage() {
                     <Label htmlFor="marketing-consent" className="text-sm font-medium">
                       마케팅 정보 수신에 동의합니다 (선택)
                     </Label>
-                    <p className="text-xs text-muted-foreground">
-                      할인 쿠폰, 이벤트 정보 등을 받아보실 수 있습니다
-                    </p>
+                    <p className="text-xs text-muted-foreground">할인 쿠폰, 이벤트 정보 등을 받아보실 수 있습니다</p>
                   </div>
                 </div>
               </div>
@@ -498,11 +467,7 @@ export default function CompleteFormPage() {
 
             {/* 제출 버튼 */}
             <div className="flex space-x-3 pt-4">
-              <Button 
-                type="submit" 
-                disabled={isSubmitting || !isValid}
-                className="flex-1"
-              >
+              <Button type="submit" disabled={isSubmitting || !isValid} className="flex-1">
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -523,21 +488,13 @@ export default function CompleteFormPage() {
       {/* 제출 결과 */}
       {submissionResult && (
         <Alert className={submissionResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
-          {submissionResult.success ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <XCircle className="h-4 w-4 text-red-600" />
-          )}
+          {submissionResult.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
           <AlertDescription>
             <div className="space-y-2">
-              <p className={submissionResult.success ? 'text-green-800' : 'text-red-800'}>
-                {submissionResult.message}
-              </p>
+              <p className={submissionResult.success ? 'text-green-800' : 'text-red-800'}>{submissionResult.message}</p>
               {submissionResult.success && (
                 <details className="text-sm">
-                  <summary className="cursor-pointer text-green-700 hover:text-green-800">
-                    제출된 데이터 보기
-                  </summary>
+                  <summary className="cursor-pointer text-green-700 hover:text-green-800">제출된 데이터 보기</summary>
                   <pre className="mt-2 bg-green-100 p-3 rounded text-xs text-green-800 overflow-auto">
                     {JSON.stringify(submissionResult.data, null, 2)}
                   </pre>
@@ -562,7 +519,9 @@ export default function CompleteFormPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleCopyCode(`const completeFormSchema = z.object({
+                onClick={() =>
+                  handleCopyCode(
+                    `const completeFormSchema = z.object({
   firstName: z.string().min(1, '이름은 필수 입력 항목입니다').min(2, '이름은 최소 2글자 이상이어야 합니다'),
   lastName: z.string().min(1, '성은 필수 입력 항목입니다'),
   email: z.string().min(1, '이메일은 필수 입력 항목입니다').email('유효한 이메일 주소를 입력해주세요'),
@@ -577,13 +536,17 @@ export default function CompleteFormPage() {
 }).refine(data => data.password === data.confirmPassword, {
   message: '비밀번호가 일치하지 않습니다',
   path: ['confirmPassword']
-});`, 'schema')}
+});`,
+                    'schema'
+                  )
+                }
               >
                 {copiedSection === 'schema' ? <CheckCheck className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <div className="bg-muted p-4 rounded-lg overflow-x-auto">
-              <pre className="text-sm"><code>{`const completeFormSchema = z.object({
+              <pre className="text-sm">
+                <code>{`const completeFormSchema = z.object({
   firstName: z.string().min(1, '이름은 필수 입력 항목입니다').min(2, '이름은 최소 2글자 이상이어야 합니다'),
   email: z.string().min(1, '이메일은 필수 입력 항목입니다').email('유효한 이메일 주소를 입력해주세요'),
   password: z.string()
@@ -596,7 +559,8 @@ export default function CompleteFormPage() {
 }).refine(data => data.password === data.confirmPassword, {
   message: '비밀번호가 일치하지 않습니다',
   path: ['confirmPassword']
-});`}</code></pre>
+});`}</code>
+              </pre>
             </div>
           </div>
 
@@ -607,7 +571,9 @@ export default function CompleteFormPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleCopyCode(`const form = useForm<CompleteFormData>({
+                onClick={() =>
+                  handleCopyCode(
+                    `const form = useForm<CompleteFormData>({
   resolver: zodResolver(completeFormSchema),
   defaultValues: {
     firstName: '',
@@ -618,13 +584,17 @@ export default function CompleteFormPage() {
     privacy: false,
   },
   mode: 'onBlur' // 실시간 검증을 위한 모드 설정
-});`, 'form-setup')}
+});`,
+                    'form-setup'
+                  )
+                }
               >
                 {copiedSection === 'form-setup' ? <CheckCheck className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <div className="bg-muted p-4 rounded-lg overflow-x-auto">
-              <pre className="text-sm"><code>{`const form = useForm<CompleteFormData>({
+              <pre className="text-sm">
+                <code>{`const form = useForm<CompleteFormData>({
   resolver: zodResolver(completeFormSchema),
   defaultValues: {
     firstName: '',
@@ -635,7 +605,8 @@ export default function CompleteFormPage() {
     privacy: false,
   },
   mode: 'onBlur' // 실시간 검증을 위한 모드 설정
-});`}</code></pre>
+});`}</code>
+              </pre>
             </div>
           </div>
 
@@ -646,7 +617,9 @@ export default function CompleteFormPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleCopyCode(`<Checkbox
+                onClick={() =>
+                  handleCopyCode(
+                    `<Checkbox
   checked={form.watch('interests')?.includes(interest.id)}
   onCheckedChange={(checked) => {
     const currentInterests = form.getValues('interests') || [];
@@ -656,13 +629,17 @@ export default function CompleteFormPage() {
       form.setValue('interests', currentInterests.filter(i => i !== interest.id));
     }
   }}
-/>`, 'checkbox')}
+/>`,
+                    'checkbox'
+                  )
+                }
               >
                 {copiedSection === 'checkbox' ? <CheckCheck className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <div className="bg-muted p-4 rounded-lg overflow-x-auto">
-              <pre className="text-sm"><code>{`<Checkbox
+              <pre className="text-sm">
+                <code>{`<Checkbox
   checked={form.watch('interests')?.includes(interest.id)}
   onCheckedChange={(checked) => {
     const currentInterests = form.getValues('interests') || [];
@@ -672,7 +649,8 @@ export default function CompleteFormPage() {
       form.setValue('interests', currentInterests.filter(i => i !== interest.id));
     }
   }}
-/>`}</code></pre>
+/>`}</code>
+              </pre>
             </div>
           </div>
 
@@ -683,7 +661,9 @@ export default function CompleteFormPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleCopyCode(`const onSubmit = async (data: CompleteFormData) => {
+                onClick={() =>
+                  handleCopyCode(
+                    `const onSubmit = async (data: CompleteFormData) => {
   setIsSubmitting(true);
   
   try {
@@ -706,13 +686,17 @@ export default function CompleteFormPage() {
   } finally {
     setIsSubmitting(false);
   }
-};`, 'submit')}
+};`,
+                    'submit'
+                  )
+                }
               >
                 {copiedSection === 'submit' ? <CheckCheck className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <div className="bg-muted p-4 rounded-lg overflow-x-auto">
-              <pre className="text-sm"><code>{`const onSubmit = async (data: CompleteFormData) => {
+              <pre className="text-sm">
+                <code>{`const onSubmit = async (data: CompleteFormData) => {
   setIsSubmitting(true);
   
   try {
@@ -735,7 +719,8 @@ export default function CompleteFormPage() {
   } finally {
     setIsSubmitting(false);
   }
-};`}</code></pre>
+};`}</code>
+              </pre>
             </div>
           </div>
         </CardContent>
@@ -754,15 +739,21 @@ export default function CompleteFormPage() {
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span><code>onBlur</code>: 필드를 벗어날 때 검증</span>
+                  <span>
+                    <code>onBlur</code>: 필드를 벗어날 때 검증
+                  </span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span><code>onChange</code>: 입력할 때마다 검증</span>
+                  <span>
+                    <code>onChange</code>: 입력할 때마다 검증
+                  </span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span><code>onSubmit</code>: 제출시에만 검증</span>
+                  <span>
+                    <code>onSubmit</code>: 제출시에만 검증
+                  </span>
                 </li>
               </ul>
             </div>

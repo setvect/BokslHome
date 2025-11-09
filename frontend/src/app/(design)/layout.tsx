@@ -5,11 +5,7 @@ import { Header } from '@/components/layout/header';
 import { DesignSystemSidebar } from '@/components/layout/design-system-sidebar';
 import { MainContent } from '@/components/layout/main-content';
 
-export default function DesignLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DesignLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -27,9 +23,7 @@ export default function DesignLayout({
 
       {/* 메인 콘텐츠 영역 */}
       <div className="flex flex-1 flex-col pt-14 lg:ml-64">
-        <MainContent>
-          {children}
-        </MainContent>
+        <MainContent>{children}</MainContent>
       </div>
     </div>
   );

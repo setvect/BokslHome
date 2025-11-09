@@ -6,28 +6,22 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-const SelectExample = ({ 
-  title, 
-  description, 
-  children, 
-  code 
-}: { 
-  title: string; 
-  description: string; 
-  children: React.ReactNode; 
-  code: string; 
+const SelectExample = ({
+  title,
+  description,
+  children,
+  code,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  code: string;
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -46,20 +40,13 @@ const SelectExample = ({
             <CardTitle className="text-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={copyToClipboard}
-            className="shrink-0"
-          >
+          <Button variant="outline" size="sm" onClick={copyToClipboard} className="shrink-0">
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="p-4 border rounded-lg bg-background">
-          {children}
-        </div>
+        <div className="p-4 border rounded-lg bg-background">{children}</div>
         <div className="bg-muted p-3 rounded-lg">
           <pre className="text-sm overflow-x-auto whitespace-pre-wrap">
             <code>{code}</code>
@@ -80,14 +67,14 @@ export default function SelectComponentsPage() {
 
   const handleInterestChange = (interest: string, checked: boolean) => {
     if (checked) {
-      setInterests(prev => [...prev, interest]);
+      setInterests((prev) => [...prev, interest]);
     } else {
-      setInterests(prev => prev.filter(item => item !== interest));
+      setInterests((prev) => prev.filter((item) => item !== interest));
     }
   };
 
   const handleNotificationChange = (type: keyof typeof notifications, checked: boolean) => {
-    setNotifications(prev => ({ ...prev, [type]: checked }));
+    setNotifications((prev) => ({ ...prev, [type]: checked }));
   };
 
   return (
@@ -95,9 +82,7 @@ export default function SelectComponentsPage() {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">선택 컴포넌트</h1>
-        <p className="text-muted-foreground">
-          드롭다운, 라디오 버튼, 체크박스, 스위치 등 사용자가 선택할 수 있는 컴포넌트들입니다.
-        </p>
+        <p className="text-muted-foreground">드롭다운, 라디오 버튼, 체크박스, 스위치 등 사용자가 선택할 수 있는 컴포넌트들입니다.</p>
       </div>
 
       {/* Select Dropdown */}
@@ -334,32 +319,32 @@ const handleInterestChange = (interest: string, checked: boolean) => {
             <Label>관심 분야</Label>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="frontend" 
+                <Checkbox
+                  id="frontend"
                   checked={interests.includes('frontend')}
                   onCheckedChange={(checked) => handleInterestChange('frontend', !!checked)}
                 />
                 <Label htmlFor="frontend">프론트엔드</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="backend" 
+                <Checkbox
+                  id="backend"
                   checked={interests.includes('backend')}
                   onCheckedChange={(checked) => handleInterestChange('backend', !!checked)}
                 />
                 <Label htmlFor="backend">백엔드</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="mobile" 
+                <Checkbox
+                  id="mobile"
                   checked={interests.includes('mobile')}
                   onCheckedChange={(checked) => handleInterestChange('mobile', !!checked)}
                 />
                 <Label htmlFor="mobile">모바일</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="design" 
+                <Checkbox
+                  id="design"
                   checked={interests.includes('design')}
                   onCheckedChange={(checked) => handleInterestChange('design', !!checked)}
                 />
@@ -367,13 +352,15 @@ const handleInterestChange = (interest: string, checked: boolean) => {
               </div>
             </div>
           </div>
-          
+
           {interests.length > 0 && (
             <div className="space-y-2">
               <Label>선택된 관심사</Label>
               <div className="flex flex-wrap gap-1">
-                {interests.map(interest => (
-                  <Badge key={interest} variant="secondary">{interest}</Badge>
+                {interests.map((interest) => (
+                  <Badge key={interest} variant="secondary">
+                    {interest}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -443,44 +430,29 @@ const handleNotificationChange = (type: string, checked: boolean) => {
         <div className="space-y-4">
           <div className="space-y-4">
             <Label>알림 설정</Label>
-            
+
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="space-y-0.5">
                 <Label className="text-base">이메일 알림</Label>
-                <p className="text-sm text-muted-foreground">
-                  중요한 업데이트와 소식을 이메일로 받아보세요.
-                </p>
+                <p className="text-sm text-muted-foreground">중요한 업데이트와 소식을 이메일로 받아보세요.</p>
               </div>
-              <Switch
-                checked={notifications.email}
-                onCheckedChange={(checked) => handleNotificationChange('email', checked)}
-              />
+              <Switch checked={notifications.email} onCheckedChange={(checked) => handleNotificationChange('email', checked)} />
             </div>
 
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="space-y-0.5">
                 <Label className="text-base">푸시 알림</Label>
-                <p className="text-sm text-muted-foreground">
-                  실시간 알림을 브라우저에서 받아보세요.
-                </p>
+                <p className="text-sm text-muted-foreground">실시간 알림을 브라우저에서 받아보세요.</p>
               </div>
-              <Switch
-                checked={notifications.push}
-                onCheckedChange={(checked) => handleNotificationChange('push', checked)}
-              />
+              <Switch checked={notifications.push} onCheckedChange={(checked) => handleNotificationChange('push', checked)} />
             </div>
 
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="space-y-0.5">
                 <Label className="text-base">SMS 알림</Label>
-                <p className="text-sm text-muted-foreground">
-                  긴급한 알림을 문자로 받아보세요.
-                </p>
+                <p className="text-sm text-muted-foreground">긴급한 알림을 문자로 받아보세요.</p>
               </div>
-              <Switch
-                checked={notifications.sms}
-                onCheckedChange={(checked) => handleNotificationChange('sms', checked)}
-              />
+              <Switch checked={notifications.sms} onCheckedChange={(checked) => handleNotificationChange('sms', checked)} />
             </div>
           </div>
         </div>
@@ -530,11 +502,15 @@ const handleNotificationChange = (type: string, checked: boolean) => {
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="disabled" disabled />
-                <Label htmlFor="disabled" className="text-muted-foreground">비활성화</Label>
+                <Label htmlFor="disabled" className="text-muted-foreground">
+                  비활성화
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="disabled-checked" disabled defaultChecked />
-                <Label htmlFor="disabled-checked" className="text-muted-foreground">비활성화 (선택됨)</Label>
+                <Label htmlFor="disabled-checked" className="text-muted-foreground">
+                  비활성화 (선택됨)
+                </Label>
               </div>
             </div>
           </div>
@@ -714,10 +690,18 @@ const handleNotificationChange = (type: string, checked: boolean) => {
           <div>
             <h4 className="font-medium text-foreground mb-2">언제 어떤 컴포넌트를 사용할까요?</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• <strong>Select</strong>: 5개 이상의 옵션 중 하나를 선택할 때</li>
-              <li>• <strong>RadioGroup</strong>: 2-4개의 옵션 중 하나를 선택할 때</li>
-              <li>• <strong>Checkbox</strong>: 여러 항목을 동시에 선택할 때</li>
-              <li>• <strong>Switch</strong>: ON/OFF 설정이나 기능 활성화/비활성화</li>
+              <li>
+                • <strong>Select</strong>: 5개 이상의 옵션 중 하나를 선택할 때
+              </li>
+              <li>
+                • <strong>RadioGroup</strong>: 2-4개의 옵션 중 하나를 선택할 때
+              </li>
+              <li>
+                • <strong>Checkbox</strong>: 여러 항목을 동시에 선택할 때
+              </li>
+              <li>
+                • <strong>Switch</strong>: ON/OFF 설정이나 기능 활성화/비활성화
+              </li>
             </ul>
           </div>
           <div>

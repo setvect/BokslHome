@@ -1,17 +1,13 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
-import { BoardDeleteDialog } from "../_components/board-delete-dialog";
-import { getBoardDetail } from "../_data/board-details";
+import { BoardDeleteDialog } from '../_components/board-delete-dialog';
+import { getBoardDetail } from '../_data/board-details';
 
-const booleanToText = (value: boolean) => (value ? "true" : "false");
+const booleanToText = (value: boolean) => (value ? 'true' : 'false');
 
-export default function BoardDetailPage({
-  params,
-}: {
-  params: { code: string };
-}) {
+export default function BoardDetailPage({ params }: { params: { code: string } }) {
   const detail = getBoardDetail(params.code);
 
   return (
@@ -24,9 +20,7 @@ export default function BoardDetailPage({
         <div className="space-y-4 p-6">
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
             <span className="text-sm font-medium text-muted-foreground md:text-base">코드</span>
-            <span className="text-sm font-semibold text-foreground md:text-base">
-              {detail.code}
-            </span>
+            <span className="text-sm font-semibold text-foreground md:text-base">{detail.code}</span>
           </div>
 
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
@@ -35,33 +29,23 @@ export default function BoardDetailPage({
           </div>
 
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
-            <span className="text-sm font-medium text-muted-foreground md:text-base">
-              업로드 용량제한
-            </span>
-            <span className="text-sm text-foreground md:text-base">
-              {detail.uploadLimit} KB
-            </span>
+            <span className="text-sm font-medium text-muted-foreground md:text-base">업로드 용량제한</span>
+            <span className="text-sm text-foreground md:text-base">{detail.uploadLimit} KB</span>
           </div>
 
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
             <span className="text-sm font-medium text-muted-foreground md:text-base">댓글 사용</span>
-            <span className="text-sm text-foreground md:text-base">
-              {booleanToText(detail.allowComments)}
-            </span>
+            <span className="text-sm text-foreground md:text-base">{booleanToText(detail.allowComments)}</span>
           </div>
 
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
             <span className="text-sm font-medium text-muted-foreground md:text-base">파일 업로드</span>
-            <span className="text-sm text-foreground md:text-base">
-              {booleanToText(detail.allowFiles)}
-            </span>
+            <span className="text-sm text-foreground md:text-base">{booleanToText(detail.allowFiles)}</span>
           </div>
 
           <div className="grid gap-2 md:grid-cols-[160px_1fr]">
             <span className="text-sm font-medium text-muted-foreground md:text-base">암호화 글</span>
-            <span className="text-sm text-foreground md:text-base">
-              {booleanToText(detail.allowEncryptedPosts)}
-            </span>
+            <span className="text-sm text-foreground md:text-base">{booleanToText(detail.allowEncryptedPosts)}</span>
           </div>
         </div>
         <footer className="flex flex-col gap-3 border-t border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between">

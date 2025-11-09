@@ -104,38 +104,34 @@ export default function ComponentsPage() {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">컴포넌트</h1>
-        <p className="text-muted-foreground">
-          복슬홈 디자인 시스템의 모든 UI 컴포넌트들을 탐색하고 사용법을 확인하세요.
-        </p>
+        <p className="text-muted-foreground">복슬홈 디자인 시스템의 모든 UI 컴포넌트들을 탐색하고 사용법을 확인하세요.</p>
       </div>
 
       {/* 빠른 시작 */}
       <Card>
         <CardHeader>
           <CardTitle>빠른 시작</CardTitle>
-          <CardDescription>
-            컴포넌트를 사용하기 전에 알아두면 좋은 기본 정보입니다.
-          </CardDescription>
+          <CardDescription>컴포넌트를 사용하기 전에 알아두면 좋은 기본 정보입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <h4 className="font-medium text-foreground">설치</h4>
-              <p className="text-sm text-muted-foreground">
-                모든 컴포넌트는 이미 설치되어 있으며 바로 사용할 수 있습니다.
-              </p>
+              <p className="text-sm text-muted-foreground">모든 컴포넌트는 이미 설치되어 있으며 바로 사용할 수 있습니다.</p>
               <div className="bg-muted p-3 rounded-lg font-mono text-sm">
                 import &#123; Button &#125; from &apos;@/components/ui/button&apos;
               </div>
             </div>
             <div className="space-y-2">
               <h4 className="font-medium text-foreground">테마 지원</h4>
-              <p className="text-sm text-muted-foreground">
-                모든 컴포넌트는 라이트/다크 테마를 자동으로 지원합니다.
-              </p>
+              <p className="text-sm text-muted-foreground">모든 컴포넌트는 라이트/다크 테마를 자동으로 지원합니다.</p>
               <div className="flex space-x-2">
-                <Button variant="default" size="sm">기본 버튼</Button>
-                <Button variant="secondary" size="sm">보조 버튼</Button>
+                <Button variant="default" size="sm">
+                  기본 버튼
+                </Button>
+                <Button variant="secondary" size="sm">
+                  보조 버튼
+                </Button>
               </div>
             </div>
           </div>
@@ -157,7 +153,7 @@ export default function ComponentsPage() {
                   <p className="text-muted-foreground">{category.description}</p>
                 </div>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {category.components.map((component) => (
                   <Card key={component.name} className="group cursor-pointer hover:shadow-md transition-shadow">
@@ -169,12 +165,8 @@ export default function ComponentsPage() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <CardDescription className="text-sm leading-relaxed mb-2">
-                          {component.description}
-                        </CardDescription>
-                        <div className="text-xs text-muted-foreground">
-                          {component.count}
-                        </div>
+                        <CardDescription className="text-sm leading-relaxed mb-2">{component.description}</CardDescription>
+                        <div className="text-xs text-muted-foreground">{component.count}</div>
                       </CardContent>
                     </Link>
                   </Card>

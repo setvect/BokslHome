@@ -1,9 +1,5 @@
 import { BOARD_CATEGORIES } from '../../constants/board';
-import type {
-  BoardCode,
-  BoardListMock,
-  BoardPostMock,
-} from '../../types/board';
+import type { BoardCode, BoardListMock, BoardPostMock } from '../../types/board';
 
 const BASE_POSTS: Record<BoardCode, BoardPostMock[]> = {
   BDAAAA01: [
@@ -24,9 +20,7 @@ const BASE_POSTS: Record<BoardCode, BoardPostMock[]> = {
       createdAt: '2024-01-25',
       isEncrypted: true,
       password: '202401',
-      attachments: [
-        { id: 'att-100', filename: 'statement-202401.xlsx', size: 128_000 },
-      ],
+      attachments: [{ id: 'att-100', filename: 'statement-202401.xlsx', size: 128_000 }],
     },
     {
       id: 19,
@@ -85,9 +79,7 @@ const BASE_POSTS: Record<BoardCode, BoardPostMock[]> = {
       summary: '벚꽃 사진 모음',
       content: '사진 10장을 업로드 예정',
       createdAt: '2024-04-12',
-      attachments: [
-        { id: 'img-500', filename: 'spring-park-01.jpg', size: 2_560_000 },
-      ],
+      attachments: [{ id: 'img-500', filename: 'spring-park-01.jpg', size: 2_560_000 }],
     },
   ],
   BDAAAA06: [
@@ -136,18 +128,16 @@ const BASE_POSTS: Record<BoardCode, BoardPostMock[]> = {
   ],
 };
 
-export const BOARD_LIST_MOCK: BoardListMock[] = BOARD_CATEGORIES.map(
-  (category) => {
-    const posts = BASE_POSTS[category.code] ?? [];
+export const BOARD_LIST_MOCK: BoardListMock[] = BOARD_CATEGORIES.map((category) => {
+  const posts = BASE_POSTS[category.code] ?? [];
 
-    return {
-      code: category.code,
-      totalCount: posts.length,
-      pageSize: 10,
-      posts,
-    };
-  }
-);
+  return {
+    code: category.code,
+    totalCount: posts.length,
+    pageSize: 10,
+    posts,
+  };
+});
 
 export function getMockBoardList(code: BoardCode): BoardListMock {
   const normalized = code.toUpperCase() as BoardCode;
@@ -161,9 +151,6 @@ export function getMockBoardList(code: BoardCode): BoardListMock {
   };
 }
 
-export function getMockBoardPost(
-  code: BoardCode,
-  postId: number
-): BoardPostMock | undefined {
+export function getMockBoardPost(code: BoardCode, postId: number): BoardPostMock | undefined {
   return (BASE_POSTS[code] ?? []).find((post) => post.id === postId);
 }

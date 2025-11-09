@@ -1,33 +1,28 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { useState } from "react"
+import Link from 'next/link';
+import { useState } from 'react';
 
-import { Button } from "@/components/ui/button"
-import type { BoardCategory, BoardPostMock } from "@/lib/types/board"
+import { Button } from '@/components/ui/button';
+import type { BoardCategory, BoardPostMock } from '@/lib/types/board';
 
-import { BoardAttachmentList } from "./board-attachment-list"
-import { BoardPasswordGate } from "./board-password-gate"
+import { BoardAttachmentList } from './board-attachment-list';
+import { BoardPasswordGate } from './board-password-gate';
 
 type BoardDetailViewProps = {
-  category: BoardCategory
-  post: BoardPostMock
-}
+  category: BoardCategory;
+  post: BoardPostMock;
+};
 
 export function BoardDetailView({ category, post }: BoardDetailViewProps) {
-  const [unlocked, setUnlocked] = useState(!post.isEncrypted)
+  const [unlocked, setUnlocked] = useState(!post.isEncrypted);
 
   if (!unlocked) {
-    return (
-      <BoardPasswordGate
-        expectedPassword={post.password}
-        onSuccess={() => setUnlocked(true)}
-      />
-    )
+    return <BoardPasswordGate expectedPassword={post.password} onSuccess={() => setUnlocked(true)} />;
   }
 
-  const paragraphs = (post.content ?? "").split(/\n{2,}/).filter(Boolean)
-  const detailHrefBase = `/board/${category.code}`
+  const paragraphs = (post.content ?? '').split(/\n{2,}/).filter(Boolean);
+  const detailHrefBase = `/board/${category.code}`;
 
   return (
     <div className="space-y-10">
@@ -41,15 +36,15 @@ export function BoardDetailView({ category, post }: BoardDetailViewProps) {
       </header>
 
       <article className="space-y-6 rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60">
-        {paragraphs.length
-          ? paragraphs.map((paragraph, index) => (
-              <p key={index} className="whitespace-pre-line text-lg leading-relaxed">
-                {paragraph}
-              </p>
-            ))
-          : (
-              <p className="text-lg leading-relaxed">{post.content}</p>
-            )}
+        {paragraphs.length ? (
+          paragraphs.map((paragraph, index) => (
+            <p key={index} className="whitespace-pre-line text-lg leading-relaxed">
+              {paragraph}
+            </p>
+          ))
+        ) : (
+          <p className="text-lg leading-relaxed">{post.content}</p>
+        )}
       </article>
 
       <BoardAttachmentList attachments={post.attachments} showDownload />
@@ -59,22 +54,14 @@ export function BoardDetailView({ category, post }: BoardDetailViewProps) {
           <Link href={detailHrefBase}>목록</Link>
         </Button>
         <div className="flex gap-3">
-          <Button
-            asChild
-            variant="outline"
-            className="h-12 min-w-[120px] rounded-xl text-base font-semibold"
-          >
+          <Button asChild variant="outline" className="h-12 min-w-[120px] rounded-xl text-base font-semibold">
             <Link href={`${detailHrefBase}/${post.id}/edit`}>수정</Link>
           </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            className="h-12 min-w-[120px] rounded-xl text-base font-semibold"
-          >
+          <Button type="button" variant="destructive" className="h-12 min-w-[120px] rounded-xl text-base font-semibold">
             삭제
           </Button>
         </div>
       </footer>
     </div>
-  )
+  );
 }

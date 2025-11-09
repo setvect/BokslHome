@@ -54,9 +54,7 @@ const DialogExample = () => {
       <Card>
         <CardHeader>
           <CardTitle>기본 Dialog</CardTitle>
-          <CardDescription>
-            일반적인 모달 다이얼로그입니다. 폼 입력이나 정보 표시에 사용합니다.
-          </CardDescription>
+          <CardDescription>일반적인 모달 다이얼로그입니다. 폼 입력이나 정보 표시에 사용합니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex space-x-4">
@@ -70,30 +68,20 @@ const DialogExample = () => {
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>프로필 설정</DialogTitle>
-                  <DialogDescription>
-                    여기에서 프로필 정보를 변경할 수 있습니다. 완료 후 저장을 클릭하세요.
-                  </DialogDescription>
+                  <DialogDescription>여기에서 프로필 정보를 변경할 수 있습니다. 완료 후 저장을 클릭하세요.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="name" className="text-right">
                       이름
                     </Label>
-                    <Input
-                      id="name"
-                      defaultValue="홍길동"
-                      className="col-span-3"
-                    />
+                    <Input id="name" defaultValue="홍길동" className="col-span-3" />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="username" className="text-right">
                       사용자명
                     </Label>
-                    <Input
-                      id="username"
-                      defaultValue="@gildong"
-                      className="col-span-3"
-                    />
+                    <Input id="username" defaultValue="@gildong" className="col-span-3" />
                   </div>
                 </div>
                 <DialogFooter>
@@ -117,14 +105,11 @@ const DialogExample = () => {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>상세 정보</DialogTitle>
-                  <DialogDescription>
-                    사용자에게 중요한 정보나 상세 내용을 표시하는 다이얼로그입니다.
-                  </DialogDescription>
+                  <DialogDescription>사용자에게 중요한 정보나 상세 내용을 표시하는 다이얼로그입니다.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    이것은 정보 표시용 다이얼로그입니다. 사용자에게 중요한 정보나 
-                    상세 내용을 보여줄 때 사용합니다.
+                    이것은 정보 표시용 다이얼로그입니다. 사용자에게 중요한 정보나 상세 내용을 보여줄 때 사용합니다.
                   </p>
                   <div className="bg-muted p-4 rounded-lg">
                     <h4 className="font-medium text-foreground mb-2">주요 기능</h4>
@@ -151,7 +136,9 @@ const DialogExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Dialog>
+                onClick={() =>
+                  copyToClipboard(
+                    `<Dialog>
   <DialogTrigger asChild>
     <Button variant="default">설정 열기</Button>
   </DialogTrigger>
@@ -175,13 +162,12 @@ const DialogExample = () => {
       <Button type="submit">저장</Button>
     </DialogFooter>
   </DialogContent>
-</Dialog>`, 'basic-dialog')}
+</Dialog>`,
+                    'basic-dialog'
+                  )
+                }
               >
-                {copied === 'basic-dialog' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'basic-dialog' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -239,31 +225,25 @@ const DialogExample = () => {
                     계정을 정말 삭제하시겠습니까?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    이 작업은 되돌릴 수 없습니다. 계정과 모든 데이터가 영구적으로 
-                    삭제되며 복구할 수 없습니다.
+                    이 작업은 되돌릴 수 없습니다. 계정과 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>취소</AlertDialogCancel>
-                  <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                    삭제
-                  </AlertDialogAction>
+                  <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">삭제</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline">
-                  로그아웃
-                </Button>
+                <Button variant="outline">로그아웃</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>로그아웃</AlertDialogTitle>
                   <AlertDialogDescription>
-                    정말 로그아웃 하시겠습니까? 저장되지 않은 작업이 있다면 
-                    먼저 저장해주세요.
+                    정말 로그아웃 하시겠습니까? 저장되지 않은 작업이 있다면 먼저 저장해주세요.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -280,7 +260,9 @@ const DialogExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<AlertDialog>
+                onClick={() =>
+                  copyToClipboard(
+                    `<AlertDialog>
   <AlertDialogTrigger asChild>
     <Button variant="destructive">계정 삭제</Button>
   </AlertDialogTrigger>
@@ -299,13 +281,12 @@ const DialogExample = () => {
       </AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
-</AlertDialog>`, 'alert-dialog')}
+</AlertDialog>`,
+                    'alert-dialog'
+                  )
+                }
               >
-                {copied === 'alert-dialog' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'alert-dialog' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -456,8 +437,12 @@ const DialogExample = () => {
           <div>
             <h4 className="font-medium text-foreground mb-2">언제 사용하나요?</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• <strong>Dialog</strong>: 폼 입력, 설정 변경, 상세 정보 표시</li>
-              <li>• <strong>AlertDialog</strong>: 중요한 확인, 경고, 삭제 등의 위험한 작업</li>
+              <li>
+                • <strong>Dialog</strong>: 폼 입력, 설정 변경, 상세 정보 표시
+              </li>
+              <li>
+                • <strong>AlertDialog</strong>: 중요한 확인, 경고, 삭제 등의 위험한 작업
+              </li>
               <li>• 사용자의 현재 작업을 중단하고 즉시 응답이 필요할 때</li>
               <li>• 복잡한 폼이나 많은 정보를 별도 화면에서 처리할 때</li>
             </ul>

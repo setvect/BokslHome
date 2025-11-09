@@ -9,9 +9,7 @@ export interface MainContentProps {
 export function MainContent({ children, className }: MainContentProps) {
   return (
     <main className={cn('flex-1 overflow-auto', className)}>
-      <div className="container mx-auto p-4 lg:p-6">
-        {children}
-      </div>
+      <div className="container mx-auto p-4 lg:p-6">{children}</div>
     </main>
   );
 }

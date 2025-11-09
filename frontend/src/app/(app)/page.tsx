@@ -53,9 +53,7 @@ export default function HomePage() {
       {/* 헤더 섹션 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">복슬홈에 오신 것을 환영합니다</h1>
-        <p className="text-muted-foreground">
-          복슬포털의 현대화된 버전으로, 게시판부터 지식 관리까지 모든 기능을 한곳에서 만나보세요.
-        </p>
+        <p className="text-muted-foreground">복슬포털의 현대화된 버전으로, 게시판부터 지식 관리까지 모든 기능을 한곳에서 만나보세요.</p>
       </div>
 
       {/* 기능 카드 그리드 */}
@@ -73,9 +71,7 @@ export default function HomePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-sm leading-relaxed">
-                  {feature.description}
-                </CardDescription>
+                <CardDescription className="text-sm leading-relaxed">{feature.description}</CardDescription>
               </CardContent>
             </Card>
           );
@@ -86,9 +82,7 @@ export default function HomePage() {
       <Card>
         <CardHeader>
           <CardTitle>시작하기</CardTitle>
-          <CardDescription>
-            복슬홈의 다양한 기능들을 탐색해보세요. 각 메뉴를 클릭하면 해당 기능으로 이동할 수 있습니다.
-          </CardDescription>
+          <CardDescription>복슬홈의 다양한 기능들을 탐색해보세요. 각 메뉴를 클릭하면 해당 기능으로 이동할 수 있습니다.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm text-muted-foreground">

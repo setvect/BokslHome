@@ -1,34 +1,21 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useMemo, useState } from "react";
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PaginationNav } from "@/components/ui/pagination-nav";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { PaginationNav } from '@/components/ui/pagination-nav';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import type { BoardManageSummary } from "../_data/board-list";
-import { BoardDeleteDialog } from "./board-delete-dialog";
+import type { BoardManageSummary } from '../_data/board-list';
+import { BoardDeleteDialog } from './board-delete-dialog';
 
 const SEARCH_FIELDS = [
-  { label: "이름", value: "name" },
-  { label: "코드", value: "code" },
+  { label: '이름', value: 'name' },
+  { label: '코드', value: 'code' },
 ];
 
 interface BoardManageListViewProps {
@@ -131,16 +118,9 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <PaginationNav
-            page={page}
-            total={totalCount}
-            pageSize={pageSize}
-            onPageChange={setPage}
-          />
+          <PaginationNav page={page} total={totalCount} pageSize={pageSize} onPageChange={setPage} />
         </div>
       </section>
     </>
   );
 }
-
-

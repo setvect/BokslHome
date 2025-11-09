@@ -131,12 +131,7 @@ export function DesignSystemSidebar({ isOpen, onClose }: DesignSystemSidebarProp
   return (
     <>
       {/* 모바일 오버레이 */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden" onClick={onClose} />}
 
       {/* 사이드바 */}
       <div
@@ -149,13 +144,7 @@ export function DesignSystemSidebar({ isOpen, onClose }: DesignSystemSidebarProp
           {/* 헤더 영역 */}
           <div className="flex h-14 items-center justify-between px-4 border-b border-border">
             <h2 className="text-lg font-semibold text-foreground">디자인 시스템</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="w-9 px-0 lg:hidden"
-              aria-label="사이드바 닫기"
-            >
+            <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0 lg:hidden" aria-label="사이드바 닫기">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -165,14 +154,12 @@ export function DesignSystemSidebar({ isOpen, onClose }: DesignSystemSidebarProp
             <div className="space-y-6">
               {navigation.map((section) => (
                 <div key={section.category}>
-                  <h3 className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {section.category}
-                  </h3>
+                  <h3 className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{section.category}</h3>
                   <div className="space-y-1">
                     {section.items.map((item) => {
                       const isActive = pathname === item.href;
                       const Icon = item.icon;
-                      
+
                       return (
                         <Link
                           key={item.name}

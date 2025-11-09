@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 import {
   AlertDialog,
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 type BoardDeleteDialogProps = {
   boardName: string;
@@ -26,9 +26,7 @@ export function BoardDeleteDialog({ boardName, trigger }: BoardDeleteDialogProps
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>게시판을 삭제할까요?</AlertDialogTitle>
-          <AlertDialogDescription>
-            이 작업은 {boardName} 게시판을 삭제합니다. 삭제하면 되돌릴 수 없습니다.
-          </AlertDialogDescription>
+          <AlertDialogDescription>이 작업은 {boardName} 게시판을 삭제합니다. 삭제하면 되돌릴 수 없습니다.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>

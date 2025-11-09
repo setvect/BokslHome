@@ -9,16 +9,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Copy, Check, Eye, EyeOff, Mail, User, Phone, MapPin, Calendar, Search, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
 
-const InputExample = ({ 
-  title, 
-  description, 
-  children, 
-  code 
-}: { 
-  title: string; 
-  description: string; 
-  children: React.ReactNode; 
-  code: string; 
+const InputExample = ({
+  title,
+  description,
+  children,
+  code,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  code: string;
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -37,20 +37,13 @@ const InputExample = ({
             <CardTitle className="text-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={copyToClipboard}
-            className="shrink-0"
-          >
+          <Button variant="outline" size="sm" onClick={copyToClipboard} className="shrink-0">
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="p-4 border rounded-lg bg-background">
-          {children}
-        </div>
+        <div className="p-4 border rounded-lg bg-background">{children}</div>
         <div className="bg-muted p-3 rounded-lg">
           <pre className="text-sm overflow-x-auto whitespace-pre-wrap">
             <code>{code}</code>
@@ -70,9 +63,7 @@ export default function InputFieldsPage() {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">입력 필드</h1>
-        <p className="text-muted-foreground">
-          텍스트, 이메일, 비밀번호 등 사용자 입력을 받기 위한 기본적인 입력 필드 컴포넌트들입니다.
-        </p>
+        <p className="text-muted-foreground">텍스트, 이메일, 비밀번호 등 사용자 입력을 받기 위한 기본적인 입력 필드 컴포넌트들입니다.</p>
       </div>
 
       {/* 기본 Input */}
@@ -207,15 +198,10 @@ export default function InputFieldsPage() {
           <div className="space-y-2">
             <Label htmlFor="password">비밀번호</Label>
             <div className="relative">
-              <Input 
-                id="password" 
-                type={showPassword ? "text" : "password"} 
-                placeholder="••••••••" 
-                className="pr-10" 
-              />
-              <Button 
+              <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" className="pr-10" />
+              <Button
                 type="button"
-                variant="ghost" 
+                variant="ghost"
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3"
                 onClick={() => setShowPassword(!showPassword)}
@@ -228,15 +214,10 @@ export default function InputFieldsPage() {
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">비밀번호 확인</Label>
             <div className="relative">
-              <Input 
-                id="confirmPassword" 
-                type={showConfirmPassword ? "text" : "password"} 
-                placeholder="••••••••" 
-                className="pr-10" 
-              />
-              <Button 
+              <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="••••••••" className="pr-10" />
+              <Button
                 type="button"
-                variant="ghost" 
+                variant="ghost"
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -379,12 +360,10 @@ export default function InputFieldsPage() {
 
           {/* 오류 상태 */}
           <div className="space-y-2">
-            <Label htmlFor="error" className="text-destructive">오류 상태</Label>
-            <Input 
-              id="error" 
-              defaultValue="잘못된 값" 
-              className="border-destructive focus-visible:ring-destructive" 
-            />
+            <Label htmlFor="error" className="text-destructive">
+              오류 상태
+            </Label>
+            <Input id="error" defaultValue="잘못된 값" className="border-destructive focus-visible:ring-destructive" />
             <p className="text-sm text-destructive">올바른 형식이 아닙니다.</p>
           </div>
         </div>
@@ -431,32 +410,20 @@ export default function InputFieldsPage() {
           {/* 기본 Textarea */}
           <div className="space-y-2">
             <Label htmlFor="basic-textarea">자기소개</Label>
-            <Textarea 
-              id="basic-textarea" 
-              placeholder="자신을 간단히 소개해주세요..." 
-              className="min-h-[100px]"
-            />
+            <Textarea id="basic-textarea" placeholder="자신을 간단히 소개해주세요..." className="min-h-[100px]" />
             <p className="text-sm text-muted-foreground">500자 이내로 작성해주세요.</p>
           </div>
 
           {/* 크기 조절 불가 */}
           <div className="space-y-2">
             <Label htmlFor="fixed-textarea">메모</Label>
-            <Textarea 
-              id="fixed-textarea" 
-              placeholder="간단한 메모를 작성하세요..." 
-              className="min-h-[80px] resize-none"
-            />
+            <Textarea id="fixed-textarea" placeholder="간단한 메모를 작성하세요..." className="min-h-[80px] resize-none" />
           </div>
 
           {/* 큰 텍스트 영역 */}
           <div className="space-y-2">
             <Label htmlFor="large-textarea">상세 설명</Label>
-            <Textarea 
-              id="large-textarea" 
-              placeholder="상세한 내용을 작성해주세요..." 
-              className="min-h-[150px]"
-            />
+            <Textarea id="large-textarea" placeholder="상세한 내용을 작성해주세요..." className="min-h-[150px]" />
           </div>
         </div>
       </InputExample>

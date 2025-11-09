@@ -70,9 +70,7 @@ export default function FormsOverviewPage() {
       <Card>
         <CardHeader>
           <CardTitle>빠른 시작</CardTitle>
-          <CardDescription>
-            폼 컴포넌트를 사용하기 위한 기본 설정과 사용 방법입니다.
-          </CardDescription>
+          <CardDescription>폼 컴포넌트를 사용하기 위한 기본 설정과 사용 방법입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-6 md:grid-cols-3">
@@ -84,9 +82,7 @@ export default function FormsOverviewPage() {
                   </div>
                   <h3 className="font-medium text-foreground">{step.title}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 <div className="bg-muted p-3 rounded-lg">
                   <code className="text-sm font-mono">{step.code}</code>
                 </div>
@@ -119,14 +115,12 @@ export default function FormsOverviewPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-sm leading-relaxed mb-3">
-                      {category.description}
-                    </CardDescription>
+                    <CardDescription className="text-sm leading-relaxed mb-3">{category.description}</CardDescription>
                     <div className="space-y-2">
                       <div>
                         <p className="text-xs text-muted-foreground mb-1">포함 컴포넌트:</p>
                         <div className="flex flex-wrap gap-1">
-                          {category.components.map(component => (
+                          {category.components.map((component) => (
                             <Badge key={component} variant="secondary" className="text-xs">
                               {component}
                             </Badge>
@@ -270,9 +264,7 @@ export default function FormsOverviewPage() {
       <Card>
         <CardHeader>
           <CardTitle>시작하기</CardTitle>
-          <CardDescription>
-            아래 링크를 통해 각 컴포넌트의 상세한 사용법을 확인하세요.
-          </CardDescription>
+          <CardDescription>아래 링크를 통해 각 컴포넌트의 상세한 사용법을 확인하세요.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-3">

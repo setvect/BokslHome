@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { HtmlEditor } from '@/components/ui/html-editor'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { useState } from 'react';
+import { HtmlEditor } from '@/components/ui/html-editor';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 
 const sampleHtml = `<h1>HTML 에디터 예시</h1>
 
@@ -41,7 +41,7 @@ function greetUser(name) {
 }
 
 console.log(greetUser('사용자'));
-</pre>`
+</pre>`;
 
 const exampleCode = `import { HtmlEditor } from '@/components/ui/html-editor'
 
@@ -57,20 +57,18 @@ export function MyComponent() {
       toolbar="full"
     />
   )
-}`
+}`;
 
 export default function HtmlEditorPage() {
-  const [demoContent, setDemoContent] = useState(sampleHtml)
-  const [readOnlyContent] = useState('<h1>읽기 전용 에디터</h1><p>이 에디터는 <strong>읽기 전용</strong>입니다.</p>')
+  const [demoContent, setDemoContent] = useState(sampleHtml);
+  const [readOnlyContent] = useState('<h1>읽기 전용 에디터</h1><p>이 에디터는 <strong>읽기 전용</strong>입니다.</p>');
 
   return (
     <div className="space-y-6">
       {/* 헤더 */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">HTML Editor</h1>
-        <p className="text-muted-foreground mt-2">
-          Quill.js 기반의 WYSIWYG HTML 에디터 컴포넌트입니다.
-        </p>
+        <p className="text-muted-foreground mt-2">Quill.js 기반의 WYSIWYG HTML 에디터 컴포넌트입니다.</p>
         <div className="flex gap-2 mt-3">
           <Badge variant="secondary">Quill.js</Badge>
           <Badge variant="secondary">WYSIWYG</Badge>
@@ -89,12 +87,7 @@ export default function HtmlEditorPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <HtmlEditor
-            value={demoContent}
-            onChange={setDemoContent}
-            height="500px"
-            toolbar="full"
-          />
+          <HtmlEditor value={demoContent} onChange={setDemoContent} height="500px" toolbar="full" />
         </CardContent>
       </Card>
 
@@ -215,12 +208,7 @@ export default function HtmlEditorPage() {
               <CardDescription>readOnly 속성이 true인 경우</CardDescription>
             </CardHeader>
             <CardContent>
-              <HtmlEditor
-                value={readOnlyContent}
-                readOnly={true}
-                height="200px"
-                toolbar="basic"
-              />
+              <HtmlEditor value={readOnlyContent} readOnly={true} height="200px" toolbar="basic" />
             </CardContent>
           </Card>
 
@@ -231,11 +219,7 @@ export default function HtmlEditorPage() {
               <CardDescription>toolbar=&quot;basic&quot; 설정</CardDescription>
             </CardHeader>
             <CardContent>
-              <HtmlEditor
-                value="<p>기본 툴바를 사용하는 <strong>간단한</strong> 에디터입니다.</p>"
-                toolbar="basic"
-                height="200px"
-              />
+              <HtmlEditor value="<p>기본 툴바를 사용하는 <strong>간단한</strong> 에디터입니다.</p>" toolbar="basic" height="200px" />
             </CardContent>
           </Card>
 
@@ -246,11 +230,7 @@ export default function HtmlEditorPage() {
               <CardDescription>toolbar=&quot;minimal&quot; 설정</CardDescription>
             </CardHeader>
             <CardContent>
-              <HtmlEditor
-                value="<p>최소한의 기능만 있는 <em>심플한</em> 에디터입니다.</p>"
-                toolbar="minimal"
-                height="150px"
-              />
+              <HtmlEditor value="<p>최소한의 기능만 있는 <em>심플한</em> 에디터입니다.</p>" toolbar="minimal" height="150px" />
             </CardContent>
           </Card>
         </TabsContent>
@@ -303,5 +283,5 @@ export default function HtmlEditorPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

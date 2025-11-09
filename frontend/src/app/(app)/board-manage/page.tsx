@@ -1,5 +1,5 @@
-import { BoardManageListView } from "./_components/board-manage-list-view";
-import { BOARD_MANAGE_LIST } from "./_data/board-list";
+import { BoardManageListView } from './_components/board-manage-list-view';
+import { BOARD_MANAGE_LIST } from './_data/board-list';
 
 export default function BoardAdminPage() {
   return (

@@ -4,14 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -85,18 +78,14 @@ const TableExample = () => {
   };
 
   const toggleRowSelection = (id: string) => {
-    setSelectedRows(prev => 
-      prev.includes(id) 
-        ? prev.filter(rowId => rowId !== id)
-        : [...prev, id]
-    );
+    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
   };
 
   const toggleAllRows = () => {
     if (selectedRows.length === sampleUsers.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(sampleUsers.map(user => user.id));
+      setSelectedRows(sampleUsers.map((user) => user.id));
     }
   };
 
@@ -105,18 +94,14 @@ const TableExample = () => {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">Table</h1>
-        <p className="text-muted-foreground">
-          구조화된 데이터를 표시하고 관리하기 위한 테이블 컴포넌트입니다.
-        </p>
+        <p className="text-muted-foreground">구조화된 데이터를 표시하고 관리하기 위한 테이블 컴포넌트입니다.</p>
       </div>
 
       {/* 기본 테이블 */}
       <Card>
         <CardHeader>
           <CardTitle>기본 테이블</CardTitle>
-          <CardDescription>
-            간단한 데이터를 표시하는 기본 테이블입니다.
-          </CardDescription>
+          <CardDescription>간단한 데이터를 표시하는 기본 테이블입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Table>
@@ -148,7 +133,9 @@ const TableExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Table>
+                onClick={() =>
+                  copyToClipboard(
+                    `<Table>
   <TableHeader>
     <TableRow>
       <TableHead>이름</TableHead>
@@ -163,13 +150,12 @@ const TableExample = () => {
       <TableCell>관리자</TableCell>
     </TableRow>
   </TableBody>
-</Table>`, 'basic-table')}
+</Table>`,
+                    'basic-table'
+                  )
+                }
               >
-                {copied === 'basic-table' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'basic-table' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -200,9 +186,7 @@ const TableExample = () => {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>고급 테이블</CardTitle>
-              <CardDescription>
-                선택, 검색, 액션 등의 기능이 포함된 테이블입니다.
-              </CardDescription>
+              <CardDescription>선택, 검색, 액션 등의 기능이 포함된 테이블입니다.</CardDescription>
             </div>
             <div className="flex space-x-2">
               <Button variant="outline" size="sm">
@@ -225,10 +209,10 @@ const TableExample = () => {
             </div>
             {selectedRows.length > 0 && (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">
-                  {selectedRows.length}개 선택됨
-                </span>
-                <Button variant="outline" size="sm">삭제</Button>
+                <span className="text-sm text-muted-foreground">{selectedRows.length}개 선택됨</span>
+                <Button variant="outline" size="sm">
+                  삭제
+                </Button>
               </div>
             )}
           </div>
@@ -282,9 +266,7 @@ const TableExample = () => {
                         <DropdownMenuItem>편집</DropdownMenuItem>
                         <DropdownMenuItem>복사</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          삭제
-                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">삭제</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -299,7 +281,9 @@ const TableExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`// 선택 상태 관리
+                onClick={() =>
+                  copyToClipboard(
+                    `// 선택 상태 관리
 const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
 // 테이블 구조
@@ -346,13 +330,12 @@ const [selectedRows, setSelectedRows] = useState<string[]>([]);
       </TableRow>
     ))}
   </TableBody>
-</Table>`, 'advanced-table')}
+</Table>`,
+                    'advanced-table'
+                  )
+                }
               >
-                {copied === 'advanced-table' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'advanced-table' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -452,7 +435,9 @@ const [selectedRows, setSelectedRows] = useState<string[]>([]);
                   <TableCell className="h-8 px-2 text-xs">데이터 백업</TableCell>
                   <TableCell className="h-8 px-2 text-xs">14:30</TableCell>
                   <TableCell className="h-8 px-2 text-xs">
-                    <Badge variant="outline" className="text-xs h-5">완료</Badge>
+                    <Badge variant="outline" className="text-xs h-5">
+                      완료
+                    </Badge>
                   </TableCell>
                 </TableRow>
                 <TableRow>

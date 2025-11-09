@@ -36,18 +36,14 @@ const AlertExample = () => {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">Alert &amp; Toast</h1>
-        <p className="text-muted-foreground">
-          사용자에게 중요한 정보를 전달하고 피드백을 제공하는 알림 컴포넌트들입니다.
-        </p>
+        <p className="text-muted-foreground">사용자에게 중요한 정보를 전달하고 피드백을 제공하는 알림 컴포넌트들입니다.</p>
       </div>
 
       {/* Alert 컴포넌트 */}
       <Card>
         <CardHeader>
           <CardTitle>Alert 컴포넌트</CardTitle>
-          <CardDescription>
-            중요한 정보나 상태를 사용자에게 지속적으로 표시하는 정적 알림입니다.
-          </CardDescription>
+          <CardDescription>중요한 정보나 상태를 사용자에게 지속적으로 표시하는 정적 알림입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* 기본 Alert */}
@@ -56,9 +52,7 @@ const AlertExample = () => {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertTitle>안내</AlertTitle>
-              <AlertDescription>
-                이것은 기본 알림 메시지입니다. 사용자에게 일반적인 정보를 전달할 때 사용합니다.
-              </AlertDescription>
+              <AlertDescription>이것은 기본 알림 메시지입니다. 사용자에게 일반적인 정보를 전달할 때 사용합니다.</AlertDescription>
             </Alert>
           </div>
 
@@ -68,9 +62,7 @@ const AlertExample = () => {
             <Alert className="border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-900/20 dark:text-green-200">
               <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertTitle className="text-green-800 dark:text-green-200">성공!</AlertTitle>
-              <AlertDescription>
-                작업이 성공적으로 완료되었습니다. 데이터가 안전하게 저장되었습니다.
-              </AlertDescription>
+              <AlertDescription>작업이 성공적으로 완료되었습니다. 데이터가 안전하게 저장되었습니다.</AlertDescription>
             </Alert>
           </div>
 
@@ -80,9 +72,7 @@ const AlertExample = () => {
             <Alert className="border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900 dark:bg-yellow-900/20 dark:text-yellow-200">
               <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
               <AlertTitle className="text-yellow-800 dark:text-yellow-200">주의 필요</AlertTitle>
-              <AlertDescription>
-                이 작업을 계속하면 기존 데이터가 변경될 수 있습니다. 신중하게 진행해주세요.
-              </AlertDescription>
+              <AlertDescription>이 작업을 계속하면 기존 데이터가 변경될 수 있습니다. 신중하게 진행해주세요.</AlertDescription>
             </Alert>
           </div>
 
@@ -92,9 +82,7 @@ const AlertExample = () => {
             <Alert className="border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200">
               <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <AlertTitle className="text-red-800 dark:text-red-200">오류 발생</AlertTitle>
-              <AlertDescription>
-                네트워크 연결에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.
-              </AlertDescription>
+              <AlertDescription>네트워크 연결에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.</AlertDescription>
             </Alert>
           </div>
 
@@ -104,7 +92,9 @@ const AlertExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`// 기본 Alert
+                onClick={() =>
+                  copyToClipboard(
+                    `// 기본 Alert
 <Alert>
   <Info className="h-4 w-4" />
   <AlertTitle>안내</AlertTitle>
@@ -120,13 +110,12 @@ const AlertExample = () => {
   <AlertDescription>
     작업이 성공적으로 완료되었습니다.
   </AlertDescription>
-</Alert>`, 'alert-examples')}
+</Alert>`,
+                    'alert-examples'
+                  )
+                }
               >
-                {copied === 'alert-examples' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'alert-examples' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -156,62 +145,43 @@ const AlertExample = () => {
       <Card>
         <CardHeader>
           <CardTitle>Toast 알림</CardTitle>
-          <CardDescription>
-            임시적으로 나타나는 동적 알림입니다. 사용자 액션에 대한 즉각적인 피드백을 제공합니다.
-          </CardDescription>
+          <CardDescription>임시적으로 나타나는 동적 알림입니다. 사용자 액션에 대한 즉각적인 피드백을 제공합니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <h4 className="font-medium text-foreground">Toast 예시</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button 
-                onClick={() => toast.success('성공!')}
-                className="bg-green-600 hover:bg-green-700"
-              >
+              <Button onClick={() => toast.success('성공!')} className="bg-green-600 hover:bg-green-700">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 성공
               </Button>
-              <Button 
-                onClick={() => toast.error('오류 발생!')}
-                variant="destructive"
-              >
+              <Button onClick={() => toast.error('오류 발생!')} variant="destructive">
                 <AlertCircle className="w-4 h-4 mr-2" />
                 오류
               </Button>
-              <Button 
-                onClick={() => toast.warning('주의 필요!')}
-                className="bg-yellow-600 hover:bg-yellow-700"
-              >
+              <Button onClick={() => toast.warning('주의 필요!')} className="bg-yellow-600 hover:bg-yellow-700">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 경고
               </Button>
-              <Button 
-                onClick={() => toast.info('정보 확인!')}
-                variant="outline"
-              >
+              <Button onClick={() => toast.info('정보 확인!')} variant="outline">
                 <Info className="w-4 h-4 mr-2" />
                 정보
               </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button 
-                onClick={showToastExamples}
-                variant="outline"
-                className="w-full"
-              >
+              <Button onClick={showToastExamples} variant="outline" className="w-full">
                 <Zap className="w-4 h-4 mr-2" />
                 모든 Toast 보기
               </Button>
-              <Button 
-                onClick={() => toast.promise(
-                  new Promise((resolve) => setTimeout(resolve, 2000)),
-                  {
+              <Button
+                onClick={() =>
+                  toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
                     loading: '처리 중...',
                     success: '완료되었습니다!',
                     error: '오류가 발생했습니다.',
-                  }
-                )}
+                  })
+                }
                 variant="outline"
                 className="w-full"
               >
@@ -227,7 +197,9 @@ const AlertExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`import { toast } from 'sonner';
+                onClick={() =>
+                  copyToClipboard(
+                    `import { toast } from 'sonner';
 
 // 기본 Toast 사용법
 toast.success('성공 메시지');
@@ -252,13 +224,12 @@ toast.custom((t) => (
     <p>원하는 스타일로 커스터마이징할 수 있습니다.</p>
     <button onClick={() => toast.dismiss(t)}>닫기</button>
   </div>
-));`, 'toast-examples')}
+));`,
+                    'toast-examples'
+                  )
+                }
               >
-                {copied === 'toast-examples' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'toast-examples' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">

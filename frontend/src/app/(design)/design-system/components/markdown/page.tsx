@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { MarkdownEditor } from '@/components/ui/markdown-editor'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { useState } from 'react';
+import { MarkdownEditor } from '@/components/ui/markdown-editor';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 
 const sampleMarkdown = `# 마크다운 에디터 예시
 
@@ -47,7 +47,7 @@ function hello() {
 
 ---
 
-더 많은 마크다운 기능을 테스트해보세요!`
+더 많은 마크다운 기능을 테스트해보세요!`;
 
 const exampleCode = `import { MarkdownEditor } from '@/components/ui/markdown-editor'
 
@@ -62,20 +62,18 @@ export function MyComponent() {
       height="400px"
     />
   )
-}`
+}`;
 
 export default function MarkdownPage() {
-  const [demoContent, setDemoContent] = useState(sampleMarkdown)
-  const [readOnlyContent] = useState('# 읽기 전용 에디터\\n\\n이 에디터는 **읽기 전용**입니다.')
+  const [demoContent, setDemoContent] = useState(sampleMarkdown);
+  const [readOnlyContent] = useState('# 읽기 전용 에디터\\n\\n이 에디터는 **읽기 전용**입니다.');
 
   return (
     <div className="space-y-6">
       {/* 헤더 */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">Markdown Editor</h1>
-        <p className="text-muted-foreground mt-2">
-          CodeMirror 6 기반의 마크다운 에디터 컴포넌트입니다.
-        </p>
+        <p className="text-muted-foreground mt-2">CodeMirror 6 기반의 마크다운 에디터 컴포넌트입니다.</p>
         <div className="flex gap-2 mt-3">
           <Badge variant="secondary">CodeMirror 6</Badge>
           <Badge variant="secondary">Markdown</Badge>
@@ -87,16 +85,10 @@ export default function MarkdownPage() {
       <Card>
         <CardHeader>
           <CardTitle>라이브 데모</CardTitle>
-          <CardDescription>
-            아래 에디터에서 마크다운을 직접 편집해보세요.
-          </CardDescription>
+          <CardDescription>아래 에디터에서 마크다운을 직접 편집해보세요.</CardDescription>
         </CardHeader>
         <CardContent>
-          <MarkdownEditor
-            value={demoContent}
-            onChange={setDemoContent}
-            height="500px"
-          />
+          <MarkdownEditor value={demoContent} onChange={setDemoContent} height="500px" />
         </CardContent>
       </Card>
 
@@ -189,11 +181,7 @@ export default function MarkdownPage() {
               <CardDescription>readOnly 속성이 true인 경우</CardDescription>
             </CardHeader>
             <CardContent>
-              <MarkdownEditor
-                value={readOnlyContent}
-                readOnly={true}
-                height="200px"
-              />
+              <MarkdownEditor value={readOnlyContent} readOnly={true} height="200px" />
             </CardContent>
           </Card>
 
@@ -204,10 +192,7 @@ export default function MarkdownPage() {
               <CardDescription>높이를 작게 설정한 경우</CardDescription>
             </CardHeader>
             <CardContent>
-              <MarkdownEditor
-                value="# 작은 에디터\n\n이것은 높이가 작은 에디터입니다."
-                height="150px"
-              />
+              <MarkdownEditor value="# 작은 에디터\n\n이것은 높이가 작은 에디터입니다." height="150px" />
             </CardContent>
           </Card>
         </TabsContent>
@@ -248,5 +233,5 @@ export default function MarkdownPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

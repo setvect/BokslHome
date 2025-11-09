@@ -8,12 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Copy, Check, User, Star, TrendingUp, Activity, HelpCircle, Calendar, Settings, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -44,18 +39,14 @@ const DataDisplayExample = () => {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">Data Display</h1>
-        <p className="text-muted-foreground">
-          데이터와 정보를 시각적으로 표현하는 디스플레이 컴포넌트들입니다.
-        </p>
+        <p className="text-muted-foreground">데이터와 정보를 시각적으로 표현하는 디스플레이 컴포넌트들입니다.</p>
       </div>
 
       {/* Avatar */}
       <Card>
         <CardHeader>
           <CardTitle>Avatar</CardTitle>
-          <CardDescription>
-            사용자나 엔티티를 시각적으로 표현하는 프로필 이미지 컴포넌트입니다.
-          </CardDescription>
+          <CardDescription>사용자나 엔티티를 시각적으로 표현하는 프로필 이미지 컴포넌트입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -111,7 +102,9 @@ const DataDisplayExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Avatar>
+                onClick={() =>
+                  copyToClipboard(
+                    `<Avatar>
   <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
   <AvatarFallback>CN</AvatarFallback>
 </Avatar>
@@ -127,13 +120,12 @@ const DataDisplayExample = () => {
   <AvatarFallback>
     <User className="h-4 w-4" />
   </AvatarFallback>
-</Avatar>`, 'avatar-example')}
+</Avatar>`,
+                    'avatar-example'
+                  )
+                }
               >
-                {copied === 'avatar-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'avatar-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -156,9 +148,7 @@ const DataDisplayExample = () => {
       <Card>
         <CardHeader>
           <CardTitle>Badge</CardTitle>
-          <CardDescription>
-            상태, 카테고리, 또는 메타데이터를 표시하는 작은 라벨 컴포넌트입니다.
-          </CardDescription>
+          <CardDescription>상태, 카테고리, 또는 메타데이터를 표시하는 작은 라벨 컴포넌트입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -212,7 +202,9 @@ const DataDisplayExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Badge>기본</Badge>
+                onClick={() =>
+                  copyToClipboard(
+                    `<Badge>기본</Badge>
 <Badge variant="secondary">보조</Badge>
 <Badge variant="outline">아웃라인</Badge>
 <Badge variant="destructive">위험</Badge>
@@ -227,13 +219,12 @@ const DataDisplayExample = () => {
 <Badge variant="secondary">
   <Star className="w-3 h-3 mr-1" />
   즐겨찾기
-</Badge>`, 'badge-example')}
+</Badge>`,
+                    'badge-example'
+                  )
+                }
               >
-                {copied === 'badge-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'badge-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -255,9 +246,7 @@ const DataDisplayExample = () => {
       <Card>
         <CardHeader>
           <CardTitle>Skeleton</CardTitle>
-          <CardDescription>
-            콘텐츠가 로딩 중일 때 사용하는 플레이스홀더 컴포넌트입니다.
-          </CardDescription>
+          <CardDescription>콘텐츠가 로딩 중일 때 사용하는 플레이스홀더 컴포넌트입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -310,9 +299,7 @@ const DataDisplayExample = () => {
                       <p className="text-sm text-muted-foreground">user@example.com</p>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">
-                    로딩이 완료되었습니다! 이제 실제 콘텐츠를 확인할 수 있습니다.
-                  </p>
+                  <p className="text-muted-foreground">로딩이 완료되었습니다! 이제 실제 콘텐츠를 확인할 수 있습니다.</p>
                   <div className="flex space-x-2">
                     <Badge>활성</Badge>
                     <Badge variant="secondary">인증됨</Badge>
@@ -320,9 +307,9 @@ const DataDisplayExample = () => {
                 </div>
               )}
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => {
                 setLoading(true);
                 setTimeout(() => setLoading(false), 2000);
@@ -338,7 +325,9 @@ const DataDisplayExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Skeleton className="h-4 w-[250px]" />
+                onClick={() =>
+                  copyToClipboard(
+                    `<Skeleton className="h-4 w-[250px]" />
 <Skeleton className="h-4 w-[200px]" />
 <Skeleton className="h-4 w-[300px]" />
 
@@ -349,13 +338,12 @@ const DataDisplayExample = () => {
     <Skeleton className="h-4 w-[200px]" />
     <Skeleton className="h-4 w-[160px]" />
   </div>
-</div>`, 'skeleton-example')}
+</div>`,
+                    'skeleton-example'
+                  )
+                }
               >
-                {copied === 'skeleton-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'skeleton-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -379,9 +367,7 @@ const DataDisplayExample = () => {
       <Card>
         <CardHeader>
           <CardTitle>Progress</CardTitle>
-          <CardDescription>
-            작업 진행률이나 완료도를 시각적으로 나타내는 진행 표시 바입니다.
-          </CardDescription>
+          <CardDescription>작업 진행률이나 완료도를 시각적으로 나타내는 진행 표시 바입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -438,7 +424,9 @@ const DataDisplayExample = () => {
                 <div className="flex justify-between text-sm mb-2">
                   <span className="flex items-center">
                     React
-                    <Badge variant="secondary" className="ml-2 text-xs">고급</Badge>
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      고급
+                    </Badge>
                   </span>
                   <span>90%</span>
                 </div>
@@ -448,7 +436,9 @@ const DataDisplayExample = () => {
                 <div className="flex justify-between text-sm mb-2">
                   <span className="flex items-center">
                     TypeScript
-                    <Badge variant="secondary" className="ml-2 text-xs">중급</Badge>
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      중급
+                    </Badge>
                   </span>
                   <span>75%</span>
                 </div>
@@ -458,7 +448,9 @@ const DataDisplayExample = () => {
                 <div className="flex justify-between text-sm mb-2">
                   <span className="flex items-center">
                     Python
-                    <Badge variant="outline" className="ml-2 text-xs">초급</Badge>
+                    <Badge variant="outline" className="ml-2 text-xs">
+                      초급
+                    </Badge>
                   </span>
                   <span>40%</span>
                 </div>
@@ -473,7 +465,9 @@ const DataDisplayExample = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<Progress value={progress} className="w-full" />
+                onClick={() =>
+                  copyToClipboard(
+                    `<Progress value={progress} className="w-full" />
 
 // 라벨과 함께
 <div>
@@ -489,13 +483,12 @@ const [progress, setProgress] = useState(13);
 useEffect(() => {
   const timer = setTimeout(() => setProgress(66), 500);
   return () => clearTimeout(timer);
-}, []);`, 'progress-example')}
+}, []);`,
+                    'progress-example'
+                  )
+                }
               >
-                {copied === 'progress-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'progress-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -518,9 +511,7 @@ useEffect(() => {
       <Card>
         <CardHeader>
           <CardTitle>Tooltip</CardTitle>
-          <CardDescription>
-            요소에 호버하거나 포커스할 때 추가 정보를 제공하는 툴팁 컴포넌트입니다.
-          </CardDescription>
+          <CardDescription>요소에 호버하거나 포커스할 때 추가 정보를 제공하는 툴팁 컴포넌트입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -558,7 +549,9 @@ useEffect(() => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full">위</Button>
+                    <Button variant="outline" className="w-full">
+                      위
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
                     <p>위쪽 툴팁</p>
@@ -569,7 +562,9 @@ useEffect(() => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full">아래</Button>
+                    <Button variant="outline" className="w-full">
+                      아래
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
                     <p>아래쪽 툴팁</p>
@@ -580,7 +575,9 @@ useEffect(() => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full">왼쪽</Button>
+                    <Button variant="outline" className="w-full">
+                      왼쪽
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="left">
                     <p>왼쪽 툴팁</p>
@@ -591,7 +588,9 @@ useEffect(() => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full">오른쪽</Button>
+                    <Button variant="outline" className="w-full">
+                      오른쪽
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p>오른쪽 툴팁</p>
@@ -658,7 +657,9 @@ useEffect(() => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`<TooltipProvider>
+                onClick={() =>
+                  copyToClipboard(
+                    `<TooltipProvider>
   <Tooltip>
     <TooltipTrigger asChild>
       <Button variant="outline">호버하세요</Button>
@@ -681,13 +682,12 @@ useEffect(() => {
     <p className="font-medium">제목</p>
     <p className="text-sm">상세 설명</p>
   </div>
-</TooltipContent>`, 'tooltip-example')}
+</TooltipContent>`,
+                    'tooltip-example'
+                  )
+                }
               >
-                {copied === 'tooltip-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'tooltip-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -714,9 +714,7 @@ useEffect(() => {
       <Card>
         <CardHeader>
           <CardTitle>Separator</CardTitle>
-          <CardDescription>
-            콘텐츠를 시각적으로 구분하는 구분선 컴포넌트입니다.
-          </CardDescription>
+          <CardDescription>콘텐츠를 시각적으로 구분하는 구분선 컴포넌트입니다.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
@@ -768,7 +766,9 @@ useEffect(() => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => copyToClipboard(`// 수평 구분선
+                onClick={() =>
+                  copyToClipboard(
+                    `// 수평 구분선
 <p>첫 번째 내용</p>
 <Separator />
 <p>두 번째 내용</p>
@@ -780,13 +780,12 @@ useEffect(() => {
   <span>제품</span>
   <Separator orientation="vertical" className="h-4" />
   <span>서비스</span>
-</div>`, 'separator-example')}
+</div>`,
+                    'separator-example'
+                  )
+                }
               >
-                {copied === 'separator-example' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+                {copied === 'separator-example' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm overflow-x-auto">
@@ -833,9 +832,15 @@ useEffect(() => {
           <div>
             <h4 className="font-medium text-foreground mb-2">로딩 및 피드백</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• <strong>Skeleton</strong>: 콘텐츠 구조 미리보기로 로딩 경험 개선</li>
-              <li>• <strong>Progress</strong>: 명확한 진행률이 있는 작업에 사용</li>
-              <li>• <strong>Tooltip</strong>: 추가 설명이나 도움말 제공</li>
+              <li>
+                • <strong>Skeleton</strong>: 콘텐츠 구조 미리보기로 로딩 경험 개선
+              </li>
+              <li>
+                • <strong>Progress</strong>: 명확한 진행률이 있는 작업에 사용
+              </li>
+              <li>
+                • <strong>Tooltip</strong>: 추가 설명이나 도움말 제공
+              </li>
             </ul>
           </div>
           <div>

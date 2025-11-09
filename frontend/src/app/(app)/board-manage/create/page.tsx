@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { BoardForm } from "../_components/board-form";
+import { BoardForm } from '../_components/board-form';
 
 export default function BoardCreatePage() {
   return (

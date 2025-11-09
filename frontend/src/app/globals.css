@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -136,12 +136,24 @@
     @apply font-bold text-foreground mt-6 mb-4 first:mt-0;
   }
 
-  .markdown-preview h1 { @apply text-2xl; }
-  .markdown-preview h2 { @apply text-xl; }
-  .markdown-preview h3 { @apply text-lg; }
-  .markdown-preview h4 { @apply text-base; }
-  .markdown-preview h5 { @apply text-sm font-semibold; }
-  .markdown-preview h6 { @apply text-sm font-medium; }
+  .markdown-preview h1 {
+    @apply text-2xl;
+  }
+  .markdown-preview h2 {
+    @apply text-xl;
+  }
+  .markdown-preview h3 {
+    @apply text-lg;
+  }
+  .markdown-preview h4 {
+    @apply text-base;
+  }
+  .markdown-preview h5 {
+    @apply text-sm font-semibold;
+  }
+  .markdown-preview h6 {
+    @apply text-sm font-medium;
+  }
 
   .markdown-preview p {
     @apply mb-4 text-foreground leading-relaxed;
@@ -270,9 +282,15 @@
     @apply font-bold my-4 first:mt-0;
   }
 
-  .html-editor [contenteditable] h1 { @apply text-2xl; }
-  .html-editor [contenteditable] h2 { @apply text-xl; }
-  .html-editor [contenteditable] h3 { @apply text-lg; }
+  .html-editor [contenteditable] h1 {
+    @apply text-2xl;
+  }
+  .html-editor [contenteditable] h2 {
+    @apply text-xl;
+  }
+  .html-editor [contenteditable] h3 {
+    @apply text-lg;
+  }
   .html-editor [contenteditable] p {
     @apply my-2;
   }

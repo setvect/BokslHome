@@ -6,16 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Check, Download, Heart, Plus, Settings } from 'lucide-react';
 
-const ButtonExample = ({ 
-  title, 
-  description, 
-  children, 
-  code 
-}: { 
-  title: string; 
-  description: string; 
-  children: React.ReactNode; 
-  code: string; 
+const ButtonExample = ({
+  title,
+  description,
+  children,
+  code,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  code: string;
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -33,22 +33,15 @@ const ButtonExample = ({
             <CardTitle className="text-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={copyToClipboard}
-            className="shrink-0"
-          >
+          <Button variant="outline" size="sm" onClick={copyToClipboard} className="shrink-0">
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* 미리보기 */}
-        <div className="flex flex-wrap gap-3 p-4 border border-border rounded-lg bg-muted/30">
-          {children}
-        </div>
-        
+        <div className="flex flex-wrap gap-3 p-4 border border-border rounded-lg bg-muted/30">{children}</div>
+
         {/* 코드 */}
         <div className="bg-muted p-3 rounded-lg">
           <pre className="text-sm font-mono overflow-x-auto">
@@ -66,9 +59,7 @@ export default function ButtonsPage() {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">버튼</h1>
-        <p className="text-muted-foreground">
-          사용자 액션을 위한 다양한 스타일과 상태의 버튼 컴포넌트입니다.
-        </p>
+        <p className="text-muted-foreground">사용자 액션을 위한 다양한 스타일과 상태의 버튼 컴포넌트입니다.</p>
       </div>
 
       {/* 기본 변형 */}
@@ -161,9 +152,7 @@ export default function ButtonsPage() {
   처리 중
 </Button>`}
       >
-        <Button disabled>
-          로딩 중...
-        </Button>
+        <Button disabled>로딩 중...</Button>
         <Button disabled>
           <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           처리 중
@@ -294,11 +283,21 @@ export default function ButtonsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <ul className="text-sm text-muted-foreground space-y-2">
-            <li>• <strong>키보드 네비게이션:</strong> Tab, Enter, Space 키로 조작 가능</li>
-            <li>• <strong>스크린 리더:</strong> 버튼 역할과 상태가 적절히 전달됨</li>
-            <li>• <strong>포커스 표시:</strong> 키보드 포커스 시 명확한 아웃라인 표시</li>
-            <li>• <strong>색상 대비:</strong> WCAG AA 기준 충족</li>
-            <li>• <strong>터치 타겟:</strong> 최소 44px 크기 보장</li>
+            <li>
+              • <strong>키보드 네비게이션:</strong> Tab, Enter, Space 키로 조작 가능
+            </li>
+            <li>
+              • <strong>스크린 리더:</strong> 버튼 역할과 상태가 적절히 전달됨
+            </li>
+            <li>
+              • <strong>포커스 표시:</strong> 키보드 포커스 시 명확한 아웃라인 표시
+            </li>
+            <li>
+              • <strong>색상 대비:</strong> WCAG AA 기준 충족
+            </li>
+            <li>
+              • <strong>터치 타겟:</strong> 최소 44px 크기 보장
+            </li>
           </ul>
         </CardContent>
       </Card>

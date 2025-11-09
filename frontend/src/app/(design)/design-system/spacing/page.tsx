@@ -98,22 +98,13 @@ export default function SpacingPage() {
             {spacingScale.map((spacing) => (
               <div key={spacing.name} className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 text-sm font-mono text-muted-foreground">
-                    {spacing.name}
-                  </div>
-                  <div className="w-20 text-sm text-muted-foreground">
-                    {spacing.value}
-                  </div>
+                  <div className="w-16 text-sm font-mono text-muted-foreground">{spacing.name}</div>
+                  <div className="w-20 text-sm text-muted-foreground">{spacing.value}</div>
                   <div className="flex items-center">
-                    <div 
-                      className="bg-primary h-4"
-                      style={{ width: spacing.value === '0px' ? '1px' : spacing.value }}
-                    />
+                    <div className="bg-primary h-4" style={{ width: spacing.value === '0px' ? '1px' : spacing.value }} />
                   </div>
                 </div>
-                <div className="text-sm font-mono text-muted-foreground">
-                  {spacing.tailwind}
-                </div>
+                <div className="text-sm font-mono text-muted-foreground">{spacing.tailwind}</div>
               </div>
             ))}
           </div>
@@ -138,9 +129,7 @@ export default function SpacingPage() {
                         <div className="text-sm font-medium text-foreground">{space.area}</div>
                         <div className="text-xs text-muted-foreground">{space.description}</div>
                       </div>
-                      <div className="text-sm font-mono text-muted-foreground">
-                        {space.value}
-                      </div>
+                      <div className="text-sm font-mono text-muted-foreground">{space.value}</div>
                     </div>
                   ))}
                 </div>
@@ -165,9 +154,7 @@ export default function SpacingPage() {
                     <h4 className="font-medium text-foreground">{pattern.name}</h4>
                     <p className="text-sm text-muted-foreground">{pattern.description}</p>
                   </div>
-                  <div className="text-sm font-mono text-muted-foreground">
-                    {pattern.example}
-                  </div>
+                  <div className="text-sm font-mono text-muted-foreground">{pattern.example}</div>
                 </div>
               </div>
             ))}

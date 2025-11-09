@@ -1,92 +1,76 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const YES_NO_OPTIONS = [
-  { label: "예", value: "yes" },
-  { label: "아니오", value: "no" },
+  { label: '예', value: 'yes' },
+  { label: '아니오', value: 'no' },
 ] as const;
 
 const boardFormSchema = z.object({
   code: z
     .string()
     .trim()
-    .min(1, "코드를 입력하세요")
-    .max(8, "코드는 8자 이내로 입력하세요")
-    .regex(/^[A-Za-z0-9]+$/, "영문자와 숫자만 사용할 수 있습니다"),
-  name: z
-    .string()
-    .trim()
-    .min(1, "이름을 입력하세요")
-    .max(20, "이름은 20자 이내로 입력하세요"),
+    .min(1, '코드를 입력하세요')
+    .max(8, '코드는 8자 이내로 입력하세요')
+    .regex(/^[A-Za-z0-9]+$/, '영문자와 숫자만 사용할 수 있습니다'),
+  name: z.string().trim().min(1, '이름을 입력하세요').max(20, '이름은 20자 이내로 입력하세요'),
   uploadLimit: z
     .string()
     .trim()
-    .min(1, "업로드 용량을 입력하세요")
+    .min(1, '업로드 용량을 입력하세요')
     .refine((val) => /^\d+$/.test(val), {
-      message: "숫자만 입력하세요",
+      message: '숫자만 입력하세요',
     })
     .refine((val) => {
       const value = Number(val);
       return value >= 0 && value <= 10000;
-    }, "0에서 10,000 사이의 값을 입력하세요"),
-  allowComments: z.enum(["yes", "no"]),
-  allowFiles: z.enum(["yes", "no"]),
-  allowEncryptedPosts: z.enum(["yes", "no"]),
+    }, '0에서 10,000 사이의 값을 입력하세요'),
+  allowComments: z.enum(['yes', 'no']),
+  allowFiles: z.enum(['yes', 'no']),
+  allowEncryptedPosts: z.enum(['yes', 'no']),
 });
 
 type BoardFormValues = z.infer<typeof boardFormSchema>;
 
 type BoardFormProps = {
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
   initialValues?: Partial<BoardFormValues>;
   cancelHref?: string;
   submitLabel?: string;
 };
 
-export function BoardForm({
-  mode,
-  initialValues,
-  cancelHref = "/board-manage",
-  submitLabel,
-}: BoardFormProps) {
-  const isEdit = mode === "edit";
+export function BoardForm({ mode, initialValues, cancelHref = '/board-manage', submitLabel }: BoardFormProps) {
+  const isEdit = mode === 'edit';
 
   const form = useForm<BoardFormValues>({
     resolver: zodResolver(boardFormSchema),
     defaultValues: {
-      code: "",
-      name: "",
-      uploadLimit: "",
-      allowComments: "no",
-      allowFiles: "yes",
-      allowEncryptedPosts: "no",
+      code: '',
+      name: '',
+      uploadLimit: '',
+      allowComments: 'no',
+      allowFiles: 'yes',
+      allowEncryptedPosts: 'no',
       ...initialValues,
     },
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
-  const resolvedSubmitLabel = submitLabel ?? (isEdit ? "저장" : "확인");
+  const resolvedSubmitLabel = submitLabel ?? (isEdit ? '저장' : '확인');
 
   const onSubmit = (values: BoardFormValues) => {
     // TODO: 실제 API 연동 시 데이터 전송 로직 구현
-    console.log("board form submit", {
+    console.log('board form submit', {
       ...values,
       uploadLimit: Number(values.uploadLimit),
     });
@@ -106,18 +90,10 @@ export function BoardForm({
                 name="code"
                 render={({ field }) => (
                   <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
-                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
-                      코드
-                    </FormLabel>
+                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">코드</FormLabel>
                     <div className="space-y-2">
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="예: BDAAAA10"
-                          className="md:max-w-md"
-                          readOnly={isEdit}
-                          disabled={isEdit}
-                        />
+                        <Input {...field} placeholder="예: BDAAAA10" className="md:max-w-md" readOnly={isEdit} disabled={isEdit} />
                       </FormControl>
                       <FormMessage />
                     </div>
@@ -130,16 +106,10 @@ export function BoardForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
-                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
-                      이름
-                    </FormLabel>
+                    <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">이름</FormLabel>
                     <div className="space-y-2">
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="게시판 이름을 입력하세요"
-                          className="md:max-w-md"
-                        />
+                        <Input {...field} placeholder="게시판 이름을 입력하세요" className="md:max-w-md" />
                       </FormControl>
                       <FormMessage />
                     </div>
@@ -161,7 +131,7 @@ export function BoardForm({
                           <Input
                             {...field}
                             type="number"
-                            value={field.value ?? ""}
+                            value={field.value ?? ''}
                             placeholder="0 ~ 10,000"
                             className="md:max-w-xs"
                             inputMode="numeric"
@@ -179,25 +149,17 @@ export function BoardForm({
               />
 
               <fieldset className="space-y-4">
-                <legend className="text-sm font-medium text-muted-foreground">
-                  사용 설정
-                </legend>
+                <legend className="text-sm font-medium text-muted-foreground">사용 설정</legend>
 
                 <FormField
                   control={form.control}
                   name="allowComments"
                   render={({ field }) => (
                     <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
-                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
-                        댓글 사용
-                      </FormLabel>
+                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">댓글 사용</FormLabel>
                       <div className="space-y-2">
                         <FormControl>
-                          <RadioGroup
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            className="flex flex-wrap gap-4"
-                          >
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-wrap gap-4">
                             {YES_NO_OPTIONS.map((option) => {
                               const id = `allow-comments-${option.value}`;
                               return (
@@ -222,16 +184,10 @@ export function BoardForm({
                   name="allowFiles"
                   render={({ field }) => (
                     <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
-                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
-                        파일 업로드
-                      </FormLabel>
+                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">파일 업로드</FormLabel>
                       <div className="space-y-2">
                         <FormControl>
-                          <RadioGroup
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            className="flex flex-wrap gap-4"
-                          >
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-wrap gap-4">
                             {YES_NO_OPTIONS.map((option) => {
                               const id = `allow-upload-${option.value}`;
                               return (
@@ -256,16 +212,10 @@ export function BoardForm({
                   name="allowEncryptedPosts"
                   render={({ field }) => (
                     <FormItem className="md:grid md:grid-cols-[160px_1fr] md:items-center md:gap-4">
-                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">
-                        암호화 글 등록
-                      </FormLabel>
+                      <FormLabel className="text-sm font-medium md:text-base data-[error=true]:text-foreground">암호화 글 등록</FormLabel>
                       <div className="space-y-2">
                         <FormControl>
-                          <RadioGroup
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            className="flex flex-wrap gap-4"
-                          >
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-wrap gap-4">
                             {YES_NO_OPTIONS.map((option) => {
                               const id = `allow-encrypted-${option.value}`;
                               return (

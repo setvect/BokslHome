@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  X, 
-  Home, 
-  FileText, 
-  BookOpen, 
-  StickyNote, 
-  Users, 
+import {
+  X,
+  Home,
+  FileText,
+  BookOpen,
+  StickyNote,
+  Users,
   MoreHorizontal,
   ChevronDown,
   ChevronRight,
@@ -21,7 +21,7 @@ import {
   MessageCircle,
   Sparkles,
   Dice6,
-  Code2
+  Code2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BOARD_CATEGORIES } from '@/lib/constants/board';
@@ -96,32 +96,28 @@ const navigation: MenuItem[] = [
     name: '이것저것',
     href: '/misc',
     icon: MoreHorizontal,
-    children: [
-      { name: '로또', href: '/misc/lotto', icon: Dice6 },
-    ],
+    children: [{ name: '로또', href: '/misc/lotto', icon: Dice6 }],
   },
 ];
 
 function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level?: number; onClose: () => void }) {
   const pathname = usePathname();
-  
+
   // 현재 경로가 이 메뉴나 하위 메뉴에 해당하는지 확인
   const isCurrentPath = item.href && pathname === item.href;
-  const isChildActive = item.children?.some(child => 
-    child.href && pathname === child.href
-  );
-  
+  const isChildActive = item.children?.some((child) => child.href && pathname === child.href);
+
   // 현재 경로가 이 메뉴의 하위 경로인지 확인 (예: /board/posts는 /board의 하위)
   const isSubPath = item.href && pathname.startsWith(item.href + '/');
   const shouldBeExpanded = isChildActive || isSubPath;
-  
+
   // 초기 상태: 현재 경로가 하위 메뉴에 있으면 자동으로 열림
   const [isExpanded, setIsExpanded] = useState(shouldBeExpanded);
-  
+
   const isActive = isCurrentPath;
   const hasChildren = item.children && item.children.length > 0;
   const Icon = item.icon;
-  
+
   const paddingLeft = `${(level + 1) * 12}px`;
 
   // 경로가 변경될 때마다 확장 상태 업데이트
@@ -144,9 +140,7 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
     <div
       className={cn(
         'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
-        isActive
-          ? 'bg-accent text-accent-foreground'
-          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+        isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
       )}
       style={{ paddingLeft }}
       onClick={handleClick}
@@ -156,13 +150,7 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
         <span>{item.name}</span>
       </div>
       {hasChildren && (
-        <div className="ml-auto">
-          {isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </div>
+        <div className="ml-auto">{isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}</div>
       )}
     </div>
   );
@@ -176,7 +164,7 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
       ) : (
         content
       )}
-      
+
       {hasChildren && isExpanded && (
         <div className="mt-1 space-y-1">
           {item.children!.map((child) => (
@@ -189,16 +177,10 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-
   return (
     <>
       {/* 모바일 오버레이 */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden" onClick={onClose} />}
 
       {/* 사이드바 */}
       <div
@@ -214,13 +196,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Code2 className="h-5 w-5 text-foreground" />
               <h2 className="text-lg font-semibold text-foreground">복슬홈</h2>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="w-9 px-0 lg:hidden"
-              aria-label="사이드바 닫기"
-            >
+            <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0 lg:hidden" aria-label="사이드바 닫기">
               <X className="h-4 w-4" />
             </Button>
           </div>

@@ -1,34 +1,34 @@
-"use client"
+'use client';
 
-import { FormEvent, useState } from "react"
+import { FormEvent, useState } from 'react';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface BoardPasswordGateProps {
-  onSuccess: () => void
-  expectedPassword?: string
+  onSuccess: () => void;
+  expectedPassword?: string;
 }
 
 export function BoardPasswordGate({ onSuccess, expectedPassword }: BoardPasswordGateProps) {
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!password.trim()) {
-      setError("암호 문자를 입력해주세요.")
-      return
+      setError('암호 문자를 입력해주세요.');
+      return;
     }
 
     if (expectedPassword && password.trim() !== expectedPassword) {
-      setError("암호 문자가 일치하지 않습니다.")
-      return
+      setError('암호 문자가 일치하지 않습니다.');
+      return;
     }
 
-    setError(null)
-    onSuccess()
+    setError(null);
+    onSuccess();
   }
 
   return (
@@ -44,14 +44,11 @@ export function BoardPasswordGate({ onSuccess, expectedPassword }: BoardPassword
           placeholder="암호문자를 입력해라."
           className="h-14 flex-1 rounded-xl text-lg"
         />
-        <Button
-          type="submit"
-          className="h-14 min-w-[120px] rounded-xl text-lg font-semibold"
-        >
+        <Button type="submit" className="h-14 min-w-[120px] rounded-xl text-lg font-semibold">
           확인
         </Button>
       </form>
       {error ? <p className="text-center text-sm font-medium text-destructive">{error}</p> : null}
     </div>
-  )
+  );
 }

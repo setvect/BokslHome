@@ -1,22 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function ShowcasePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">
-          shadcn/ui 컴포넌트 쇼케이스
-        </h1>
+        <h1 className="text-3xl font-bold text-foreground">shadcn/ui 컴포넌트 쇼케이스</h1>
         <ThemeToggle />
       </div>
 
@@ -34,7 +32,7 @@ export default function ShowcasePage() {
               <Button variant="outline">아웃라인 버튼</Button>
               <Button variant="ghost">고스트 버튼</Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="email">이메일</Label>
@@ -64,16 +62,12 @@ export default function ShowcasePage() {
 
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                이것은 기본 알림 메시지입니다.
-              </AlertDescription>
+              <AlertDescription>이것은 기본 알림 메시지입니다.</AlertDescription>
             </Alert>
 
             <Alert>
               <CheckCircle2 className="h-4 w-4" />
-              <AlertDescription>
-                성공적으로 완료되었습니다!
-              </AlertDescription>
+              <AlertDescription>성공적으로 완료되었습니다!</AlertDescription>
             </Alert>
 
             <div>
@@ -96,9 +90,7 @@ export default function ShowcasePage() {
                   <CardTitle className="text-lg">카드 1</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    첫 번째 예시 카드입니다.
-                  </p>
+                  <p className="text-sm text-muted-foreground">첫 번째 예시 카드입니다.</p>
                 </CardContent>
               </Card>
 
@@ -107,9 +99,7 @@ export default function ShowcasePage() {
                   <CardTitle className="text-lg">카드 2</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    두 번째 예시 카드입니다.
-                  </p>
+                  <p className="text-sm text-muted-foreground">두 번째 예시 카드입니다.</p>
                 </CardContent>
               </Card>
 
@@ -118,9 +108,7 @@ export default function ShowcasePage() {
                   <CardTitle className="text-lg">카드 3</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    세 번째 예시 카드입니다.
-                  </p>
+                  <p className="text-sm text-muted-foreground">세 번째 예시 카드입니다.</p>
                 </CardContent>
               </Card>
             </div>

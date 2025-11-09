@@ -1,13 +1,9 @@
-import { BoardForm } from "../../_components/board-form";
-import { getBoardDetail } from "../../_data/board-details";
+import { BoardForm } from '../../_components/board-form';
+import { getBoardDetail } from '../../_data/board-details';
 
-const toYesNo = (value: boolean) => (value ? "yes" : "no");
+const toYesNo = (value: boolean) => (value ? 'yes' : 'no');
 
-export default function BoardEditPage({
-  params,
-}: {
-  params: { code: string };
-}) {
+export default function BoardEditPage({ params }: { params: { code: string } }) {
   const detail = getBoardDetail(params.code);
 
   return (
@@ -22,7 +18,7 @@ export default function BoardEditPage({
         initialValues={{
           code: detail.code,
           name: detail.name,
-          uploadLimit: String(detail.uploadLimit ?? ""),
+          uploadLimit: String(detail.uploadLimit ?? ''),
           allowComments: toYesNo(detail.allowComments),
           allowFiles: toYesNo(detail.allowFiles),
           allowEncryptedPosts: toYesNo(detail.allowEncryptedPosts),

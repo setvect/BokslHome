@@ -1,28 +1,28 @@
-import { notFound } from "next/navigation"
+import { notFound } from 'next/navigation';
 
-import { BOARD_CATEGORIES, BOARD_CATEGORY_BY_CODE } from "@/lib/constants/board"
-import type { BoardCode } from "@/lib/types/board"
+import { BOARD_CATEGORIES, BOARD_CATEGORY_BY_CODE } from '@/lib/constants/board';
+import type { BoardCode } from '@/lib/types/board';
 
-import { BoardForm } from "../../_components/board-form"
+import { BoardForm } from '../../_components/board-form';
 
 interface BoardWritePageProps {
   params: {
-    code: string
-  }
+    code: string;
+  };
 }
 
-export const dynamicParams = false
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return BOARD_CATEGORIES.map((category) => ({ code: category.code }))
+  return BOARD_CATEGORIES.map((category) => ({ code: category.code }));
 }
 
 export default function BoardWritePage({ params }: BoardWritePageProps) {
-  const normalizedCode = params.code.toUpperCase() as BoardCode
+  const normalizedCode = params.code.toUpperCase() as BoardCode;
 
-  const category = BOARD_CATEGORY_BY_CODE[normalizedCode]
+  const category = BOARD_CATEGORY_BY_CODE[normalizedCode];
   if (!category) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -32,5 +32,5 @@ export default function BoardWritePage({ params }: BoardWritePageProps) {
       </header>
       <BoardForm category={category} mode="create" />
     </div>
-  )
+  );
 }

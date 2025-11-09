@@ -17,13 +17,7 @@ export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
         {/* 좌측: 메뉴 버튼 + 로고 */}
         <div className="flex items-center space-x-2">
           {showMenuButton && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onMenuToggle}
-              className="w-9 px-0"
-              aria-label="메뉴 토글"
-            >
+            <Button variant="ghost" size="sm" onClick={onMenuToggle} className="w-9 px-0" aria-label="메뉴 토글">
               <Menu className="h-5 w-5" />
             </Button>
           )}

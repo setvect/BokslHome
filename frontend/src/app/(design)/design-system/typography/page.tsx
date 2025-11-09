@@ -118,9 +118,7 @@ export default function TypographyPage() {
       {/* 헤더 */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">타이포그래피</h1>
-        <p className="text-muted-foreground">
-          일관된 텍스트 스타일과 계층 구조를 위한 타이포그래피 시스템입니다.
-        </p>
+        <p className="text-muted-foreground">일관된 텍스트 스타일과 계층 구조를 위한 타이포그래피 시스템입니다.</p>
       </div>
 
       {/* 헤딩 계층 */}
@@ -132,9 +130,7 @@ export default function TypographyPage() {
         <CardContent className="space-y-6">
           {headings.map((heading) => (
             <div key={heading.level} className="space-y-2">
-              <div className={`${heading.className} text-foreground`}>
-                {heading.text}
-              </div>
+              <div className={`${heading.className} text-foreground`}>{heading.text}</div>
               <div className="text-sm text-muted-foreground">
                 {heading.description} • {heading.className}
               </div>
@@ -152,9 +148,7 @@ export default function TypographyPage() {
         <CardContent className="space-y-6">
           {bodyTexts.map((text) => (
             <div key={text.name} className="space-y-2">
-              <div className={`${text.className} text-foreground leading-relaxed`}>
-                {text.text}
-              </div>
+              <div className={`${text.className} text-foreground leading-relaxed`}>{text.text}</div>
               <div className="text-sm text-muted-foreground">
                 {text.name} • {text.description}
               </div>
@@ -172,12 +166,8 @@ export default function TypographyPage() {
         <CardContent className="space-y-4">
           {textVariants.map((variant) => (
             <div key={variant.name} className="flex items-center justify-between">
-              <div className={`${variant.className} text-base`}>
-                {variant.text}
-              </div>
-              <div className="text-sm text-muted-foreground font-mono">
-                {variant.className}
-              </div>
+              <div className={`${variant.className} text-base`}>{variant.text}</div>
+              <div className="text-sm text-muted-foreground font-mono">{variant.className}</div>
             </div>
           ))}
         </CardContent>
@@ -192,9 +182,7 @@ export default function TypographyPage() {
         <CardContent className="space-y-4">
           {fontWeights.map((weight) => (
             <div key={weight.name} className="flex items-center justify-between">
-              <div className={`${weight.className} text-foreground text-base`}>
-                {weight.text}
-              </div>
+              <div className={`${weight.className} text-foreground text-base`}>{weight.text}</div>
               <div className="text-sm text-muted-foreground">
                 {weight.name} ({weight.weight}) • {weight.className}
               </div>
