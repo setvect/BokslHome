@@ -81,9 +81,6 @@ export function BoardForm({ mode, initialValues, cancelHref = '/board-manage', s
       <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
         <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">
           <div className="space-y-6 p-6">
-            <header>
-              <h2 className="text-xl font-semibold text-foreground">게시판 정보</h2>
-            </header>
             <div className="space-y-6">
               <FormField
                 control={form.control}

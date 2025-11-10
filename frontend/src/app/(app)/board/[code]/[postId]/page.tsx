@@ -34,13 +34,11 @@ export default function BoardDetailPage({ params }: BoardDetailPageProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <>
       <header>
         <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
       </header>
-      <section className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-colors">
-        <BoardDetailView category={category} post={post} />
-      </section>
-    </div>
+      <BoardDetailView category={category} post={post} />
+    </>
   );
 }
