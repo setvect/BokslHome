@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils';
 export interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  isInitialized?: boolean;
 }
 
 interface MenuItem {
@@ -176,18 +177,27 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
   );
 }
 
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar({ isOpen, onClose, isInitialized = false }: SidebarProps) {
   return (
-    <>
+    <div suppressHydrationWarning>
       {/* 모바일 오버레이 */}
-      {isOpen && <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden" onClick={onClose} />}
+      <div
+        className={cn(
+          'fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden transition-opacity duration-200',
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={onClose}
+        suppressHydrationWarning
+      />
 
       {/* 사이드바 */}
       <div
         className={cn(
-          'fixed left-0 top-0 z-50 h-full w-64 transform border-r border-border bg-background transition-transform duration-300 ease-in-out lg:translate-x-0',
+          'fixed left-0 top-0 z-50 h-full w-64 transform border-r border-border bg-background',
+          isInitialized && 'transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
+        suppressHydrationWarning
       >
         <div className="flex h-full flex-col">
           {/* 헤더 영역 */}
@@ -196,7 +206,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Code2 className="h-5 w-5 text-foreground" />
               <h2 className="text-lg font-semibold text-foreground">복슬홈</h2>
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0 lg:hidden" aria-label="사이드바 닫기">
+            <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0" aria-label="사이드바 닫기">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -209,6 +219,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </nav>
         </div>
       </div>
-    </>
+    </div>
   );
 }
