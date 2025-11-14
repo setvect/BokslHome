@@ -4,23 +4,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
 
+import { ContentEditorSwitcher, type ContentEditorType } from '@/components/editor/content-editor-switcher';
 import { Button } from '@/components/ui/button';
-import { HtmlEditor } from '@/components/ui/html-editor';
-import { MarkdownEditor } from '@/components/ui/markdown-editor';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import type { BoardAttachmentMock, BoardCategory, BoardPostMock } from '@/lib/types/board';
 
 import { BoardAttachmentList } from './board-attachment-list';
 
 type BoardFormMode = 'create' | 'edit';
-
-type EditorType = 'html' | 'markdown';
-const EDITOR_LABELS: Record<EditorType, string> = {
-  html: 'HTML',
-  markdown: 'Markdown',
-};
 
 type BoardFormProps = {
   category: BoardCategory;
@@ -31,54 +23,13 @@ type BoardFormProps = {
 export function BoardForm({ category, post, mode }: BoardFormProps) {
   const router = useRouter();
 
-  const initialEditorType: EditorType = mode === 'create' ? 'markdown' : post?.editorType ?? 'html';
+  const initialEditorType: ContentEditorType = mode === 'create' ? 'markdown' : post?.editorType ?? 'html';
 
   const [title, setTitle] = useState(post?.title ?? '');
   const [content, setContent] = useState(post?.content ?? '');
   const [password, setPassword] = useState(post?.password ?? '');
   const [attachments, setAttachments] = useState<BoardAttachmentMock[]>(post?.attachments ?? []);
-  const [editorType, setEditorType] = useState<EditorType>(initialEditorType);
-  const [isEditorSwitchDialogOpen, setIsEditorSwitchDialogOpen] = useState(false);
-  const [pendingEditorType, setPendingEditorType] = useState<EditorType | null>(null);
-
-  function closeEditorSwitchDialog() {
-    setIsEditorSwitchDialogOpen(false);
-    setPendingEditorType(null);
-  }
-
-  function handleEditorSwitchDialogOpenChange(open: boolean) {
-    if (open) {
-      setIsEditorSwitchDialogOpen(true);
-      return;
-    }
-    closeEditorSwitchDialog();
-  }
-
-  function resetContentAndSwitchEditor(nextType: EditorType) {
-    setContent('');
-    setEditorType(nextType);
-  }
-
-  function handleEditorSwitch(nextType: EditorType) {
-    if (nextType === editorType) return;
-
-    if (content.trim().length > 0) {
-      setPendingEditorType(nextType);
-      setIsEditorSwitchDialogOpen(true);
-      return;
-    }
-
-    resetContentAndSwitchEditor(nextType);
-  }
-
-  function handleConfirmEditorSwitch() {
-    if (!pendingEditorType) {
-      closeEditorSwitchDialog();
-      return;
-    }
-    resetContentAndSwitchEditor(pendingEditorType);
-    closeEditorSwitchDialog();
-  }
+  const [editorType, setEditorType] = useState<ContentEditorType>(initialEditorType);
 
   function handleAttachmentChange(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -121,41 +72,14 @@ export function BoardForm({ category, post, mode }: BoardFormProps) {
                 />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="board-content" className="text-sm font-medium text-foreground">
-                    내용
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">에디터</span>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        type="button"
-                        variant={editorType === 'markdown' ? 'default' : 'outline'}
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => handleEditorSwitch('markdown')}
-                      >
-                        Markdown
-                      </Button>
-                      <Button
-                        type="button"
-                        variant={editorType === 'html' ? 'default' : 'outline'}
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => handleEditorSwitch('html')}
-                      >
-                        HTML
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                {editorType === 'markdown' ? (
-                  <MarkdownEditor value={content} onChange={setContent} height="360px" />
-                ) : (
-                  <HtmlEditor value={content} onChange={setContent} height="360px" />
-                )}
-              </div>
+              <ContentEditorSwitcher
+                id="board-content"
+                value={content}
+                onChange={setContent}
+                editorType={editorType}
+                onEditorTypeChange={setEditorType}
+                height="360px"
+              />
             </div>
 
             {category.allowEncryptedPosts ? (
@@ -193,18 +117,6 @@ export function BoardForm({ category, post, mode }: BoardFormProps) {
           </footer>
         </section>
       </form>
-
-      <ConfirmDialog
-        open={isEditorSwitchDialogOpen}
-        onOpenChange={handleEditorSwitchDialogOpenChange}
-        title="작성 중인 내용이 삭제됩니다"
-        description={`에디터를 변경하면 현재 작성 중인 내용이 모두 삭제되고 ${pendingEditorType ? EDITOR_LABELS[pendingEditorType] : ''
-          } 에디터로 전환됩니다. 계속 진행하시겠습니까?`}
-        confirmLabel="전환"
-        cancelLabel="취소"
-        onCancel={closeEditorSwitchDialog}
-        onConfirm={handleConfirmEditorSwitch}
-      />
     </>
   );
 }
