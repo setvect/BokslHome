@@ -22,6 +22,7 @@ export interface BoardPostMock {
   title: string;
   summary: string;
   content: string;
+  editorType?: 'html' | 'markdown';
   createdAt: string;
   isEncrypted?: boolean;
   attachments?: BoardAttachmentMock[];
