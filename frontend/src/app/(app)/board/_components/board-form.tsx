@@ -63,7 +63,7 @@ export function BoardForm({ category, post, mode }: BoardFormProps) {
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="게시글 제목을 입력하세요"
-                className="text-base"
+                className="text-base h-10"
               />
             </div>
 
@@ -90,7 +90,7 @@ export function BoardForm({ category, post, mode }: BoardFormProps) {
             <Label htmlFor="board-attachments" className="text-sm font-medium text-foreground">
               첨부파일
             </Label>
-            <Input id="board-attachments" type="file" multiple onChange={handleAttachmentChange} className="w-full text-sm" />
+            <Input id="board-attachments" type="file" multiple onChange={handleAttachmentChange} className="w-full text-sm h-10" />
             <BoardAttachmentList attachments={attachments} />
           </div>
         </div>

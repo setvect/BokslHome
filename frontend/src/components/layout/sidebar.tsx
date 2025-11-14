@@ -22,6 +22,7 @@ import {
   Sparkles,
   Dice6,
   Code2,
+  PawPrint
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BOARD_CATEGORIES } from '@/lib/constants/board';
@@ -203,7 +204,7 @@ export function Sidebar({ isOpen, onClose, isInitialized = false }: SidebarProps
           {/* 헤더 영역 */}
           <div className="flex h-14 items-center justify-between px-4 border-b border-border">
             <div className="flex items-center space-x-2">
-              <Code2 className="h-5 w-5 text-foreground" />
+              <PawPrint className="h-5 w-5 text-foreground" />
               <h2 className="text-lg font-semibold text-foreground">복슬홈</h2>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0" aria-label="사이드바 닫기">
