@@ -39,19 +39,26 @@ export function BoardListView({ category, list }: BoardListViewProps) {
       <header>
         <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
       </header>
-      <section className="space-y-6 rounded-3xl border border-border bg-card p-6 shadow-sm transition-colors">
-        <BoardListFilterBar category={category} />
-        <BoardTable
-          category={category}
-          posts={paginatedPosts as BoardPostMock[]}
-          page={currentPage}
-          pageSize={list.pageSize}
-          totalCount={list.totalCount}
-        />
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+
+      <div className="space-y-4">
+        <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <BoardListFilterBar category={category} />
+        </section>
+
+        <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
+          <BoardTable
+            category={category}
+            posts={paginatedPosts as BoardPostMock[]}
+            page={currentPage}
+            pageSize={list.pageSize}
+            totalCount={list.totalCount}
+          />
+        </div>
+
+        <div className="flex justify-center">
           <PaginationNav page={currentPage} total={list.totalCount} pageSize={list.pageSize} onPageChange={handlePageChange} />
         </div>
-      </section>
+      </div>
     </div>
   );
 }
@@ -131,7 +138,7 @@ function BoardTable({ category, posts, page, pageSize, totalCount }: BoardTableP
   return (
     <div className="overflow-x-auto">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/40">
           <TableRow>
             <TableHead className="w-16 text-center">#</TableHead>
             <TableHead>제목</TableHead>

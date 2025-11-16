@@ -35,8 +35,8 @@ export function KnowledgeListView({ documents, categories }: KnowledgeListViewPr
         lowered.length === 0
           ? true
           : [document.question, document.answerSummary, document.answerReference ?? ''].some((text) =>
-              text.toLowerCase().includes(lowered)
-            );
+            text.toLowerCase().includes(lowered)
+          );
       return matchCategory && matchKeyword;
     });
   }, [category, documents, keyword]);

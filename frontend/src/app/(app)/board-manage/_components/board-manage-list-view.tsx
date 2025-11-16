@@ -34,8 +34,8 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
   }, [boards, page, pageSize]);
 
   return (
-    <>
-      <section className="space-y-6 rounded-3xl border border-border bg-card p-6 shadow-sm transition-colors">
+    <div className="space-y-4">
+      <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="grid w-full gap-4 sm:grid-cols-[150px_minmax(220px,1fr)_auto] sm:items-end">
             <div className="flex flex-col gap-0">
@@ -69,60 +69,60 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
             <Link href="/board-manage/create">만들기</Link>
           </Button>
         </div>
-
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-32 text-center">코드</TableHead>
-                <TableHead className="w-32 text-center">바로가기</TableHead>
-                <TableHead>게시판 이름</TableHead>
-                <TableHead className="w-40 text-center">기능</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedBoards.map((board) => {
-                const detailPath = `/board-manage/${board.code}`;
-                return (
-                  <TableRow key={board.code} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
-                    <TableCell className="text-center text-sm font-medium">
-                      <Link href={detailPath} className="text-primary hover:underline">
-                        {board.code}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-center text-sm">
-                      <Link href={detailPath} className="text-primary hover:underline">
-                        바로가기
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-sm">{board.name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-center gap-2 text-sm">
-                        <Link href={`/board-manage/${board.code}/edit`} className="text-primary hover:underline">
-                          수정
-                        </Link>
-                        <span className="text-muted-foreground/40">|</span>
-                        <BoardDeleteDialog
-                          boardName={board.name}
-                          trigger={
-                            <button type="button" className={cn('text-destructive transition-colors hover:text-destructive/80')}>
-                              삭제
-                            </button>
-                          }
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <PaginationNav page={page} total={totalCount} pageSize={pageSize} onPageChange={setPage} />
-        </div>
       </section>
-    </>
+
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
+        <Table>
+          <TableHeader className="bg-muted/40">
+            <TableRow>
+              <TableHead className="w-32 text-center">코드</TableHead>
+              <TableHead className="w-32 text-center">바로가기</TableHead>
+              <TableHead>게시판 이름</TableHead>
+              <TableHead className="w-40 text-center">기능</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedBoards.map((board) => {
+              const detailPath = `/board-manage/${board.code}`;
+              return (
+                <TableRow key={board.code} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
+                  <TableCell className="text-center text-sm font-medium">
+                    <Link href={detailPath} className="text-primary hover:underline">
+                      {board.code}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-center text-sm">
+                    <Link href={detailPath} className="text-primary hover:underline">
+                      바로가기
+                    </Link>
+                  </TableCell>
+                  <TableCell className="text-sm">{board.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-2 text-sm">
+                      <Link href={`/board-manage/${board.code}/edit`} className="text-primary hover:underline">
+                        수정
+                      </Link>
+                      <span className="text-muted-foreground/40">|</span>
+                      <BoardDeleteDialog
+                        boardName={board.name}
+                        trigger={
+                          <button type="button" className={cn('text-destructive transition-colors hover:text-destructive/80')}>
+                            삭제
+                          </button>
+                        }
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex justify-center">
+        <PaginationNav page={page} total={totalCount} pageSize={pageSize} onPageChange={setPage} />
+      </div>
+    </div>
   );
 }
