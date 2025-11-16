@@ -173,16 +173,6 @@ function NoteSearchBar({ categories, category, field, keyword, onCategoryChange,
       <Button type="button" className="h-10 bg-sky-500 text-white hover:bg-sky-600">
         검색
       </Button>
-
-      <Button type="button" className="h-10 bg-teal-500 text-white hover:bg-teal-600">
-        만들기
-      </Button>
-      <Button type="button" className="h-10 bg-teal-500 text-white hover:bg-teal-600">
-        만들기(마크다운)
-      </Button>
-      <Button type="button" variant="outline" className="h-10">
-        카테고리
-      </Button>
     </div>
   );
 }

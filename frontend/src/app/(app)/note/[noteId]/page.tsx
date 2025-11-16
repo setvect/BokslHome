@@ -26,12 +26,8 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Note Detail</p>
-        <h1 className="text-3xl font-semibold text-foreground">{note.title}</h1>
-        <p className="text-sm text-muted-foreground">
-          분류: {note.category} · 등록일 {note.createdAt} · 수정일 {note.updatedAt}
-        </p>
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">노트</h1>
       </header>
       <NoteDetailView note={note} />
     </div>

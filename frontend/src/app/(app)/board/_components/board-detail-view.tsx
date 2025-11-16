@@ -29,7 +29,7 @@ export function BoardDetailView({ category, post }: BoardDetailViewProps) {
       <div className="space-y-6 p-6">
         <header className="flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-start md:justify-between">
           <div className="space-y-3">
-            <h2 className="text-4xl font-semibold text-foreground">{post.title}</h2>
+            <h2 className="text-2xl font-semibold text-foreground">{post.title}</h2>
           </div>
           <div className="text-right text-sm text-muted-foreground">
             <span className="font-medium text-foreground">등록일:</span> {post.createdAt}

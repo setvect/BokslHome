@@ -60,7 +60,6 @@ export function KnowledgeListView({ documents, categories }: KnowledgeListViewPr
               <TableHead>질문</TableHead>
               <TableHead>답변</TableHead>
               <TableHead className="w-24 text-center">파일</TableHead>
-              <TableHead className="w-20 text-center">수정</TableHead>
               <TableHead className="w-32 text-center">날짜</TableHead>
             </TableRow>
           </TableHeader>
@@ -91,11 +90,6 @@ export function KnowledgeListView({ documents, categories }: KnowledgeListViewPr
                     )}
                   </TableCell>
                   <TableCell className="text-center">{document.attachments?.length ?? 0}</TableCell>
-                  <TableCell className="text-center">
-                    <button type="button" className="text-sky-600 hover:underline">
-                      수정
-                    </button>
-                  </TableCell>
                   <TableCell className="text-center">{document.updatedAt}</TableCell>
                 </TableRow>
               ))
@@ -143,10 +137,6 @@ function KnowledgeSearchBar({ categories, category, keyword, onCategoryChange, o
 
       <Button type="button" className="h-10 bg-sky-500 text-white hover:bg-sky-600">
         검색
-      </Button>
-
-      <Button type="button" className="ml-auto h-10 bg-teal-500 text-white hover:bg-teal-600">
-        만들기
       </Button>
     </div>
   );

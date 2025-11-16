@@ -49,12 +49,6 @@ export function KnowledgeDetailView({ document }: KnowledgeDetailViewProps) {
         <Button variant="outline" asChild className="w-full sm:w-24">
           <Link href="/knowledge">목록</Link>
         </Button>
-        <Button variant="secondary" className="w-full sm:w-24">
-          수정
-        </Button>
-        <Button variant="destructive" className="w-full sm:w-24">
-          삭제
-        </Button>
       </footer>
     </section>
   );

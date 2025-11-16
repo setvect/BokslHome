@@ -28,10 +28,7 @@ export default function MemoDetailPage({ params }: MemoDetailPageProps) {
   return (
     <div className="space-y-6">
       <header className="space-y-1">
-        <h1 className="text-3xl font-semibold text-foreground">메모 수정</h1>
-        <p className="text-sm text-muted-foreground">
-          등록일: {memo.createdAt}, 수정일: {memo.updatedAt}
-        </p>
+        <h1 className="text-3xl font-semibold text-foreground">메모</h1>
       </header>
       <MemoEditor memo={memo} categories={categories} mode="edit" />
     </div>
