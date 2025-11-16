@@ -12,18 +12,7 @@ type NoteDetailViewProps = {
 export function NoteDetailView({ note }: NoteDetailViewProps) {
   return (
     <section className="space-y-8 rounded-3xl border border-border bg-card shadow-sm">
-      <header className="flex flex-col gap-3 border-b border-border p-6 md:flex-row md:items-start md:justify-between">
-        <div className="space-y-2">
-          <span className="text-sm font-semibold text-muted-foreground">{note.category}</span>
-          <h1 className="text-4xl font-semibold text-foreground">{note.title}</h1>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          <div>등록일: {note.createdAt}</div>
-          <div>수정일: {note.updatedAt}</div>
-        </div>
-      </header>
-
-      <div className="space-y-6 px-6">
+      <div className="space-y-6 px-6 py-6">
         {note.links?.length ? (
           <ul className="list-disc space-y-2 pl-6">
             {note.links.map((link) => (
