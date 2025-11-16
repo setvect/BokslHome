@@ -1,10 +1,17 @@
+import { getKnowledgeCategories, getMockKnowledgeCollection } from '@/lib/mock/data/knowledge';
+
+import { KnowledgeListView } from './_components/knowledge-list-view';
+
+export const dynamic = 'force-static';
+
 export default function KnowledgePage() {
+  const { documents } = getMockKnowledgeCollection();
+  const categories = getKnowledgeCategories();
+
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">지식</h1>
-        <p className="text-muted-foreground">지식 페이지입니다.</p>
-      </div>
+      <h1 className="text-3xl font-semibold text-foreground">지식</h1>
+      <KnowledgeListView documents={documents} categories={categories} />
     </div>
   );
 }
