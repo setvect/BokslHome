@@ -25,6 +25,13 @@ export default function KnowledgeDetailPage({ params }: KnowledgeDetailPageProps
 
   return (
     <div className="space-y-6">
+      <header className="space-y-1">
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Knowledge Detail</p>
+        <h1 className="text-3xl font-semibold text-foreground">{document.title}</h1>
+        <p className="text-sm text-muted-foreground">
+          분류: {document.category} · 등록일 {document.createdAt} · 수정일 {document.updatedAt}
+        </p>
+      </header>
       <KnowledgeDetailView document={document} />
     </div>
   );
