@@ -5,34 +5,92 @@ import { DataSet, Network, type Options } from 'vis-network/standalone';
 
 import type { RelationshipEdgeData, RelationshipNodeData } from '@/lib/types/network';
 
+import { type NetworkEditorMode, type NetworkEditorSelection } from './network-editor-types';
+
 import 'vis-network/styles/vis-network.css';
+
+type GraphNode = RelationshipNodeData & {
+  physics?: boolean;
+  fixed?: {
+    x?: boolean;
+    y?: boolean;
+  };
+};
 
 type RelationshipGraphProps = {
   nodes: RelationshipNodeData[];
   edges: RelationshipEdgeData[];
+  mode: NetworkEditorMode;
+  selection: NetworkEditorSelection;
+  onCanvasClick?: (position: { x: number; y: number }) => void;
+  onNodeClick?: (nodeId: string, position: { x: number; y: number }) => void;
+  onEdgeClick?: (edgeId: string) => void;
+  onNodePositionChange?: (updates: { id: string; x: number; y: number }[]) => void;
+  className?: string;
 };
 
-export function RelationshipGraph({ nodes, edges }: RelationshipGraphProps) {
+export function RelationshipGraph({
+  nodes,
+  edges,
+  mode,
+  selection,
+  onCanvasClick,
+  onNodeClick,
+  onEdgeClick,
+  onNodePositionChange,
+  className,
+}: RelationshipGraphProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const networkRef = useRef<Network | null>(null);
+  const nodesDataRef = useRef(new DataSet<GraphNode>());
+  const edgesDataRef = useRef(new DataSet<any>());
+  const onCanvasClickRef = useRef(onCanvasClick);
+  const onNodeClickRef = useRef(onNodeClick);
+  const onEdgeClickRef = useRef(onEdgeClick);
+  const onNodePositionChangeRef = useRef(onNodePositionChange);
 
   useEffect(() => {
-    if (!containerRef.current) {
-      return undefined;
-    }
+    onCanvasClickRef.current = onCanvasClick;
+  }, [onCanvasClick]);
 
-    const preparedNodes = nodes.map((node) => ({
+  useEffect(() => {
+    onNodeClickRef.current = onNodeClick;
+  }, [onNodeClick]);
+
+  useEffect(() => {
+    onEdgeClickRef.current = onEdgeClick;
+  }, [onEdgeClick]);
+
+  useEffect(() => {
+    onNodePositionChangeRef.current = onNodePositionChange;
+  }, [onNodePositionChange]);
+
+  useEffect(() => {
+    const nodesData = nodesDataRef.current;
+    const enhancedNodes = nodes.map<GraphNode>((node) => ({
       ...node,
       physics: false,
       fixed: {
-        x: node.x !== undefined,
-        y: node.y !== undefined,
+        x: false,
+        y: false,
       },
     }));
+    syncDataSet(nodesData, enhancedNodes);
+  }, [nodes]);
 
-    const data = {
-      nodes: new DataSet(preparedNodes),
-      edges: new DataSet(edges.map((edge) => ({ ...edge }))),
-    };
+  useEffect(() => {
+    const edgesData = edgesDataRef.current;
+    const enhancedEdges = edges.map((edge) => ({
+      ...edge,
+      label: edge.label ?? undefined,
+    }));
+    syncDataSet(edgesData, enhancedEdges);
+  }, [edges]);
+
+  useEffect(() => {
+    if (!containerRef.current || networkRef.current) {
+      return;
+    }
 
     const options: Options = {
       autoResize: true,
@@ -62,7 +120,9 @@ export function RelationshipGraph({ nodes, edges }: RelationshipGraphProps) {
       edges: {
         color: '#78716c',
         smooth: {
+          enabled: true,
           type: 'continuous',
+          roundness: 0.5,
         },
         font: {
           size: 14,
@@ -72,14 +132,105 @@ export function RelationshipGraph({ nodes, edges }: RelationshipGraphProps) {
       },
     };
 
-    const network = new Network(containerRef.current, data, options);
+    const network = new Network(
+      containerRef.current,
+      {
+        nodes: nodesDataRef.current,
+        edges: edgesDataRef.current as any,
+      },
+      options
+    );
+
+    networkRef.current = network;
     network.fit({ animation: false });
 
-    return () => {
-      network.destroy();
+    const handleClick = (params: any) => {
+      if (params.nodes.length > 0) {
+        const nodeId = params.nodes[0] as string;
+        onNodeClickRef.current?.(nodeId, params.pointer.canvas);
+        return;
+      }
+      if (params.edges.length > 0) {
+        const edgeId = params.edges[0] as string;
+        onEdgeClickRef.current?.(edgeId);
+        return;
+      }
+      onCanvasClickRef.current?.(params.pointer.canvas);
     };
-  }, [nodes, edges]);
 
-  return <div ref={containerRef} className="h-[520px] w-full rounded-2xl border border-border bg-muted/40" />;
+    const handleDragEnd = (params: any) => {
+      if (!params.nodes || params.nodes.length === 0) {
+        return;
+      }
+      const updates = (params.nodes as string[]).map((nodeId) => {
+        const { x, y } = network.getPosition(nodeId);
+        return { id: nodeId, x, y };
+      });
+      if (updates.length > 0) {
+        onNodePositionChangeRef.current?.(updates);
+      }
+    };
+
+    network.on('click', handleClick);
+    network.on('dragEnd', handleDragEnd);
+
+    return () => {
+      network.off('click', handleClick);
+      network.off('dragEnd', handleDragEnd);
+      network.destroy();
+      networkRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!networkRef.current) {
+      return;
+    }
+    if (!selection) {
+      networkRef.current.unselectAll();
+      return;
+    }
+    if (selection.type === 'node') {
+      networkRef.current.selectNodes([selection.id], false);
+    } else {
+      networkRef.current.selectEdges([selection.id]);
+    }
+  }, [selection]);
+
+  useEffect(() => {
+    if (!containerRef.current) {
+      return;
+    }
+    if (mode === 'addNode') {
+      containerRef.current.style.cursor = 'crosshair';
+    } else if (mode === 'addEdge') {
+      containerRef.current.style.cursor = 'copy';
+    } else {
+      containerRef.current.style.cursor = 'grab';
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    if (!networkRef.current) {
+      return;
+    }
+    networkRef.current.setOptions({
+      interaction: {
+        dragNodes: mode === 'select',
+      },
+    });
+  }, [mode]);
+
+  return <div ref={containerRef} className={className ?? 'h-[520px] w-full rounded-2xl border border-border bg-muted/40'} />;
 }
 
+function syncDataSet(dataSet: DataSet<any>, items: any[]) {
+  dataSet.update(items);
+  const incomingIds = new Set(items.map((item: { id: string }) => String(item.id)));
+  const currentIds = dataSet.getIds();
+  currentIds.forEach((id) => {
+    if (!incomingIds.has(String(id))) {
+      dataSet.remove(id);
+    }
+  });
+}
