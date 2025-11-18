@@ -34,6 +34,7 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
   const [edgeDraft, setEdgeDraft] = useState<{ from: string | null }>({ from: null });
   const [editorHeight, setEditorHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const isInitialMount = useRef(true);
 
   const selectedNode = selection?.type === 'node' ? nodes.find((node) => node.id === selection.id) ?? null : null;
   const selectedEdge = selection?.type === 'edge' ? edges.find((edge) => edge.id === selection.id) ?? null : null;
@@ -42,6 +43,24 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
     () => nodes.map((node) => ({ value: node.id, label: node.label || node.id })),
     [nodes]
   );
+
+  function logGraphState() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    console.log('[Graph]', {
+      nodes,
+      edges,
+    });
+  }
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    logGraphState();
+  }, [nodes, edges]);
 
   function handleCanvasClick(position: { x: number; y: number }) {
     if (mode === 'addNode') {
@@ -161,7 +180,7 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
         return;
       }
       const rect = containerRef.current.getBoundingClientRect();
-      const available = window.innerHeight - rect.top - 115;
+      const available = window.innerHeight - rect.top - 70;
       setEditorHeight(Math.max(420, available));
     }
     updateHeight();
