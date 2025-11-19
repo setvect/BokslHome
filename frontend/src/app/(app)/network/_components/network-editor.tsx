@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CirclePlus, Link2, MousePointerClick } from 'lucide-react';
+import { CirclePlus, Link2, MousePointerClick, Redo2, Undo2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { useHistory } from '@/lib/hooks/use-history';
 import type { RelationshipEdgeData, RelationshipNodeData, RelationshipRecord } from '@/lib/types/network';
+import { cn } from '@/lib/utils';
 
+import { NetworkEditorMode, NetworkEditorSelection } from './network-editor-types';
 import { RelationshipGraph } from './relationship-graph';
-import type { NetworkEditorMode, NetworkEditorSelection } from './network-editor-types';
 
 const NODE_SHAPES: { label: string; value: RelationshipNodeData['shape'] }[] = [
   { label: '타원', value: 'ellipse' },
@@ -27,8 +28,19 @@ type NetworkEditorProps = {
 };
 
 export function NetworkEditor({ record }: NetworkEditorProps) {
-  const [nodes, setNodes] = useState<RelationshipNodeData[]>(() => record.nodes.map(normalizeNode));
-  const [edges, setEdges] = useState<RelationshipEdgeData[]>(() => record.edges.map(normalizeEdge));
+  const {
+    state: graphData,
+    set: setGraphData,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useHistory({
+    nodes: record.nodes.map(normalizeNode),
+    edges: record.edges.map(normalizeEdge),
+  });
+  const { nodes, edges } = graphData;
+
   const [mode, setMode] = useState<NetworkEditorMode>('select');
   const [selection, setSelection] = useState<NetworkEditorSelection>(null);
   const [edgeDraft, setEdgeDraft] = useState<{ from: string | null }>({ from: null });
@@ -43,6 +55,28 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
     () => nodes.map((node) => ({ value: node.id, label: node.label || node.id })),
     [nodes]
   );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // 입력 필드에서는 단축키 무시
+      if (['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) {
+        return;
+      }
+
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === 'z' && !event.shiftKey) {
+          event.preventDefault();
+          if (canUndo) undo();
+        } else if ((event.key === 'z' && event.shiftKey) || event.key === 'y') {
+          event.preventDefault();
+          if (canRedo) redo();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canUndo, canRedo, undo, redo]);
 
   function logGraphState() {
     if (typeof window === 'undefined') {
@@ -72,7 +106,10 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
         x: position.x,
         y: position.y,
       };
-      setNodes((prev) => [...prev, newNode]);
+      setGraphData((prev) => ({
+        ...prev,
+        nodes: [...prev.nodes, newNode],
+      }));
       setSelection({ type: 'node', id: newNode.id });
       return;
     }
@@ -102,7 +139,10 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
         color: EDGE_COLORS[0],
         dashes: false,
       };
-      setEdges((prev) => [...prev, newEdge]);
+      setGraphData((prev) => ({
+        ...prev,
+        edges: [...prev.edges, newEdge],
+      }));
       setSelection({ type: 'edge', id: newEdge.id });
       setEdgeDraft({ from: null });
       setMode('select');
@@ -119,45 +159,53 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
   }
 
   function handleNodeUpdate(nodeId: string, partial: Partial<RelationshipNodeData>) {
-    setNodes((prev) =>
-      prev.map((node) => {
+    setGraphData((prev) => ({
+      ...prev,
+      nodes: prev.nodes.map((node) => {
         if (node.id !== nodeId) {
           return node;
         }
         return { ...node, ...partial };
-      })
-    );
+      }),
+    }));
   }
 
   function handleEdgeUpdate(edgeId: string, partial: Partial<RelationshipEdgeData>) {
-    setEdges((prev) =>
-      prev.map((edge) => {
+    setGraphData((prev) => ({
+      ...prev,
+      edges: prev.edges.map((edge) => {
         if (edge.id !== edgeId) {
           return edge;
         }
         return { ...edge, ...partial };
-      })
-    );
+      }),
+    }));
   }
 
   function handleDeleteNode(nodeId: string) {
-    setNodes((prev) => prev.filter((node) => node.id !== nodeId));
-    setEdges((prev) => prev.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
+    setGraphData((prev) => ({
+      nodes: prev.nodes.filter((node) => node.id !== nodeId),
+      edges: prev.edges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId),
+    }));
     setSelection(null);
   }
 
   function handleDeleteEdge(edgeId: string) {
-    setEdges((prev) => prev.filter((edge) => edge.id !== edgeId));
+    setGraphData((prev) => ({
+      ...prev,
+      edges: prev.edges.filter((edge) => edge.id !== edgeId),
+    }));
     setSelection(null);
   }
 
   function handleNodePositionChange(updates: { id: string; x: number; y: number }[]) {
-    setNodes((prev) =>
-      prev.map((node) => {
+    setGraphData((prev) => ({
+      ...prev,
+      nodes: prev.nodes.map((node) => {
         const update = updates.find((item) => item.id === node.id);
         return update ? { ...node, x: update.x, y: update.y } : node;
-      })
-    );
+      }),
+    }));
   }
 
   function handleModeChange(nextMode: NetworkEditorMode) {
@@ -229,6 +277,23 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
                   label="연결선 추가 모드"
                   onClick={() => handleModeChange('addEdge')}
                 />
+
+                <div className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
+
+                <EditorModeButton
+                  active={false}
+                  icon={Undo2}
+                  label="실행 취소 (Ctrl+Z)"
+                  onClick={undo}
+                  disabled={!canUndo}
+                />
+                <EditorModeButton
+                  active={false}
+                  icon={Redo2}
+                  label="다시 실행 (Ctrl+Y)"
+                  onClick={redo}
+                  disabled={!canRedo}
+                />
               </div>
               {edgeModeHint ? <p className="mt-2 text-xs text-amber-500">{edgeModeHint}</p> : null}
             </div>
@@ -266,23 +331,25 @@ type EditorModeButtonProps = {
   active: boolean;
   onClick: () => void;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  disabled?: boolean;
 };
 
-function EditorModeButton({ label, active, onClick, icon: Icon }: EditorModeButtonProps) {
+function EditorModeButton({ label, active, onClick, icon: Icon, disabled }: EditorModeButtonProps) {
   return (
     <Button
       type="button"
       variant={active ? 'default' : 'outline'}
       size="icon"
       className={cn(
-        'h-11 w-11 rounded-2xl border border-border/60 bg-background/60 transition-colors',
+        'h-9 w-9 rounded-lg border border-border/60 bg-background/60 transition-colors',
         active ? 'bg-sky-500 text-white hover:bg-sky-600' : 'text-muted-foreground'
       )}
       onClick={onClick}
+      disabled={disabled}
       aria-pressed={active}
       aria-label={label}
     >
-      <Icon className="size-5" aria-hidden="true" />
+      <Icon className="size-4" aria-hidden="true" />
       <span className="sr-only">{label}</span>
     </Button>
   );
