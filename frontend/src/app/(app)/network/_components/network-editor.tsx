@@ -295,14 +295,27 @@ type NodeEditorPanelProps = {
 };
 
 function NodeEditorPanel({ node, onChange, onDelete }: NodeEditorPanelProps) {
+  const [label, setLabel] = useState(node.label);
+
+  useEffect(() => {
+    setLabel(node.label);
+  }, [node.id, node.label]);
+
+  function handleLabelBlur() {
+    if (label !== node.label) {
+      onChange({ label });
+    }
+  }
+
   return (
     <div className="space-y-3">
       <div>
         <Label htmlFor="node-label">레이블</Label>
         <Input
           id="node-label"
-          value={node.label}
-          onChange={(event) => onChange({ label: event.target.value })}
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+          onBlur={handleLabelBlur}
           className="mt-1"
         />
       </div>
@@ -359,9 +372,20 @@ type EdgeEditorPanelProps = {
 };
 
 function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelProps) {
+  const [label, setLabel] = useState(edge.label ?? '');
   const fromValue = edge.from;
   const toValue = edge.to;
   const edgeColor = typeof edge.color === 'string' ? edge.color : edge.color?.color ?? EDGE_COLORS[0];
+
+  useEffect(() => {
+    setLabel(edge.label ?? '');
+  }, [edge.id, edge.label]);
+
+  function handleLabelBlur() {
+    if (label !== (edge.label ?? '')) {
+      onChange({ label });
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -369,8 +393,9 @@ function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelPro
         <Label htmlFor="edge-label">레이블</Label>
         <Input
           id="edge-label"
-          value={edge.label ?? ''}
-          onChange={(event) => onChange({ label: event.target.value })}
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+          onBlur={handleLabelBlur}
           className="mt-1"
         />
       </div>
