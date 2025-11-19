@@ -43,9 +43,6 @@ export function NetworkDetailView({ record }: NetworkDetailViewProps) {
               <Button asChild variant="secondary" className="h-10 px-4">
                 <Link href="/network">목록</Link>
               </Button>
-              <Button variant="destructive" type="button" className="h-10 px-4">
-                삭제
-              </Button>
             </div>
           </div>
         </div>

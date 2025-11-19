@@ -4,36 +4,34 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PaginationNav } from '@/components/ui/pagination-nav';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { RelationshipRecord } from '@/lib/types/network';
-
-const SEARCH_FIELDS = [
-  { label: '제목', value: 'title' },
-  { label: '설명', value: 'description' },
-];
 
 type NetworkListViewProps = {
   records: RelationshipRecord[];
 };
 
 export function NetworkListView({ records }: NetworkListViewProps) {
-  const [field, setField] = useState(SEARCH_FIELDS[0].value);
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const pageSize = 10;
 
   const filteredRecords = useMemo(() => {
     const lowered = keyword.trim().toLowerCase();
     return records.filter((record) => {
       if (lowered.length === 0) return true;
-      const target = field === 'description' ? record.description ?? '' : record.title;
-      return target.toLowerCase().includes(lowered);
+      // 제목 또는 설명에서 검색
+      return (
+        record.title.toLowerCase().includes(lowered) ||
+        (record.description ?? '').toLowerCase().includes(lowered)
+      );
     });
-  }, [field, keyword, records]);
+  }, [keyword, records]);
 
   const paginatedRecords = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
@@ -47,6 +45,17 @@ export function NetworkListView({ records }: NetworkListViewProps) {
     setPage(1);
   };
 
+  const handleDelete = (recordId: string) => {
+    setDeleteId(recordId);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteId) return;
+    console.log('Deleting record:', deleteId);
+    // TODO: Implement actual delete logic here (e.g., API call)
+    setDeleteId(null);
+  };
+
   const getRowNumber = (record: RelationshipRecord) => {
     const index = records.findIndex((item) => item.id === record.id);
     return records.length - index;
@@ -56,31 +65,13 @@ export function NetworkListView({ records }: NetworkListViewProps) {
     <section className="space-y-6">
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold text-foreground">관계</h1>
-        <p className="text-muted-foreground">운영 중 관계도 목록을 게시판 형태로 조회할 수 있습니다.</p>
       </header>
 
       <div className="space-y-4">
         <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-          <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-[150px_minmax(220px,1fr)_auto_auto] sm:items-end">
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="network-search-field" className="text-sm font-medium text-muted-foreground">
-                구분
-              </Label>
-              <Select value={field} onValueChange={setField}>
-                <SelectTrigger id="network-search-field" className="h-10">
-                  <SelectValue placeholder="검색 항목" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SEARCH_FIELDS.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="network-search-keyword" className="text-sm font-medium text-muted-foreground">
+          <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-[1fr_auto_auto] sm:items-center">
+            <div>
+              <Label htmlFor="network-search-keyword" className="sr-only">
                 검색어
               </Label>
               <Input
@@ -107,7 +98,7 @@ export function NetworkListView({ records }: NetworkListViewProps) {
                 <TableHead className="w-16 text-center">#</TableHead>
                 <TableHead>제목</TableHead>
                 <TableHead className="w-32 text-center">수정일</TableHead>
-                <TableHead className="w-28 text-center">기능</TableHead>
+                <TableHead className="w-28 text-center">삭제</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -132,11 +123,11 @@ export function NetworkListView({ records }: NetworkListViewProps) {
                     <TableCell className="text-center text-muted-foreground">{record.updatedAt}</TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2 text-primary">
-                        <Link href={`/network/${record.id}`} className="hover:underline">
-                          수정
-                        </Link>
-                        <span className="text-muted-foreground/40">|</span>
-                        <button type="button" className="text-destructive transition-colors hover:text-destructive/80">
+                        <button
+                          type="button"
+                          className="text-destructive transition-colors hover:text-destructive/80 cursor-pointer"
+                          onClick={() => handleDelete(record.id)}
+                        >
                           삭제
                         </button>
                       </div>
@@ -152,6 +143,19 @@ export function NetworkListView({ records }: NetworkListViewProps) {
           <PaginationNav page={page} total={filteredRecords.length} pageSize={pageSize} onPageChange={setPage} />
         </div>
       </div>
+
+      <ConfirmDialog
+        open={!!deleteId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="관계 삭제"
+        description="정말로 이 관계 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        cancelLabel="취소"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
     </section>
   );
 }
