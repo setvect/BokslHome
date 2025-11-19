@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { DataSet, Network, type Options } from 'vis-network/standalone';
 
 import type { RelationshipEdgeData, RelationshipNodeData } from '@/lib/types/network';
@@ -48,6 +49,32 @@ export function RelationshipGraph({
   const onNodeClickRef = useRef(onNodeClick);
   const onEdgeClickRef = useRef(onEdgeClick);
   const onNodePositionChangeRef = useRef(onNodePositionChange);
+  const { resolvedTheme } = useTheme();
+  const [isNetworkReady, setIsNetworkReady] = useState(false);
+
+  useEffect(() => {
+    if (!networkRef.current || !isNetworkReady) {
+      return;
+    }
+
+    // 연결선 텍스트: 다크 모드에서는 밝은 회색(#e5e7eb), 라이트 모드에서는 어두운 회색(#4b5563)
+    const edgeTextColor = resolvedTheme === 'dark' ? '#e5e7eb' : '#4b5563';
+    // 노드 텍스트: 노드 배경이 항상 밝은 파스텔 톤이므로 항상 어두운 색(#4b5563) 유지
+    const nodeTextColor = '#4b5563';
+
+    networkRef.current.setOptions({
+      nodes: {
+        font: {
+          color: nodeTextColor,
+        },
+      },
+      edges: {
+        font: {
+          color: edgeTextColor,
+        },
+      },
+    });
+  }, [resolvedTheme, isNetworkReady]);
 
   useEffect(() => {
     onCanvasClickRef.current = onCanvasClick;
@@ -142,6 +169,7 @@ export function RelationshipGraph({
     );
 
     networkRef.current = network;
+    setIsNetworkReady(true);
     network.fit({ animation: false });
 
     const handleClick = (params: any) => {

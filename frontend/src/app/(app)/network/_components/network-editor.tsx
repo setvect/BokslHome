@@ -335,7 +335,7 @@ function NodeEditorPanel({ node, onChange, onDelete }: NodeEditorPanelProps) {
               type="button"
               className={cn(
                 'h-8 w-8 rounded-full border-2',
-                node.color === color ? 'border-primary' : 'border-transparent'
+                node.color === color ? 'border-primary' : 'border-border', // border-transparent -> border-border
               )}
               style={{ backgroundColor: color }}
               onClick={() => onChange({ color })}
