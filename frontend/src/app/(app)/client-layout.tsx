@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Sidebar } from '@/components/layout/sidebar';
 import { MainContent } from '@/components/layout/main-content';
@@ -14,12 +15,19 @@ interface ClientAppLayoutProps {
 }
 
 export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayoutProps) {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(initialSidebarOpen);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
+    // Auth check
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      router.replace('/login');
+      return;
+    }
     setIsInitialized(true);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const handleResize = () => {

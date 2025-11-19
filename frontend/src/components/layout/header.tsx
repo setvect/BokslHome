@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
-import { Menu, Home } from 'lucide-react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Menu, Home, LogOut, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ChangePasswordDialog } from '@/components/user/change-password-dialog';
 
 export interface HeaderProps {
   onMenuToggle?: () => void;
@@ -11,6 +13,14 @@ export interface HeaderProps {
 }
 
 export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
+  const router = useRouter();
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    router.push('/login');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 w-full items-center justify-between px-4">
@@ -27,11 +37,20 @@ export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
           </div>
         </div>
 
-        {/* 우측: 테마 토글 */}
-        <div className="flex items-center">
+        {/* 우측: 비밀번호 변경 + 로그아웃 + 테마 토글 */}
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="sm" onClick={() => setIsChangePasswordOpen(true)} aria-label="비밀번호 변경">
+            <Lock className="h-5 w-5 mr-2" />
+            <span className="hidden sm:inline">비밀번호 변경</span>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={handleLogout} aria-label="로그아웃">
+            <LogOut className="h-5 w-5 mr-2" />
+            <span className="hidden sm:inline">로그아웃</span>
+          </Button>
           <ThemeToggle />
         </div>
       </div>
+      <ChangePasswordDialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen} />
     </header>
   );
 }
