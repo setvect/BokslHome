@@ -20,7 +20,7 @@ const NODE_SHAPES: { label: string; value: RelationshipNodeData['shape'] }[] = [
   { label: '원', value: 'circle' },
 ];
 
-const NODE_COLORS = ['#ffffcc', '#ffffff', '#ccff66', '#d9f99d', '#bae6fd', '#fef9c3', '#fee2e2', '#e9d5ff'];
+const NODE_COLORS = ['#ffffcc', '#ffffff', '#ccff66', '#d9f99d', '#bae6fd', '#fef9c3', '#fee2e2', '#e9d5ff', '#f97316', '#facc15', '#84cc16', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#ef4444'];
 const EDGE_COLORS = ['#777777', '#334155', '#0ea5e9', '#22c55e', '#f97316', '#b91c1c', '#a855f7', '#d946ef'];
 
 type NetworkEditorProps = {
