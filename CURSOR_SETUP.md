@@ -26,9 +26,21 @@ Cursor를 열고 다음 확장 프로그램을 설치하세요:
 
 ## 2. 프로젝트 열기
 
+### 방법 1: 백엔드 폴더 직접 열기 (권장)
+
+백엔드 개발만 하는 경우 백엔드 폴더를 직접 여는 것이 좋습니다:
+
+1. Cursor에서 `File` → `Open Folder...` 선택
+2. 백엔드 디렉토리 (`/home/setve/BokslHome-wsl/backend`) 선택
+3. Cursor가 자동으로 Gradle 프로젝트를 인식하고 빌드합니다
+
+### 방법 2: 전체 프로젝트 열기
+
+프론트엔드와 백엔드를 함께 개발하는 경우:
+
 1. Cursor에서 `File` → `Open Folder...` 선택
 2. 프로젝트 루트 디렉토리 (`/home/setve/BokslHome-wsl`) 선택
-3. Cursor가 자동으로 Gradle 프로젝트를 인식하고 빌드합니다
+3. 백엔드 폴더의 설정 파일(`backend/.vscode/`)이 자동으로 적용됩니다
 
 ## 3. Gradle 프로젝트 동기화
 
@@ -63,26 +75,14 @@ Cursor를 열고 다음 확장 프로그램을 설치하세요:
 
 ## 5. 디버깅 설정
 
-Spring Boot 애플리케이션을 디버깅하려면 `.vscode/launch.json` 파일을 생성하세요:
+백엔드 폴더(`backend/.vscode/launch.json`)에 디버깅 설정이 이미 준비되어 있습니다.
 
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "java",
-      "name": "Spring Boot App",
-      "request": "launch",
-      "mainClass": "com.setvect.bokslhome.BokslHomeApplicationKt",
-      "projectName": "backend",
-      "args": "",
-      "envFile": "${workspaceFolder}/backend/.env"
-    }
-  ]
-}
-```
+디버깅 방법:
+1. `F5` 키를 누르거나 디버그 패널에서 "Spring Boot Application" 선택
+2. 중단점(Breakpoint)을 설정하려면 코드 라인 번호 왼쪽을 클릭
+3. 디버깅 시작 후 중단점에서 멈춰서 변수 확인 및 단계별 실행 가능
 
-> **참고**: `mainClass`는 실제 메인 클래스 경로로 변경해야 합니다.
+> **참고**: 메인 클래스는 `com.setvect.bokslhome.BokslHomeApplicationKt`로 설정되어 있습니다.
 
 ## 6. 빌드 및 실행
 
@@ -133,11 +133,22 @@ npm run dev
 ### 빌드 오류가 발생하는 경우
 
 ```bash
-# Gradle 캐시 정리
+# 백엔드 폴더에서 실행 (백엔드 폴더를 직접 열었을 경우)
+./gradlew clean
+./gradlew build --refresh-dependencies
+
+# 또는 프로젝트 루트에서 실행
 cd backend
 ./gradlew clean
 ./gradlew build --refresh-dependencies
 ```
+
+### 백엔드 폴더를 직접 열었을 때
+
+백엔드 폴더(`backend/`)를 직접 열면:
+- `backend/.vscode/settings.json` 설정이 자동 적용됩니다
+- Gradle 작업은 `backend/` 폴더 기준으로 실행됩니다
+- 디버깅 설정도 백엔드 폴더 기준으로 동작합니다
 
 ## 9. 추가 리소스
 

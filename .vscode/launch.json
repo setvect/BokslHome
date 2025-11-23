@@ -3,12 +3,13 @@
   "configurations": [
     {
       "type": "java",
-      "name": "BokslHome Application",
+      "name": "Backend: Spring Boot Application",
       "request": "launch",
       "mainClass": "com.setvect.bokslhome.BokslHomeApplicationKt",
-      "vmArgs": "",
+      "projectName": "backend",
       "cwd": "${workspaceFolder}/backend",
-      "classPaths": ["${workspaceFolder}/backend/build/classes/kotlin/main"]
+      "args": "",
+      "vmArgs": ""
     }
   ]
 }

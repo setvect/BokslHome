@@ -6,7 +6,7 @@
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.import.gradle.enabled": true,
   "java.import.gradle.wrapper.enabled": true,
-  "java.import.gradle.java.home": null,
+  "java.import.gradle.java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
   "java.import.gradle.version": null,
   "java.import.gradle.offline.enabled": false,
   // Gradle 설정
@@ -50,5 +50,16 @@
     "**/build/**": true,
     "**/node_modules/**": true
   },
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "baseUrl": "http://localhost:8080"
+    },
+    "local": {
+      "authToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3NjQ3NDEzMDZ9.XYVMBM3oLTzKASdHlU1HZhoi2A3e7TfP5wGXlHJGzMk"
+    },
+    "dev": {
+      "authToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3NjQ3NDEzMDZ9.XYVMBM3oLTzKASdHlU1HZhoi2A3e7TfP5wGXlHJGzMk"
+    }
+  }
 }
