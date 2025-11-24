@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    // Kotlin Language Server
+    "fwcd.kotlin",
+    
+    // Java Language Support (Kotlin과 함께 사용)
+    "redhat.java",
+    
+    // Gradle Support
+    "vscjava.vscode-gradle",
+    
+    // Spring Boot Support
+    "vmware.vscode-spring-boot",
+    "vscjava.vscode-spring-boot-dashboard",
+    "vscjava.vscode-spring-initializr",
+    
+    // 기타 유용한 확장
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml"
+  ]
+}

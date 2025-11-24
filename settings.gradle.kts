@@ -1,2 +1,2 @@
 rootProject.name = "bokslhome-root"
-include("backend") 
+include("backend")

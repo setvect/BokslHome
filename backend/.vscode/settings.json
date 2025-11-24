@@ -1,0 +1,83 @@
+{
+  // Kotlin Language Server 설정
+  "kotlin.languageServer.enabled": true,
+  "kotlin.languageServer.transport": "stdio",
+  
+  // Java/Kotlin 관련 설정
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.gradle.enabled": true,
+  "java.import.gradle.wrapper.enabled": true,
+  "java.import.gradle.java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
+  // "java.import.gradle.version": null,
+  "java.import.gradle.offline.enabled": false,
+  "java.compile.nullAnalysis.mode": "automatic",
+  
+  // Gradle 설정
+  "gradle.nestedProjects": false,
+  "gradle.autoDetect": "on",
+  
+  // 파일 관련 설정
+  "files.exclude": {
+    "**/.gradle": true,
+    "**/build": true,
+    "**/.idea": true
+  },
+  
+  // 에디터 설정
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [
+    140
+  ],
+  
+  // Kotlin 파일 포맷팅
+  "[kotlin]": {
+    "editor.defaultFormatter": "fwcd.kotlin",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  
+  "kotlin.compiler.jvmTarget": "21",
+
+  // Java 파일 포맷팅
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  
+  // Kotlin 인라인 힌트
+  "kotlin.inlayHints.chainedHints": true,
+  "kotlin.inlayHints.typeHints": true,
+  "kotlin.inlayHints.parameterHints": true,
+  
+  // 검색 제외 설정
+  "search.exclude": {
+    "**/build": true,
+    "**/.gradle": true,
+    "**/node_modules": true,
+    "**/target": true
+  },
+  
+  // 파일 감시 제외 (성능 향상)
+  "files.watcherExclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true
+  },
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "baseUrl": "http://localhost:8080"
+    },
+    "local": {
+      "authToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3NjQ3NDEzMDZ9.XYVMBM3oLTzKASdHlU1HZhoi2A3e7TfP5wGXlHJGzMk"
+    },
+    "dev": {
+      "authToken": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDYStjOVpQSEpjdUtxMlloUGcxWXBRPT0iLCJleHAiOjE3NjQ3NDEzMDZ9.XYVMBM3oLTzKASdHlU1HZhoi2A3e7TfP5wGXlHJGzMk"
+    }
+  }
+}

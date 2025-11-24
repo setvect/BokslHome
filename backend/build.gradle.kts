@@ -25,7 +25,7 @@ kotlin {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "21"
-        freeCompilerArgs += "-Xjsr305=strict"
+        freeCompilerArgs += listOf("-Xjsr305=strict", "-java-parameters")
     }
 }
 

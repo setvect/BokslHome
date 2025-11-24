@@ -10,9 +10,9 @@
 out/
 
 # VS Code / Cursor
-.vscode/launch.json
-.vscode/tasks.json
-.vscode/.ropeproject
+#.vscode/launch.json
+#.vscode/tasks.json
+#.vscode/.ropeproject
 
 # 운영체제
 .DS_Store
