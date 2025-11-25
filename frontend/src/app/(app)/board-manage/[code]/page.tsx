@@ -7,8 +7,9 @@ import { getBoardDetail } from '../_data/board-details';
 
 const booleanToText = (value: boolean) => (value ? 'true' : 'false');
 
-export default function BoardDetailPage({ params }: { params: { code: string } }) {
-  const detail = getBoardDetail(params.code);
+export default async function BoardDetailPage({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params;
+  const detail = getBoardDetail(code);
 
   return (
     <>

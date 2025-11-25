@@ -5,9 +5,9 @@ import { RELATIONSHIP_RECORDS, getMockRelationship } from '@/lib/mock/data/netwo
 import { NetworkDetailView } from '../_components/network-detail-view';
 
 interface NetworkDetailPageProps {
-  params: {
+  params: Promise<{
     networkId: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   return RELATIONSHIP_RECORDS.map((record) => ({ networkId: record.id }));
 }
 
-export default function NetworkDetailPage({ params }: NetworkDetailPageProps) {
-  const record = getMockRelationship(params.networkId);
+export default async function NetworkDetailPage({ params }: NetworkDetailPageProps) {
+  const { networkId } = await params;
+  const record = getMockRelationship(networkId);
 
   if (!record) {
     notFound();

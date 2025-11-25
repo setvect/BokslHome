@@ -8,9 +8,9 @@ import type { BoardCode } from '@/lib/types/board';
 import { BoardListView } from '../_components/board-list-view';
 
 interface BoardPageProps {
-  params: {
+  params: Promise<{
     code: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -19,8 +19,9 @@ export function generateStaticParams() {
   return BOARD_CATEGORIES.map((category) => ({ code: category.code }));
 }
 
-export function generateMetadata({ params }: BoardPageProps): Metadata {
-  const normalized = params.code.toUpperCase() as BoardCode;
+export async function generateMetadata({ params }: BoardPageProps): Promise<Metadata> {
+  const { code } = await params;
+  const normalized = code.toUpperCase() as BoardCode;
   const category = BOARD_CATEGORY_BY_CODE[normalized];
 
   if (!category) {
@@ -33,8 +34,9 @@ export function generateMetadata({ params }: BoardPageProps): Metadata {
   };
 }
 
-export default function BoardCodePage({ params }: BoardPageProps) {
-  const normalized = params.code.toUpperCase() as BoardCode;
+export default async function BoardCodePage({ params }: BoardPageProps) {
+  const { code } = await params;
+  const normalized = code.toUpperCase() as BoardCode;
 
   const category = BOARD_CATEGORY_BY_CODE[normalized];
   if (!category) {

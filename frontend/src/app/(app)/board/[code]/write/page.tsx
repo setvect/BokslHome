@@ -6,9 +6,9 @@ import type { BoardCode } from '@/lib/types/board';
 import { BoardForm } from '../../_components/board-form';
 
 interface BoardWritePageProps {
-  params: {
+  params: Promise<{
     code: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -17,8 +17,9 @@ export function generateStaticParams() {
   return BOARD_CATEGORIES.map((category) => ({ code: category.code }));
 }
 
-export default function BoardWritePage({ params }: BoardWritePageProps) {
-  const normalizedCode = params.code.toUpperCase() as BoardCode;
+export default async function BoardWritePage({ params }: BoardWritePageProps) {
+  const { code } = await params;
+  const normalizedCode = code.toUpperCase() as BoardCode;
 
   const category = BOARD_CATEGORY_BY_CODE[normalizedCode];
   if (!category) {

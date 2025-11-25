@@ -5,9 +5,9 @@ import { NOTE_DOCUMENTS, getMockNote } from '@/lib/mock/data/note';
 import { NoteDetailView } from '../_components/note-detail-view';
 
 interface NoteDetailPageProps {
-  params: {
+  params: Promise<{
     noteId: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   return NOTE_DOCUMENTS.map((note) => ({ noteId: String(note.id) }));
 }
 
-export default function NoteDetailPage({ params }: NoteDetailPageProps) {
-  const noteId = Number(params.noteId);
+export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
+  const { noteId: noteIdStr } = await params;
+  const noteId = Number(noteIdStr);
   const note = getMockNote(noteId);
 
   if (!note) {

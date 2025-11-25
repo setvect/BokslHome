@@ -5,9 +5,9 @@ import { MEMO_ITEMS, getMemoCategories, getMockMemoItem } from '@/lib/mock/data/
 import { MemoEditor } from '../_components/memo-editor';
 
 interface MemoDetailPageProps {
-  params: {
+  params: Promise<{
     memoId: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   return MEMO_ITEMS.map((item) => ({ memoId: String(item.id) }));
 }
 
-export default function MemoDetailPage({ params }: MemoDetailPageProps) {
-  const memoId = Number(params.memoId);
+export default async function MemoDetailPage({ params }: MemoDetailPageProps) {
+  const { memoId: memoIdStr } = await params;
+  const memoId = Number(memoIdStr);
   const memo = getMockMemoItem(memoId);
   const categories = getMemoCategories();
 

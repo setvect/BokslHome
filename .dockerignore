@@ -1,0 +1,40 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build outputs
+build/
+.gradle/
+backend/build/
+backend/.gradle/
+frontend/.next/
+frontend/node_modules/
+frontend/build/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+logs/
+*.log
+
+# Temp
+temp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+docs/
+
+# Docker
+Dockerfile.old
+

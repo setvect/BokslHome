@@ -1,0 +1,48 @@
+# Build outputs
+build/
+.gradle/
+bin/
+out/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# Logs and temp files
+logs/
+log/
+temp/
+*.log
+
+# Database
+db/
+
+# Attachments
+attach/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+doc/
+examples/
+README.md
+
+# Test files
+src/test/
+
+# HTTP client files
+http-client/
+
+# OS
+.DS_Store
+Thumbs.db
+

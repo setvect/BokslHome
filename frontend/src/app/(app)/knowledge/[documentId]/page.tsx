@@ -5,9 +5,9 @@ import { KNOWLEDGE_DOCUMENTS, getMockKnowledgeDocument } from '@/lib/mock/data/k
 import { KnowledgeDetailView } from '../_components/knowledge-detail-view';
 
 interface KnowledgeDetailPageProps {
-  params: {
+  params: Promise<{
     documentId: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   return KNOWLEDGE_DOCUMENTS.map((document) => ({ documentId: String(document.id) }));
 }
 
-export default function KnowledgeDetailPage({ params }: KnowledgeDetailPageProps) {
-  const document = getMockKnowledgeDocument(params.documentId);
+export default async function KnowledgeDetailPage({ params }: KnowledgeDetailPageProps) {
+  const { documentId } = await params;
+  const document = getMockKnowledgeDocument(documentId);
 
   if (!document) {
     notFound();

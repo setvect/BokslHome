@@ -9,11 +9,28 @@
 *.ipr
 out/
 
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
 # VS Code / Cursor
 #.vscode/launch.json
 #.vscode/tasks.json
 #.vscode/.ropeproject
 
+# Node.js / Frontend
+node_modules/
+.next/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
+
 # 운영체제
 .DS_Store
 Thumbs.db
+
+# Docker
+*.log

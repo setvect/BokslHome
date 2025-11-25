@@ -3,8 +3,9 @@ import { getBoardDetail } from '../../_data/board-details';
 
 const toYesNo = (value: boolean) => (value ? 'yes' : 'no');
 
-export default function BoardEditPage({ params }: { params: { code: string } }) {
-  const detail = getBoardDetail(params.code);
+export default async function BoardEditPage({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params;
+  const detail = getBoardDetail(code);
 
   return (
     <>
