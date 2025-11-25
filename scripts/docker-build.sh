@@ -41,12 +41,12 @@ BokslHome 통합 이미지 빌드 스크립트
 EOF
 }
 
-IMAGE_NAME="bokslhome-unified"
+IMAGE_NAME="bokslhome"
 CONTAINER_NAME="bokslhome-app"
 
 build_image() {
     log_info "통합 이미지 빌드 시작..."
-    docker build -f Dockerfile.unified -t $IMAGE_NAME:latest .
+    docker build -f Dockerfile -t $IMAGE_NAME:latest .
     log_success "이미지 빌드 완료: $IMAGE_NAME:latest"
     docker images | grep $IMAGE_NAME
 }

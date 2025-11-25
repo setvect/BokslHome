@@ -16,7 +16,7 @@ log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DATA_DIR="$SCRIPT_DIR/data"
 
 # 데이터 디렉토리 생성
@@ -52,7 +52,7 @@ docker run -d \
     -v "$DATA_DIR/logs:/app/logs" \
     -v "$DATA_DIR/log:/app/log" \
     -v "$DATA_DIR/temp:/app/temp" \
-    bokslhome-unified:latest
+    bokslhome:latest
 
 log_success "컨테이너 시작 완료!"
 echo ""

@@ -13,6 +13,7 @@ echo "Docker 컨테이너가 데이터를 읽고 쓸 수 있도록 권한을 설
 echo "sudo 비밀번호를 입력해주세요:"
 echo ""
 
+cd "$(dirname "$0")/.."
 sudo chown -R 1001:1001 ./data/
 
 if [ $? -eq 0 ]; then
@@ -20,7 +21,7 @@ if [ $? -eq 0 ]; then
     echo "✅ 권한 설정 완료!"
     echo ""
     echo "이제 다음 명령으로 컨테이너를 실행하세요:"
-    echo "  ./docker-run-unified.sh"
+    echo "  ./scripts/docker-run.sh"
     echo ""
 else
     echo ""

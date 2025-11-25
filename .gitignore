@@ -33,5 +33,9 @@ yarn-debug.log*
 Thumbs.db
 
 # Docker
-*.log
+data/
+
+# Backup files
+*.bak
+*.old
 data

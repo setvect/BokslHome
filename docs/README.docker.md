@@ -1,8 +1,10 @@
-# BokslHome 통합 Docker 이미지 가이드
+# BokslHome Docker 가이드
 
 ## 🎯 개요
 
 Backend + Frontend를 **하나의 Docker 이미지**로 빌드하여 단일 컨테이너로 실행합니다.
+
+> 💡 **외부 데이터 관리**: 데이터(DB, 첨부파일)는 호스트의 `./data/` 디렉토리에 저장됩니다.
 
 ## 📊 분리형 vs 통합형 비교
 
@@ -23,15 +25,15 @@ Backend + Frontend를 **하나의 Docker 이미지**로 빌드하여 단일 컨�
 ### 1. 통합 이미지 빌드 및 실행
 
 ```bash
-# 빌드 스크립트 사용
-./docker-build-unified.sh run
+# 방법 1: 빌드 스크립트 (권장)
+../scripts/docker-build.sh run
 
-# 또는 docker-compose 사용
-docker compose -f docker-compose.unified.yml up -d
+# 방법 2: docker-compose 사용
+docker compose up -d
 
-# 또는 직접 빌드
-docker build -f Dockerfile.unified -t bokslhome-unified .
-docker run -d -p 3000:3000 -p 8080:8080 bokslhome-unified
+# 방법 3: 직접 빌드 및 실행
+docker build -t bokslhome .
+../scripts/docker-run.sh
 ```
 
 ### 2. 접속
@@ -62,13 +64,13 @@ docker logs -f bokslhome-app
 ## 📝 스크립트 명령어
 
 ```bash
-./docker-build-unified.sh build    # 이미지만 빌드
-./docker-build-unified.sh run      # 빌드 후 실행
-./docker-build-unified.sh stop     # 컨테이너 중지
-./docker-build-unified.sh restart  # 재시작
-./docker-build-unified.sh logs     # 로그 확인
-./docker-build-unified.sh status   # 상태 확인
-./docker-build-unified.sh clean    # 정리
+../scripts/docker-build.sh build    # 이미지만 빌드
+../scripts/docker-build.sh run      # 빌드 후 실행
+../scripts/docker-build.sh stop     # 컨테이너 중지
+../scripts/docker-build.sh restart  # 재시작
+../scripts/docker-build.sh logs     # 로그 확인
+../scripts/docker-build.sh status   # 상태 확인
+../scripts/docker-build.sh clean    # 정리
 ```
 
 ## 🔧 통합 이미지의 동작 방식
@@ -121,7 +123,7 @@ docker logs -f bokslhome-app
 
 ```bash
 # 기존 분리형 사용
-./docker-build.sh up
+../scripts/docker-build.sh up
 
 # 또는 docker-compose 사용
 docker compose up -d

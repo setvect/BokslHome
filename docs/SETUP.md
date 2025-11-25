@@ -7,7 +7,7 @@ Docker 컨테이너가 외부 데이터 디렉토리에 접근하려면 **한 �
 ### 방법 1: 자동 스크립트 (권장)
 
 ```bash
-./fix-permissions.sh
+../scripts/fix-permissions.sh
 ```
 
 비밀번호를 입력하면 자동으로 권한이 설정됩니다.
@@ -46,19 +46,19 @@ docker run -d \
 ### 1. 이미지 빌드
 
 ```bash
-./docker-build-unified.sh build
+../scripts/docker-build.sh build
 ```
 
 ### 2. 권한 설정 (최초 1회)
 
 ```bash
-./fix-permissions.sh
+../scripts/fix-permissions.sh
 ```
 
 ### 3. 컨테이너 실행
 
 ```bash
-./docker-run-unified.sh
+../scripts/docker-run.sh
 ```
 
 ### 4. 접속
@@ -92,7 +92,7 @@ data/
 **해결**:
 ```bash
 # 권한 재설정
-./fix-permissions.sh
+../scripts/fix-permissions.sh
 
 # 또는 수동으로
 sudo chown -R 1001:1001 ./data/
