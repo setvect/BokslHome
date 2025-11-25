@@ -61,15 +61,20 @@ run_container() {
         docker rm $CONTAINER_NAME 2>/dev/null || true
     fi
     
-    # 새 컨테이너 실행
+    # 호스트 데이터 디렉토리 생성 (없는 경우)
+    DATA_DIR="$PROJECT_ROOT/data"
+    mkdir -p "$DATA_DIR/logs" "$DATA_DIR/log" "$DATA_DIR/db" "$DATA_DIR/attach" "$DATA_DIR/temp"
+    
+    # 새 컨테이너 실행 (호스트 디렉토리 직접 마운트)
     docker run -d \
         --name $CONTAINER_NAME \
         -p 3000:3000 \
         -p 8080:8080 \
-        -v bokslhome-logs:/app/logs \
-        -v bokslhome-db:/app/db \
-        -v bokslhome-attach:/app/attach \
-        -v bokslhome-temp:/app/temp \
+        -v "$DATA_DIR/logs:/app/logs" \
+        -v "$DATA_DIR/log:/app/log" \
+        -v "$DATA_DIR/db:/app/db" \
+        -v "$DATA_DIR/attach:/app/attach" \
+        -v "$DATA_DIR/temp:/app/temp" \
         $IMAGE_NAME:latest
     
     log_info "컨테이너 시작 대기 중..."
@@ -80,6 +85,7 @@ run_container() {
     log_success "컨테이너 실행 완료!"
     log_info "Frontend: http://localhost:3000"
     log_info "Backend:  http://localhost:8080"
+    log_info "데이터 디렉토리: $DATA_DIR"
 }
 
 stop_container() {

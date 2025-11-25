@@ -121,6 +121,9 @@ USER appuser
 # 포트 노출
 EXPOSE 3000 8080
 
+# 볼륨 노출 (데이터 저장소 위치 알림)
+VOLUME ["/app/logs", "/app/log", "/app/db", "/app/attach", "/app/temp"]
+
 # 환경 변수
 ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC -XX:+UseContainerSupport"
 ENV NODE_ENV=production
