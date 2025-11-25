@@ -63,33 +63,33 @@ BokslHome-wsl/
 
 ### 설정 파일
 
-| 파일 | 설명 |
-|------|------|
-| `Dockerfile` | Backend + Frontend 통합 이미지 |
-| `docker-compose.yml` | Docker Compose 설정 |
-| `backend/src/main/resources/application.yml` | 로컬 개발용 설정 |
-| `backend/src/main/resources/application-docker.yml` | Docker용 설정 |
-| `frontend/next.config.ts` | Next.js 설정 |
+| 파일                                                | 설명                           |
+| --------------------------------------------------- | ------------------------------ |
+| `Dockerfile`                                        | Backend + Frontend 통합 이미지 |
+| `docker-compose.yml`                                | Docker Compose 설정            |
+| `backend/src/main/resources/application.yml`        | 로컬 개발용 설정               |
+| `backend/src/main/resources/application-docker.yml` | Docker용 설정                  |
+| `frontend/next.config.ts`                           | Next.js 설정                   |
 
 ### 스크립트
 
-| 스크립트 | 용도 |
-|---------|------|
-| `scripts/docker-build.sh` | 이미지 빌드 및 관리 |
-| `scripts/docker-run.sh` | 컨테이너 실행 (외부 데이터) |
-| `scripts/fix-permissions.sh` | 데이터 디렉토리 권한 설정 |
-| `scripts/install-docker-wsl.sh` | WSL2 Docker 설치 |
+| 스크립트                        | 용도                        |
+| ------------------------------- | --------------------------- |
+| `scripts/docker-build.sh`       | 이미지 빌드 및 관리         |
+| `scripts/docker-run.sh`         | 컨테이너 실행 (외부 데이터) |
+| `scripts/fix-permissions.sh`    | 데이터 디렉토리 권한 설정   |
+| `scripts/install-docker-wsl.sh` | WSL2 Docker 설치            |
 
 ### 문서
 
-| 문서 | 내용 |
-|------|------|
-| `README.md` | 프로젝트 개요 및 빠른 시작 |
-| `docs/DOCKER-QUICKSTART.md` | Docker 빠른 시작 (3단계) |
-| `docs/README.docker.md` | Docker 상세 가이드 |
-| `docs/README.docker-volume.md` | 데이터 관리 및 백업 |
-| `docs/SETUP.md` | 상세 설정 및 트러블슈팅 |
-| `CURSOR_SETUP.md` | Cursor IDE 설정 |
+| 문서                           | 내용                       |
+| ------------------------------ | -------------------------- |
+| `README.md`                    | 프로젝트 개요 및 빠른 시작 |
+| `docs/DOCKER-QUICKSTART.md`    | Docker 빠른 시작 (3단계)   |
+| `docs/README.docker.md`        | Docker 상세 가이드         |
+| `docs/README.docker-volume.md` | 데이터 관리 및 백업        |
+| `docs/SETUP.md`                | 상세 설정 및 트러블슈팅    |
+| `CURSOR_SETUP.md`              | Cursor IDE 설정            |
 
 ## 🔄 워크플로우
 

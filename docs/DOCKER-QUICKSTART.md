@@ -8,18 +8,18 @@
 
 ### 1️⃣ 빌드
 \`\`\`bash
-../script../scripts/docker-build.sh build
+./scripts/docker-build.sh build
 \`\`\`
 
 ### 2️⃣ 권한 설정 (최초 1회)
 \`\`\`bash
-../script../scripts/fix-permissions.sh
+./scripts/fix-permissions.sh
 # 비밀번호 입력
 \`\`\`
 
 ### 3️⃣ 실행
 \`\`\`bash
-../script../scripts/docker-run.sh
+./scripts/docker-run.sh
 \`\`\`
 
 ## 🌐 접속
@@ -49,7 +49,7 @@ docker rm -f bokslhome-app
 docker rmi bokslhome
 
 # 재빌드 후 실행
-./script../scripts/docker-build.sh run
+./scripts/docker-build.sh run
 \`\`\`
 
 ## 📚 더 자세한 정보

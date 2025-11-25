@@ -122,7 +122,11 @@ check_status() {
     docker images | grep $IMAGE_NAME || log_warning "이미지가 없습니다"
 }
 
-cd "$(dirname "$0")"
+# 프로젝트 루트로 이동
+SCRIPT_PATH="$(readlink -f "$0")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
 
 case "${1:-help}" in
     build)
