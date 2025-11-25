@@ -79,9 +79,10 @@ echo "=========================================="\n\
 # Backend 시작 (백그라운드)\n\
 echo "Backend 시작 중... (포트 8080)"\n\
 cd /app\n\
-java $JAVA_OPTS -jar backend/app.war > logs/backend.log 2>&1 &\n\
+java $JAVA_OPTS -Dspring.profiles.active=docker -jar backend/app.war > logs/backend.log 2>&1 &\n\
 BACKEND_PID=$!\n\
 echo "Backend PID: $BACKEND_PID"\n\
+echo "Spring Profile: docker"\n\
 \n\
 # Backend 준비 대기 (30초)\n\
 echo "Backend 준비 대기 중 (약 30초)..."\n\

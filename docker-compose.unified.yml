@@ -16,11 +16,17 @@ services:
       - JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseG1GC
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
+      - SPRING_PROFILES_ACTIVE=docker
     volumes:
-      - bokslhome-logs:/app/logs
-      - bokslhome-db:/app/db
-      - bokslhome-attach:/app/attach
-      - bokslhome-temp:/app/temp
+      # 로그 파일
+      - ./data/logs:/app/logs
+      - ./data/log:/app/log
+      # 데이터베이스 (외부에서 접근 가능)
+      - ./data/db:/app/db
+      # 첨부파일 (외부에서 접근 가능)
+      - ./data/attach:/app/attach
+      # 임시 파일
+      - ./data/temp:/app/temp
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
@@ -28,13 +34,5 @@ services:
       start_period: 40s
       retries: 3
 
-volumes:
-  bokslhome-logs:
-    driver: local
-  bokslhome-db:
-    driver: local
-  bokslhome-attach:
-    driver: local
-  bokslhome-temp:
-    driver: local
-
+# 주석: Named Volume 대신 바인드 마운트 사용
+# 프로젝트 루트의 ./data 디렉토리에 모든 데이터 저장
