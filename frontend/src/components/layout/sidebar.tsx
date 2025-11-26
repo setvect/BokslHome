@@ -98,7 +98,10 @@ const navigation: MenuItem[] = [
     name: '이것저것',
     href: '/misc',
     icon: MoreHorizontal,
-    children: [{ name: '로또', href: '/misc/lotto', icon: Dice6 }],
+    children: [
+      { name: '로또', href: '/misc/lotto', icon: Dice6 },
+      { name: '코드관리', href: '/misc/code', icon: Code2 },
+    ],
   },
 ];
 
