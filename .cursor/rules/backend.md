@@ -29,7 +29,7 @@ _Last updated: 2025-11-23_
 | Memo      | `MemoCategoryEntity`, `MemoEntity`         | `/api/memo-category`, `/api/memo`          | 카테고리 + 메모 CRUD, UI 관련 필드 포함                               |
 | Note      | `NoteCategoryEntity`, `NoteEntity`         | `/api/note-category`, `/api/note`          | 계층형 카테고리(HierarchyUtil), 첨부파일, markdown 플래그             |
 | Network   | `NetworkEntity`                            | `/api/network`                             | 마인드맵성 콘텐츠, 제목 검색, soft delete                             |
-| Luck      | (무상태)                                   | `/luck/lotto`                              | 랜덤 로또 API. 현재 보안 정책 때문에 ROLE 필요                        |
+| Luck      | (무상태)                                   | `/luck/lotto`                              | 랜덤 로또 API. ROLE_ADMIN 권한 필요                                   |
 | Todo      | `TodoEntity`                               | (미구현)                                   | 엔티티만 존재, API/서비스/리포지토리 미작성                           |
 
 ## 4. 작업 시 필수 체크리스트
@@ -45,7 +45,7 @@ _Last updated: 2025-11-23_
 - Todo 모듈 API/서비스 미완성.
 - 노트/게시판 등에서 삭제 시 첨부파일 정리가 되지 않아 디스크 누수 가능.
 - 테스트 커버리지 부족: 현재 `JwtUtilTest`, `HierarchyUtilTest`, `BoardManagerServiceTest` 정도만 존재.
-- `SecurityConfig`가 모든 API에 `ROLE_ADMIN`을 요구하여 `/luck/**` 등 공개 API가 막혀 있음.
+- `/luck/lotto` API는 인증 필요 (ROLE_ADMIN).
 
 ## 6. 업데이트 지침
 - Rulebook 변경 시 날짜를 갱신하고 주요 수정 요약을 문서 상단에 간략히 기재.

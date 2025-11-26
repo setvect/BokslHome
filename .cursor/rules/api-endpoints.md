@@ -13,7 +13,7 @@
 ## Luck (`/luck`)
 - `GET /luck/lotto`
   - **Response**: `LottoResponse` (`setList`: `[{ numberList: [...] }]`)
-  - **Auth**: Public
+  - **Auth**: Admin
   - **Desc**: 로또 번호 생성 (1~5게임)
 
 ## Code (`/api/code`)

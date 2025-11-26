@@ -27,7 +27,6 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/api/login").permitAll()
-                    .requestMatchers("/luck/lotto").permitAll()
                     .anyRequest().hasAuthority("ROLE_ADMIN")
             }
 
