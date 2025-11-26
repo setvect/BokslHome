@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-// API URL 설정 (환경변수가 없으면 기본값 사용)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+import { apiClient } from '@/lib/api-client';
 
 type LottoGame = {
   id: number;
@@ -80,12 +78,7 @@ function useLotto() {
   useEffect(() => {
     const fetchLotto = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/luck/lotto`);
-        if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`);
-        }
-        
-        const data: LottoResponse = await response.json();
+        const data = await apiClient.get<LottoResponse>('/luck/lotto');
         
         const generatedGames: LottoGame[] = data.setList.map((set, index) => ({
           id: index + 1,
