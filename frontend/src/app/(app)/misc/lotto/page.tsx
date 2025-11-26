@@ -2,23 +2,24 @@
 
 import { useEffect, useState } from 'react';
 
-const CLIENT_ID_STORAGE_KEY = 'boksl_lotto_client_id';
-
-const LOTTO_CONFIG = {
-  MIN_GAME_COUNT: 1,
-  MAX_GAME_COUNT: 5,
-  MIN_NUMBER: 1,
-  MAX_NUMBER: 45,
-  NUMBERS_PER_GAME: 6,
-} as const;
+// API URL 설정 (환경변수가 없으면 기본값 사용)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
 type LottoGame = {
   id: number;
   numbers: number[];
 };
 
+type LottoSetResponse = {
+  numberList: number[];
+};
+
+type LottoResponse = {
+  setList: LottoSetResponse[];
+};
+
 export default function LottoPage() {
-  const { games, generatedAt } = useLotto();
+  const { games, generatedAt, error } = useLotto();
 
   return (
     <div className="space-y-6">
@@ -33,7 +34,11 @@ export default function LottoPage() {
           </p>
         </div>
 
-        {games ? (
+        {error ? (
+          <div className="mt-6 text-sm text-red-500">
+            로또 번호를 불러오는 중 오류가 발생했습니다: {error}
+          </div>
+        ) : games ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {games.map((game) => (
               <div key={game.id} className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm">
@@ -70,34 +75,42 @@ export default function LottoPage() {
 function useLotto() {
   const [games, setGames] = useState<LottoGame[] | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const todaySeed = getDailySeed();
-    const clientId = getOrCreateClientId();
-    const combinedSeed = hashStringToSeed(`${todaySeed}-${clientId}`);
-    const rng = createSeededRandom(combinedSeed);
+    const fetchLotto = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/luck/lotto`);
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+        
+        const data: LottoResponse = await response.json();
+        
+        const generatedGames: LottoGame[] = data.setList.map((set, index) => ({
+          id: index + 1,
+          numbers: set.numberList,
+        }));
 
-    const gameCount = getRandomIntFrom(
-      rng,
-      LOTTO_CONFIG.MIN_GAME_COUNT,
-      LOTTO_CONFIG.MAX_GAME_COUNT
-    );
+        const generatedAtText = new Date().toLocaleString('ko-KR', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
 
-    const generatedGames: LottoGame[] = Array.from({ length: gameCount }, (_, index) => ({
-      id: index + 1,
-      numbers: generateLottoNumbers(rng),
-    }));
+        setGames(generatedGames);
+        setGeneratedAt(generatedAtText);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch lotto numbers:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        setGeneratedAt(null);
+      }
+    };
 
-    const generatedAtText = new Date().toLocaleString('ko-KR', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    });
-
-    setGames(generatedGames);
-    setGeneratedAt(generatedAtText);
+    fetchLotto();
   }, []);
 
-  return { games, generatedAt };
+  return { games, generatedAt, error };
 }
 
 function getBallColorClass(value: number) {
@@ -107,63 +120,4 @@ function getBallColorClass(value: number) {
 
 function formatNumber(value: number) {
   return value.toString().padStart(2, '0');
-}
-
-type RandomFn = () => number;
-
-function generateLottoNumbers(rng: RandomFn): number[] {
-  const numbers = new Set<number>();
-
-  while (numbers.size < LOTTO_CONFIG.NUMBERS_PER_GAME) {
-    numbers.add(getRandomIntFrom(rng, LOTTO_CONFIG.MIN_NUMBER, LOTTO_CONFIG.MAX_NUMBER));
-  }
-
-  return Array.from(numbers).sort((a, b) => a - b);
-}
-
-function getDailySeed(date = new Date()) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return year * 10000 + month * 100 + day;
-}
-
-function createSeededRandom(seed: number): RandomFn {
-  let s = seed % 2147483647;
-  if (s <= 0) s += 2147483646;
-  return () => {
-    s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
-  };
-}
-
-function getRandomIntFrom(random: RandomFn, min: number, max: number) {
-  return Math.floor(random() * (max - min + 1)) + min;
-}
-
-function getOrCreateClientId(): string {
-  if (typeof window === 'undefined') return 'server';
-
-  try {
-    const stored = window.localStorage.getItem(CLIENT_ID_STORAGE_KEY);
-    if (stored) return stored;
-
-    const newId =
-      typeof crypto !== 'undefined' && 'randomUUID' in crypto
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-    window.localStorage.setItem(CLIENT_ID_STORAGE_KEY, newId);
-    return newId;
-  } catch {
-    return typeof navigator !== 'undefined' ? `ua-${navigator.userAgent}` : 'fallback';
-  }
-}
-
-function hashStringToSeed(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) {
-    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-  }
-  return hash === 0 ? 1 : hash;
 }

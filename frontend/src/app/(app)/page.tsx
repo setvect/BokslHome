@@ -78,20 +78,6 @@ export default function HomePage() {
         })}
       </div>
 
-      {/* 추가 정보 섹션 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>시작하기</CardTitle>
-          <CardDescription>복슬홈의 다양한 기능들을 탐색해보세요. 각 메뉴를 클릭하면 해당 기능으로 이동할 수 있습니다.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• 좌측 사이드바에서 원하는 기능을 선택할 수 있습니다</p>
-            <p>• 우측 상단의 테마 토글로 다크/라이트 모드를 변경할 수 있습니다</p>
-            <p>• 모바일에서는 햄버거 메뉴를 통해 사이드바에 접근할 수 있습니다</p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
