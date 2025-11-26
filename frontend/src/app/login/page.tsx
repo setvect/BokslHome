@@ -6,22 +6,49 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock } from 'lucide-react';
+import { Lock, Loader2 } from 'lucide-react';
+import { apiClient, ApiError } from '@/lib/api-client';
+
+interface LoginResponse {
+  token: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
-    // Mock login logic: save dummy token to localStorage
-    const dummyToken = 'mock_jwt_token_' + Date.now();
-    localStorage.setItem('auth_token', dummyToken);
+    try {
+      const response = await apiClient.post<LoginResponse>('/api/login', {
+        username,
+        password,
+      });
 
-    // Redirect to main page
-    router.push('/');
+      // 토큰을 localStorage에 저장
+      localStorage.setItem('auth_token', response.token);
+
+      // 메인 페이지로 이동
+      router.push('/');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.status === 401) {
+          setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+        } else {
+          setError(err.data?.message || '로그인에 실패했습니다. 다시 시도해주세요.');
+        }
+      } else {
+        setError('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -36,12 +63,15 @@ export default function LoginPage() {
           <CardTitle className="text-2xl font-bold text-center">로그인</CardTitle>
           <CardDescription className="text-center">
             서비스를 이용하시려면 로그인이 필요합니다.
-            <br />
-            (아무 내용이나 입력하면 로그인됩니다)
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
+            {error && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-md">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="username">아이디</Label>
               <Input
@@ -49,6 +79,7 @@ export default function LoginPage() {
                 placeholder="아이디를 입력하세요"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -60,13 +91,21 @@ export default function LoginPage() {
                 placeholder="비밀번호를 입력하세요"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
                 required
               />
             </div>
           </CardContent>
           <CardFooter className="pt-4">
-            <Button type="submit" className="w-full">
-              로그인
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  로그인 중...
+                </>
+              ) : (
+                '로그인'
+              )}
             </Button>
           </CardFooter>
         </form>
