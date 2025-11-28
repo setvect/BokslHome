@@ -83,6 +83,8 @@ export default function MemoPage() {
   // 메모 삭제 후 새로고침
   const handleMemoDeleted = async () => {
     try {
+      // 카테고리 목록도 갱신 (메모 건수 반영)
+      await fetchCategories();
       await fetchMemos(selectedCategorySeq);
     } catch (err) {
       setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');

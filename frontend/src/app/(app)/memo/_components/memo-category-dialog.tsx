@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -27,15 +27,47 @@ interface MemoCategoryDialogProps {
 export function MemoCategoryDialog({
   open,
   onOpenChange,
-  categories,
+  categories: initialCategories,
   onUpdated,
 }: MemoCategoryDialogProps) {
+  const [categories, setCategories] = useState<MemoCategoryResponse[]>(initialCategories);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState<MemoCategoryResponse | null>(null);
   const [editingName, setEditingName] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<MemoCategoryResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 모달이 열릴 때마다 최신 카테고리 목록 조회
+  useEffect(() => {
+    if (open) {
+      const fetchCategories = async () => {
+        try {
+          setIsLoadingCategories(true);
+          const data = await apiClient.get<MemoCategoryResponse[]>('/api/memo-category');
+          setCategories(data);
+        } catch (err) {
+          console.error('Failed to fetch categories:', err);
+          setError(err instanceof Error ? err.message : '카테고리를 불러오는데 실패했습니다.');
+        } finally {
+          setIsLoadingCategories(false);
+        }
+      };
+
+      fetchCategories();
+    }
+  }, [open]);
+
+  // 카테고리 목록 새로고침
+  const refreshCategories = async () => {
+    try {
+      const data = await apiClient.get<MemoCategoryResponse[]>('/api/memo-category');
+      setCategories(data);
+    } catch (err) {
+      console.error('Failed to refresh categories:', err);
+    }
+  };
 
   // 카테고리 추가
   const handleAdd = async () => {
@@ -46,6 +78,7 @@ export function MemoCategoryDialog({
       setError(null);
       await apiClient.post('/api/memo-category', { name: newCategoryName.trim() });
       setNewCategoryName('');
+      await refreshCategories();
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
@@ -77,6 +110,7 @@ export function MemoCategoryDialog({
       });
       setEditingCategory(null);
       setEditingName('');
+      await refreshCategories();
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
@@ -104,6 +138,7 @@ export function MemoCategoryDialog({
       setError(null);
       await apiClient.delete(`/api/memo-category/${deleteTarget.categorySeq}`);
       setDeleteTarget(null);
+      await refreshCategories();
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
@@ -156,7 +191,12 @@ export function MemoCategoryDialog({
 
             {/* 카테고리 목록 */}
             <div className="max-h-64 space-y-2 overflow-y-auto">
-              {categories.map((category) => (
+              {isLoadingCategories ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                categories.map((category) => (
                 <div
                   key={category.categorySeq}
                   className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 p-2"
@@ -212,8 +252,9 @@ export function MemoCategoryDialog({
                     </>
                   )}
                 </div>
-              ))}
-              {categories.length === 0 && (
+                ))
+              )}
+              {!isLoadingCategories && categories.length === 0 && (
                 <p className="py-4 text-center text-sm text-muted-foreground">
                   등록된 카테고리가 없습니다.
                 </p>
