@@ -11,6 +11,9 @@ interface MemoRepository : JpaRepository<MemoEntity, Int> {
     @Query("SELECT m FROM MemoEntity m WHERE m.category.memoCategorySeq = :id AND m.deleteF = false ORDER BY m.editDate DESC")
     fun findByCategory(@Param("id") categorySeq: Int): List<MemoEntity>
 
+    @Query("SELECT m FROM MemoEntity m WHERE m.deleteF = false ORDER BY m.editDate DESC")
+    fun findAllActive(): List<MemoEntity>
+
     @Modifying
     @Transactional
     @Query("UPDATE MemoEntity m SET m.deleteF = true WHERE m.memoSeq = :memoSeq")

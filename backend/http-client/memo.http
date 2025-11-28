@@ -59,3 +59,7 @@ Authorization: {{authToken}}
 ### 특정 카테고리의 메모 목록 조회
 GET http://localhost:8080/api/memo/category/10001
 Authorization: {{authToken}}
+
+### 전체 메모 목록 조회
+GET http://localhost:8080/api/memo
+Authorization: {{authToken}}

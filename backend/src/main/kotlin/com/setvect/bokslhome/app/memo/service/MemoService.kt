@@ -56,4 +56,9 @@ class MemoService(
         val memoList = memoRepository.findByCategory(categorySeq)
         return memoList.map { MemoResponse.from(it) }
     }
+
+    fun listAll(): List<MemoResponse> {
+        val memoList = memoRepository.findAllActive()
+        return memoList.map { MemoResponse.from(it) }
+    }
 }

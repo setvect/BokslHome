@@ -14,10 +14,13 @@ import type { MemoCategoryResponse, MemoResponse } from '@/lib/types/memo';
 
 import { MemoCategoryDialog } from './memo-category-dialog';
 
+// 전체 카테고리를 나타내는 특수 값
+const ALL_CATEGORY_SEQ = -1;
+
 type MemoListViewProps = {
   categories: MemoCategoryResponse[];
   memos: MemoResponse[];
-  selectedCategorySeq: number | null;
+  selectedCategorySeq: number;
   isLoading: boolean;
   onCategoryChange: (categorySeq: number) => void;
   onMemoDeleted: () => void;
@@ -89,13 +92,14 @@ export function MemoListView({
       {/* 검색/필터 영역 */}
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <Select
-          value={selectedCategorySeq?.toString() ?? ''}
+          value={selectedCategorySeq.toString()}
           onValueChange={(value) => onCategoryChange(Number(value))}
         >
           <SelectTrigger className="h-10 w-48">
             <SelectValue placeholder="카테고리 선택" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value={ALL_CATEGORY_SEQ.toString()}>전체</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category.categorySeq} value={category.categorySeq.toString()}>
                 {category.name}

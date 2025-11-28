@@ -7,10 +7,13 @@ import type { MemoCategoryResponse, MemoResponse } from '@/lib/types/memo';
 
 import { MemoListView } from './_components/memo-list-view';
 
+// 전체 카테고리를 나타내는 특수 값
+const ALL_CATEGORY_SEQ = -1;
+
 export default function MemoPage() {
   const [categories, setCategories] = useState<MemoCategoryResponse[]>([]);
   const [memos, setMemos] = useState<MemoResponse[]>([]);
-  const [selectedCategorySeq, setSelectedCategorySeq] = useState<number | null>(null);
+  const [selectedCategorySeq, setSelectedCategorySeq] = useState<number>(ALL_CATEGORY_SEQ);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,10 +22,6 @@ export default function MemoPage() {
     try {
       const data = await apiClient.get<MemoCategoryResponse[]>('/api/memo-category');
       setCategories(data);
-      // 첫 번째 카테고리 자동 선택
-      if (data.length > 0 && selectedCategorySeq === null) {
-        setSelectedCategorySeq(data[0].categorySeq);
-      }
       return data;
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -30,10 +29,17 @@ export default function MemoPage() {
     }
   };
 
-  // 특정 카테고리의 메모 목록 조회
+  // 메모 목록 조회 (전체 또는 카테고리별)
   const fetchMemos = async (categorySeq: number) => {
     try {
-      const data = await apiClient.get<MemoResponse[]>(`/api/memo/category/${categorySeq}`);
+      let data: MemoResponse[];
+      if (categorySeq === ALL_CATEGORY_SEQ) {
+        // 전체 메모 조회
+        data = await apiClient.get<MemoResponse[]>('/api/memo');
+      } else {
+        // 카테고리별 메모 조회
+        data = await apiClient.get<MemoResponse[]>(`/api/memo/category/${categorySeq}`);
+      }
       setMemos(data);
     } catch (err) {
       console.error('Failed to fetch memos:', err);
@@ -46,10 +52,9 @@ export default function MemoPage() {
     const loadInitialData = async () => {
       try {
         setIsLoading(true);
-        const categoriesData = await fetchCategories();
-        if (categoriesData.length > 0) {
-          await fetchMemos(categoriesData[0].categorySeq);
-        }
+        await fetchCategories();
+        // 초기에는 전체 메모 조회
+        await fetchMemos(ALL_CATEGORY_SEQ);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : '데이터를 불러오는데 실패했습니다.');
@@ -77,12 +82,10 @@ export default function MemoPage() {
 
   // 메모 삭제 후 새로고침
   const handleMemoDeleted = async () => {
-    if (selectedCategorySeq !== null) {
-      try {
-        await fetchMemos(selectedCategorySeq);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
-      }
+    try {
+      await fetchMemos(selectedCategorySeq);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
     }
   };
 
@@ -90,9 +93,7 @@ export default function MemoPage() {
   const handleCategoryUpdated = async () => {
     try {
       await fetchCategories();
-      if (selectedCategorySeq !== null) {
-        await fetchMemos(selectedCategorySeq);
-      }
+      await fetchMemos(selectedCategorySeq);
     } catch (err) {
       setError(err instanceof Error ? err.message : '데이터를 불러오는데 실패했습니다.');
     }

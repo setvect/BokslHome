@@ -50,4 +50,10 @@ class MemoController(
         val memoResponseList = memoService.listByCategory(categorySeq)
         return ResponseEntity.ok(memoResponseList)
     }
+
+    @GetMapping
+    fun listAllMemos(): ResponseEntity<List<MemoResponse>> {
+        val memoResponseList = memoService.listAll()
+        return ResponseEntity.ok(memoResponseList)
+    }
 }
