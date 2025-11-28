@@ -1,12 +1,25 @@
-export interface MemoItem {
-  id: number;
-  category: string;
+// 메모 카테고리 응답
+export interface MemoCategoryResponse {
+  categorySeq: number;
+  name: string;
+}
+
+// 메모 카테고리 요청
+export interface MemoCategoryRequest {
+  name: string;
+}
+
+// 메모 응답
+export interface MemoResponse {
+  memoSeq: number;
+  categorySeq: number;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  editDate: string;
+  regDate: string;
 }
 
-export interface MemoCollectionMock {
-  items: MemoItem[];
+// 메모 요청
+export interface MemoRequest {
+  memoCategorySeq: number;
+  content: string;
 }
-

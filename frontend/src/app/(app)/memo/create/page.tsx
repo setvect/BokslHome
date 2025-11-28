@@ -1,11 +1,56 @@
-import { getMemoCategories } from '@/lib/mock/data/memo';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+
+import { apiClient } from '@/lib/api-client';
+import type { MemoCategoryResponse } from '@/lib/types/memo';
 
 import { MemoEditor } from '../_components/memo-editor';
 
-export const dynamic = 'force-static';
-
 export default function MemoCreatePage() {
-  const categories = getMemoCategories();
+  const [categories, setCategories] = useState<MemoCategoryResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true);
+        const data = await apiClient.get<MemoCategoryResponse[]>('/api/memo-category');
+        setCategories(data);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+        setError(err instanceof Error ? err.message : '카테고리를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <header className="space-y-1">
+          <h1 className="text-3xl font-semibold text-foreground">메모 작성</h1>
+        </header>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -17,4 +62,3 @@ export default function MemoCreatePage() {
     </div>
   );
 }
-
