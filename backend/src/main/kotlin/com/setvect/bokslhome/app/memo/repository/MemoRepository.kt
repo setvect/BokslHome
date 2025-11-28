@@ -14,8 +14,16 @@ interface MemoRepository : JpaRepository<MemoEntity, Int> {
     @Query("SELECT m FROM MemoEntity m WHERE m.deleteF = false ORDER BY m.editDate DESC")
     fun findAllActive(): List<MemoEntity>
 
+    @Query("SELECT COUNT(m) FROM MemoEntity m WHERE m.category.memoCategorySeq = :categorySeq AND m.deleteF = false")
+    fun countByCategory(@Param("categorySeq") categorySeq: Int): Int
+
     @Modifying
     @Transactional
     @Query("UPDATE MemoEntity m SET m.deleteF = true WHERE m.memoSeq = :memoSeq")
     fun deleteUpdate(@Param("memoSeq") memoSeq: Int): Int
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE MemoEntity m SET m.deleteF = true WHERE m.category.memoCategorySeq = :categorySeq")
+    fun deleteByCategory(@Param("categorySeq") categorySeq: Int): Int
 }

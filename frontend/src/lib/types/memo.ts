@@ -2,6 +2,7 @@
 export interface MemoCategoryResponse {
   categorySeq: number;
   name: string;
+  memoCount: number;
 }
 
 // 메모 카테고리 요청

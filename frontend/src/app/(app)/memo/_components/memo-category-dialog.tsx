@@ -184,7 +184,10 @@ export function MemoCategoryDialog({
                     </>
                   ) : (
                     <>
-                      <span className="flex-1 text-sm">{category.name}</span>
+                      <span className="flex-1 text-sm">
+                        {category.name}
+                        <span className="ml-2 text-xs text-muted-foreground">({category.memoCount}건)</span>
+                      </span>
                       <Button
                         type="button"
                         size="icon"
@@ -194,16 +197,18 @@ export function MemoCategoryDialog({
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => setDeleteTarget(category)}
-                        disabled={isLoading}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {category.memoCount === 0 && (
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => setDeleteTarget(category)}
+                          disabled={isLoading}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
                     </>
                   )}
                 </div>
@@ -229,7 +234,7 @@ export function MemoCategoryDialog({
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         title="카테고리 삭제"
-        description={`"${deleteTarget?.name}" 카테고리를 삭제하시겠습니까? 해당 카테고리의 모든 메모도 함께 삭제됩니다.`}
+        description={`"${deleteTarget?.name}" 카테고리를 삭제하시겠습니까?`}
         confirmLabel={isLoading ? '삭제 중...' : '삭제'}
         cancelLabel="취소"
         onConfirm={handleDelete}
