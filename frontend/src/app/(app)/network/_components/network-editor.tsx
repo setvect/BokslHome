@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CirclePlus, Link2, MousePointerClick, Redo2, Undo2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CirclePlus, Link2, MousePointerClick, Redo2, Undo2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
   const [selection, setSelection] = useState<NetworkEditorSelection>(null);
   const [edgeDraft, setEdgeDraft] = useState<{ from: string | null }>({ from: null });
   const [editorHeight, setEditorHeight] = useState<number | null>(null);
+  const [isPanelVisible, setIsPanelVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isInitialMount = useRef(true);
 
@@ -261,72 +262,96 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
           />
         </div>
 
-        <aside className="w-full rounded-2xl border border-border bg-background/40 p-4 shadow-sm lg:w-80 lg:max-w-xs" style={panelStyle}>
-          <div className="flex h-full flex-col gap-4">
-            <div className="rounded-xl border border-border/70 bg-background/60 p-3 shadow-sm">
-              <div className="flex flex-wrap items-center gap-2">
-                <EditorModeButton
-                  active={mode === 'select'}
-                  icon={MousePointerClick}
-                  label="선택 모드"
-                  onClick={() => handleModeChange('select')}
-                />
-                <EditorModeButton
-                  active={mode === 'addNode'}
-                  icon={CirclePlus}
-                  label="노드 추가 모드"
-                  onClick={() => handleModeChange('addNode')}
-                />
-                <EditorModeButton
-                  active={mode === 'addEdge'}
-                  icon={Link2}
-                  label="연결선 추가 모드"
-                  onClick={() => handleModeChange('addEdge')}
-                />
+        {isPanelVisible && (
+          <aside className="relative w-full rounded-2xl border border-border bg-background/40 p-4 shadow-sm lg:w-80 lg:max-w-xs" style={panelStyle}>
+            {/* Toggle button on left edge - hidden on mobile */}
+            <button
+              onClick={() => setIsPanelVisible(false)}
+              className="hidden lg:flex absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 h-16 w-6 rounded-full bg-sky-500 text-white shadow-lg hover:bg-sky-600 transition-colors items-center justify-center"
+              aria-label="편집 패널 숨기기"
+            >
+              <ChevronRight className="size-4" />
+            </button>
 
-                <div className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
+            <div className="flex h-full flex-col gap-4">
+              <div className="rounded-xl border border-border/70 bg-background/60 p-3 shadow-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <EditorModeButton
+                    active={mode === 'select'}
+                    icon={MousePointerClick}
+                    label="선택 모드"
+                    onClick={() => handleModeChange('select')}
+                  />
+                  <EditorModeButton
+                    active={mode === 'addNode'}
+                    icon={CirclePlus}
+                    label="노드 추가 모드"
+                    onClick={() => handleModeChange('addNode')}
+                  />
+                  <EditorModeButton
+                    active={mode === 'addEdge'}
+                    icon={Link2}
+                    label="연결선 추가 모드"
+                    onClick={() => handleModeChange('addEdge')}
+                  />
 
-                <EditorModeButton
-                  active={false}
-                  icon={Undo2}
-                  label="실행 취소 (Ctrl+Z)"
-                  onClick={undo}
-                  disabled={!canUndo}
-                />
-                <EditorModeButton
-                  active={false}
-                  icon={Redo2}
-                  label="다시 실행 (Ctrl+Y)"
-                  onClick={redo}
-                  disabled={!canRedo}
-                />
-              </div>
-              {edgeModeHint ? <p className="mt-2 text-xs text-amber-500">{edgeModeHint}</p> : null}
-            </div>
+                  <div className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
 
-            <div className="flex-1 overflow-auto rounded-xl border border-border/70 bg-background/60 p-4">
-              {selectedNode ? (
-                <NodeEditorPanel
-                  node={selectedNode}
-                  onChange={(partial) => handleNodeUpdate(selectedNode.id, partial)}
-                  onDelete={() => handleDeleteNode(selectedNode.id)}
-                />
-              ) : selectedEdge ? (
-                <EdgeEditorPanel
-                  edge={selectedEdge}
-                  nodes={sortedNodeOptions}
-                  onChange={(partial) => handleEdgeUpdate(selectedEdge.id, partial)}
-                  onDelete={() => handleDeleteEdge(selectedEdge.id)}
-                />
-              ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-                  <p>노드 또는 연결선을 선택하면 상세 편집이 가능합니다.</p>
-                  <p>노드를 추가하려면 위의 편집 모드를 사용하세요.</p>
+                  <EditorModeButton
+                    active={false}
+                    icon={Undo2}
+                    label="실행 취소 (Ctrl+Z)"
+                    onClick={undo}
+                    disabled={!canUndo}
+                  />
+                  <EditorModeButton
+                    active={false}
+                    icon={Redo2}
+                    label="다시 실행 (Ctrl+Y)"
+                    onClick={redo}
+                    disabled={!canRedo}
+                  />
                 </div>
-              )}
+                {edgeModeHint ? <p className="mt-2 text-xs text-amber-500">{edgeModeHint}</p> : null}
+              </div>
+
+              <div className="flex-1 overflow-auto rounded-xl border border-border/70 bg-background/60 p-4">
+                {selectedNode ? (
+                  <NodeEditorPanel
+                    node={selectedNode}
+                    onChange={(partial) => handleNodeUpdate(selectedNode.id, partial)}
+                    onDelete={() => handleDeleteNode(selectedNode.id)}
+                  />
+                ) : selectedEdge ? (
+                  <EdgeEditorPanel
+                    edge={selectedEdge}
+                    nodes={sortedNodeOptions}
+                    onChange={(partial) => handleEdgeUpdate(selectedEdge.id, partial)}
+                    onDelete={() => handleDeleteEdge(selectedEdge.id)}
+                  />
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground">
+                    <p>노드 또는 연결선을 선택하면 상세 편집이 가능합니다.</p>
+                    <p>노드를 추가하려면 위의 편집 모드를 사용하세요.</p>
+                  </div>
+                )}
+              </div>
             </div>
+          </aside>
+        )}
+
+        {!isPanelVisible && (
+          <div className="relative">
+            {/* Toggle button on right edge when panel is hidden - hidden on mobile */}
+            <button
+              onClick={() => setIsPanelVisible(true)}
+              className="hidden lg:flex absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 h-16 w-6 rounded-full bg-sky-500 text-white shadow-lg hover:bg-sky-600 transition-colors items-center justify-center"
+              aria-label="편집 패널 보이기"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
           </div>
-        </aside>
+        )}
       </div>
     </div>
   );
