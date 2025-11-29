@@ -81,22 +81,21 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [canUndo, canRedo, undo, redo]);
 
-  function logGraphState() {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    console.log('[Graph]', {
-      nodes,
-      edges,
-    });
-  }
-
+  // Auto-save when graph data changes (with debounce)
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-    logGraphState();
+
+    // Debounce auto-save to prevent excessive API calls
+    const timeoutId = setTimeout(() => {
+      console.log('[Graph] Auto-saving changes...');
+      handleSave();
+    }, 1000); // Wait 1 second after last change before saving
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes, edges]);
 
   function handleCanvasClick(position: { x: number; y: number }) {
@@ -247,16 +246,6 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
 
   return (
     <div ref={containerRef} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">관계도 편집</h2>
-        <Button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="bg-teal-500 text-white hover:bg-teal-600"
-        >
-          {isSaving ? '저장 중...' : '저장'}
-        </Button>
-      </div>
       <div className="mt-2 flex flex-col gap-4 lg:flex-row" style={panelStyle}>
         <div className="flex-1 min-h-[420px]" style={panelStyle}>
           <RelationshipGraph
