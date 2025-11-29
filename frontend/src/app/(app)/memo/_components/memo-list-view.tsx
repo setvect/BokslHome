@@ -126,7 +126,7 @@ export function MemoListView({
         </Button>
 
         <Button asChild type="button" className="h-10 bg-teal-500 text-white hover:bg-teal-600">
-          <Link href="/memo/create">
+          <Link href={selectedCategorySeq === ALL_CATEGORY_SEQ ? "/memo/create" : `/memo/create?category=${selectedCategorySeq}`}>
             <Plus className="mr-2 h-4 w-4" />
             만들기
           </Link>

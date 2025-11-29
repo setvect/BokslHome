@@ -17,14 +17,15 @@ type MemoEditorProps = {
   memo?: MemoResponse;
   categories: MemoCategoryResponse[];
   mode: 'create' | 'edit';
+  defaultCategorySeq?: number;
 };
 
-export function MemoEditor({ memo, categories, mode }: MemoEditorProps) {
+export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoEditorProps) {
   const router = useRouter();
   const isEdit = mode === 'edit';
 
   const [categorySeq, setCategorySeq] = useState<number | undefined>(
-    memo?.categorySeq ?? categories[0]?.categorySeq
+    memo?.categorySeq ?? defaultCategorySeq ?? categories[0]?.categorySeq
   );
   const [content, setContent] = useState(memo?.content ?? '');
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +58,8 @@ export function MemoEditor({ memo, categories, mode }: MemoEditorProps) {
         await apiClient.post<MemoResponse>('/api/memo', request);
       }
 
-      router.push('/memo');
+      // 저장 후 목록으로 돌아갈 때 선택한 카테고리 유지
+      router.push(`/memo?category=${categorySeq}`);
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {

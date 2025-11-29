@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
@@ -9,9 +10,14 @@ import type { MemoCategoryResponse } from '@/lib/types/memo';
 import { MemoEditor } from '../_components/memo-editor';
 
 export default function MemoCreatePage() {
+  const searchParams = useSearchParams();
   const [categories, setCategories] = useState<MemoCategoryResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // URL에서 카테고리 파라미터 읽기
+  const categoryParam = searchParams.get('category');
+  const defaultCategorySeq = categoryParam ? Number(categoryParam) : undefined;
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -58,7 +64,7 @@ export default function MemoCreatePage() {
         <h1 className="text-3xl font-semibold text-foreground">메모 작성</h1>
         <p className="text-sm text-muted-foreground">간단한 링크나 기억하고 싶은 문장을 적어 두세요.</p>
       </header>
-      <MemoEditor categories={categories} mode="create" />
+      <MemoEditor categories={categories} mode="create" defaultCategorySeq={defaultCategorySeq} />
     </div>
   );
 }
