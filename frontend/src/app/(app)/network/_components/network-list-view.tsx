@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -9,56 +9,66 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PaginationNav } from '@/components/ui/pagination-nav';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { RelationshipRecord } from '@/lib/types/network';
+import type { NetworkResponse } from '@/lib/types/network-api';
 
 type NetworkListViewProps = {
-  records: RelationshipRecord[];
+  networks: NetworkResponse[];
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  pageSize: number;
+  searchTitle: string;
+  onSearch: (title: string) => void;
+  onPageChange: (page: number) => void;
+  onDelete: (networkSeq: number) => Promise<void>;
+  onCreate: () => void;
 };
 
-export function NetworkListView({ records }: NetworkListViewProps) {
-  const [keyword, setKeyword] = useState('');
-  const [page, setPage] = useState(1);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const pageSize = 10;
-
-  const filteredRecords = useMemo(() => {
-    const lowered = keyword.trim().toLowerCase();
-    return records.filter((record) => {
-      if (lowered.length === 0) return true;
-      // 제목 또는 설명에서 검색
-      return (
-        record.title.toLowerCase().includes(lowered) ||
-        (record.description ?? '').toLowerCase().includes(lowered)
-      );
-    });
-  }, [keyword, records]);
-
-  const paginatedRecords = useMemo(() => {
-    const startIndex = (page - 1) * pageSize;
-    return filteredRecords.slice(startIndex, startIndex + pageSize);
-  }, [filteredRecords, page, pageSize]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+export function NetworkListView({
+  networks,
+  isLoading,
+  currentPage,
+  totalPages,
+  totalElements,
+  pageSize,
+  searchTitle,
+  onSearch,
+  onPageChange,
+  onDelete,
+  onCreate,
+}: NetworkListViewProps) {
+  const [keyword, setKeyword] = useState(searchTitle);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setPage(1);
+    onSearch(keyword);
   };
 
-  const handleDelete = (recordId: string) => {
-    setDeleteId(recordId);
+  const handleDelete = (networkSeq: number) => {
+    setDeleteId(networkSeq);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteId) return;
-    console.log('Deleting record:', deleteId);
-    // TODO: Implement actual delete logic here (e.g., API call)
+    await onDelete(deleteId);
     setDeleteId(null);
   };
 
-  const getRowNumber = (record: RelationshipRecord) => {
-    const index = records.findIndex((item) => item.id === record.id);
-    return records.length - index;
+  // Calculate row number (역순으로 표시)
+  const getRowNumber = (index: number) => {
+    return totalElements - (currentPage * pageSize) - index;
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
   };
 
   return (
@@ -78,14 +88,14 @@ export function NetworkListView({ records }: NetworkListViewProps) {
                 id="network-search-keyword"
                 value={keyword}
                 onChange={(event) => setKeyword(event.target.value)}
-                placeholder="제목 또는 설명을 입력하세요"
+                placeholder="제목을 입력하세요"
                 className="h-10"
               />
             </div>
             <Button type="submit" className="h-10 bg-sky-500 text-white hover:bg-sky-600">
               검색
             </Button>
-            <Button type="button" className="h-10 bg-teal-500 text-white hover:bg-teal-600">
+            <Button type="button" onClick={onCreate} className="h-10 bg-teal-500 text-white hover:bg-teal-600">
               만들기
             </Button>
           </form>
@@ -102,31 +112,41 @@ export function NetworkListView({ records }: NetworkListViewProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedRecords.length === 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                    로딩 중...
+                  </TableCell>
+                </TableRow>
+              ) : networks.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
                     조건에 맞는 관계도가 없습니다.
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedRecords.map((record) => (
-                  <TableRow key={record.id} className="text-sm">
-                    <TableCell className="text-center font-semibold text-muted-foreground">{getRowNumber(record)}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <Link href={`/network/${record.id}`} className="text-primary hover:underline">
-                          {record.title}
-                        </Link>
-                        {record.description ? <span className="text-xs text-muted-foreground">{record.description}</span> : null}
-                      </div>
+                networks.map((network, index) => (
+                  <TableRow key={network.networkSeq} className="text-sm">
+                    <TableCell className="text-center font-semibold text-muted-foreground">
+                      {getRowNumber(index)}
                     </TableCell>
-                    <TableCell className="text-center text-muted-foreground">{record.updatedAt}</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/network/${network.networkSeq}`}
+                        className="text-primary hover:underline"
+                      >
+                        {network.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">
+                      {formatDate(network.editDate)}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2 text-primary">
                         <button
                           type="button"
                           className="text-destructive transition-colors hover:text-destructive/80 cursor-pointer"
-                          onClick={() => handleDelete(record.id)}
+                          onClick={() => handleDelete(network.networkSeq)}
                         >
                           삭제
                         </button>
@@ -140,7 +160,12 @@ export function NetworkListView({ records }: NetworkListViewProps) {
         </div>
 
         <div className="flex justify-center">
-          <PaginationNav page={page} total={filteredRecords.length} pageSize={pageSize} onPageChange={setPage} />
+          <PaginationNav
+            page={currentPage + 1} // PaginationNav uses 1-based indexing
+            total={totalElements}
+            pageSize={pageSize}
+            onPageChange={(page) => onPageChange(page - 1)} // Convert back to 0-based
+          />
         </div>
       </div>
 

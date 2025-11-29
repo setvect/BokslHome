@@ -24,10 +24,13 @@ const NODE_COLORS = ['#ffffcc', '#ffffff', '#ccff66', '#d9f99d', '#bae6fd', '#fe
 const EDGE_COLORS = ['#777777', '#334155', '#0ea5e9', '#22c55e', '#f97316', '#b91c1c', '#a855f7', '#d946ef'];
 
 type NetworkEditorProps = {
-  record: RelationshipRecord;
+  initialNodes: RelationshipNodeData[];
+  initialEdges: RelationshipEdgeData[];
+  onSave: (graphData: { nodes: RelationshipNodeData[]; edges: RelationshipEdgeData[] }) => Promise<void>;
+  isSaving: boolean;
 };
 
-export function NetworkEditor({ record }: NetworkEditorProps) {
+export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: NetworkEditorProps) {
   const {
     state: graphData,
     set: setGraphData,
@@ -36,8 +39,8 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
     canUndo,
     canRedo,
   } = useHistory({
-    nodes: record.nodes.map(normalizeNode),
-    edges: record.edges.map(normalizeEdge),
+    nodes: initialNodes.map(normalizeNode),
+    edges: initialEdges.map(normalizeEdge),
   });
   const { nodes, edges } = graphData;
 
@@ -238,8 +241,22 @@ export function NetworkEditor({ record }: NetworkEditorProps) {
 
   const panelStyle = editorHeight ? { height: editorHeight } : undefined;
 
+  const handleSave = async () => {
+    await onSave(graphData);
+  };
+
   return (
     <div ref={containerRef} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">관계도 편집</h2>
+        <Button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="bg-teal-500 text-white hover:bg-teal-600"
+        >
+          {isSaving ? '저장 중...' : '저장'}
+        </Button>
+      </div>
       <div className="mt-2 flex flex-col gap-4 lg:flex-row" style={panelStyle}>
         <div className="flex-1 min-h-[420px]" style={panelStyle}>
           <RelationshipGraph
