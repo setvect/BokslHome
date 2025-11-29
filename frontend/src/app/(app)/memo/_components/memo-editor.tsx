@@ -81,7 +81,8 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
       setError(null);
       await apiClient.delete(`/api/memo/${memo.memoSeq}`);
       setIsDeleteDialogOpen(false);
-      router.push('/memo');
+      // 삭제 후 목록으로 돌아갈 때 선택한 카테고리 유지
+      router.push(`/memo?category=${categorySeq}`);
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {
