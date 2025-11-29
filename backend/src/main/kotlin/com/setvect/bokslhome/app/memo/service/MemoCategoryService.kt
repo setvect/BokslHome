@@ -24,7 +24,7 @@ class MemoCategoryService(
     }
 
     fun update(memoCategorySeq: Int, memoCategoryRequest: MemoCategoryRequest): MemoCategoryResponse {
-        val existingEntity = memoCategoryRepository.findById(memoCategorySeq)
+        val existingEntity = memoCategoryRepository.findByMemoCategorySeqAndDeleteF(memoCategorySeq, false)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         val updatedEntity = existingEntity.copy(name = memoCategoryRequest.name)
         memoCategoryRepository.save(updatedEntity)
@@ -34,16 +34,16 @@ class MemoCategoryService(
 
     @Transactional
     fun delete(memoCategorySeq: Int) {
-        val entity = memoCategoryRepository.findById(memoCategorySeq)
+        val entity = memoCategoryRepository.findByMemoCategorySeqAndDeleteF(memoCategorySeq, false)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         // 카테고리에 속한 메모들을 논리적 삭제
         memoRepository.deleteByCategory(memoCategorySeq)
         // 카테고리 삭제
-        memoCategoryRepository.delete(entity)
+        memoCategoryRepository.deleteUpdate(memoCategorySeq)
     }
 
     fun get(memoCategorySeq: Int): MemoCategoryResponse {
-        val memoCategoryEntity = memoCategoryRepository.findById(memoCategorySeq)
+        val memoCategoryEntity = memoCategoryRepository.findByMemoCategorySeqAndDeleteF(memoCategorySeq, false)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
         val memoCount = memoRepository.countByCategory(memoCategorySeq)
         return MemoCategoryResponse(name = memoCategoryEntity.name, categorySeq = memoCategoryEntity.memoCategorySeq, memoCount = memoCount)

@@ -14,8 +14,16 @@ interface MemoCategoryRepository : JpaRepository<MemoCategoryEntity, Int> {
         SELECT c.memoCategorySeq, c.name, COUNT(m.memoSeq)
         FROM MemoCategoryEntity c
         LEFT JOIN MemoEntity m ON m.category = c AND m.deleteF = false
+        WHERE c.deleteF = false
         GROUP BY c.memoCategorySeq, c.name
         ORDER BY c.name
     """)
     fun findAllWithMemoCount(): List<Array<Any>>
+
+    fun findByMemoCategorySeqAndDeleteF(memoCategorySeq: Int, deleteF: Boolean): java.util.Optional<MemoCategoryEntity>
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @Query("UPDATE MemoCategoryEntity c SET c.deleteF = true WHERE c.memoCategorySeq = :memoCategorySeq")
+    fun deleteUpdate(@org.springframework.data.repository.query.Param("memoCategorySeq") memoCategorySeq: Int): Int
 }

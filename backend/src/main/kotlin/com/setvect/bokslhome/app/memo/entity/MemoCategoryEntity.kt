@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import org.hibernate.annotations.JdbcTypeCode
 
 /**
  * 메모장 카테고리 정보
@@ -26,5 +27,11 @@ data class MemoCategoryEntity(
     val memoCategorySeq: Int = 0,
 
     @Column(name = "NAME", nullable = false, length = 200)
-    val name: String
+    val name: String,
+
+    @Column(name = "DELETE_F", nullable = false, length = 1)
+    @org.hibernate.annotations.ColumnDefault("'N'")
+    @JdbcTypeCode(java.sql.Types.CHAR)
+    @jakarta.persistence.Convert(converter = com.setvect.bokslhome.common.converter.BooleanToYNConverter::class)
+    val deleteF: Boolean = false
 )
