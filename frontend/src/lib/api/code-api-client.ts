@@ -4,7 +4,7 @@
  */
 
 import { apiClient } from '../api-client';
-import type { CodeRequest, CodeResponse, CodePageResponse, CodeMajorGroupResponse } from '../types/code-api';
+import type { CodeRequest, CodeResponse, PagedResponse, CodeMajorGroupResponse } from '../types/code';
 
 /**
  * Code 생성
@@ -45,10 +45,10 @@ export async function getCodePage(params: {
     page?: number;
     size?: number;
     sort?: string;
-}): Promise<CodePageResponse> {
+}): Promise<PagedResponse<CodeResponse>> {
     const { majorCode, page = 0, size = 100, sort } = params;
 
-    return apiClient.get<CodePageResponse>('/api/code/page', {
+    return apiClient.get<PagedResponse<CodeResponse>>('/api/code/page', {
         params: {
             majorCode,
             page,

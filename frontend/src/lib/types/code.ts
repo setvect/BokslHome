@@ -18,6 +18,7 @@ export interface CodeRequest {
 export interface CodeMajorGroupResponse {
   majorCode: string;
   count: number;
+  description?: string; // 선택적 필드로 추가 (백엔드 응답에 따라 포함될 수 있음)
 }
 
 export interface PagedResponse<T> {
