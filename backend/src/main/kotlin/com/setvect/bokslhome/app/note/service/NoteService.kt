@@ -82,7 +82,7 @@ class NoteService(
         return NoteResponse.from(noteEntity, attachFileList)
     }
 
-    fun page(pageable: Pageable, categorySeq: Int, title: String?, content: String?): PagedModel<NoteResponse> {
+    fun page(pageable: Pageable, categorySeq: Int?, title: String?, content: String?): PagedModel<NoteResponse> {
         val notePage =
             noteRepository.findBySearch(pageable, categorySeq, CommonUtil.emptyStringNull(title), CommonUtil.emptyStringNull(content))
 

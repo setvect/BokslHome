@@ -15,15 +15,16 @@ interface NoteRepository : JpaRepository<NoteEntity, Int> {
         """
         SELECT a
         FROM NoteEntity a
-        WHERE a.category.noteCategorySeq = :noteCategorySeq
+        WHERE (:noteCategorySeq IS NULL OR a.category.noteCategorySeq = :noteCategorySeq)
         AND (:title IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:content IS NULL OR a.content LIKE CONCAT('%', :content, '%'))
         AND a.deleteF = false
+        ORDER BY a.noteSeq desc
     """,
     )
     fun findBySearch(
         pageable: Pageable,
-        noteCategorySeq: Int,
+        noteCategorySeq: Int?,
         title: String?,
         content: String?,
     ): Page<NoteEntity>

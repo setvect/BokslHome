@@ -65,7 +65,7 @@ class NoteController(private val noteService: NoteService) {
 
     @GetMapping("/page")
     fun page(
-        @RequestParam("noteCategorySeq") noteCategorySeq: Int,
+        @RequestParam("noteCategorySeq", required = false) noteCategorySeq: Int?,
         @RequestParam("title", required = false) title: String?,
         @RequestParam("content", required = false) content: String?,
         pageable: Pageable
