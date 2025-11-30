@@ -7,9 +7,10 @@ import type { NoteResponse } from '@/lib/types/note-api';
 
 type NoteDetailViewProps = {
   note: NoteResponse;
+  listUrl: string;
 };
 
-export function NoteDetailView({ note }: NoteDetailViewProps) {
+export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
   const hasAttachments = Boolean(note.attachFileList?.length);
 
   const formatDate = (dateString: string) => {
@@ -69,7 +70,7 @@ export function NoteDetailView({ note }: NoteDetailViewProps) {
 
       <footer className="flex flex-wrap justify-end gap-2 border-t border-border p-6">
         <Button variant="outline" asChild className="w-full sm:w-28">
-          <Link href="/note">목록</Link>
+          <Link href={listUrl}>목록</Link>
         </Button>
       </footer>
     </section>
