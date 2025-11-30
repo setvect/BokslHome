@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -18,9 +18,13 @@ type NetworkDetailViewProps = {
 
 export function NetworkDetailView({ network }: NetworkDetailViewProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [title, setTitle] = useState(network.title);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Build list page URL with search params from the incoming URL
+  const listUrl = `/network?${searchParams.toString()}`;
 
   // Parse content JSON to get nodes and edges
   const graphData = parseGraphData(network.content);
@@ -93,7 +97,7 @@ export function NetworkDetailView({ network }: NetworkDetailViewProps) {
 
             <div className="flex items-center gap-2">
               <Button asChild variant="secondary" className="h-10 px-4">
-                <Link href="/network">목록</Link>
+                <Link href={listUrl}>목록</Link>
               </Button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -38,8 +39,15 @@ export function NetworkListView({
   onDelete,
   onCreate,
 }: NetworkListViewProps) {
+  const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState(searchTitle);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  // Build detail page URL with current search params
+  const buildDetailUrl = (networkSeq: number) => {
+    const params = new URLSearchParams(searchParams);
+    return `/network/${networkSeq}?${params.toString()}`;
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,10 +81,6 @@ export function NetworkListView({
 
   return (
     <section className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold text-foreground">관계</h1>
-      </header>
-
       <div className="space-y-4">
         <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
           <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-[1fr_auto_auto] sm:items-center">
@@ -132,7 +136,7 @@ export function NetworkListView({
                     </TableCell>
                     <TableCell>
                       <Link
-                        href={`/network/${network.networkSeq}`}
+                        href={buildDetailUrl(network.networkSeq)}
                         className="text-primary hover:underline"
                       >
                         {network.title}
