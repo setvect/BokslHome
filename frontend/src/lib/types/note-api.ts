@@ -21,6 +21,7 @@ export interface NoteResponse {
     title: string;
     content: string;
     noteCategorySeq: number;
+    markdownF: boolean;
     regDate: string; // ISO 8601 format
     modDate: string; // ISO 8601 format
     attachFileList: NoteAttachFile[];
