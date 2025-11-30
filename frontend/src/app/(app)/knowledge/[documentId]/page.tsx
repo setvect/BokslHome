@@ -1,27 +1,64 @@
-import { notFound } from 'next/navigation';
+'use client';
 
-import { KNOWLEDGE_DOCUMENTS, getMockKnowledgeDocument } from '@/lib/mock/data/knowledge';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { getKnowledge } from '@/lib/api/knowledge-api-client';
+import type { KnowledgeResponse } from '@/lib/types/knowledge-api';
 
 import { KnowledgeDetailView } from '../_components/knowledge-detail-view';
 
-interface KnowledgeDetailPageProps {
-  params: Promise<{
-    documentId: string;
-  }>;
-}
+export default function KnowledgeDetailPage() {
+  const params = useParams();
+  const documentId = params.documentId as string;
+  const knowledgeSeq = parseInt(documentId, 10);
 
-export const dynamicParams = false;
+  const [document, setDocument] = useState<KnowledgeResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export function generateStaticParams() {
-  return KNOWLEDGE_DOCUMENTS.map((document) => ({ documentId: String(document.id) }));
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isNaN(knowledgeSeq)) {
+        setError('잘못된 ID입니다.');
+        setLoading(false);
+        return;
+      }
 
-export default async function KnowledgeDetailPage({ params }: KnowledgeDetailPageProps) {
-  const { documentId } = await params;
-  const document = getMockKnowledgeDocument(documentId);
+      try {
+        const data = await getKnowledge(knowledgeSeq);
+        setDocument(data);
+      } catch (err) {
+        console.error('Failed to fetch knowledge:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!document) {
-    notFound();
+    fetchData();
+  }, [knowledgeSeq]);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-3xl font-semibold text-foreground">지식</h1>
+        <div className="flex h-64 items-center justify-center text-muted-foreground">
+          로딩 중...
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !document) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-3xl font-semibold text-foreground">지식</h1>
+        <div className="flex h-64 items-center justify-center text-destructive">
+          {error || '데이터를 찾을 수 없습니다.'}
+        </div>
+      </div>
+    );
   }
 
   return (

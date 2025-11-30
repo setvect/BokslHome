@@ -39,7 +39,7 @@ class KnowledgeController(private val knowledgeService: KnowledgeService) {
 
     @GetMapping("/page")
     fun page(
-        @RequestParam("classifyC") classifyC: String,
+        @RequestParam("classifyC", required = false) classifyC: String?,
         @RequestParam("content", required = false) content: String?,
         pageable: Pageable
     ): PagedModel<KnowledgeResponse> {

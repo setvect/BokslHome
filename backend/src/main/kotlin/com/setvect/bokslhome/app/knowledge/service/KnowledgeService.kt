@@ -54,7 +54,7 @@ class KnowledgeService(
         return KnowledgeResponse.from(knowledgeEntity)
     }
 
-    fun page(pageable: Pageable, classifyC: String, content: String?): PagedModel<KnowledgeResponse> {
+    fun page(pageable: Pageable, classifyC: String?, content: String?): PagedModel<KnowledgeResponse> {
         val knowledgePage = knowledgeRepository.findBySearch(pageable, classifyC, CommonUtil.emptyStringNull(content))
         val responsePage = knowledgePage.map { KnowledgeResponse.from(it) }
         return PagedModel(responsePage)

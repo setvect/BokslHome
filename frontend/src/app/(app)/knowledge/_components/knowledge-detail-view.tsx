@@ -1,53 +1,71 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import type { KnowledgeDocument } from '@/lib/types/knowledge';
+import type { KnowledgeResponse } from '@/lib/types/knowledge-api';
 
 type KnowledgeDetailViewProps = {
-  document: KnowledgeDocument;
+  document: KnowledgeResponse;
 };
 
 export function KnowledgeDetailView({ document }: KnowledgeDetailViewProps) {
+  const searchParams = useSearchParams();
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  };
+
+  // 검색 조건을 유지한 목록 URL 생성
+  const getListUrl = () => {
+    const params = new URLSearchParams();
+    const category = searchParams.get('category');
+    const keyword = searchParams.get('keyword');
+    const page = searchParams.get('page');
+
+    if (category) params.set('category', category);
+    if (keyword) params.set('keyword', keyword);
+    if (page) params.set('page', page);
+
+    const queryString = params.toString();
+    return `/knowledge${queryString ? `?${queryString}` : ''}`;
+  };
+
   return (
     <section className="space-y-8 rounded-2xl border border-border bg-card p-6 shadow-sm">
       <header className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
         <span className="font-semibold text-foreground">분류:</span>
-        <span>{document.category}</span>
-        <span className="ml-auto">등록일: {document.updatedAt}</span>
+        <span>{document.classifyC}</span>
+        <span className="ml-auto">등록일: {formatDate(document.regDate)}</span>
       </header>
 
       <section className="space-y-3">
         <h2 className="text-2xl font-semibold text-foreground">질문</h2>
-        <pre className="whitespace-pre-wrap rounded-2xl border border-border bg-muted/20 p-4 text-base leading-relaxed text-foreground">
-          {document.questionDetail}
-        </pre>
+        <div
+          className="prose prose-sm max-w-none rounded-2xl border border-border bg-muted/20 p-4 dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: document.problem }}
+        />
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-2xl font-semibold text-foreground">답변</h2>
-        <div className="space-y-4 rounded-2xl border border-border bg-white p-4">
-          <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">{document.answerDetail}</p>
-
-          {document.attachments?.length ? (
-            <div className="space-y-4">
-              {document.attachments.map((attachment) => (
-                <figure key={attachment.id} className="rounded-xl border border-border/60 p-3">
-                  <div className="overflow-hidden rounded-lg bg-black/5">
-                    <img src={attachment.url} alt={attachment.description ?? attachment.filename} className="h-auto w-full object-cover" />
-                  </div>
-                  <figcaption className="mt-2 text-sm text-muted-foreground">{attachment.filename}</figcaption>
-                </figure>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      </section>
+      {document.solution && (
+        <section className="space-y-3">
+          <h2 className="text-2xl font-semibold text-foreground">답변</h2>
+          <div
+            className="prose prose-sm max-w-none rounded-2xl border border-border bg-muted/20 p-4 dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: document.solution }}
+          />
+        </section>
+      )}
 
       <footer className="flex flex-wrap justify-end gap-2 border-t border-border pt-4">
         <Button variant="outline" asChild className="w-full sm:w-24">
-          <Link href="/knowledge">목록</Link>
+          <Link href={getListUrl()}>목록</Link>
         </Button>
       </footer>
     </section>

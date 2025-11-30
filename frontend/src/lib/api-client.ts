@@ -35,7 +35,7 @@ async function request<T>(endpoint: string, options: FetchOptions = {}): Promise
   if (!headers.has('Content-Type') && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
   }
-  
+
   // 인증 토큰(JWT) 추가
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('auth_token');
@@ -53,12 +53,18 @@ async function request<T>(endpoint: string, options: FetchOptions = {}): Promise
     const response = await fetch(url.toString(), config);
 
     if (!response.ok) {
-      // 에러 응답 파싱 시도
+      // 에러 응답 파싱 시도 - clone을 사용하여 body를 여러 번 읽을 수 있도록 함
       let errorData;
+      const contentType = response.headers.get('content-type');
+
       try {
-        errorData = await response.json();
+        if (contentType && contentType.includes('application/json')) {
+          errorData = await response.json();
+        } else {
+          errorData = await response.text();
+        }
       } catch {
-        errorData = await response.text();
+        errorData = 'Failed to parse error response';
       }
       throw new ApiError(response.status, `API Error: ${response.status}`, errorData);
     }
@@ -79,21 +85,21 @@ async function request<T>(endpoint: string, options: FetchOptions = {}): Promise
 }
 
 export const apiClient = {
-  get: <T>(endpoint: string, options?: FetchOptions) => 
+  get: <T>(endpoint: string, options?: FetchOptions) =>
     request<T>(endpoint, { ...options, method: 'GET' }),
 
   post: <T>(endpoint: string, body: any, options?: FetchOptions) =>
-    request<T>(endpoint, { 
-      ...options, 
-      method: 'POST', 
-      body: body instanceof FormData ? body : JSON.stringify(body) 
+    request<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: body instanceof FormData ? body : JSON.stringify(body)
     }),
 
   put: <T>(endpoint: string, body: any, options?: FetchOptions) =>
-    request<T>(endpoint, { 
-      ...options, 
-      method: 'PUT', 
-      body: body instanceof FormData ? body : JSON.stringify(body) 
+    request<T>(endpoint, {
+      ...options,
+      method: 'PUT',
+      body: body instanceof FormData ? body : JSON.stringify(body)
     }),
 
   delete: <T>(endpoint: string, options?: FetchOptions) =>

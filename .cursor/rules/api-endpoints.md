@@ -40,7 +40,7 @@
 - `DELETE /api/knowledge/{knowledgeSeq}`
 - `GET /api/knowledge/{knowledgeSeq}`
 - `GET /api/knowledge/page`
-  - **Query**: `classifyC` (required), `content` (optional)
+  - **Query**: `classifyC` (optional), `content` (optional)
   - **Response**: `PagedModel<KnowledgeResponse>`
 
 ## Network (`/api/network`)

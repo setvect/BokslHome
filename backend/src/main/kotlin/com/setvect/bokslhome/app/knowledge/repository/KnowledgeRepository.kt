@@ -15,7 +15,7 @@ interface KnowledgeRepository : JpaRepository<KnowledgeEntity, Int> {
         """
         SELECT a
         FROM KnowledgeEntity a
-        WHERE a.classifyC = :classifyC
+        WHERE (:classifyC IS NULL OR a.classifyC = :classifyC)
         AND (:content IS NULL OR ( a.problem LIKE CONCAT('%', :content, '%') OR a.solution LIKE CONCAT('%', :content, '%')) )
         AND a.deleteF = false
         ORDER BY a.knowledgeSeq desc
@@ -23,7 +23,7 @@ interface KnowledgeRepository : JpaRepository<KnowledgeEntity, Int> {
     )
     fun findBySearch(
         pageable: Pageable,
-        @Param("classifyC") classifyC: String,
+        @Param("classifyC") classifyC: String?,
         @Param("content") content: String?,
     ): Page<KnowledgeEntity>
 
