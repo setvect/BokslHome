@@ -40,16 +40,17 @@ const boardFormSchema = z.object({
   allowEncryptedPosts: z.enum(['yes', 'no']),
 });
 
-type BoardFormValues = z.infer<typeof boardFormSchema>;
+export type BoardFormValues = z.infer<typeof boardFormSchema>;
 
 type BoardFormProps = {
   mode: 'create' | 'edit';
   initialValues?: Partial<BoardFormValues>;
   cancelHref?: string;
   submitLabel?: string;
+  onSubmit: (values: BoardFormValues) => void | Promise<void>;
 };
 
-export function BoardForm({ mode, initialValues, cancelHref = '/board-manage', submitLabel }: BoardFormProps) {
+export function BoardForm({ mode, initialValues, cancelHref = '/board-manage', submitLabel, onSubmit }: BoardFormProps) {
   const isEdit = mode === 'edit';
 
   const form = useForm<BoardFormValues>({
@@ -68,17 +69,13 @@ export function BoardForm({ mode, initialValues, cancelHref = '/board-manage', s
 
   const resolvedSubmitLabel = submitLabel ?? (isEdit ? '저장' : '확인');
 
-  const onSubmit = (values: BoardFormValues) => {
-    // TODO: 실제 API 연동 시 데이터 전송 로직 구현
-    console.log('board form submit', {
-      ...values,
-      uploadLimit: Number(values.uploadLimit),
-    });
+  const handleSubmit = async (values: BoardFormValues) => {
+    await onSubmit(values);
   };
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
         <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">
           <div className="space-y-6 p-6">
             <div className="space-y-6">

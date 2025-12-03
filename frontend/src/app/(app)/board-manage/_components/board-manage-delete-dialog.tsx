@@ -15,11 +15,13 @@ import {
 } from '@/components/ui/alert-dialog';
 
 type BoardDeleteDialogProps = {
+  boardCode: string;
   boardName: string;
+  onDelete: () => void;
   trigger: ReactNode;
 };
 
-export function BoardDeleteDialog({ boardName, trigger }: BoardDeleteDialogProps) {
+export function BoardDeleteDialog({ boardCode, boardName, onDelete, trigger }: BoardDeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -30,7 +32,7 @@ export function BoardDeleteDialog({ boardName, trigger }: BoardDeleteDialogProps
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>
-          <AlertDialogAction>삭제</AlertDialogAction>
+          <AlertDialogAction onClick={onDelete}>삭제</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

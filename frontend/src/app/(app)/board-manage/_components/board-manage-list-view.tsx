@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,9 +9,9 @@ import { Label } from '@/components/ui/label';
 import { PaginationNav } from '@/components/ui/pagination-nav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 import { cn } from '@/lib/utils';
 
-import type { BoardManageSummary } from '../_data/board-list';
 import { BoardDeleteDialog } from './board-manage-delete-dialog';
 
 const SEARCH_FIELDS = [
@@ -20,18 +20,46 @@ const SEARCH_FIELDS = [
 ];
 
 interface BoardManageListViewProps {
-  boards: BoardManageSummary[];
+  boards: BoardManagerResponse[];
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  pageSize: number;
+  searchField: string;
+  searchKeyword: string;
+  onSearch: (field: string, keyword: string) => void;
+  onPageChange: (page: number) => void;
+  onDelete: (boardCode: string) => void;
+  onCreate: () => void;
 }
 
-export function BoardManageListView({ boards }: BoardManageListViewProps) {
-  const [page, setPage] = useState(1);
-  const pageSize = 5;
-  const totalCount = boards.length;
+export function BoardManageListView({
+  boards,
+  isLoading,
+  currentPage,
+  totalPages,
+  totalElements,
+  pageSize,
+  searchField,
+  searchKeyword,
+  onSearch,
+  onPageChange,
+  onDelete,
+  onCreate,
+}: BoardManageListViewProps) {
+  const [localSearchField, setLocalSearchField] = useState(searchField);
+  const [localSearchKeyword, setLocalSearchKeyword] = useState(searchKeyword);
 
-  const paginatedBoards = useMemo(() => {
-    const startIndex = (page - 1) * pageSize;
-    return boards.slice(startIndex, startIndex + pageSize);
-  }, [boards, page, pageSize]);
+  const handleSearchClick = () => {
+    onSearch(localSearchField, localSearchKeyword);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearchClick();
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -42,7 +70,7 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
               <Label htmlFor="board-search-field" className="sr-only">
                 검색 항목
               </Label>
-              <Select defaultValue={SEARCH_FIELDS[0].value}>
+              <Select value={localSearchField} onValueChange={setLocalSearchField}>
                 <SelectTrigger id="board-search-field" className="h-10 w-full">
                   <SelectValue placeholder="검색 항목" />
                 </SelectTrigger>
@@ -59,14 +87,21 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
               <Label htmlFor="board-search-input" className="sr-only">
                 검색어
               </Label>
-              <Input id="board-search-input" placeholder="검색어" className="h-10" />
+              <Input
+                id="board-search-input"
+                placeholder="검색어"
+                className="h-10"
+                value={localSearchKeyword}
+                onChange={(e) => setLocalSearchKeyword(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
             </div>
-            <Button type="button" className="h-10 px-6 sm:self-end">
+            <Button type="button" className="h-10 px-6 sm:self-end" onClick={handleSearchClick}>
               검색
             </Button>
           </div>
-          <Button type="button" variant="secondary" className="h-10 px-6 sm:w-auto lg:self-end" asChild>
-            <Link href="/board-manage/create">만들기</Link>
+          <Button type="button" variant="secondary" className="h-10 px-6 sm:w-auto lg:self-end" onClick={onCreate}>
+            만들기
           </Button>
         </div>
       </section>
@@ -82,46 +117,62 @@ export function BoardManageListView({ boards }: BoardManageListViewProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedBoards.map((board) => {
-              const detailPath = `/board-manage/${board.code}`;
-              return (
-                <TableRow key={board.code} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
-                  <TableCell className="text-center text-sm font-medium">
-                    <Link href={detailPath} className="text-primary hover:underline">
-                      {board.code}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-center text-sm">
-                    <Link href={detailPath} className="text-primary hover:underline">
-                      바로가기
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-sm">{board.name}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-center gap-2 text-sm">
-                      <Link href={`/board-manage/${board.code}/edit`} className="text-primary hover:underline">
-                        수정
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                  로딩 중...
+                </TableCell>
+              </TableRow>
+            ) : boards.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                  게시판이 없습니다.
+                </TableCell>
+              </TableRow>
+            ) : (
+              boards.map((board) => {
+                const detailPath = `/board-manage/${board.boardCode}`;
+                return (
+                  <TableRow key={board.boardCode} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
+                    <TableCell className="text-center text-sm font-medium">
+                      <Link href={detailPath} className="text-primary hover:underline">
+                        {board.boardCode}
                       </Link>
-                      <span className="text-muted-foreground/40">|</span>
-                      <BoardDeleteDialog
-                        boardName={board.name}
-                        trigger={
-                          <button type="button" className={cn('text-destructive transition-colors hover:text-destructive/80')}>
-                            삭제
-                          </button>
-                        }
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                    </TableCell>
+                    <TableCell className="text-center text-sm">
+                      <Link href={detailPath} className="text-primary hover:underline">
+                        바로가기
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-sm">{board.name}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-2 text-sm">
+                        <Link href={`/board-manage/${board.boardCode}/edit`} className="text-primary hover:underline">
+                          수정
+                        </Link>
+                        <span className="text-muted-foreground/40">|</span>
+                        <BoardDeleteDialog
+                          boardCode={board.boardCode}
+                          boardName={board.name}
+                          onDelete={() => onDelete(board.boardCode)}
+                          trigger={
+                            <button type="button" className={cn('text-destructive transition-colors hover:text-destructive/80')}>
+                              삭제
+                            </button>
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </div>
 
       <div className="flex justify-center">
-        <PaginationNav page={page} total={totalCount} pageSize={pageSize} onPageChange={setPage} />
+        <PaginationNav page={currentPage} total={totalElements} pageSize={pageSize} onPageChange={onPageChange} />
       </div>
     </div>
   );
