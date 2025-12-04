@@ -50,14 +50,27 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
     setError(null);
 
     try {
-      const request = {
-        boardCode: mode === 'create' ? category.code : undefined,
+      // Build request object based on mode
+      const request: any = {
         title,
         content,
         encryptF: !!password,
-        password: password || undefined,
-        deleteAttachFileSeqList: mode === 'edit' ? deleteAttachFileSeqList : undefined,
       };
+
+      // Add boardCode only for create mode
+      if (mode === 'create') {
+        request.boardCode = category.code;
+      }
+
+      // Add password if provided
+      if (password) {
+        request.password = password;
+      }
+
+      // Add deleteAttachFileSeqList only for edit mode
+      if (mode === 'edit' && deleteAttachFileSeqList.length > 0) {
+        request.deleteAttachFileSeqList = deleteAttachFileSeqList;
+      }
 
       if (mode === 'create') {
         await createBoardArticle(request, newFiles);
@@ -69,7 +82,25 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
       router.push(`/board/${category.code}`);
     } catch (err) {
       console.error('Failed to submit form:', err);
-      setError(err instanceof Error ? err.message : '게시글 저장에 실패했습니다.');
+
+      // Extract error message from API error
+      let errorMessage = '게시글 저장에 실패했습니다.';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        // If it's an ApiError with data, try to extract the message
+        if ((err as any).data) {
+          const errorData = (err as any).data;
+          if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        }
+      }
+
+      setError(errorMessage);
       setIsSubmitting(false);
     }
   }
