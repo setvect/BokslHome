@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   X,
-  Home,
   FileText,
   BookOpen,
   StickyNote,
@@ -64,11 +63,6 @@ const boardChildren: MenuItem[] = [
 
 const navigation: MenuItem[] = [
   {
-    name: '홈',
-    href: '/',
-    icon: Home,
-  },
-  {
     name: '게시판',
     href: '/board',
     icon: FileText,
@@ -109,8 +103,17 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
   const pathname = usePathname();
 
   // 현재 경로가 이 메뉴나 하위 메뉴에 해당하는지 확인
-  const isCurrentPath = item.href && pathname === item.href;
-  const isChildActive = item.children?.some((child) => child.href && pathname === child.href);
+  // 루트 경로('/')는 정확한 일치만 확인, 다른 경로는 하위 경로도 포함
+  const isCurrentPath = item.href && (
+    pathname === item.href ||
+    (item.href !== '/' && pathname.startsWith(item.href + '/'))
+  );
+  const isChildActive = item.children?.some((child) =>
+    child.href && (
+      pathname === child.href ||
+      (child.href !== '/' && pathname.startsWith(child.href + '/'))
+    )
+  );
 
   // 현재 경로가 이 메뉴의 하위 경로인지 확인 (예: /board/posts는 /board의 하위)
   const isSubPath = item.href && pathname.startsWith(item.href + '/');
@@ -206,10 +209,10 @@ export function Sidebar({ isOpen, onClose, isInitialized = false }: SidebarProps
         <div className="flex h-full flex-col">
           {/* 헤더 영역 */}
           <div className="flex h-14 items-center justify-between px-4 border-b border-border">
-            <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <PawPrint className="h-5 w-5 text-foreground" />
               <h2 className="text-lg font-semibold text-foreground">복슬홈</h2>
-            </div>
+            </Link>
             <Button variant="ghost" size="sm" onClick={onClose} className="w-9 px-0" aria-label="사이드바 닫기">
               <X className="h-4 w-4" />
             </Button>
