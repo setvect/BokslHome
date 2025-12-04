@@ -17,6 +17,7 @@ interface BoardArticleRepository : JpaRepository<BoardArticleEntity, Int> {
         AND (:title IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:content IS NULL OR a.content LIKE CONCAT('%', :content, '%'))
         AND a.deleteF = false
+        ORDER BY a.boardArticleSeq desc
     """,
     )
     fun findBySearch(

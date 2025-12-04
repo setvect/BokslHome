@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,66 +11,106 @@ import { PaginationNav } from '@/components/ui/pagination-nav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import type { BoardCategory, BoardListMock, BoardPostMock } from '@/lib/types/board';
+import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
+import type { BoardCategory } from '@/lib/types/board';
 
-const SEARCH_FIELDS = [
-  { label: '제목', value: 'title' },
-  { label: '내용', value: 'content' },
+const SEARCH_FIELDS: { label: string; value: SearchType }[] = [
+  { label: '제목', value: 'TITLE' },
+  { label: '내용', value: 'CONTENT' },
 ];
 
 type BoardListViewProps = {
   category: BoardCategory;
-  list: BoardListMock;
+  articles: BoardArticleResponse[];
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  pageSize: number;
+  searchType: SearchType;
+  searchWord: string;
+  onSearch: (type: SearchType, word: string) => void;
+  onPageChange: (page: number) => void;
+  onDelete: (boardArticleSeq: number) => Promise<void>;
 };
 
-export function BoardListView({ category, list }: BoardListViewProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const paginatedPosts = useMemo(() => {
-    const startIndex = (currentPage - 1) * list.pageSize;
-    return (list.posts ?? []).slice(startIndex, startIndex + list.pageSize);
-  }, [currentPage, list.pageSize, list.posts]);
-
-  function handlePageChange(page: number) {
-    setCurrentPage(page);
+export function BoardListView({
+  category,
+  articles,
+  isLoading,
+  currentPage,
+  totalPages,
+  totalElements,
+  pageSize,
+  searchType,
+  searchWord,
+  onSearch,
+  onPageChange,
+  onDelete,
+}: BoardListViewProps) {
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <BoardListFilterBar
+            category={category}
+            searchType={searchType}
+            searchWord={searchWord}
+            onSearch={onSearch}
+          />
+        </section>
+        <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
+          로딩 중...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
-      </header>
+    <div className="space-y-4">
+      <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <BoardListFilterBar
+          category={category}
+          searchType={searchType}
+          searchWord={searchWord}
+          onSearch={onSearch}
+        />
+      </section>
 
-      <div className="space-y-4">
-        <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-          <BoardListFilterBar category={category} />
-        </section>
-
-        <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
-          <BoardTable
-            category={category}
-            posts={paginatedPosts as BoardPostMock[]}
-            page={currentPage}
-            pageSize={list.pageSize}
-            totalCount={list.totalCount}
-          />
-        </div>
-
-        <div className="flex justify-center">
-          <PaginationNav page={currentPage} total={list.totalCount} pageSize={list.pageSize} onPageChange={handlePageChange} />
-        </div>
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
+        <BoardTable
+          category={category}
+          articles={articles}
+          page={currentPage}
+          pageSize={pageSize}
+          totalCount={totalElements}
+          onDelete={onDelete}
+        />
       </div>
+
+      {totalPages > 0 && (
+        <div className="flex justify-center">
+          <PaginationNav page={currentPage} total={totalElements} pageSize={pageSize} onPageChange={onPageChange} />
+        </div>
+      )}
     </div>
   );
 }
 
-function BoardListFilterBar({ category }: { category: BoardCategory }) {
-  const [field, setField] = useState(SEARCH_FIELDS[0].value);
-  const [keyword, setKeyword] = useState('');
+type BoardListFilterBarProps = {
+  category: BoardCategory;
+  searchType: SearchType;
+  searchWord: string;
+  onSearch: (type: SearchType, word: string) => void;
+};
+
+function BoardListFilterBar({ category, searchType, searchWord, onSearch }: BoardListFilterBarProps) {
+  const [field, setField] = useState<SearchType>(searchType);
+  const [keyword, setKeyword] = useState(searchWord);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // UI 전용 목업이므로 검색은 나중에 백엔드 연동 시 구현한다.
+    onSearch(field, keyword);
   }
 
   return (
@@ -79,7 +120,7 @@ function BoardListFilterBar({ category }: { category: BoardCategory }) {
           <Label htmlFor="board-search-field" className="sr-only">
             검색 항목
           </Label>
-          <Select value={field} onValueChange={setField}>
+          <Select value={field} onValueChange={(value) => setField(value as SearchType)}>
             <SelectTrigger id="board-search-field" className="h-10 w-full">
               <SelectValue placeholder="검색 항목" />
             </SelectTrigger>
@@ -118,13 +159,18 @@ function BoardListFilterBar({ category }: { category: BoardCategory }) {
 
 type BoardTableProps = {
   category: BoardCategory;
-  posts: BoardPostMock[];
+  articles: BoardArticleResponse[];
   page: number;
   pageSize: number;
   totalCount: number;
+  onDelete: (boardArticleSeq: number) => Promise<void>;
 };
 
-function BoardTable({ category, posts, page, pageSize, totalCount }: BoardTableProps) {
+function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }: BoardTableProps) {
+  const searchParams = useSearchParams();
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (totalCount === 0) {
     return (
       <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
@@ -135,49 +181,114 @@ function BoardTable({ category, posts, page, pageSize, totalCount }: BoardTableP
 
   const startNumber = totalCount - (page - 1) * pageSize;
 
+  // Build query string to preserve search params
+  const buildQueryString = () => {
+    const params = new URLSearchParams();
+    const searchType = searchParams.get('searchType');
+    const word = searchParams.get('word');
+    const pageParam = searchParams.get('page');
+
+    if (searchType) params.set('searchType', searchType);
+    if (word) params.set('word', word);
+    if (pageParam) params.set('page', pageParam);
+
+    const queryString = params.toString();
+    return queryString ? `?${queryString}` : '';
+  };
+
+  const handleDeleteClick = (boardArticleSeq: number) => {
+    setDeleteTarget(boardArticleSeq);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteTarget === null) return;
+
+    setIsDeleting(true);
+    try {
+      await onDelete(deleteTarget);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error('Delete failed:', err);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteTarget(null);
+  };
+
+  const queryString = buildQueryString();
+
   return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader className="bg-muted/40">
-          <TableRow>
-            <TableHead className="w-16 text-center">#</TableHead>
-            <TableHead>제목</TableHead>
-            <TableHead className="w-40 text-center">날짜</TableHead>
-            <TableHead className="w-32 text-center">기능</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {posts.map((post, index) => {
-            const number = startNumber - index;
-            const detailHref = `/board/${category.code}/${post.id}`;
-            return (
-              <TableRow key={post.id} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
-                <TableCell className="text-center text-sm text-muted-foreground">{number}</TableCell>
-                <TableCell>
-                  <Link href={detailHref} className="flex items-center gap-2 text-primary hover:underline">
-                    <span>{post.title}</span>
-                    {post.isEncrypted ? (
-                      <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
-                    ) : null}
-                  </Link>
-                </TableCell>
-                <TableCell className="text-center text-sm text-muted-foreground">{post.createdAt}</TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-center gap-2 text-sm">
-                    <Link href={`${detailHref}/edit`} className="text-primary hover:underline">
-                      수정
+    <>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader className="bg-muted/40">
+            <TableRow>
+              <TableHead className="w-16 text-center">#</TableHead>
+              <TableHead>제목</TableHead>
+              <TableHead className="w-40 text-center">날짜</TableHead>
+              <TableHead className="w-32 text-center">기능</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {articles.map((article, index) => {
+              const number = startNumber - index;
+              const detailHref = `/board/${category.code}/${article.boardArticleSeq}${queryString}`;
+              const date = new Date(article.regDate);
+              const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+              return (
+                <TableRow key={article.boardArticleSeq} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
+                  <TableCell className="text-center text-sm text-muted-foreground">{number}</TableCell>
+                  <TableCell>
+                    <Link href={detailHref} className="flex items-center gap-2 text-primary hover:underline">
+                      <span>{article.title}</span>
+                      {article.encryptF ? (
+                        <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
+                      ) : null}
                     </Link>
-                    <span className="text-muted-foreground/40">|</span>
-                    <button type="button" className={cn('text-destructive transition-colors hover:text-destructive/80')}>
-                      삭제
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+                  </TableCell>
+                  <TableCell className="text-center text-sm text-muted-foreground">{formattedDate}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-2 text-sm">
+                      <Link href={`${detailHref}/edit`} className="text-primary hover:underline">
+                        수정
+                      </Link>
+                      <span className="text-muted-foreground/40">|</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteClick(article.boardArticleSeq)}
+                        className={cn('text-destructive transition-colors hover:text-destructive/80')}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      {deleteTarget !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-lg">
+            <h3 className="mb-4 text-lg font-semibold text-foreground">게시글 삭제</h3>
+            <p className="mb-6 text-sm text-muted-foreground">이 게시글을 삭제하시겠습니까?</p>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={handleDeleteCancel} disabled={isDeleting}>
+                취소
+              </Button>
+              <Button variant="destructive" onClick={handleDeleteConfirm} disabled={isDeleting}>
+                {isDeleting ? '삭제 중...' : '삭제'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

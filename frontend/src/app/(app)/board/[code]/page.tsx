@@ -1,49 +1,180 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+'use client';
 
-import { BOARD_CATEGORIES, BOARD_CATEGORY_BY_CODE } from '@/lib/constants/board';
-import { getMockBoardList } from '@/lib/mock/data/board';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
+import { BOARD_CATEGORY_BY_CODE } from '@/lib/constants/board';
+import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
 import type { BoardCode } from '@/lib/types/board';
 
 import { BoardListView } from '../_components/board-list-view';
 
-interface BoardPageProps {
+interface BoardCodePageProps {
   params: Promise<{
     code: string;
   }>;
 }
 
-export const dynamicParams = false;
+export default function BoardCodePage({ params }: BoardCodePageProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [code, setCode] = useState<BoardCode | null>(null);
 
-export function generateStaticParams() {
-  return BOARD_CATEGORIES.map((category) => ({ code: category.code }));
-}
+  // Unwrap params
+  useEffect(() => {
+    params.then((p) => {
+      setCode(p.code.toUpperCase() as BoardCode);
+    });
+  }, [params]);
 
-export async function generateMetadata({ params }: BoardPageProps): Promise<Metadata> {
-  const { code } = await params;
-  const normalized = code.toUpperCase() as BoardCode;
-  const category = BOARD_CATEGORY_BY_CODE[normalized];
+  const category = code ? BOARD_CATEGORY_BY_CODE[code] : null;
 
-  if (!category) {
-    return { title: '게시판' };
-  }
+  const [articles, setArticles] = useState<BoardArticleResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  return {
-    title: category.name,
-    description: category.description,
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const pageSize = 10;
+
+  // Search state
+  const initialSearchType = (searchParams.get('searchType') as SearchType) || 'TITLE';
+  const initialSearchWord = searchParams.get('word') || '';
+  const [searchType, setSearchType] = useState<SearchType>(initialSearchType);
+  const [searchWord, setSearchWord] = useState(initialSearchWord);
+
+  // Fetch articles from API
+  const fetchArticles = async (type: SearchType, word: string, page: number = 0) => {
+    if (!category || !code) return;
+
+    try {
+      setIsLoading(true);
+      const response = await getBoardArticlePage({
+        boardCode: code,
+        searchType: word ? type : undefined,
+        word: word || undefined,
+        page,
+        size: pageSize,
+      });
+
+      setArticles(response.content);
+      setTotalPages(response.page.totalPages);
+      setTotalElements(response.page.totalElements);
+      setCurrentPage(response.page.number);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch articles:', err);
+      setError(err instanceof Error ? err.message : '게시글 목록을 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
-}
 
-export default async function BoardCodePage({ params }: BoardPageProps) {
-  const { code } = await params;
-  const normalized = code.toUpperCase() as BoardCode;
+  // Initial data load
+  useEffect(() => {
+    if (!code) return;
 
-  const category = BOARD_CATEGORY_BY_CODE[normalized];
+    const pageParam = searchParams.get('page');
+    const page = pageParam ? parseInt(pageParam, 10) : 0;
+    fetchArticles(searchType, searchWord, page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code]);
+
+  // Handle search
+  const handleSearch = (type: SearchType, word: string) => {
+    if (!code) return;
+
+    setSearchType(type);
+    setSearchWord(word);
+    setCurrentPage(0);
+
+    // Update URL
+    const params = new URLSearchParams();
+    if (word) {
+      params.set('searchType', type);
+      params.set('word', word);
+    }
+    params.set('page', '0');
+    router.replace(`/board/${code}?${params.toString()}`);
+
+    fetchArticles(type, word, 0);
+  };
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    if (!code) return;
+
+    // PaginationNav uses 1-based page numbers, API uses 0-based
+    const apiPage = page - 1;
+    setCurrentPage(apiPage);
+
+    // Update URL
+    const params = new URLSearchParams();
+    if (searchWord) {
+      params.set('searchType', searchType);
+      params.set('word', searchWord);
+    }
+    params.set('page', apiPage.toString());
+    router.replace(`/board/${code}?${params.toString()}`);
+
+    fetchArticles(searchType, searchWord, apiPage);
+  };
+
+  // Handle delete
+  const handleDelete = async (boardArticleSeq: number) => {
+    const { deleteBoardArticle } = await import('@/lib/api/board-article-api-client');
+    try {
+      await deleteBoardArticle(boardArticleSeq);
+      // Refresh the list
+      await fetchArticles(searchType, searchWord, currentPage);
+    } catch (err) {
+      console.error('Failed to delete article:', err);
+      setError(err instanceof Error ? err.message : '게시글 삭제에 실패했습니다.');
+    }
+  };
+
   if (!category) {
-    notFound();
+    return (
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+        </header>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+          게시판을 찾을 수 없습니다.
+        </div>
+      </div>
+    );
   }
 
-  const list = getMockBoardList(normalized);
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+      </header>
 
-  return <BoardListView category={category} list={list} />;
+      {error ? (
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+          {error}
+        </div>
+      ) : (
+        <BoardListView
+          category={category}
+          articles={articles}
+          isLoading={isLoading}
+          currentPage={currentPage + 1} // Convert 0-based to 1-based for UI
+          totalPages={totalPages}
+          totalElements={totalElements}
+          pageSize={pageSize}
+          searchType={searchType}
+          searchWord={searchWord}
+          onSearch={handleSearch}
+          onPageChange={handlePageChange}
+          onDelete={handleDelete}
+        />
+      )}
+    </div>
+  );
 }
