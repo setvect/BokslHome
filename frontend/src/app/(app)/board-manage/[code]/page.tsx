@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,17 @@ import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 export default function BoardDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const boardCode = params.code as string;
 
   const [board, setBoard] = useState<BoardManagerResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Build query string to preserve list state
+  const queryString = searchParams.toString();
+  const listUrl = `/board-manage${queryString ? `?${queryString}` : ''}`;
+  const editUrl = `/board-manage/${boardCode}/edit${queryString ? `?${queryString}` : ''}`;
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -42,7 +48,7 @@ export default function BoardDetailPage() {
 
     try {
       await deleteBoardManager(boardCode);
-      router.push('/board-manage');
+      router.push('/board-manage'); // Reset to list without params after delete
     } catch (err) {
       console.error('Failed to delete board:', err);
       setError(err instanceof Error ? err.message : '게시판 삭제에 실패했습니다.');
@@ -72,7 +78,7 @@ export default function BoardDetailPage() {
           {error || '게시판을 찾을 수 없습니다.'}
         </div>
         <Button variant="outline" asChild>
-          <Link href="/board-manage">목록으로</Link>
+          <Link href={listUrl}>목록으로</Link>
         </Button>
       </div>
     );
@@ -118,11 +124,11 @@ export default function BoardDetailPage() {
         </div>
         <footer className="flex flex-col gap-3 border-t border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between">
           <Button variant="outline" asChild className="w-full sm:w-auto">
-            <Link href="/board-manage">목록</Link>
+            <Link href={listUrl}>목록</Link>
           </Button>
           <div className="flex w-full justify-end gap-2 sm:w-auto">
             <Button variant="secondary" asChild className="w-full sm:w-auto">
-              <Link href={`/board-manage/${board.boardCode}/edit`}>수정</Link>
+              <Link href={editUrl}>수정</Link>
             </Button>
             <Button variant="destructive" className="w-full sm:w-auto" onClick={handleDelete}>
               삭제

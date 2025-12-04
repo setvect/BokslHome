@@ -131,7 +131,19 @@ export function BoardManageListView({
               </TableRow>
             ) : (
               boards.map((board) => {
-                const detailPath = `/board-manage/${board.boardCode}`;
+                // Build query params to preserve list state
+                const queryParams = new URLSearchParams();
+                if (searchKeyword) {
+                  queryParams.set('searchField', searchField);
+                  queryParams.set('keyword', searchKeyword);
+                }
+                queryParams.set('page', (currentPage - 1).toString());
+                const queryString = queryParams.toString();
+
+                const detailPath = `/board-manage/${board.boardCode}${queryString ? `?${queryString}` : ''}`;
+                const editPath = `/board-manage/${board.boardCode}/edit${queryString ? `?${queryString}` : ''}`;
+                const boardPath = `/board/${board.boardCode}`; // 게시판 모듈로 이동
+
                 return (
                   <TableRow key={board.boardCode} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
                     <TableCell className="text-center text-sm font-medium">
@@ -140,14 +152,14 @@ export function BoardManageListView({
                       </Link>
                     </TableCell>
                     <TableCell className="text-center text-sm">
-                      <Link href={detailPath} className="text-primary hover:underline">
+                      <Link href={boardPath} className="text-primary hover:underline">
                         바로가기
                       </Link>
                     </TableCell>
                     <TableCell className="text-sm">{board.name}</TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2 text-sm">
-                        <Link href={`/board-manage/${board.boardCode}/edit`} className="text-primary hover:underline">
+                        <Link href={editPath} className="text-primary hover:underline">
                           수정
                         </Link>
                         <span className="text-muted-foreground/40">|</span>

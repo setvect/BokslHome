@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { getBoardManager, updateBoardManager } from '@/lib/api/board-manage-api-client';
@@ -13,11 +13,16 @@ const toYesNo = (value: boolean) => (value ? 'yes' : 'no') as 'yes' | 'no';
 export default function BoardEditPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const boardCode = params.code as string;
 
   const [board, setBoard] = useState<BoardManagerResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Build query string to preserve list state
+  const queryString = searchParams.toString();
+  const listUrl = `/board-manage${queryString ? `?${queryString}` : ''}`;
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -50,8 +55,8 @@ export default function BoardEditPage() {
         deleteF: false,
       });
 
-      // Navigate to detail page on success
-      router.push(`/board-manage/${boardCode}`);
+      // Navigate to list page without params after successful update
+      router.push('/board-manage');
     } catch (err) {
       console.error('Failed to update board:', err);
       setError(err instanceof Error ? err.message : '게시판 수정에 실패했습니다.');
@@ -93,7 +98,7 @@ export default function BoardEditPage() {
       <BoardForm
         mode="edit"
         submitLabel="저장"
-        cancelHref={`/board-manage/${boardCode}`}
+        cancelHref={listUrl}
         initialValues={{
           code: board.boardCode,
           name: board.name,

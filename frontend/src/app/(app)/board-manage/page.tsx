@@ -89,7 +89,9 @@ export default function BoardAdminPage() {
 
   // Handle page change
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // PaginationNav uses 1-based page numbers, API uses 0-based
+    const apiPage = page - 1;
+    setCurrentPage(apiPage);
 
     // Update URL
     const params = new URLSearchParams();
@@ -97,10 +99,10 @@ export default function BoardAdminPage() {
       params.set('searchField', searchField);
       params.set('keyword', searchKeyword);
     }
-    params.set('page', page.toString());
+    params.set('page', apiPage.toString());
     router.replace(`/board-manage?${params.toString()}`);
 
-    fetchBoards(searchField, searchKeyword, page);
+    fetchBoards(searchField, searchKeyword, apiPage);
   };
 
   // Handle delete
@@ -134,7 +136,7 @@ export default function BoardAdminPage() {
         <BoardManageListView
           boards={boards}
           isLoading={isLoading}
-          currentPage={currentPage}
+          currentPage={currentPage + 1} // Convert 0-based to 1-based for UI
           totalPages={totalPages}
           totalElements={totalElements}
           pageSize={pageSize}
