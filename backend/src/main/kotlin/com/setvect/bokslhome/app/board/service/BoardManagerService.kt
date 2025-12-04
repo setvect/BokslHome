@@ -43,8 +43,7 @@ class BoardManagerService(private val boardManagerRepository: BoardManagerReposi
         return BoardManagerResponse.from(savedEntity)
     }
 
-    fun delete(boardCode: String) =
-        boardManagerRepository.deleteUpdate(boardCode)
+    fun delete(boardCode: String) = boardManagerRepository.deleteUpdate(boardCode)
 
     fun page(search: BoardManagerSearchRequest, pageable: Pageable): PagedModel<BoardManagerResponse> {
         val page = boardManagerRepository.findBySearch(
