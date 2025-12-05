@@ -48,7 +48,7 @@
 | IP           | 아이피         |     | varchar  | 20  | Y        |                           |
 | HIT_COUNT    | 조회수         |     | integer  |     | Y        |                           |
 | ENCRYPT_F    | 암호화 여부    |     | varchar  | 1   | Y        | Y, N                      |
-| ENCRYPT_TYPE | 암호화 유형    |     | varchar  | 20  | Y        | HEX, AES                  |
+| ENCRYPT_TYPE | 암호화 유형    |     | varchar  | 20  | N        | HEX, AES                  |
 | REG_DATE     | 등록일         |     | datetime |     | Y        |                           |
 | DELETE_F     | 삭제여부       |     | varchar  | 1   | Y        | Y, N                      |
 

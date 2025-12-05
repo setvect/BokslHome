@@ -1,5 +1,6 @@
 package com.setvect.bokslhome.app.board.entity
 
+import com.setvect.bokslhome.app.board.model.ContentType
 import com.setvect.bokslhome.app.board.model.EncryptType
 import com.setvect.bokslhome.app.user.entity.UserEntity
 import com.setvect.bokslhome.common.converter.BooleanToYNConverter
@@ -55,6 +56,12 @@ data class BoardArticleEntity(
     @Lob
     val content: String,
     /**
+     * 본문 유형
+     */
+    @Column(name = "CONTENT_TYPE", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    val contentType: ContentType = ContentType.HTML,
+    /**
      * 아이피
      */
     @Column(name = "IP", nullable = false, length = 20)
@@ -72,7 +79,6 @@ data class BoardArticleEntity(
     @Convert(converter = BooleanToYNConverter::class)
     val encryptF: Boolean = false,
 
-    // TODO 작업
     /**
      * 암호화 타입
      */
