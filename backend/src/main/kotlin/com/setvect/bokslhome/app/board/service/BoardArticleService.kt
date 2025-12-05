@@ -50,6 +50,7 @@ class BoardArticleService(
             user = user,
             title = request.title,
             content = request.content,
+            contentType = request.contentType,
             ip = request.ip!!,
             encryptF = request.encryptF,
         )
@@ -83,6 +84,7 @@ class BoardArticleService(
             user = user,
             title = request.title,
             content = request.content,
+            contentType = request.contentType,
             ip = request.ip!!,
             encryptF = request.encryptF,
         )

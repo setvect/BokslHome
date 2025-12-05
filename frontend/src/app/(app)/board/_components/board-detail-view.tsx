@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useRouter, type ReadonlyURLSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { Button } from '@/components/ui/button';
 import { deleteBoardArticle, getAttachmentDownloadUrl } from '@/lib/api/board-article-api-client';
@@ -77,10 +79,34 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
             </div>
           </header>
 
-          <article
-            className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: article.content }}
-          />
+
+          {article.contentType === 'HTML' ? (
+            <article
+              className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
+          ) : (
+            <article className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert markdown-preview">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({ ...props }) => (
+                    <table className="markdown-table" {...props} />
+                  ),
+                  code({ className, children, ...props }: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+                    return (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {article.content}
+              </ReactMarkdown>
+            </article>
+          )}
+
 
           {article.attachFileList && article.attachFileList.length > 0 && (
             <div className="space-y-2">

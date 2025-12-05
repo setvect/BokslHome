@@ -10,10 +10,12 @@ data class BoardArticleResponse(
     val userId: String,
     val title: String,
     val content: String,
+    val contentType: ContentType,
     val ip: String,
     val hitCount: Int,
     val encryptF: Boolean,
     val regDate: LocalDateTime,
+    val editDate: LocalDateTime,
     val deleteF: Boolean,
     val attachFileList: List<AttachFileResponse>
 ) {
@@ -25,10 +27,12 @@ data class BoardArticleResponse(
                 userId = entity.user.userId,
                 title = entity.title,
                 content = entity.content,
+                contentType = entity.contentType,
                 ip = entity.ip,
                 hitCount = entity.hitCount,
                 encryptF = entity.encryptF,
                 regDate = entity.regDate,
+                editDate = entity.regDate,
                 deleteF = entity.deleteF,
                 attachFileList = attachFileList
             )

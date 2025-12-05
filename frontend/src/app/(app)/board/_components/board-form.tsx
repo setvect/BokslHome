@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createBoardArticle, updateBoardArticle } from '@/lib/api/board-article-api-client';
-import type { BoardArticleResponse } from '@/lib/types/board-article-api';
+import type { BoardArticleResponse, ContentType } from '@/lib/types/board-article-api';
 import type { BoardCategory } from '@/lib/types/board';
 
 type BoardFormMode = 'create' | 'edit';
@@ -24,7 +24,10 @@ type BoardFormProps = {
 export function BoardForm({ category, article, mode, searchParams }: BoardFormProps) {
   const router = useRouter();
 
-  const initialEditorType: ContentEditorType = 'markdown';
+  // Use article's contentType for initial editor type, default to markdown for new articles
+  const initialEditorType: ContentEditorType = mode === 'edit' && article?.contentType
+    ? (article.contentType.toLowerCase() as ContentEditorType)
+    : 'markdown';
 
   const [title, setTitle] = useState(article?.title ?? '');
   const [content, setContent] = useState(article?.content ?? '');
@@ -54,6 +57,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
       const request: any = {
         title,
         content,
+        contentType: editorType.toUpperCase() as ContentType,
         encryptF: !!password,
       };
 
