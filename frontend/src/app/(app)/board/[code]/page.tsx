@@ -136,6 +136,20 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
     }
   };
 
+  // Show loading while params are being unwrapped
+  if (!code) {
+    return (
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+        </header>
+        <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
+          로딩 중...
+        </div>
+      </div>
+    );
+  }
+
   if (!category) {
     return (
       <div className="space-y-6">
