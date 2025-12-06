@@ -63,7 +63,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
 
       // Add boardCode only for create mode
       if (mode === 'create') {
-        request.boardCode = category.code;
+        request.boardCode = category.boardCode;
       }
 
       // Add password if provided
@@ -83,7 +83,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
       }
 
       // Navigate back to list page with cleared search params
-      router.push(`/board/${category.code}`);
+      router.push(`/board/${category.boardCode}`);
     } catch (err) {
       console.error('Failed to submit form:', err);
 
@@ -128,8 +128,8 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
 
   const queryString = buildQueryString();
   const cancelHref = mode === 'edit' && article
-    ? `/board/${category.code}/${article.boardArticleSeq}${queryString}`
-    : `/board/${category.code}${queryString}`;
+    ? `/board/${category.boardCode}/${article.boardArticleSeq}${queryString}`
+    : `/board/${category.boardCode}${queryString}`;
 
   // Filter out deleted attachments
   const existingAttachments = article?.attachFileList?.filter(
@@ -169,7 +169,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
               />
             </div>
 
-            {category.allowEncryptedPosts ? (
+            {category.encryptF ? (
               <div className="space-y-2">
                 <Label htmlFor="board-password" className="text-sm font-medium text-foreground">
                   암호 문자열
@@ -185,7 +185,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
               </div>
             ) : null}
 
-            {category.allowFiles && (
+            {category.attachF && (
               <div className="space-y-2">
                 <Label htmlFor="board-attachments" className="text-sm font-medium text-foreground">
                   첨부파일

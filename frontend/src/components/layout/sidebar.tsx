@@ -24,7 +24,7 @@ import {
   PawPrint
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BOARD_CATEGORIES } from '@/lib/constants/board';
+import { BOARD_MENU_ITEMS } from '@/lib/constants/board';
 import { cn } from '@/lib/utils';
 
 export interface SidebarProps {
@@ -41,23 +41,23 @@ interface MenuItem {
 }
 
 const BOARD_ICON_MAP: Record<string, MenuItem['icon']> = {
-  posts: FileText,
-  books: BookOpen,
-  music: Music,
-  movies: Film,
-  photos: Camera,
-  memories: Heart,
-  relationships: Users,
-  chat: MessageCircle,
-  dreams: Sparkles,
+  BDAAAA01: FileText,
+  BDAAAA02: BookOpen,
+  BDAAAA03: Music,
+  BDAAAA04: Film,
+  BDAAAA05: Camera,
+  BDAAAA06: Heart,
+  BDAAAA07: Users,
+  BDAAAA08: MessageCircle,
+  BDAAAA09: Sparkles,
 };
 
 const boardChildren: MenuItem[] = [
   { name: '게시판 관리', href: '/board-manage', icon: Settings },
-  ...BOARD_CATEGORIES.map((category) => ({
-    name: category.name,
-    href: `/board/${category.code}`,
-    icon: BOARD_ICON_MAP[category.slug] ?? FileText,
+  ...BOARD_MENU_ITEMS.map((board) => ({
+    name: board.name,
+    href: `/board/${board.code}`,
+    icon: BOARD_ICON_MAP[board.code] ?? FileText,
   })),
 ];
 

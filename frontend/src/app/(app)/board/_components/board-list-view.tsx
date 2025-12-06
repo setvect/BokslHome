@@ -151,7 +151,7 @@ function BoardListFilterBar({ category, searchType, searchWord, onSearch }: Boar
       </form>
 
       <Button asChild variant="secondary" className="h-10 px-6 sm:w-auto lg:self-end">
-        <Link href={`/board/${category.code}/write`}>만들기</Link>
+        <Link href={`/board/${category.boardCode}/write`}>만들기</Link>
       </Button>
     </div>
   );
@@ -235,7 +235,7 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
           <TableBody>
             {articles.map((article, index) => {
               const number = startNumber - index;
-              const detailHref = `/board/${category.code}/${article.boardArticleSeq}${queryString}`;
+              const detailHref = `/board/${category.boardCode}/${article.boardArticleSeq}${queryString}`;
               const date = new Date(article.regDate);
               const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
               return (

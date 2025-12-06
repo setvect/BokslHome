@@ -43,7 +43,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
   };
 
   if (!unlocked) {
-    const listHref = `/board/${category.code}`;
+    const listHref = `/board/${category.boardCode}`;
     return (
       <BoardPasswordGate
         onPasswordSubmit={handlePasswordSubmit}
@@ -69,14 +69,14 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
   };
 
   const queryString = buildQueryString();
-  const listHref = `/board/${category.code}${queryString}`;
+  const listHref = `/board/${category.boardCode}${queryString}`;
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
       await deleteBoardArticle(currentArticle.boardArticleSeq);
       // Navigate back to list page with cleared search params
-      router.push(`/board/${category.code}`);
+      router.push(`/board/${category.boardCode}`);
     } catch (err) {
       console.error('Failed to delete article:', err);
       alert('게시글 삭제에 실패했습니다.');
@@ -167,7 +167,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
           </Button>
           <div className="flex w-full justify-end gap-2 sm:w-auto">
             <Button variant="secondary" asChild className="w-full sm:w-auto">
-              <Link href={`/board/${category.code}/${article.boardArticleSeq}/edit${queryString}`}>수정</Link>
+              <Link href={`/board/${category.boardCode}/${article.boardArticleSeq}/edit${queryString}`}>수정</Link>
             </Button>
             <Button
               type="button"

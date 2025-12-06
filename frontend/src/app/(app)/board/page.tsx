@@ -4,9 +4,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
-import { BOARD_CATEGORY_BY_CODE, DEFAULT_BOARD_CODE } from '@/lib/constants/board';
+import { getBoardManager } from '@/lib/api/board-manage-api-client';
+import { DEFAULT_BOARD_CODE } from '@/lib/constants/board';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
-import type { BoardCode } from '@/lib/types/board';
+import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
 import { BoardListView } from './_components/board-list-view';
 
@@ -14,9 +15,8 @@ export default function BoardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const code = DEFAULT_BOARD_CODE.toUpperCase() as BoardCode;
-  const category = BOARD_CATEGORY_BY_CODE[code];
-
+  const code = DEFAULT_BOARD_CODE;
+  const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [articles, setArticles] = useState<BoardArticleResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +33,23 @@ export default function BoardPage() {
   const [searchType, setSearchType] = useState<SearchType>(initialSearchType);
   const [searchWord, setSearchWord] = useState(initialSearchWord);
 
+  // Fetch board settings
+  useEffect(() => {
+    const fetchBoardSettings = async () => {
+      try {
+        const settings = await getBoardManager(code);
+        setBoardSettings(settings);
+      } catch (err) {
+        console.error('Failed to fetch board settings:', err);
+        setError(err instanceof Error ? err.message : '게시판 설정을 불러오는데 실패했습니다.');
+      }
+    };
+
+    fetchBoardSettings();
+  }, [code]);
+
   // Fetch articles from API
   const fetchArticles = async (type: SearchType, word: string, page: number = 0) => {
-    if (!category) return;
-
     try {
       setIsLoading(true);
       const response = await getBoardArticlePage({
@@ -117,10 +130,15 @@ export default function BoardPage() {
     }
   };
 
-  if (!category) {
+  if (!boardSettings) {
     return (
-      <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-        게시판을 찾을 수 없습니다.
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+        </header>
+        <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
+          로딩 중...
+        </div>
       </div>
     );
   }
@@ -128,7 +146,7 @@ export default function BoardPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{boardSettings.name}</h1>
       </header>
 
       {error ? (
@@ -137,7 +155,7 @@ export default function BoardPage() {
         </div>
       ) : (
         <BoardListView
-          category={category}
+          category={boardSettings}
           articles={articles}
           isLoading={isLoading}
           currentPage={currentPage + 1} // Convert 0-based to 1-based for UI
