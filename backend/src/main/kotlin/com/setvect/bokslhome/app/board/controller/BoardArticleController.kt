@@ -86,7 +86,12 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     ): PagedModel<BoardArticleResponse> = boardArticleService.page(pageable, search, userDetails)
 
     @GetMapping("/download/{boardArticleSeq}/{attachFileSeq}")
-    fun download(@PathVariable boardArticleSeq: Int, @PathVariable attachFileSeq: Int, response: HttpServletResponse) {
+    fun download(
+        @PathVariable boardArticleSeq: Int,
+        @PathVariable attachFileSeq: Int,
+        response: HttpServletResponse,
+        @AuthenticationPrincipal userDetails: UserDetails
+    ) {
         val attachFile = boardArticleService.getAttachFile(boardArticleSeq, attachFileSeq)
         AttachFileHelper.prepareFileDownload(response, attachFile)
     }

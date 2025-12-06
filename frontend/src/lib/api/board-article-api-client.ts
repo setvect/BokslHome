@@ -110,8 +110,63 @@ export async function deleteBoardArticle(boardArticleSeq: number): Promise<void>
 }
 
 /**
- * Download an attachment file
- * Returns the download URL for the file
+ * Download an attachment file with authentication
+ * This function handles the download with proper authentication headers
+ */
+export async function downloadAttachment(
+  boardArticleSeq: number,
+  attachFileSeq: number,
+  fileName: string
+): Promise<void> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+  const url = `${baseUrl}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
+
+  // Get token from localStorage (using the same key as api-client.ts)
+  const token = localStorage.getItem('auth_token');
+
+  console.log('🔑 Download Token:', token ? 'Token exists' : 'No token');
+  console.log('📥 Download URL:', url);
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    console.log('📡 Response Status:', response.status);
+    console.log('📡 Response Headers:', Object.fromEntries(response.headers.entries()));
+
+    if (!response.ok) {
+      throw new Error(`Download failed: ${response.statusText}`);
+    }
+
+    // Get the blob from response
+    const blob = await response.blob();
+
+    // Create a temporary URL for the blob
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    // Create a temporary anchor element and trigger download
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Failed to download file:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get download URL for attachment (deprecated - use downloadAttachment instead)
+ * @deprecated Use downloadAttachment function for authenticated downloads
  */
 export function getAttachmentDownloadUrl(boardArticleSeq: number, attachFileSeq: number): string {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';

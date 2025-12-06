@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { Button } from '@/components/ui/button';
-import { deleteBoardArticle, getAttachmentDownloadUrl } from '@/lib/api/board-article-api-client';
+import { deleteBoardArticle } from '@/lib/api/board-article-api-client';
 import type { BoardArticleResponse } from '@/lib/types/board-article-api';
 import type { BoardCategory } from '@/lib/types/board';
 
@@ -147,13 +147,25 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
                         ({(file.size / 1024).toFixed(2)} KB)
                       </span>
                     </div>
-                    <a
-                      href={getAttachmentDownloadUrl(currentArticle.boardArticleSeq, file.attachFileSeq)}
-                      download
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const { downloadAttachment } = await import('@/lib/api/board-article-api-client');
+                          await downloadAttachment(
+                            currentArticle.boardArticleSeq,
+                            file.attachFileSeq,
+                            file.originalName
+                          );
+                        } catch (err) {
+                          console.error('Failed to download file:', err);
+                          alert('파일 다운로드에 실패했습니다.');
+                        }
+                      }}
                       className="text-sm text-primary hover:underline"
                     >
                       다운로드
-                    </a>
+                    </button>
                   </div>
                 ))}
               </div>
