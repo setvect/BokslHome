@@ -9,6 +9,7 @@ import type { BoardArticleResponse } from '@/lib/types/board-article-api';
 import type { BoardCode } from '@/lib/types/board';
 
 import { BoardForm } from '../../../_components/board-form';
+import { BoardPasswordGate } from '../../../_components/board-password-gate';
 
 export default function BoardEditPage() {
   const params = useParams();
@@ -21,7 +22,10 @@ export default function BoardEditPage() {
   const [article, setArticle] = useState<BoardArticleResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState(false);
+  const [isLoadingDecryption, setIsLoadingDecryption] = useState(false);
 
+  // Initial fetch without decryptKey
   useEffect(() => {
     const fetchArticle = async () => {
       if (!category || Number.isNaN(postId)) {
@@ -35,6 +39,10 @@ export default function BoardEditPage() {
         const data = await getBoardArticle(postId);
         setArticle(data);
         setError(null);
+        // If not encrypted, unlock immediately
+        if (!data.encryptF) {
+          setUnlocked(true);
+        }
       } catch (err) {
         console.error('Failed to fetch article:', err);
         setError(err instanceof Error ? err.message : '게시글을 불러오는데 실패했습니다.');
@@ -45,6 +53,23 @@ export default function BoardEditPage() {
 
     fetchArticle();
   }, [postId, category]);
+
+  // Handle password submission for encrypted articles
+  const handlePasswordSubmit = async (decryptKey: string) => {
+    if (!article) return;
+
+    setIsLoadingDecryption(true);
+
+    try {
+      const decryptedArticle = await getBoardArticle(article.boardArticleSeq, decryptKey);
+      setArticle(decryptedArticle);
+      setUnlocked(true);
+    } catch (err) {
+      console.error('Failed to fetch article:', err);
+    } finally {
+      setIsLoadingDecryption(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -68,6 +93,19 @@ export default function BoardEditPage() {
         <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error || '게시글을 찾을 수 없습니다.'}
         </div>
+      </div>
+    );
+  }
+
+  // Show password gate for encrypted articles
+  if (article.encryptF && !unlocked) {
+    const listUrl = `/board/${category.code}`;
+    return (
+      <div className="space-y-6">
+        <header>
+          <h1 className="text-3xl font-semibold text-foreground">{category.name}</h1>
+        </header>
+        <BoardPasswordGate onPasswordSubmit={handlePasswordSubmit} isLoading={isLoadingDecryption} listUrl={listUrl} />
       </div>
     );
   }

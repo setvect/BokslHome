@@ -72,9 +72,10 @@ class BoardArticleController(private val boardArticleService: BoardArticleServic
     @GetMapping("/{boardArticleSeq}")
     fun get(
         @PathVariable boardArticleSeq: Int,
+        decryptKey: String?,
         @AuthenticationPrincipal userDetails: UserDetails?
     ): BoardArticleResponse {
-        return boardArticleService.get(boardArticleSeq)
+        return boardArticleService.get(boardArticleSeq, decryptKey)
     }
 
     /** 게시물 페이징 목록 조회 */

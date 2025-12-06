@@ -16,6 +16,7 @@ import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
 import com.setvect.bokslhome.app.user.service.UserService
 import com.setvect.bokslhome.util.CommonUtil
+import com.setvect.bokslhome.util.StringEncrypt
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -105,7 +106,7 @@ class BoardArticleService(
         boardArticleRepository.deleteUpdate(boardArticleSeq)
     }
 
-    fun get(boardArticleSeq: Int): BoardArticleResponse {
+    fun get(boardArticleSeq: Int, decryptKey: String?): BoardArticleResponse {
         val boardArticle = boardArticleRepository.findById(boardArticleSeq)
             .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
 
@@ -115,7 +116,20 @@ class BoardArticleService(
         }
 
         val attachFileList = attachFileService.getAttachFileList(AttachFileModule.BOARD, boardArticleSeq.toString())
-        return BoardArticleResponse.from(boardArticle, attachFileList)
+        val response = BoardArticleResponse.from(boardArticle, attachFileList)
+
+        // 암호화된 게시물 처리
+        if (boardArticle.encryptF) {
+            // 복호화 키가 없으면 빈 문자열 반환
+            if (decryptKey.isNullOrBlank()) {
+                return response.copy(content = "")
+            }
+            // 복호화 키가 있으면 복호화된 내용 반환
+            val decryptedContent = StringEncrypt.decodeJ(boardArticle.content, decryptKey)
+            return response.copy(content = decryptedContent)
+        }
+
+        return response
     }
 
     fun page(pageable: Pageable, search: BoardArticleSearchRequest, userDetails: UserDetails?): PagedModel<BoardArticleResponse> {

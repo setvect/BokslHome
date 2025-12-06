@@ -21,12 +21,36 @@ type BoardDetailViewProps = {
 
 export function BoardDetailView({ category, article, searchParams }: BoardDetailViewProps) {
   const router = useRouter();
+  const [currentArticle, setCurrentArticle] = useState(article);
   const [unlocked, setUnlocked] = useState(!article.encryptF);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isLoadingDecryption, setIsLoadingDecryption] = useState(false);
+
+  const handlePasswordSubmit = async (decryptKey: string) => {
+    setIsLoadingDecryption(true);
+
+    try {
+      const { getBoardArticle } = await import('@/lib/api/board-article-api-client');
+      const decryptedArticle = await getBoardArticle(article.boardArticleSeq, decryptKey);
+      setCurrentArticle(decryptedArticle);
+      setUnlocked(true);
+    } catch (err) {
+      console.error('Failed to fetch article:', err);
+    } finally {
+      setIsLoadingDecryption(false);
+    }
+  };
 
   if (!unlocked) {
-    return <BoardPasswordGate expectedPassword="" onSuccess={() => setUnlocked(true)} />;
+    const listHref = `/board/${category.code}`;
+    return (
+      <BoardPasswordGate
+        onPasswordSubmit={handlePasswordSubmit}
+        isLoading={isLoadingDecryption}
+        listUrl={listHref}
+      />
+    );
   }
 
   // Build query string to preserve search params
@@ -50,7 +74,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await deleteBoardArticle(article.boardArticleSeq);
+      await deleteBoardArticle(currentArticle.boardArticleSeq);
       // Navigate back to list page with cleared search params
       router.push(`/board/${category.code}`);
     } catch (err) {
@@ -68,22 +92,22 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
         <div className="space-y-6 p-6">
           <header className="flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-start md:justify-between">
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold text-foreground">{article.title}</h2>
+              <h2 className="text-2xl font-semibold text-foreground">{currentArticle.title}</h2>
             </div>
             <div className="text-right text-sm text-muted-foreground">
               <span className="font-medium text-foreground">등록일:</span>{' '}
               {(() => {
-                const date = new Date(article.regDate);
+                const date = new Date(currentArticle.regDate);
                 return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
               })()}
             </div>
           </header>
 
 
-          {article.contentType === 'HTML' ? (
+          {currentArticle.contentType === 'HTML' ? (
             <article
               className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: currentArticle.content }}
             />
           ) : (
             <article className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert markdown-preview">
@@ -102,17 +126,17 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
                   },
                 }}
               >
-                {article.content}
+                {currentArticle.content}
               </ReactMarkdown>
             </article>
           )}
 
 
-          {article.attachFileList && article.attachFileList.length > 0 && (
+          {currentArticle.attachFileList && currentArticle.attachFileList.length > 0 && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-foreground">첨부파일</h3>
               <div className="space-y-2">
-                {article.attachFileList.map((file) => (
+                {currentArticle.attachFileList.map((file) => (
                   <div
                     key={file.attachFileSeq}
                     className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3"
@@ -124,7 +148,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
                       </span>
                     </div>
                     <a
-                      href={getAttachmentDownloadUrl(article.boardArticleSeq, file.attachFileSeq)}
+                      href={getAttachmentDownloadUrl(currentArticle.boardArticleSeq, file.attachFileSeq)}
                       download
                       className="text-sm text-primary hover:underline"
                     >
