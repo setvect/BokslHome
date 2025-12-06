@@ -15,6 +15,7 @@ import com.setvect.bokslhome.app.user.exception.UserGuideCode
 import com.setvect.bokslhome.app.user.exception.UserGuideException
 import com.setvect.bokslhome.app.user.repository.UserRepository
 import com.setvect.bokslhome.app.user.service.UserService
+import com.setvect.bokslhome.util.AesGcmEncrypt
 import com.setvect.bokslhome.util.CommonUtil
 import com.setvect.bokslhome.util.StringEncrypt
 import org.slf4j.LoggerFactory
@@ -46,14 +47,26 @@ class BoardArticleService(
                 UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
             }
         val user = userService.findById(userDetails.username)
+
+        // 암호화 처리
+        val (finalContent, encryptType) = if (request.encryptF && !request.password.isNullOrBlank()) {
+            // 암호화된 게시물: AES_GCM 사용
+            val encrypted = AesGcmEncrypt.encrypt(request.content, request.password)
+            Pair(encrypted, com.setvect.bokslhome.app.board.model.EncryptType.AES_GCM)
+        } else {
+            // 암호화되지 않은 게시물: encryptType = null
+            Pair(request.content, null)
+        }
+
         val boardArticleEntity = BoardArticleEntity(
             boardManager = boardManager,
             user = user,
             title = request.title,
-            content = request.content,
+            content = finalContent,
             contentType = request.contentType,
             ip = request.ip!!,
             encryptF = request.encryptF,
+            encryptType = encryptType,
         )
 
         val savedEntity = boardArticleRepository.save(boardArticleEntity)
@@ -79,15 +92,26 @@ class BoardArticleService(
             throw UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
         }
 
+        // 암호화 처리
+        val (finalContent, encryptType) = if (request.encryptF && !request.password.isNullOrBlank()) {
+            // 암호화된 게시물: AES_GCM 사용
+            val encrypted = AesGcmEncrypt.encrypt(request.content, request.password)
+            Pair(encrypted, com.setvect.bokslhome.app.board.model.EncryptType.AES_GCM)
+        } else {
+            // 암호화되지 않은 게시물: encryptType = null
+            Pair(request.content, null)
+        }
+
         val modifiedArticle = BoardArticleEntity(
             boardArticleSeq = existingArticle.boardArticleSeq,
             boardManager = existingArticle.boardManager,
             user = user,
             title = request.title,
-            content = request.content,
+            content = finalContent,
             contentType = request.contentType,
             ip = request.ip!!,
             encryptF = request.encryptF,
+            encryptType = encryptType,
         )
         val boardArticleEntity = boardArticleRepository.save(modifiedArticle)
         attachFileService.deleteAttachFileList(
@@ -124,8 +148,24 @@ class BoardArticleService(
             if (decryptKey.isNullOrBlank()) {
                 return response.copy(content = "")
             }
-            // 복호화 키가 있으면 복호화된 내용 반환
-            val decryptedContent = StringEncrypt.decodeJ(boardArticle.content, decryptKey)
+
+            // 암호화 타입에 따라 복호화 방식 선택 (null인 경우 AES_GCM으로 간주)
+            val decryptedContent = when (boardArticle.encryptType ?: com.setvect.bokslhome.app.board.model.EncryptType.AES_GCM) {
+                com.setvect.bokslhome.app.board.model.EncryptType.AES_GCM -> {
+                    try {
+                        AesGcmEncrypt.decrypt(boardArticle.content, decryptKey)
+                    } catch (e: Exception) {
+                        log.warn("AES-GCM 복호화 실패: boardArticleSeq={}", boardArticleSeq, e)
+                        // 복호화 실패 시 빈 문자열 반환 (잘못된 비밀번호)
+                        ""
+                    }
+                }
+                com.setvect.bokslhome.app.board.model.EncryptType.HEX -> {
+                    // 기존 HEX 방식 (호환성 유지)
+                    StringEncrypt.decodeJ(boardArticle.content, decryptKey)
+                }
+            }
+
             return response.copy(content = decryptedContent)
         }
 

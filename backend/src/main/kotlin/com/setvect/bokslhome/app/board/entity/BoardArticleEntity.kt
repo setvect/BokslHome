@@ -80,9 +80,9 @@ data class BoardArticleEntity(
     val encryptF: Boolean = false,
 
     /**
-     * 암호화 타입
+     * 암호화 유형 (암호화되지 않은 경우 null, 암호화된 경우 HEX 또는 AES_GCM)
      */
-    @Column(name = "ENCRYPT_TYPE", nullable = true, length = 1)
+    @Column(name = "ENCRYPT_TYPE", nullable = true, length = 20)
     @Enumerated(EnumType.STRING)
     val encryptType: EncryptType? = null,
     /**

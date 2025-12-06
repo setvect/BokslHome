@@ -176,10 +176,11 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
                 </Label>
                 <Input
                   id="board-password"
-                  type="password"
+                  type="text"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="암호를 입력하면 암호 게시글로 저장됩니다"
+                  autoComplete="off"
                 />
               </div>
             ) : null}

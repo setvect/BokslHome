@@ -6,5 +6,6 @@ data class BoardArticleCreateRequest(
     val content: String,
     val contentType: ContentType = ContentType.HTML,
     val encryptF: Boolean = false,
+    val password: String? = null,  // 암호화 시 사용할 비밀번호
     var ip: String?,
 )
