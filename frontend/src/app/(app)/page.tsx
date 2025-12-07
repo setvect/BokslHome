@@ -14,27 +14,47 @@ const MAIN_MODULE = {
   moduleId: '1',
 };
 
+const PAGE_SIZE = 10;
+
 export default function HomePage() {
   const [comments, setComments] = useState<CommentResponse[]>([]);
+  const [pageInfo, setPageInfo] = useState({
+    number: 0,
+    size: PAGE_SIZE,
+    totalElements: 0,
+    totalPages: 0,
+  });
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CommentResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const loadComments = async () => {
+  const loadComments = async (page = 0, append = false) => {
     try {
-      setLoading(true);
-      const page: CommentPageResponse = await getCommentPage({
+      append ? setLoadingMore(true) : setLoading(true);
+      const response: CommentPageResponse = await getCommentPage({
         ...MAIN_MODULE,
-        page: 0,
-        size: 20,
+        page,
+        size: PAGE_SIZE,
       });
-      setComments(page.content);
+
+      setPageInfo(response.page);
+
+      if (append) {
+        setComments((prev) => {
+          const existingIds = new Set(prev.map((c) => c.commentSeq));
+          const merged = [...prev, ...response.content.filter((c) => !existingIds.has(c.commentSeq))];
+          return merged;
+        });
+      } else {
+        setComments(response.content);
+      }
     } catch (error) {
       console.error('Failed to load comments', error);
     } finally {
-      setLoading(false);
+      append ? setLoadingMore(false) : setLoading(false);
     }
   };
 
@@ -51,6 +71,11 @@ export default function HomePage() {
       setSubmitting(true);
       const created = await createComment({ content: trimmed }, MAIN_MODULE.module, MAIN_MODULE.moduleId);
       setComments((prev) => [created, ...prev]);
+      setPageInfo((prev) => {
+        const totalElements = prev.totalElements + 1;
+        const totalPages = Math.max(prev.totalPages, Math.ceil(totalElements / prev.size));
+        return { ...prev, totalElements, totalPages };
+      });
       setNewComment('');
     } catch (error) {
       console.error('Failed to create comment', error);
@@ -64,6 +89,11 @@ export default function HomePage() {
       setDeleting(true);
       await deleteComment(commentId);
       setComments((prev) => prev.filter((comment) => comment.commentSeq !== commentId));
+      setPageInfo((prev) => {
+        const totalElements = Math.max(prev.totalElements - 1, 0);
+        const totalPages = Math.max(Math.ceil(totalElements / prev.size), 0);
+        return { ...prev, totalElements, totalPages };
+      });
     } catch (error) {
       console.error('Failed to delete comment', error);
     } finally {
@@ -71,6 +101,8 @@ export default function HomePage() {
       setDeleteTarget(null);
     }
   };
+
+  const hasMore = !loading && comments.length < pageInfo.totalElements;
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10">
@@ -121,6 +153,19 @@ export default function HomePage() {
           ))
         )}
       </div>
+
+      {hasMore && (
+        <Button
+          variant="outline"
+          className="w-full justify-center"
+          disabled={loadingMore}
+          onClick={() => loadComments(pageInfo.number + 1, true)}
+        >
+          {loadingMore
+            ? '불러오는 중...'
+            : `더 보기 (${comments.length}/${pageInfo.totalElements || comments.length})`}
+        </Button>
+      )}
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}
