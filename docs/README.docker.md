@@ -161,6 +161,20 @@ docker stats bokslhome-app
 docker logs -f --tail=100 bokslhome-app
 ```
 
+## 외부 설정(application*.yml) 사용
+
+- 호스트에 설정 디렉토리 생성:
+  ```bash
+  mkdir -p data/config
+  cp backend/src/main/resources/application.yml data/config/
+  cp backend/src/main/resources/application-docker.yml data/config/
+  ```
+- `docker-compose.yml`에는 이미 다음이 포함되어 있습니다.
+  - env: `SPRING_CONFIG_ADDITIONAL_LOCATION=optional:file:/config/`
+  - volume: `./data/config:/config`
+
+`data/config`의 설정을 수정한 뒤 컨테이너를 재시작하면 외부 설정이 적용됩니다.
+
 ---
 
 **추천**: 개발/테스트 환경에서는 통합 이미지, 프로덕션에서는 분리형 이미지 사용을 권장합니다! 🚀

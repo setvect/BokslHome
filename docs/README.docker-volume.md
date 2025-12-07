@@ -90,6 +90,23 @@ bokslhome:
   attach-file-path: "/app/attach"
 ```
 
+### 외부 설정(application*.yml) 바인드
+
+컨테이너 이미지에 포함된 설정 대신 호스트의 설정 파일을 사용하려면:
+
+1) 호스트에 디렉토리와 파일 준비
+```bash
+mkdir -p data/config
+cp backend/src/main/resources/application.yml data/config/
+cp backend/src/main/resources/application-docker.yml data/config/
+```
+
+2) `docker-compose.yml` 환경/볼륨
+- 환경변수: `SPRING_CONFIG_ADDITIONAL_LOCATION=optional:file:/config/`
+- 볼륨: `./data/config:/config`
+
+`data/config` 안의 `application*.yml`을 수정하면 컨테이너 재시작 시 해당 설정이 적용됩니다.
+
 ### 볼륨 매핑
 
 | 컨테이너 내부 | 호스트 경로     | 용도              |

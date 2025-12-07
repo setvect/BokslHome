@@ -17,6 +17,7 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_ADDITIONAL_LOCATION=optional:file:/config/
     volumes:
       # 로그 파일
       - ./data/logs:/app/logs
@@ -27,6 +28,8 @@ services:
       - ./data/attach:/app/attach
       # 임시 파일
       - ./data/temp:/app/temp
+      # 외부 설정(application*.yml)
+      - ./data/config:/config
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
