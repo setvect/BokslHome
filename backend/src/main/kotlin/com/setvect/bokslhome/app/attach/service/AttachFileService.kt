@@ -74,6 +74,7 @@ class AttachFileService(
         return AttachFileDto.from(attachFile, file)
     }
 
+
     fun deleteAttachFileList(attachFileSeqList: List<Int>, module: AttachFileModule, moduleId: String) {
         val attachFile = attachRepository.findByAttachFileSeqIsIn(attachFileSeqList)
 
@@ -90,5 +91,25 @@ class AttachFileService(
         }
 
         attachRepository.deleteAllById(attachFileSeqList)
+    }
+
+    /**
+     * IMAGE 모듈 전용 파일 조회 (moduleId 검증 없이 IMAGE 모듈만 확인)
+     */
+    fun getImageFile(attachFileSeq: Int): AttachFileDto {
+        val attachFile = attachRepository.findById(attachFileSeq)
+            .orElseThrow { UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund) }
+
+        // IMAGE 모듈인지만 확인
+        if (attachFile.moduleName != AttachFileModule.IMAGE) {
+            throw UserGuideException(UserGuideException.FORBIDDEN, UserGuideCode.PermissionDenied)
+        }
+
+        val file = bokslProperties.getAttachFilePath().resolve(attachFile.saveName)
+        if (!file.exists()) {
+            log.warn("파일이 없음: {}", file.absolutePath)
+            throw UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
+        }
+        return AttachFileDto.from(attachFile, file)
     }
 }

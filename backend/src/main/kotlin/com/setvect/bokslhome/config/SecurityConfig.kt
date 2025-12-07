@@ -27,6 +27,8 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/api/login").permitAll()
+                    .requestMatchers("/attach/image").permitAll() // 레거시 이미지 조회
+                    .requestMatchers("/api/image/view/**").permitAll() // 새로운 이미지 조회
                     .anyRequest().hasAuthority("ROLE_ADMIN")
             }
 
