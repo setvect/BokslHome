@@ -1,83 +1,144 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, BookOpen, StickyNote, Users, Settings, Dices } from 'lucide-react';
+'use client';
 
-const features = [
-  {
-    title: '게시판',
-    description: '다양한 주제로 소통하고 정보를 공유하는 커뮤니티 공간',
-    icon: FileText,
-    href: '/board',
-    color: 'text-blue-500',
-  },
-  {
-    title: '복슬지식',
-    description: '체계적으로 정리된 지식 베이스와 문서 관리 시스템',
-    icon: BookOpen,
-    href: '/knowledge',
-    color: 'text-green-500',
-  },
-  {
-    title: '복슬노트',
-    description: '개인 노트와 아이디어를 체계적으로 관리하는 공간',
-    icon: StickyNote,
-    href: '/note',
-    color: 'text-yellow-500',
-  },
-  {
-    title: '복슬관계',
-    description: '인맥과 네트워크를 시각적으로 관리하는 도구',
-    icon: Users,
-    href: '/network',
-    color: 'text-purple-500',
-  },
-  {
-    title: '로또번호 생성',
-    description: '행운의 번호를 생성해보는 재미있는 기능',
-    icon: Dices,
-    href: '/lotto',
-    color: 'text-red-500',
-  },
-  {
-    title: '설정',
-    description: '시스템 설정과 개인화 옵션을 관리하는 공간',
-    icon: Settings,
-    href: '/settings',
-    color: 'text-gray-500',
-  },
-];
+import { FormEvent, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Trash2 } from 'lucide-react';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { createComment, deleteComment, getCommentPage } from '@/lib/api/comment-api-client';
+import type { CommentPageResponse, CommentResponse } from '@/lib/types/comment';
+import { formatRelativeDate } from '@/lib/utils/date';
+
+const MAIN_MODULE = {
+  module: 'MAIN' as const,
+  moduleId: '1',
+};
 
 export default function HomePage() {
+  const [comments, setComments] = useState<CommentResponse[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<CommentResponse | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const loadComments = async () => {
+    try {
+      setLoading(true);
+      const page: CommentPageResponse = await getCommentPage({
+        ...MAIN_MODULE,
+        page: 0,
+        size: 20,
+      });
+      setComments(page.content);
+    } catch (error) {
+      console.error('Failed to load comments', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadComments();
+  }, []);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmed = newComment.trim();
+    if (!trimmed) return;
+
+    try {
+      setSubmitting(true);
+      const created = await createComment({ content: trimmed }, MAIN_MODULE.module, MAIN_MODULE.moduleId);
+      setComments((prev) => [created, ...prev]);
+      setNewComment('');
+    } catch (error) {
+      console.error('Failed to create comment', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (commentId: number) => {
+    try {
+      setDeleting(true);
+      await deleteComment(commentId);
+      setComments((prev) => prev.filter((comment) => comment.commentSeq !== commentId));
+    } catch (error) {
+      console.error('Failed to delete comment', error);
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* 헤더 섹션 */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">복슬홈에 오신 것을 환영합니다</h1>
-        <p className="text-muted-foreground">복슬포털의 현대화된 버전으로, 게시판부터 지식 관리까지 모든 기능을 한곳에서 만나보세요.</p>
+    <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10">
+      <h1 className="text-5xl font-semibold tracking-tight text-slate-700 dark:text-slate-100">내 사랑 복슬이</h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 rounded-xl border border-border bg-card/80 p-5 shadow-sm sm:flex-row sm:items-start"
+      >
+        <Textarea
+          value={newComment}
+          onChange={(event) => setNewComment(event.target.value)}
+          placeholder="써라"
+          className="min-h-[120px] flex-1 text-base"
+          disabled={submitting}
+        />
+        <Button type="submit" className="h-12 px-6 sm:h-[52px] sm:min-w-[96px]" disabled={submitting}>
+          {submitting ? '등록 중...' : '확인'}
+        </Button>
+      </form>
+
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        {loading ? (
+          <div className="px-5 py-8 text-center text-muted-foreground">댓글을 불러오는 중...</div>
+        ) : comments.length === 0 ? (
+          <div className="px-5 py-8 text-center text-muted-foreground">아직 댓글이 없습니다.</div>
+        ) : (
+          comments.map((comment) => (
+            <div
+              key={comment.commentSeq}
+              className="flex flex-col gap-3 border-t border-border/70 px-5 py-4 first:border-0 sm:flex-row sm:items-start sm:gap-6"
+            >
+              <p className="flex-1 whitespace-pre-line text-base leading-relaxed text-foreground">{comment.content}</p>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground sm:justify-end">
+                <span className="font-medium">{formatRelativeDate(comment.regDate)}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="댓글 삭제"
+                  onClick={() => setDeleteTarget(comment)}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
-      {/* 기능 카드 그리드 */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => {
-          const Icon = feature.icon;
-          return (
-            <Card key={feature.title} className="group cursor-pointer transition-all hover:shadow-md hover:scale-105">
-              <CardHeader className="pb-3">
-                <div className="flex items-center space-x-3">
-                  <div className={`rounded-lg p-2 bg-muted ${feature.color}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-sm leading-relaxed">{feature.description}</CardDescription>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteTarget(null);
+          }
+        }}
+        title="댓글을 삭제할까요?"
+        confirmLabel={deleting ? '삭제 중...' : '삭제'}
+        cancelLabel="취소"
+        onConfirm={() => {
+          if (deleteTarget) {
+            handleDelete(deleteTarget.commentSeq);
+          }
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

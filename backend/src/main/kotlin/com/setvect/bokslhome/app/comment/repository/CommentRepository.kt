@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentRepository : JpaRepository<CommentEntity, Int> {
-    fun findByModuleNameAndModuleId(pageable: Pageable, moduleName: CommentModule, moduleId: String): Page<CommentEntity>
+    fun findByModuleNameAndModuleIdOrderByCommentSeqDesc(pageable: Pageable, moduleName: CommentModule, moduleId: String): Page<CommentEntity>
 
     fun findByCommentSeqIn(commentSeqList: List<Int>): List<CommentEntity>
 }

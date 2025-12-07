@@ -59,7 +59,7 @@ class CommentService(
     }
 
     fun page(pageable: Pageable, moduleName: CommentModule, moduleId: String): PagedModel<CommentResponse> {
-        val comments = commentRepository.findByModuleNameAndModuleId(pageable, moduleName, moduleId)
+        val comments = commentRepository.findByModuleNameAndModuleIdOrderByCommentSeqDesc(pageable, moduleName, moduleId)
         val page = comments.map { CommentResponse.from(it) }
         return PagedModel(page)
     }
