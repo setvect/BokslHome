@@ -5,9 +5,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import java.security.Key
-import java.util.Base64
 import java.util.Date
-import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import org.springframework.stereotype.Component
 
@@ -16,37 +14,25 @@ class JwtUtil(
     private val bokslProperties: BokslProperties
 ) {
     private val key: Key = SecretKeySpec(bokslProperties.jwt.secretKey.toByteArray(), SignatureAlgorithm.HS512.jcaName)
-    private val encryptionKeySpec = SecretKeySpec(bokslProperties.jwt.encryptionKey.toByteArray(), "AES")
 
     fun generateToken(userId: String): String {
-        val encryptedUserId = encryptUserId(userId)
+        val encryptedUserId = AesGcmEncrypt.encrypt(userId, bokslProperties.jwt.encryptionKey)
 
         return Jwts.builder()
             .setSubject(encryptedUserId)
+            .setIssuer(bokslProperties.jwt.issuer)
+            .setAudience(bokslProperties.jwt.audience)
+            .setIssuedAt(Date())
+            .setNotBefore(Date())
             .setExpiration(Date(System.currentTimeMillis() + bokslProperties.jwt.expirationTime))
             .signWith(key)
             .compact()
     }
 
-    private fun encryptUserId(userId: String): String {
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, encryptionKeySpec)
-        val encryptedBytes = cipher.doFinal(userId.toByteArray())
-        return Base64.getEncoder().encodeToString(encryptedBytes)
-    }
-
-    private fun decryptUserId(encryptedUserId: String): String {
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(Cipher.DECRYPT_MODE, encryptionKeySpec)
-        val decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedUserId))
-        return String(decryptedBytes)
-    }
-
     fun getUserIdFromToken(token: String): String? {
         return try {
             val claims = parseToken(token)
-            val encryptedUserId = claims?.subject
-            encryptedUserId?.let { decryptUserId(it) }
+            claims?.subject?.let { AesGcmEncrypt.decrypt(it, bokslProperties.jwt.encryptionKey) }
         } catch (e: Exception) {
             null
         }
@@ -56,6 +42,9 @@ class JwtUtil(
         return try {
             Jwts.parserBuilder()
                 .setSigningKey(key)
+                .setAllowedClockSkewSeconds(bokslProperties.jwt.clockSkewSeconds)
+                .requireIssuer(bokslProperties.jwt.issuer)
+                .requireAudience(bokslProperties.jwt.audience)
                 .build()
                 .parseClaimsJws(token)
                 .body

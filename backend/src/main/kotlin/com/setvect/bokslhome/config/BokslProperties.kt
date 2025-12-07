@@ -22,7 +22,12 @@ class BokslProperties @ConstructorBinding constructor(
         @field:Positive
         val expirationTime: Long,
         @field:NotEmpty
-        val encryptionKey: String
+        val encryptionKey: String,
+        @field:NotEmpty
+        val issuer: String,
+        @field:NotEmpty
+        val audience: String,
+        val clockSkewSeconds: Long = 60
     )
     fun getAttachFilePath(): File = File(attachFilePath)
 }

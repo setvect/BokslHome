@@ -2,14 +2,14 @@ spring:
   application:
     name: BokslHome
 
-  # H2 데이터베이스 설정
+  # H2 database settings
   datasource:
     url: jdbc:h2:file:./db/BokslHome_db
     username: sa
     password: 1122aabb$$
     driver-class-name: org.h2.Driver
 
-  # JPA 설정
+  # JPA settings
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,16 +18,19 @@ spring:
       hibernate:
         format_sql: true
 
-# 서버 포트 설정
+# Server settings
 server:
   port: 8080
 
 bokslhome:
   home: "./"
   attach-file-path: "${bokslhome.home}/attach"
-  # JWT 설정
+  # JWT settings
   jwt:
     secret-key: vR3ck9ZwXy1aB2cD4eF5gH7iJ8kL0mN3pQ6sT8uV2wY4z
-    expiration-time: 864000000  # 10일
+    expiration-time: 864000000  # 10 days
     encryption-key: A76B23CDC9F43E5A1B4D8E2F31C7A95E
+    issuer: bokslhome
+    audience: bokslhome-client
+    clock-skew-seconds: 60
   http-logging: true
