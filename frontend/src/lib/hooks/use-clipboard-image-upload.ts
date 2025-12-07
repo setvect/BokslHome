@@ -1,35 +1,54 @@
 import { useCallback } from 'react';
-import { uploadImageFile } from '@/lib/utils/mock-upload-api';
+import type React from 'react';
+import { ApiError } from '@/lib/api-client';
+import { buildImageUrl, uploadImageFile } from '@/lib/api/image-upload-api-client';
 
 export interface ClipboardImageUploadOptions {
   onImageInsert: (url: string, filename: string) => void;
   onError?: (error: string) => void;
 }
 
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+const SUPPORTED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+
 export const useClipboardImageUpload = ({ onImageInsert, onError }: ClipboardImageUploadOptions) => {
-  // 이미지 업로드 처리
   const handleImageUpload = useCallback(
     async (file: File) => {
-      try {
-        const result = await uploadImageFile(file);
+      if (file.size > MAX_IMAGE_SIZE) {
+        const errorMessage = '이미지 크기는 10MB를 초과할 수 없습니다.';
+        onError?.(errorMessage);
+        return;
+      }
 
-        if (result.success && result.url) {
-          onImageInsert(result.url, file.name);
-        } else {
-          const errorMessage = result.error || '업로드에 실패했습니다.';
-          console.error('이미지 업로드 실패:', errorMessage);
-          onError?.(errorMessage);
-        }
+      if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
+        const errorMessage = '지원하지 않는 이미지 형식입니다. (PNG, JPEG, GIF, WebP)';
+        onError?.(errorMessage);
+        return;
+      }
+
+      try {
+        const response = await uploadImageFile(file);
+        const imageUrl = buildImageUrl(response.url);
+        const filename = response.originalName || file.name;
+
+        onImageInsert(imageUrl, filename);
       } catch (error) {
-        const errorMessage = '업로드 중 오류가 발생했습니다.';
         console.error('이미지 업로드 실패:', error);
+        let errorMessage = '이미지 업로드에 실패했습니다.';
+
+        if (error instanceof ApiError) {
+          errorMessage =
+            error.status === 0 ? '네트워크 오류가 발생했습니다.' : `업로드 실패: ${error.message}`;
+        } else if (error instanceof Error && error.message) {
+          errorMessage = error.message;
+        }
+
         onError?.(errorMessage);
       }
     },
     [onImageInsert, onError]
   );
 
-  // 클립보드 paste 이벤트 처리
   const handlePaste = useCallback(
     (e: React.ClipboardEvent | ClipboardEvent) => {
       const clipboard = e.clipboardData;
@@ -39,7 +58,6 @@ export const useClipboardImageUpload = ({ onImageInsert, onError }: ClipboardIma
       const hasHtml = Boolean(clipboard.getData('text/html'));
       const hasRichText = Boolean(clipboard.getData('text/rtf'));
 
-      // 텍스트/표 데이터가 존재하면 기본 붙여넣기를 유지한다.
       if (hasHtml || hasRichText) {
         return;
       }
