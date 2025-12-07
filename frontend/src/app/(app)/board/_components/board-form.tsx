@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createBoardArticle, updateBoardArticle } from '@/lib/api/board-article-api-client';
-import type { BoardArticleResponse, ContentType } from '@/lib/types/board-article-api';
+import type { BoardArticleRequest, BoardArticleResponse, ContentType } from '@/lib/types/board-article-api';
 import type { BoardCategory } from '@/lib/types/board';
 
 type BoardFormMode = 'create' | 'edit';
@@ -54,7 +54,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
 
     try {
       // Build request object based on mode
-      const request: any = {
+      const request: BoardArticleRequest = {
         title,
         content,
         contentType: editorType.toUpperCase() as ContentType,
@@ -87,21 +87,26 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
     } catch (err) {
       console.error('Failed to submit form:', err);
 
+      // Type guard for API errors with data property
+      function isApiError(error: unknown): error is Error & { data: unknown } {
+        return error instanceof Error && 'data' in error;
+      }
+
       // Extract error message from API error
       let errorMessage = '게시글 저장에 실패했습니다.';
-      if (err instanceof Error) {
+      if (isApiError(err)) {
         errorMessage = err.message;
         // If it's an ApiError with data, try to extract the message
-        if ((err as any).data) {
-          const errorData = (err as any).data;
-          if (typeof errorData === 'string') {
-            errorMessage = errorData;
-          } else if (errorData.message) {
-            errorMessage = errorData.message;
-          } else if (errorData.error) {
-            errorMessage = errorData.error;
-          }
+        const errorData = err.data;
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData && typeof errorData === 'object' && 'message' in errorData) {
+          errorMessage = String(errorData.message);
+        } else if (errorData && typeof errorData === 'object' && 'error' in errorData) {
+          errorMessage = String(errorData.error);
         }
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
       }
 
       setError(errorMessage);
