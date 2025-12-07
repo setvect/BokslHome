@@ -16,10 +16,8 @@ data class LoginResponse(val token: String)
 
 @RestController
 class LoginController(private val loginService: LoginService) {
-    private val logger = LoggerFactory.getLogger(LoginController::class.java)
     @PostMapping("/api/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
-        logger.info("Login request !!!!!!!!!!!!!: {}", request)
         val token = loginService.authenticate(request.username, request.password)
         return ResponseEntity(LoginResponse(token), HttpStatus.OK)
     }

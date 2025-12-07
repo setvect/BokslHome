@@ -20,7 +20,9 @@ class LoggingFilter(private val bokslProperties: BokslProperties) : OncePerReque
             return
         }
 
-        // Multipart 요청 로깅 비활성화
+        val isSensitivePath = request.requestURI.startsWith("/api/login")
+
+        // Multipart 요청은 로깅 스킵
         if (request.contentType?.startsWith("multipart/") == true) {
             filterChain.doFilter(request, response)
             return
@@ -31,21 +33,25 @@ class LoggingFilter(private val bokslProperties: BokslProperties) : OncePerReque
 
         try {
             filterChain.doFilter(cachedRequest, responseWrapper)
-            logRequest(cachedRequest)
+            logRequest(cachedRequest, isSensitivePath)
             logResponse(responseWrapper)
         } finally {
-            // 반드시 응답 데이터를 클라이언트에 복사
+            // 래핑된 응답을 실제 응답으로 복사
             responseWrapper.copyBodyToResponse()
         }
     }
 
-    private fun logRequest(request: ContentCachingRequestWrapper) {
+    private fun logRequest(request: ContentCachingRequestWrapper, isSensitivePath: Boolean) {
         try {
             val method = request.method
             val uri = request.requestURI
             val query = request.queryString
-            val body = request.contentAsByteArray.let {
-                if (it.isNotEmpty()) String(it, Charsets.UTF_8) else "EMPTY BODY"
+            val body = if (isSensitivePath) {
+                "SKIPPED(body contains credentials)"
+            } else {
+                request.contentAsByteArray.let {
+                    if (it.isNotEmpty()) String(it, Charsets.UTF_8) else "EMPTY BODY"
+                }
             }
 
             log.info("Request: $method $uri${if (query != null) "?$query" else ""}")
