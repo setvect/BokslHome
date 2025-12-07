@@ -59,11 +59,34 @@ class LoggingFilter(private val bokslProperties: BokslProperties) : OncePerReque
 
     private fun logResponse(response: ContentCachingResponseWrapper) {
         try {
-            val responseBody = response.contentAsByteArray.let {
-                if (it.isNotEmpty()) String(it, Charsets.UTF_8) else "EMPTY BODY"
+            val contentType = response.contentType ?: ""
+            val status = response.status
+            val bytes = response.contentAsByteArray
+
+            val isTextLike = contentType.startsWith("text/") ||
+                contentType.contains("json", ignoreCase = true) ||
+                contentType.contains("xml", ignoreCase = true) ||
+                contentType.contains("html", ignoreCase = true) ||
+                contentType.contains("plain", ignoreCase = true)
+
+            val maxLogBytes = 5_000
+
+            if (!isTextLike) {
+                log.info("Response: status=$status, contentType=$contentType, body=SKIPPED(binary, ${bytes.size} bytes)")
+                return
             }
 
-            log.info("Response: $responseBody")
+            val responseBody = bytes.let {
+                if (it.isNotEmpty()) {
+                    val truncated = if (it.size > maxLogBytes) it.copyOfRange(0, maxLogBytes) else it
+                    val suffix = if (it.size > maxLogBytes) "...(truncated)" else ""
+                    "${String(truncated, Charsets.UTF_8)}$suffix"
+                } else {
+                    "EMPTY BODY"
+                }
+            }
+
+            log.info("Response: status=$status, contentType=$contentType, body=$responseBody")
         } catch (e: Exception) {
             log.warn("Failed to log response: ${e.message}", e)
         }
