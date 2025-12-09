@@ -105,7 +105,7 @@ export default function HomePage() {
   const hasMore = !loading && comments.length < pageInfo.totalElements;
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10">
+    <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4">
       <h1 className="text-5xl font-semibold tracking-tight text-slate-700 dark:text-slate-100">내 사랑 복슬이</h1>
 
       <form
@@ -116,7 +116,7 @@ export default function HomePage() {
           value={newComment}
           onChange={(event) => setNewComment(event.target.value)}
           placeholder="써라"
-          className="min-h-[120px] flex-1 text-base"
+          className="min-h-[80px] flex-1 text-base"
           disabled={submitting}
         />
         <Button type="submit" className="h-12 px-6 sm:h-[52px] sm:min-w-[96px]" disabled={submitting}>

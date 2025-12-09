@@ -16,8 +16,3 @@ export interface KnowledgeDocument {
   attachments?: KnowledgeAttachment[];
   updatedAt: string;
 }
-
-export interface KnowledgeCollectionMock {
-  documents: KnowledgeDocument[];
-}
-

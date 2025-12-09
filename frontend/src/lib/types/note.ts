@@ -42,8 +42,3 @@ export interface NoteDocument {
   }>;
   attachments?: NoteAttachment[];
 }
-
-export interface NoteCollectionMock {
-  notes: NoteDocument[];
-}
-

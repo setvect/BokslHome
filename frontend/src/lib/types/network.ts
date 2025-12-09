@@ -35,8 +35,3 @@ export interface RelationshipRecord {
   nodes: RelationshipNodeData[];
   edges: RelationshipEdgeData[];
 }
-
-export interface RelationshipCollectionMock {
-  records: RelationshipRecord[];
-}
-
