@@ -39,7 +39,6 @@ export function KnowledgeListView() {
 
   const [documents, setDocuments] = useState<KnowledgeResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -110,7 +109,6 @@ export function KnowledgeListView() {
 
         setDocuments(response.content);
         setTotalPages(response.page.totalPages);
-        setTotalElements(response.page.totalElements);
       } catch (err) {
         console.error('Failed to fetch knowledge data:', err);
         setError('데이터를 불러오는데 실패했습니다.');

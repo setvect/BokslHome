@@ -30,6 +30,17 @@ export function MemoCategoryDialog({
   categories: initialCategories,
   onUpdated,
 }: MemoCategoryDialogProps) {
+  const extractApiMessage = (err: ApiError): string | undefined => {
+    const data = err.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      const msg = (data as { message?: unknown }).message;
+      if (typeof msg === 'string') {
+        return msg;
+      }
+    }
+    return undefined;
+  };
+
   const [categories, setCategories] = useState<MemoCategoryResponse[]>(initialCategories);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState<MemoCategoryResponse | null>(null);
@@ -82,7 +93,7 @@ export function MemoCategoryDialog({
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '카테고리 추가에 실패했습니다.');
+        setError(extractApiMessage(err) || '카테고리 추가에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }
@@ -114,7 +125,7 @@ export function MemoCategoryDialog({
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '카테고리 수정에 실패했습니다.');
+        setError(extractApiMessage(err) || '카테고리 수정에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }
@@ -142,7 +153,7 @@ export function MemoCategoryDialog({
       onUpdated();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '카테고리 삭제에 실패했습니다.');
+        setError(extractApiMessage(err) || '카테고리 삭제에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }

@@ -33,7 +33,11 @@ export default function HomePage() {
 
   const loadComments = async (page = 0, append = false) => {
     try {
-      append ? setLoadingMore(true) : setLoading(true);
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
       const response: CommentPageResponse = await getCommentPage({
         ...MAIN_MODULE,
         page,
@@ -54,7 +58,11 @@ export default function HomePage() {
     } catch (error) {
       console.error('Failed to load comments', error);
     } finally {
-      append ? setLoadingMore(false) : setLoading(false);
+      if (append) {
+        setLoadingMore(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
 

@@ -18,6 +18,11 @@ type GraphNode = RelationshipNodeData & {
   };
 };
 
+type GraphEdge = Omit<RelationshipEdgeData, 'label'> & { label?: string };
+type NetworkPointer = { canvas: { x: number; y: number } };
+type NetworkClickParams = { nodes: Array<string | number>; edges: Array<string | number>; pointer: NetworkPointer };
+type NetworkDragEndParams = { nodes?: Array<string | number>; pointer: NetworkPointer };
+
 type RelationshipGraphProps = {
   nodes: RelationshipNodeData[];
   edges: RelationshipEdgeData[];
@@ -44,7 +49,7 @@ export function RelationshipGraph({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const networkRef = useRef<Network | null>(null);
   const nodesDataRef = useRef(new DataSet<GraphNode>());
-  const edgesDataRef = useRef(new DataSet<any>());
+  const edgesDataRef = useRef(new DataSet<GraphEdge>());
   const onCanvasClickRef = useRef(onCanvasClick);
   const onNodeClickRef = useRef(onNodeClick);
   const onEdgeClickRef = useRef(onEdgeClick);
@@ -107,7 +112,7 @@ export function RelationshipGraph({
 
   useEffect(() => {
     const edgesData = edgesDataRef.current;
-    const enhancedEdges = edges.map((edge) => ({
+    const enhancedEdges: GraphEdge[] = edges.map((edge) => ({
       ...edge,
       label: edge.label ?? undefined,
     }));
@@ -163,7 +168,7 @@ export function RelationshipGraph({
       containerRef.current,
       {
         nodes: nodesDataRef.current,
-        edges: edgesDataRef.current as any,
+        edges: edgesDataRef.current,
       },
       options
     );
@@ -172,7 +177,7 @@ export function RelationshipGraph({
     setIsNetworkReady(true);
     network.fit({ animation: false });
 
-    const handleClick = (params: any) => {
+    const handleClick = (params: NetworkClickParams) => {
       if (params.nodes.length > 0) {
         const nodeId = params.nodes[0] as string;
         onNodeClickRef.current?.(nodeId, params.pointer.canvas);
@@ -186,7 +191,7 @@ export function RelationshipGraph({
       onCanvasClickRef.current?.(params.pointer.canvas);
     };
 
-    const handleDragEnd = (params: any) => {
+    const handleDragEnd = (params: NetworkDragEndParams) => {
       if (!params.nodes || params.nodes.length === 0) {
         return;
       }
@@ -252,7 +257,8 @@ export function RelationshipGraph({
   return <div ref={containerRef} className={className ?? 'h-[520px] w-full rounded-2xl border border-border bg-muted/40'} />;
 }
 
-function syncDataSet(dataSet: DataSet<any>, items: any[]) {
+function syncDataSet<T extends { id: string }>(dataSet: DataSet<T>, items: T[]) {
+  // @ts-expect-error vis-data typings accept partial items, runtime is safe
   dataSet.update(items);
   const incomingIds = new Set(items.map((item: { id: string }) => String(item.id)));
   const currentIds = dataSet.getIds();

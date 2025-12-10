@@ -3,14 +3,15 @@
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useEffect, useRef } from 'react';
+import type { Components } from 'react-markdown';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { useTheme } from 'next-themes';
 import mermaid from 'mermaid';
 
 import { Button } from '@/components/ui/button';
 import type { NoteResponse } from '@/lib/types/note-api';
 
-// Mermaid 초기화
+// Mermaid 초기 설정
 if (typeof window !== 'undefined') {
   mermaid.initialize({
     startOnLoad: false,
@@ -19,40 +20,42 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Mermaid 다이어그램 컴포넌트
+// Mermaid 다이어그램을 렌더링하는 컴포넌트
 function MermaidDiagram({ children }: { children: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
-    if (ref.current && children) {
-      const renderDiagram = async () => {
-        try {
-          // 현재 테마에 맞는 Mermaid 테마 설정
-          const currentTheme = resolvedTheme || theme;
-          const mermaidTheme = currentTheme === 'dark' ? 'dark' : 'default';
-
-          // Mermaid 재초기화
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: mermaidTheme,
-            securityLevel: 'loose',
-          });
-
-          const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
-          const { svg } = await mermaid.render(id, children);
-          if (ref.current) {
-            ref.current.innerHTML = svg;
-          }
-        } catch (error) {
-          console.error('Mermaid rendering error:', error);
-          if (ref.current) {
-            ref.current.innerHTML = `<pre class="text-destructive">다이어그램 렌더링 오류: ${error}</pre>`;
-          }
-        }
-      };
-      renderDiagram();
+    if (!ref.current || !children) {
+      return;
     }
+
+    const renderDiagram = async () => {
+      try {
+        const currentTheme = resolvedTheme || theme;
+        const mermaidTheme = currentTheme === 'dark' ? 'dark' : 'default';
+
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: mermaidTheme,
+          securityLevel: 'loose',
+        });
+
+        const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
+        const { svg } = await mermaid.render(id, children);
+        if (!ref.current) {
+          return;
+        }
+        ref.current.innerHTML = svg;
+      } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        if (ref.current) {
+          ref.current.innerHTML = `<pre class="text-destructive">다이어그램 렌더링 실패: ${error}</pre>`;
+        }
+      }
+    };
+
+    renderDiagram();
   }, [children, theme, resolvedTheme]);
 
   return <div ref={ref} className="mermaid-diagram my-4" />;
@@ -75,6 +78,24 @@ export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
     });
   };
 
+  const markdownComponents: Components = {
+    table: (props) => <table className="markdown-table" {...props} />,
+    code({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: ReactNode }) {
+      const match = /language-(\w+)/.exec(className || '');
+      const language = match ? match[1] : '';
+
+      if (!inline && language === 'mermaid') {
+        return <MermaidDiagram>{String(children).replace(/\n$/, '')}</MermaidDiagram>;
+      }
+
+      return (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    },
+  };
+
   return (
     <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">
       <div className="space-y-6 p-6">
@@ -84,11 +105,11 @@ export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
           </div>
           <div className="text-sm text-muted-foreground md:text-right">
             <div>
-              <span className="font-medium text-foreground">등록일:</span> {formatDate(note.regDate)}
+              <span className="font-medium text-foreground">등록일</span> {formatDate(note.regDate)}
             </div>
             {note.modDate && note.modDate !== note.regDate && (
               <div>
-                <span className="font-medium text-foreground">수정일:</span> {formatDate(note.modDate)}
+                <span className="font-medium text-foreground">수정일</span> {formatDate(note.modDate)}
               </div>
             )}
           </div>
@@ -118,30 +139,7 @@ export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
 
         {note.markdownF ? (
           <article className="rounded-3xl bg-muted/40 p-8 text-base leading-relaxed text-foreground transition-colors dark:bg-muted/60 markdown-preview">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                table: ({ node, ...props }) => (
-                  <table className="markdown-table" {...props} />
-                ),
-                code({ node, inline, className, children, ...props }: any) {
-                  const match = /language-(\w+)/.exec(className || '');
-                  const language = match ? match[1] : '';
-
-                  // Mermaid 다이어그램 렌더링
-                  if (!inline && language === 'mermaid') {
-                    return <MermaidDiagram>{String(children).replace(/\n$/, '')}</MermaidDiagram>;
-                  }
-
-                  // 일반 코드 블록
-                  return (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            >
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
               {note.content}
             </ReactMarkdown>
           </article>
@@ -161,4 +159,3 @@ export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
     </section>
   );
 }
-

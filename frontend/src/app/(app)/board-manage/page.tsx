@@ -18,7 +18,6 @@ export default function BoardAdminPage() {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
@@ -49,7 +48,6 @@ export default function BoardAdminPage() {
       const response = await getBoardManagerPage(searchParams);
 
       setBoards(response.content);
-      setTotalPages(response.page.totalPages);
       setTotalElements(response.page.totalElements);
       setCurrentPage(response.page.number);
       setError(null);
@@ -137,7 +135,6 @@ export default function BoardAdminPage() {
           boards={boards}
           isLoading={isLoading}
           currentPage={currentPage + 1} // Convert 0-based to 1-based for UI
-          totalPages={totalPages}
           totalElements={totalElements}
           pageSize={pageSize}
           searchField={searchField}

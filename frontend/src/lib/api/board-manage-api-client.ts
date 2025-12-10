@@ -8,7 +8,6 @@ import type {
     BoardManagerRequest,
     BoardManagerResponse,
     BoardManagerPageResponse,
-    BoardManagerSearchRequest,
 } from '../types/board-manage-api';
 
 /**

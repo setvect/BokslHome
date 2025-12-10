@@ -30,6 +30,16 @@ export function CodeMajorFormDialog({ open, onOpenChange, onSuccess }: CodeMajor
   const [orderNo, setOrderNo] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const extractApiMessage = (err: ApiError): string | undefined => {
+    const data = err.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      const msg = (data as { message?: unknown }).message;
+      if (typeof msg === 'string') {
+        return msg;
+      }
+    }
+    return undefined;
+  };
 
   const resetForm = () => {
     setMajorCode('');
@@ -58,7 +68,7 @@ export function CodeMajorFormDialog({ open, onOpenChange, onSuccess }: CodeMajor
       onSuccess();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '코드 생성에 실패했습니다.');
+        setError(extractApiMessage(err) || '코드 생성에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }

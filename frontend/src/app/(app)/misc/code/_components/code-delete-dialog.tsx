@@ -25,6 +25,16 @@ interface CodeDeleteDialogProps {
 export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDeleteDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const extractApiMessage = (err: ApiError): string | undefined => {
+    const data = err.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      const msg = (data as { message?: unknown }).message;
+      if (typeof msg === 'string') {
+        return msg;
+      }
+    }
+    return undefined;
+  };
 
   const handleDelete = async () => {
     if (!code) return;
@@ -38,7 +48,7 @@ export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDe
       onSuccess();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '코드 삭제에 실패했습니다.');
+        setError(extractApiMessage(err) || '코드 삭제에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Type, CheckSquare, ToggleLeft, MousePointer } from 'lucide-react';
+import { ArrowRight, Type, CheckSquare, MousePointer } from 'lucide-react';
 
 const formCategories = [
   {

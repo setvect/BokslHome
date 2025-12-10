@@ -69,14 +69,17 @@ export function useHistory<T>(initialPresent: T) {
 
   const undo = useCallback(() => dispatch({ type: 'UNDO' }), []);
   const redo = useCallback(() => dispatch({ type: 'REDO' }), []);
-  const set = useCallback((newPresent: T | ((current: T) => T)) => {
-    // 함수형 업데이트 지원
-    if (typeof newPresent === 'function') {
-      dispatch({ type: 'SET', newPresent: (newPresent as Function)(state.present) });
-    } else {
-      dispatch({ type: 'SET', newPresent });
-    }
-  }, [state.present]); // state.present 의존성 주의 (함수형 업데이트 시 최신 값 참조를 위해)
+  const set = useCallback(
+    (newPresent: T | ((current: T) => T)) => {
+      if (typeof newPresent === 'function') {
+        const updater = newPresent as (current: T) => T;
+        dispatch({ type: 'SET', newPresent: updater(state.present) });
+      } else {
+        dispatch({ type: 'SET', newPresent });
+      }
+    },
+    [state.present]
+  ); // state.present 의존성 주의 (함수형 업데이트 시 최신 값 참조를 위해)
 
   // 위 useCallback 의존성 문제 해결을 위해 reducer 구조상 dispatch만 있으면 되지만,
   // 함수형 업데이트 내부에서 현재 값을 참조해야 하므로 dispatch wrapper에서 처리.

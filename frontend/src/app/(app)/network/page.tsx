@@ -18,7 +18,6 @@ export default function NetworkPage() {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const pageSize = 10;
 
@@ -37,7 +36,6 @@ export default function NetworkPage() {
       });
 
       setNetworks(response.content);
-      setTotalPages(response.page.totalPages);
       setTotalElements(response.page.totalElements);
       setCurrentPage(response.page.number);
       setError(null);
@@ -116,7 +114,6 @@ export default function NetworkPage() {
           networks={networks}
           isLoading={isLoading}
           currentPage={currentPage}
-          totalPages={totalPages}
           totalElements={totalElements}
           pageSize={pageSize}
           searchTitle={searchTitle}

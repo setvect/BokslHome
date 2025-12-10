@@ -1,6 +1,12 @@
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
+type MarkdownToken = {
+  raw?: string;
+  text?: string;
+  type?: string;
+};
+
 /**
  * Marked 라이브러리 기본 설정
  */
@@ -26,7 +32,7 @@ const configureMarked = () => {
   };
 
   // 링크 렌더링 (외부 링크는 새 탭에서 열기)
-  renderer.link = ({ href, title, tokens }: { href: string; title?: string | null; tokens: any[] }) => {
+  renderer.link = ({ href, title, tokens }: { href: string; title?: string | null; tokens: MarkdownToken[] }) => {
     const text = tokens.map((token) => token.raw || token.text || '').join('');
     const isExternal = href.startsWith('http') || href.startsWith('https');
     const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
@@ -35,7 +41,7 @@ const configureMarked = () => {
   };
 
   // 테이블 렌더링 (Tailwind 클래스 추가)
-  renderer.table = ({ header, rows }: { header: any[]; rows: any[][] }) => {
+  renderer.table = ({ header, rows }: { header: MarkdownToken[]; rows: MarkdownToken[][] }) => {
     const headerHtml = header.map((cell) => `<th>${cell.text}</th>`).join('');
     const bodyHtml = rows.map((row) => `<tr>${row.map((cell) => `<td>${cell.text}</td>`).join('')}</tr>`).join('');
 
@@ -48,7 +54,7 @@ const configureMarked = () => {
   };
 
   // 인용문 렌더링
-  renderer.blockquote = ({ tokens }: { tokens: any[] }) => {
+  renderer.blockquote = ({ tokens }: { tokens: MarkdownToken[] }) => {
     const content = tokens
       .map((token) => {
         if (token.type === 'paragraph') {

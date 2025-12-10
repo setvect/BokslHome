@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Maximize2,
@@ -19,6 +20,13 @@ import {
 import { cn } from '@/lib/utils';
 import { HtmlEditorProps } from '@/lib/types/editor';
 import { useClipboardImageUpload } from '@/lib/hooks/use-clipboard-image-upload';
+
+type ToolbarButton = {
+  icon: LucideIcon;
+  command: string;
+  title: string;
+  value?: string;
+};
 
 export function HtmlEditor({
   value = '',
@@ -111,8 +119,8 @@ export function HtmlEditor({
   });
 
   // 툴바 버튼 구성
-  const getToolbarButtons = () => {
-    const buttons = {
+  const getToolbarButtons = (): ToolbarButton[] => {
+    const buttons: Record<'minimal' | 'basic' | 'full', ToolbarButton[]> = {
       minimal: [
         { icon: Bold, command: 'bold', title: '굵게' },
         { icon: Italic, command: 'italic', title: '기울임' },
@@ -150,7 +158,7 @@ export function HtmlEditor({
         editorRef.current.innerHTML = value || '';
       }
     }
-  }, [value]);
+  }, [value, currentContent, showSourceCode]);
 
   // WYSIWYG 모드로 전환될 때 에디터 내용 업데이트
   useEffect(() => {
@@ -177,7 +185,7 @@ export function HtmlEditor({
                     key={index}
                     variant="ghost"
                     size="sm"
-                    onClick={() => execCommand(button.command, (button as any).value)}
+                    onClick={() => execCommand(button.command, button.value)}
                     className="h-8 px-2"
                     title={button.title}
                     type="button"

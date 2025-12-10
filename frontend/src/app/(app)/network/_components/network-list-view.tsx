@@ -16,7 +16,6 @@ type NetworkListViewProps = {
   networks: NetworkResponse[];
   isLoading: boolean;
   currentPage: number;
-  totalPages: number;
   totalElements: number;
   pageSize: number;
   searchTitle: string;
@@ -30,7 +29,6 @@ export function NetworkListView({
   networks,
   isLoading,
   currentPage,
-  totalPages,
   totalElements,
   pageSize,
   searchTitle,
@@ -188,4 +186,3 @@ export function NetworkListView({
     </section>
   );
 }
-

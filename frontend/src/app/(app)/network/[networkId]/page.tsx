@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { getNetwork } from '@/lib/api/network-api-client';
@@ -10,7 +10,6 @@ import { NetworkDetailView } from '../_components/network-detail-view';
 
 export default function NetworkDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const networkId = params.networkId as string;
 
   const [network, setNetwork] = useState<NetworkResponse | null>(null);

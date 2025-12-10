@@ -23,6 +23,16 @@ type MemoEditorProps = {
 export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoEditorProps) {
   const router = useRouter();
   const isEdit = mode === 'edit';
+  const extractApiMessage = (err: ApiError): string | undefined => {
+    const data = err.data;
+    if (data && typeof data === 'object' && 'message' in data) {
+      const msg = (data as { message?: unknown }).message;
+      if (typeof msg === 'string') {
+        return msg;
+      }
+    }
+    return undefined;
+  };
 
   const [categorySeq, setCategorySeq] = useState<number | undefined>(
     memo?.categorySeq ?? defaultCategorySeq ?? categories[0]?.categorySeq
@@ -63,7 +73,7 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || `메모 ${isEdit ? '수정' : '생성'}에 실패했습니다.`);
+        setError(extractApiMessage(err) || `메모 ${isEdit ? '수정' : '생성'}에 실패했습니다.`);
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }
@@ -86,12 +96,12 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.data?.message || '메모 삭제에 실패했습니다.');
+        setError(extractApiMessage(err) || '메모 삭제에 실패했습니다.');
       } else {
         setError('네트워크 오류가 발생했습니다.');
       }
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (

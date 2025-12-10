@@ -59,6 +59,18 @@ const completeFormSchema = z
 
 type CompleteFormData = z.infer<typeof completeFormSchema>;
 
+type SubmissionResult =
+  | {
+      success: true;
+      message: string;
+      data: Record<string, unknown>;
+    }
+  | {
+      success: false;
+      message: string;
+      error?: unknown;
+    };
+
 const countries = [
   { value: 'kr', label: '대한민국' },
   { value: 'us', label: '미국' },
@@ -79,7 +91,7 @@ const interestOptions = [
 ];
 
 export default function CompleteFormPage() {
-  const [submissionResult, setSubmissionResult] = useState<any>(null);
+  const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 

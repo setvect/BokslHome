@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHistory } from '@/lib/hooks/use-history';
-import type { RelationshipEdgeData, RelationshipNodeData, RelationshipRecord } from '@/lib/types/network';
+import type { RelationshipEdgeData, RelationshipNodeData } from '@/lib/types/network';
 import { cn } from '@/lib/utils';
 
 import { NetworkEditorMode, NetworkEditorSelection } from './network-editor-types';
@@ -242,6 +242,9 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
   const panelStyle = editorHeight ? { height: editorHeight } : undefined;
 
   const handleSave = async () => {
+    if (isSaving) {
+      return;
+    }
     await onSave(graphData);
   };
 
@@ -601,4 +604,3 @@ function createId(prefix: string) {
   }
   return `${prefix}-${Date.now()}-${Math.round(Math.random() * 1000)}`;
 }
-

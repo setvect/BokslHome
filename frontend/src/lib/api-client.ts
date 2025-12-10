@@ -7,9 +7,9 @@ type FetchOptions = RequestInit & {
 
 export class ApiError extends Error {
   status: number;
-  data: any;
+  data: unknown;
 
-  constructor(status: number, message: string, data?: any) {
+  constructor(status: number, message: string, data?: unknown) {
     super(message);
     this.status = status;
     this.data = data;
@@ -88,14 +88,14 @@ export const apiClient = {
   get: <T>(endpoint: string, options?: FetchOptions) =>
     request<T>(endpoint, { ...options, method: 'GET' }),
 
-  post: <T>(endpoint: string, body: any, options?: FetchOptions) =>
+  post: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>
     request<T>(endpoint, {
       ...options,
       method: 'POST',
       body: body instanceof FormData ? body : JSON.stringify(body)
     }),
 
-  put: <T>(endpoint: string, body: any, options?: FetchOptions) =>
+  put: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>
     request<T>(endpoint, {
       ...options,
       method: 'PUT',

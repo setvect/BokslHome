@@ -118,15 +118,15 @@ export default function HtmlEditorPage() {
             <CardContent>
               <div className="space-y-3">
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar="full"</code>
+                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar=&quot;full&quot;</code>
                   <p className="text-sm text-muted-foreground mt-1">모든 편집 도구 포함 (기본값)</p>
                 </div>
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar="basic"</code>
+                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar=&quot;basic&quot;</code>
                   <p className="text-sm text-muted-foreground mt-1">기본적인 편집 도구만 포함</p>
                 </div>
                 <div>
-                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar="minimal"</code>
+                  <code className="bg-muted px-2 py-1 rounded text-sm">toolbar=&quot;minimal&quot;</code>
                   <p className="text-sm text-muted-foreground mt-1">최소한의 편집 도구만 포함</p>
                 </div>
               </div>

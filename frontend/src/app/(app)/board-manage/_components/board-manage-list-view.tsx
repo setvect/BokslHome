@@ -23,7 +23,6 @@ interface BoardManageListViewProps {
   boards: BoardManagerResponse[];
   isLoading: boolean;
   currentPage: number;
-  totalPages: number;
   totalElements: number;
   pageSize: number;
   searchField: string;
@@ -38,7 +37,6 @@ export function BoardManageListView({
   boards,
   isLoading,
   currentPage,
-  totalPages,
   totalElements,
   pageSize,
   searchField,
@@ -164,7 +162,6 @@ export function BoardManageListView({
                         </Link>
                         <span className="text-muted-foreground/40">|</span>
                         <BoardDeleteDialog
-                          boardCode={board.boardCode}
                           boardName={board.name}
                           onDelete={() => onDelete(board.boardCode)}
                           trigger={

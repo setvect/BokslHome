@@ -15,13 +15,12 @@ import {
 } from '@/components/ui/alert-dialog';
 
 type BoardDeleteDialogProps = {
-  boardCode: string;
   boardName: string;
   onDelete: () => void;
   trigger: ReactNode;
 };
 
-export function BoardDeleteDialog({ boardCode, boardName, onDelete, trigger }: BoardDeleteDialogProps) {
+export function BoardDeleteDialog({ boardName, onDelete, trigger }: BoardDeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
