@@ -314,7 +314,7 @@ function KnowledgePagination({ currentPage, totalPages, onPageChange }: Knowledg
   const halfVisible = Math.floor(maxVisiblePages / 2);
 
   let startPage = Math.max(0, currentPage - halfVisible);
-  let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+  const endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
 
   if (endPage - startPage < maxVisiblePages - 1) {
     startPage = Math.max(0, endPage - maxVisiblePages + 1);
