@@ -1,8 +1,8 @@
-version: '3.8'
 
 services:
   # 통합 서비스 (Backend + Frontend)
   bokslhome:
+    image: bokslhome:latest
     build:
       context: .
       dockerfile: Dockerfile

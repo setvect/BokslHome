@@ -63,7 +63,7 @@ run_container() {
     
     # 호스트 데이터 디렉토리 생성 (없는 경우)
     DATA_DIR="$PROJECT_ROOT/data"
-    mkdir -p "$DATA_DIR/logs" "$DATA_DIR/log" "$DATA_DIR/db" "$DATA_DIR/attach" "$DATA_DIR/temp"
+    mkdir -p "$DATA_DIR/logs" "$DATA_DIR/log" "$DATA_DIR/db" "$DATA_DIR/attach" "$DATA_DIR/temp" "$DATA_DIR/config"
     
     # 새 컨테이너 실행 (호스트 디렉토리 직접 마운트)
     docker run -d \
@@ -75,6 +75,8 @@ run_container() {
         -v "$DATA_DIR/db:/app/db" \
         -v "$DATA_DIR/attach:/app/attach" \
         -v "$DATA_DIR/temp:/app/temp" \
+        -v "$DATA_DIR/config:/config" \
+        -e SPRING_CONFIG_ADDITIONAL_LOCATION=optional:file:/config/ \
         $IMAGE_NAME:latest
     
     log_info "컨테이너 시작 대기 중..."
@@ -167,4 +169,3 @@ case "${1:-help}" in
         exit 1
         ;;
 esac
-

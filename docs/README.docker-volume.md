@@ -41,7 +41,7 @@ BokslHome-wsl/
 
 ```bash
 # data 디렉토리 생성
-mkdir -p data/{db,attach,logs,log,temp}
+mkdir -p data/{db,attach,logs,log,temp,config}
 
 # 실행
 docker compose -f docker-compose.unified.yml up -d
@@ -54,7 +54,7 @@ docker compose -f docker-compose.unified.yml down
 
 ```bash
 # 데이터 디렉토리 생성
-mkdir -p data/{db,attach,logs,log,temp}
+mkdir -p data/{db,attach,logs,log,temp,config}
 
 # 실행
 docker run -d \
@@ -62,11 +62,13 @@ docker run -d \
   -p 3000:3000 \
   -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=docker \
+  -e SPRING_CONFIG_ADDITIONAL_LOCATION=optional:file:/config/ \
   -v "$(pwd)/data/db:/app/db" \
   -v "$(pwd)/data/attach:/app/attach" \
   -v "$(pwd)/data/logs:/app/logs" \
   -v "$(pwd)/data/log:/app/log" \
   -v "$(pwd)/data/temp:/app/temp" \
+  -v "$(pwd)/data/config:/config" \
   bokslhome-unified:latest
 ```
 
@@ -279,4 +281,3 @@ docker rm -f bokslhome-app
 # 다시 실행하면 기존 데이터 그대로 사용
 ./docker-run-unified.sh
 ```
-
