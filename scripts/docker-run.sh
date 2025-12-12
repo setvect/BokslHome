@@ -24,7 +24,6 @@ log_info "데이터 디렉토리 준비 중..."
 mkdir -p "$DATA_DIR/db"
 mkdir -p "$DATA_DIR/attach"
 mkdir -p "$DATA_DIR/logs"
-mkdir -p "$DATA_DIR/log"
 mkdir -p "$DATA_DIR/temp"
 
 # 권한 설정 (Docker 컨테이너 사용자 UID:GID = 1001:1001)
@@ -50,7 +49,6 @@ docker run -d \
     -v "$DATA_DIR/db:/app/db" \
     -v "$DATA_DIR/attach:/app/attach" \
     -v "$DATA_DIR/logs:/app/logs" \
-    -v "$DATA_DIR/log:/app/log" \
     -v "$DATA_DIR/temp:/app/temp" \
     bokslhome:latest
 
@@ -67,4 +65,3 @@ log_info "  - 로그:    $DATA_DIR/logs"
 log_info "==================================================="
 echo ""
 log_info "로그 확인: docker logs -f bokslhome-app"
-

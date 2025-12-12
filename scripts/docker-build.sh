@@ -63,7 +63,7 @@ run_container() {
     
     # 호스트 데이터 디렉토리 생성 (없는 경우)
     DATA_DIR="$PROJECT_ROOT/data"
-    mkdir -p "$DATA_DIR/logs" "$DATA_DIR/log" "$DATA_DIR/db" "$DATA_DIR/attach" "$DATA_DIR/temp" "$DATA_DIR/config"
+    mkdir -p "$DATA_DIR/logs" "$DATA_DIR/db" "$DATA_DIR/attach" "$DATA_DIR/temp" "$DATA_DIR/config"
     
     # 새 컨테이너 실행 (호스트 디렉토리 직접 마운트)
     docker run -d \
@@ -71,7 +71,6 @@ run_container() {
         -p 3000:3000 \
         -p 8080:8080 \
         -v "$DATA_DIR/logs:/app/logs" \
-        -v "$DATA_DIR/log:/app/log" \
         -v "$DATA_DIR/db:/app/db" \
         -v "$DATA_DIR/attach:/app/attach" \
         -v "$DATA_DIR/temp:/app/temp" \
