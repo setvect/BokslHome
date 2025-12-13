@@ -23,6 +23,7 @@ TAR_FILE="${OUTPUT_DIR}/${IMAGE_NAME}-${VERSION}.tar"
 TAR_GZ="${TAR_FILE}.gz"
 COMPOSE_FILE="${OUTPUT_DIR}/docker-compose.offline.yml"
 INSTALL_SCRIPT="${OUTPUT_DIR}/install.sh"
+BOKSLHOME_SCRIPT="${OUTPUT_DIR}/bokslhome.sh"
 README_FILE="${OUTPUT_DIR}/README.md"
 PLATFORM=${PLATFORM:-""} # 예: PLATFORM=linux/amd64
 
@@ -52,7 +53,8 @@ version: "3.8"
 services:
   bokslhome:
     image: ${TAG}
-    container_name: bokslhome-offline
+    container_name: bokslhome
+    user: "${LOCAL_UID:-1001}:${LOCAL_GID:-1001}"
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -106,8 +108,14 @@ if [ -z "${IMAGE_TAR_GZ}" ]; then
   exit 1
 fi
 
+HOST_UID=${LOCAL_UID:-$(id -u)}
+HOST_GID=${LOCAL_GID:-$(id -g)}
+
 step "데이터 디렉터리 생성"
 mkdir -p data/{db,attach,logs,temp,config}
+
+step "데이터 디렉터리 소유권 정리 (UID:GID=${HOST_UID}:${HOST_GID})"
+docker run --rm -v "$PWD/data:/data" alpine sh -c "chown -R ${HOST_UID}:${HOST_GID} /data && chmod -R g+rwX /data"
 
 step "이미지 로드: ${IMAGE_TAR_GZ}"
 gunzip -c "${IMAGE_TAR_GZ}" | docker load
@@ -117,16 +125,71 @@ step "기존 컨테이너/네트워크 정리"
 docker compose -f "${COMPOSE_FILE}" down --remove-orphans 2>/dev/null || true
 
 step "컨테이너 기동"
-docker compose -f "${COMPOSE_FILE}" up -d --no-build
+LOCAL_UID=${HOST_UID} LOCAL_GID=${HOST_GID} docker compose -f "${COMPOSE_FILE}" up -d --no-build --force-recreate
 
 step "상태 확인"
 docker compose -f "${COMPOSE_FILE}" ps
 
 ok "배포 완료! 포트: 3000(프론트), 8080(백엔드)"
-echo "로그 확인: docker logs bokslhome-offline"
+echo "로그 확인: docker logs bokslhome"
 EOF
 chmod +x "${INSTALL_SCRIPT}"
 success "설치 스크립트 생성 완료"
+
+info "5-1) 운영 편의 단일 스크립트 생성: ${BOKSLHOME_SCRIPT}"
+cat > "${BOKSLHOME_SCRIPT}" <<'EOF'
+#!/bin/bash
+# bokslhome.sh - start/stop/restart/log/status helper
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${SCRIPT_DIR}"
+COMPOSE_FILE="docker-compose.offline.yml"
+SERVICE_NAME="bokslhome"
+HOST_UID=${LOCAL_UID:-$(id -u)}
+HOST_GID=${LOCAL_GID:-$(id -g)}
+
+ensure_perms() {
+  docker run --rm -v "$PWD/data:/data" alpine sh -c "chown -R ${HOST_UID}:${HOST_GID} /data && chmod -R g+rwX /data"
+}
+
+start() {
+  ensure_perms
+  LOCAL_UID=${HOST_UID} LOCAL_GID=${HOST_GID} docker compose -f "${COMPOSE_FILE}" up -d --no-build --force-recreate
+}
+
+stop() {
+  docker compose -f "${COMPOSE_FILE}" down
+}
+
+restart() {
+  stop || true
+  start
+}
+
+logs() {
+  docker compose -f "${COMPOSE_FILE}" logs -f "${SERVICE_NAME}"
+}
+
+status() {
+  docker compose -f "${COMPOSE_FILE}" ps
+}
+
+usage() {
+  echo "Usage: $0 {start|stop|restart|log|status}"
+  exit 1
+}
+
+case "${1:-}" in
+  start) start ;;
+  stop) stop ;;
+  restart) restart ;;
+  log|logs) logs ;;
+  status) status ;;
+  *) usage ;;
+esac
+EOF
+chmod +x "${BOKSLHOME_SCRIPT}"
 
 info "6) 패키지 README 생성: ${README_FILE}"
 cat > "${README_FILE}" <<EOF
@@ -146,11 +209,27 @@ cat > "${README_FILE}" <<EOF
    cd /opt/bokslhome-offline
    chmod +x install.sh
    ./install.sh
+   # 필요 시 로컬 계정 UID/GID로 실행 (편집 편의)
+   LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose -f docker-compose.offline.yml up -d --no-build --force-recreate
 
 3) 종료/재기동/로그
    docker compose -f docker-compose.offline.yml down
    docker compose -f docker-compose.offline.yml up -d --no-build
-   docker logs bokslhome-offline
+   docker logs bokslhome
+
+## 권한 오류(Permission denied) 발생 시
+- sudo가 없을 때: 컨테이너로 소유자 변경
+  docker run --rm -v "\$PWD/data:/data" alpine sh -c "chown -R 1001:1001 /data"
+- 호스트 편집을 원하면 두 가지 방법 중 선택:
+  1) 컨테이너를 내 UID/GID로 실행 (권장)
+     docker run --rm -v "\$PWD/data:/data" alpine sh -c "chown -R \$(id -u):\$(id -g) /data"
+     LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose -f docker-compose.offline.yml up -d --no-build --force-recreate
+  2) 컨테이너 UID 1001을 유지하고 그룹만 내 GID로 맞추기
+     docker run --rm -v "\$PWD/data:/data" alpine sh -c "chown -R 1001:\$(id -g) /data && chmod -R g+rwX /data"
+     # 내 계정이 해당 GID 그룹에 속해야 함
+- 그 후 재기동
+  docker compose -f docker-compose.offline.yml down
+  docker compose -f docker-compose.offline.yml up -d --no-build
 
 ## 참고
 - 데이터/설정은 이 디렉터리의 ./data 하위에 생성/마운트됩니다.

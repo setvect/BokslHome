@@ -40,3 +40,6 @@ offline-dist/
 *.bak
 *.old
 data
+
+# etc
+migration/
