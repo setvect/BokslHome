@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Sidebar } from '@/components/layout/sidebar';
 import { MainContent } from '@/components/layout/main-content';
+import { apiClient } from '@/lib/api-client';
 import { getCookie, setCookie } from '@/lib/utils/cookie';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar-state';
@@ -20,13 +21,33 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Auth check
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      router.replace('/login');
-      return;
-    }
-    setIsInitialized(true);
+    let cancelled = false;
+
+    const verifyAuth = async () => {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        router.replace('/login');
+        return;
+      }
+
+      try {
+        await apiClient.get('/api/auth/me');
+        if (!cancelled) {
+          setIsInitialized(true);
+        }
+      } catch (error) {
+        localStorage.removeItem('auth_token');
+        if (!cancelled) {
+          router.replace('/login');
+        }
+      }
+    };
+
+    void verifyAuth();
+
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   useEffect(() => {
@@ -57,6 +78,10 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
     setCookie(SIDEBAR_COOKIE_NAME, 'false');
   };
 
+  if (!isInitialized) {
+    return null;
+  }
+
   return (
     <div className="flex h-screen bg-background" suppressHydrationWarning>
       <div className="fixed top-0 left-0 right-0 z-40">
@@ -77,5 +102,4 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
     </div>
   );
 }
-
 
