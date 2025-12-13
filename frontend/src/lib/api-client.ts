@@ -1,5 +1,12 @@
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+function resolveApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL; // backwards compatibility
+  if (typeof window !== 'undefined') return window.location.origin;
+  return 'http://localhost:8080';
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 type FetchOptions = RequestInit & {
   params?: Record<string, string | number | boolean | undefined | null>;
@@ -105,4 +112,3 @@ export const apiClient = {
   delete: <T>(endpoint: string, options?: FetchOptions) =>
     request<T>(endpoint, { ...options, method: 'DELETE' }),
 };
-

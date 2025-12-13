@@ -1,4 +1,4 @@
-import { apiClient } from '../api-client';
+import { apiClient, API_BASE_URL } from '../api-client';
 
 export interface ImageUploadResponse {
   attachFileSeq: number;
@@ -18,7 +18,7 @@ export function buildImageUrl(url: string): string {
     return url;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+  const baseUrl = API_BASE_URL;
   if (url.startsWith('/')) {
     return `${baseUrl}${url}`;
   }

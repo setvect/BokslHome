@@ -3,7 +3,7 @@
  * Functions for communicating with the backend Board Article API
  */
 
-import { apiClient } from '../api-client';
+import { apiClient, API_BASE_URL } from '../api-client';
 import type {
   BoardArticleRequest,
   BoardArticleResponse,
@@ -118,8 +118,7 @@ export async function downloadAttachment(
   attachFileSeq: number,
   fileName: string
 ): Promise<void> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-  const url = `${baseUrl}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
+  const url = `${API_BASE_URL}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
 
   // Get token from localStorage (using the same key as api-client.ts)
   const token = localStorage.getItem('auth_token');
@@ -169,6 +168,5 @@ export async function downloadAttachment(
  * @deprecated Use downloadAttachment function for authenticated downloads
  */
 export function getAttachmentDownloadUrl(boardArticleSeq: number, attachFileSeq: number): string {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-  return `${baseUrl}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
+  return `${API_BASE_URL}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
 }
