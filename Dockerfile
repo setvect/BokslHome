@@ -15,6 +15,11 @@ RUN npm ci
 
 # 소스 복사 및 빌드
 COPY frontend .
+# Build-time API base URL (override with --build-arg)
+ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 RUN npm run build
@@ -102,7 +107,7 @@ cd /app/frontend\n\
 export NODE_ENV=production\n\
 export PORT=3000\n\
 export HOSTNAME="0.0.0.0"\n\
-export NEXT_PUBLIC_API_URL=http://localhost:8080\n\
+export NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}\n\
 \n\
 echo "=========================================="\n\
 echo "서버 시작 완료!"\n\
@@ -135,4 +140,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 
 # 시작 스크립트 실행
 CMD ["./start.sh"]
-
