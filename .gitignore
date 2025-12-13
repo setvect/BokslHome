@@ -34,6 +34,7 @@ Thumbs.db
 
 # Docker
 data/
+offline-dist/
 
 # Backup files
 *.bak
