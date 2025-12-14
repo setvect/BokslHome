@@ -90,7 +90,7 @@ class AttachFileService(
         }
 
         attachFile.forEach {
-            val file = bokslProperties.getAttachFilePath().resolve(it.saveName)
+            val file = File(bokslProperties.getAttachFilePath(), it.saveName)
             log.info("첨부파일 삭제: ${file.absolutePath}")
             file.delete()
         }
@@ -110,7 +110,7 @@ class AttachFileService(
             throw UserGuideException(UserGuideException.FORBIDDEN, UserGuideCode.PermissionDenied)
         }
 
-        val file = bokslProperties.getAttachFilePath().resolve(attachFile.saveName)
+        val file = File(bokslProperties.getAttachFilePath(), attachFile.saveName)
         if (!file.exists()) {
             log.warn("파일이 없음: {}", file.absolutePath)
             throw UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
