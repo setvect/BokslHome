@@ -78,7 +78,7 @@ function useLotto() {
   useEffect(() => {
     const fetchLotto = async () => {
       try {
-        const data = await apiClient.get<LottoResponse>('/luck/lotto');
+        const data = await apiClient.get<LottoResponse>('/api/lotto');
         
         const generatedGames: LottoGame[] = data.setList.map((set, index) => ({
           id: index + 1,

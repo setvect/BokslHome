@@ -10,8 +10,8 @@
 ## User (`/api/user`)
 *Note: Currently no User Controller exposed other than login*
 
-## Luck (`/luck`)
-- `GET /luck/lotto`
+## Luck (`/api`)
+- `GET /api/lotto`
   - **Response**: `LottoResponse` (`setList`: `[{ numberList: [...] }]`)
   - **Auth**: Admin
   - **Desc**: 로또 번호 생성 (1~5게임)
@@ -138,4 +138,3 @@
 - `GET /hello/echo`
   - **Query**: `message`
   - **Response**: `String`
-

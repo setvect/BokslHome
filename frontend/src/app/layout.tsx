@@ -16,7 +16,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: '복슬홈',
-  description: '복슬포털의 현대화 버전 - 게시판, 지식베이스, 노트, 메모 통합 플랫폼',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

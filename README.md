@@ -100,7 +100,7 @@ docker start bokslhome-app 2>/dev/null || true
 # backend/http-client/bokslhome.http
 
 # 또는 curl
-curl http://localhost:8080/luck/lotto
+curl http://localhost:8080/api/health
 ```
 
 ## 🐛 트러블슈팅
