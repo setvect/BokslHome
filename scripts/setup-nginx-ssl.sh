@@ -18,7 +18,8 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; }
 DOMAIN="${1:-example.com}"
 EMAIL="${2:-}"
 WEBROOT="/var/www/bokslhome"
-NGINX_SITE="/etc/nginx/sites-available/${DOMAIN}"
+# nginx.org 패키지(1.28.x)는 conf.d/*.conf를 사용하므로 여기로 작성
+NGINX_SITE="/etc/nginx/conf.d/${DOMAIN}.conf"
 
 if [ -z "${EMAIL}" ]; then
   error "사용법: sudo $0 <domain> <email>"
@@ -67,10 +68,10 @@ server {
     location /attach/ {
         proxy_pass http://localhost:8080;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
@@ -97,7 +98,6 @@ server {
 }
 EOF
 
-sudo ln -sf "${NGINX_SITE}" "/etc/nginx/sites-enabled/${DOMAIN}"
 sudo nginx -t
 sudo systemctl reload nginx
 success "HTTP 서버블록 적용 완료 (ACME 준비)"
@@ -154,10 +154,10 @@ server {
     location /attach/ {
         proxy_pass http://localhost:8080;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
