@@ -18,10 +18,11 @@ export function buildImageUrl(url: string): string {
     return url;
   }
 
-  const baseUrl = API_BASE_URL;
-  if (url.startsWith('/')) {
-    return `${baseUrl}${url}`;
+  const normalizedPath = url.startsWith('/') ? url : `/${url}`;
+
+  if (typeof window !== 'undefined' && API_BASE_URL === window.location.origin) {
+    return normalizedPath;
   }
 
-  return `${baseUrl}/${url}`;
+  return `${API_BASE_URL}${normalizedPath}`;
 }
