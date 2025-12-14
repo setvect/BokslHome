@@ -1,12 +1,8 @@
 package com.setvect.bokslhome.app.user.controller
 
-import com.setvect.bokslhome.app.user.model.UserInfo
 import com.setvect.bokslhome.app.user.service.LoginService
-import com.setvect.bokslhome.app.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,11 +13,11 @@ data class LoginRequest(val username: String, val password: String) {
 }
 
 data class LoginResponse(val token: String)
+data class AuthStatusResponse(val authenticated: Boolean = true)
 
 @RestController
 class LoginController(
     private val loginService: LoginService,
-    private val userService: UserService
 ) {
     @PostMapping("/api/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
@@ -30,8 +26,7 @@ class LoginController(
     }
 
     @GetMapping("/api/auth/me")
-    fun me(@AuthenticationPrincipal user: UserDetails): ResponseEntity<UserInfo> {
-        val userInfo = userService.getUser(user.username)
-        return ResponseEntity.ok(userInfo)
+    fun me(): ResponseEntity<AuthStatusResponse> {
+        return ResponseEntity.ok(AuthStatusResponse())
     }
 }

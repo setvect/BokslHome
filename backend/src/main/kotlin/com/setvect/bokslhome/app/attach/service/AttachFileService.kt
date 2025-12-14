@@ -15,6 +15,7 @@ import java.util.UUID
 import org.apache.commons.io.FilenameUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.io.File
 
 @Service
 class AttachFileService(
@@ -22,7 +23,11 @@ class AttachFileService(
     private val attachRepository: AttachRepository
 ) {
     private val log = LoggerFactory.getLogger(AttachFileService::class.java)
-    fun storeAttach(attachFileTransferDaoList: List<AttachFileTransferDao>, attachFileModule: AttachFileModule, moduleId: String): List<AttachFileEntity> {
+    fun storeAttach(
+        attachFileTransferDaoList: List<AttachFileTransferDao>,
+        attachFileModule: AttachFileModule,
+        moduleId: String
+    ): List<AttachFileEntity> {
         val today = LocalDate.now()
         val datePath = today.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
@@ -66,7 +71,7 @@ class AttachFileService(
         if (attachFile.moduleName != module || attachFile.moduleId != moduleId) {
             throw UserGuideException(UserGuideException.FORBIDDEN, UserGuideCode.PermissionDenied)
         }
-        val file = bokslProperties.getAttachFilePath().resolve(attachFile.saveName)
+        val file = File(bokslProperties.getAttachFilePath(), attachFile.saveName)
         if (!file.exists()) {
             log.warn("파일이 없음: {}", file.absolutePath)
             throw UserGuideException(UserGuideException.RESOURCE_NOT_FOUND, UserGuideCode.NotFund)
