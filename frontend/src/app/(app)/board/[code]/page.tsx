@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
 import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
@@ -20,20 +20,10 @@ interface BoardCodePageProps {
 export default function BoardCodePage({ params }: BoardCodePageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [code, setCode] = useState<string | null>(() => {
-    const maybeParams = params as unknown as { code?: string };
-    return typeof maybeParams?.code === 'string' ? maybeParams.code : null;
-  });
+  const { code } = use(params);
 
   const headerTitle = (boardSettings: BoardManagerResponse | null, currentCode: string | null) =>
     boardSettings?.name ?? getBoardNameByCode(currentCode) ?? '게시판';
-
-  // Unwrap params
-  useEffect(() => {
-    params.then((p) => {
-      setCode(p.code);
-    });
-  }, [params]);
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [articles, setArticles] = useState<BoardArticleResponse[]>([]);

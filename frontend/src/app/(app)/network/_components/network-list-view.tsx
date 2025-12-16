@@ -104,11 +104,11 @@ export function NetworkListView({
         </section>
 
         <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
-          <Table>
+          <Table className="table-fixed">
             <TableHeader className="bg-muted/40">
               <TableRow>
                 <TableHead className="w-16 text-center">#</TableHead>
-                <TableHead>제목</TableHead>
+                <TableHead className="w-auto">제목</TableHead>
                 <TableHead className="w-32 text-center">수정일</TableHead>
                 <TableHead className="w-28 text-center">삭제</TableHead>
               </TableRow>
@@ -132,10 +132,10 @@ export function NetworkListView({
                     <TableCell className="text-center font-semibold text-muted-foreground">
                       {getRowNumber(index)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="max-w-0">
                       <Link
                         href={buildDetailUrl(network.networkSeq)}
-                        className="text-primary hover:underline"
+                        className="block truncate text-sky-600 hover:underline"
                       >
                         {network.title}
                       </Link>

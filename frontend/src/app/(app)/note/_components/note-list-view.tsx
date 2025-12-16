@@ -252,12 +252,12 @@ export function NoteListView() {
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader className="bg-muted/40">
             <TableRow>
               <TableHead className="w-16 text-center">#</TableHead>
               <TableHead className="w-32 text-center">분류</TableHead>
-              <TableHead>제목</TableHead>
+              <TableHead className="w-auto">제목</TableHead>
               <TableHead className="w-24 text-center">마크다운</TableHead>
               <TableHead className="w-32 text-center">날짜</TableHead>
             </TableRow>
@@ -290,8 +290,8 @@ export function NoteListView() {
                   <TableRow key={note.noteSeq} className="text-sm">
                     <TableCell className="text-center font-semibold text-muted-foreground">{note.noteSeq}</TableCell>
                     <TableCell className="text-center">{categoryName}</TableCell>
-                    <TableCell>
-                      <Link href={getDetailUrl(note.noteSeq)} className="text-sky-600 hover:underline">
+                    <TableCell className="max-w-0">
+                      <Link href={getDetailUrl(note.noteSeq)} className="block truncate text-sky-600 hover:underline">
                         {note.title}
                       </Link>
                     </TableCell>

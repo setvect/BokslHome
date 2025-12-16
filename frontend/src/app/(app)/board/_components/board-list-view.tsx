@@ -223,11 +223,11 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
   return (
     <>
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader className="bg-muted/40">
             <TableRow>
               <TableHead className="w-16 text-center">#</TableHead>
-              <TableHead>제목</TableHead>
+              <TableHead className="w-auto">제목</TableHead>
               <TableHead className="w-40 text-center">날짜</TableHead>
               <TableHead className="w-32 text-center">기능</TableHead>
             </TableRow>
@@ -241,11 +241,11 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
               return (
                 <TableRow key={article.boardArticleSeq} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/30">
                   <TableCell className="text-center text-sm text-muted-foreground">{number}</TableCell>
-                  <TableCell>
-                    <Link href={detailHref} className="flex items-center gap-2 text-primary hover:underline">
-                      <span>{article.title}</span>
+                  <TableCell className="max-w-0">
+                    <Link href={detailHref} className="flex min-w-0 items-center gap-2 text-sky-600 hover:underline">
+                      <span className="truncate">{article.title}</span>
                       {article.encryptF ? (
-                        <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
+                        <span className="flex-shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
                       ) : null}
                     </Link>
                   </TableCell>
