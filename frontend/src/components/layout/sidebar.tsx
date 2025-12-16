@@ -24,7 +24,6 @@ import {
   PawPrint
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BOARD_MENU_ITEMS } from '@/lib/constants/board';
 import { cn } from '@/lib/utils';
 
 export interface SidebarProps {
@@ -40,24 +39,25 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-const BOARD_ICON_MAP: Record<string, MenuItem['icon']> = {
-  BDAAAA01: FileText,
-  BDAAAA02: BookOpen,
-  BDAAAA03: Music,
-  BDAAAA04: Film,
-  BDAAAA05: Camera,
-  BDAAAA06: Heart,
-  BDAAAA07: Users,
-  BDAAAA08: MessageCircle,
-  BDAAAA09: Sparkles,
-};
+const BOARD_MENU_ITEMS: { code: string; name: string; icon: MenuItem['icon'] }[] = [
+  { code: 'BDAAAA01', name: '글', icon: FileText },
+  { code: 'BDAAAA02', name: '책', icon: BookOpen },
+  { code: 'BDAAAA03', name: '음악', icon: Music },
+  { code: 'BDAAAA04', name: '영화', icon: Film },
+  { code: 'BDAAAA05', name: '사진', icon: Camera },
+  { code: 'BDAAAA06', name: '기억', icon: Heart },
+  { code: 'BDAAAA07', name: '인연', icon: Users },
+  { code: 'BDAAAA08', name: '잡담', icon: MessageCircle },
+  { code: 'BDAAAA09', name: '꿈', icon: Sparkles },
+  { code: 'BDAAAA12', name: '계획', icon: StickyNote },
+];
 
 const boardChildren: MenuItem[] = [
   { name: '게시판 관리', href: '/board-manage', icon: Settings },
   ...BOARD_MENU_ITEMS.map((board) => ({
     name: board.name,
     href: `/board/${board.code}`,
-    icon: BOARD_ICON_MAP[board.code] ?? FileText,
+    icon: board.icon ?? FileText,
   })),
 ];
 

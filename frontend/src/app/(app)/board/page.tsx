@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
-import { DEFAULT_BOARD_CODE } from '@/lib/constants/board';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
+import type { BoardCode } from '@/lib/types/board';
 
 import { BoardListView } from './_components/board-list-view';
 
@@ -15,7 +15,7 @@ export default function BoardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const code = DEFAULT_BOARD_CODE;
+  const code: BoardCode = 'BDAAAA01';
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [articles, setArticles] = useState<BoardArticleResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
