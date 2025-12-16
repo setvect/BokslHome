@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
+import { DEFAULT_BOARD_CODE, getBoardNameByCode } from '@/lib/constants/board-menu';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 import type { BoardCode } from '@/lib/types/board';
@@ -15,7 +16,10 @@ export default function BoardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const code: BoardCode = 'BDAAAA01';
+  const code: BoardCode = DEFAULT_BOARD_CODE;
+  const defaultBoardName = getBoardNameByCode(code) ?? '게시판';
+  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
+    boardSettings?.name ?? defaultBoardName;
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [articles, setArticles] = useState<BoardArticleResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -134,7 +138,7 @@ export default function BoardPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
         </header>
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           로딩 중...
@@ -146,7 +150,7 @@ export default function BoardPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{boardSettings.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
       </header>
 
       {error ? (

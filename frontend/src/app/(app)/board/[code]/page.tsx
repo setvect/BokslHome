@@ -7,6 +7,7 @@ import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
+import { BOARD_MENU_ITEMS, getBoardNameByCode } from '@/lib/constants/board-menu';
 
 import { BoardListView } from '../_components/board-list-view';
 
@@ -19,7 +20,13 @@ interface BoardCodePageProps {
 export default function BoardCodePage({ params }: BoardCodePageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [code, setCode] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(() => {
+    const maybeParams = params as unknown as { code?: string };
+    return typeof maybeParams?.code === 'string' ? maybeParams.code : null;
+  });
+
+  const headerTitle = (boardSettings: BoardManagerResponse | null, currentCode: string | null) =>
+    boardSettings?.name ?? getBoardNameByCode(currentCode) ?? '게시판';
 
   // Unwrap params
   useEffect(() => {
@@ -159,7 +166,7 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings, code)}</h1>
         </header>
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           로딩 중...
@@ -172,7 +179,7 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">{boardSettings?.name || '게시판'}</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings, code)}</h1>
         </header>
         <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
@@ -184,7 +191,7 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{boardSettings.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings, code)}</h1>
       </header>
 
       {error ? (
