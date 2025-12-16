@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
-import type { BoardCategory } from '@/lib/types/board';
+import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
 const SEARCH_FIELDS: { label: string; value: SearchType }[] = [
   { label: '제목', value: 'TITLE' },
@@ -20,7 +20,7 @@ const SEARCH_FIELDS: { label: string; value: SearchType }[] = [
 ];
 
 type BoardListViewProps = {
-  category: BoardCategory;
+  category: BoardManagerResponse;
   articles: BoardArticleResponse[];
   isLoading: boolean;
   currentPage: number;
@@ -98,7 +98,7 @@ export function BoardListView({
 }
 
 type BoardListFilterBarProps = {
-  category: BoardCategory;
+  category: BoardManagerResponse;
   searchType: SearchType;
   searchWord: string;
   onSearch: (type: SearchType, word: string) => void;
@@ -158,7 +158,7 @@ function BoardListFilterBar({ category, searchType, searchWord, onSearch }: Boar
 }
 
 type BoardTableProps = {
-  category: BoardCategory;
+  category: BoardManagerResponse;
   articles: BoardArticleResponse[];
   page: number;
   pageSize: number;

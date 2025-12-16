@@ -13,6 +13,7 @@ export default function BoardDetailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const boardCode = params.code as string;
+  const PAGE_TITLE = '게시판 관리';
 
   const [board, setBoard] = useState<BoardManagerResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,7 +60,7 @@ export default function BoardDetailPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판 상세</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
         </header>
         <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
           로딩 중...
@@ -72,7 +73,7 @@ export default function BoardDetailPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판 상세</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
         </header>
         <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error || '게시판을 찾을 수 없습니다.'}
@@ -87,7 +88,7 @@ export default function BoardDetailPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{board.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
       </header>
 
       <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">

@@ -9,12 +9,12 @@ import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { deleteBoardArticle } from '@/lib/api/board-article-api-client';
 import type { BoardArticleResponse } from '@/lib/types/board-article-api';
-import type { BoardCategory } from '@/lib/types/board';
+import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
 import { BoardPasswordGate } from './board-password-gate';
 
 type BoardDetailViewProps = {
-  category: BoardCategory;
+  category: BoardManagerResponse;
   article: BoardArticleResponse;
   searchParams: ReadonlyURLSearchParams;
 };

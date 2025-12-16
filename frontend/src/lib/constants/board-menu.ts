@@ -11,7 +11,8 @@ import {
   StickyNote,
   Users,
 } from 'lucide-react';
-import type { BoardCode } from '../types/board';
+
+export type BoardCode = string;
 
 export const DEFAULT_BOARD_CODE: BoardCode = 'BDAAAA01';
 

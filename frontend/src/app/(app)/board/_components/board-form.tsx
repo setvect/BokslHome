@@ -10,12 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createBoardArticle, updateBoardArticle } from '@/lib/api/board-article-api-client';
 import type { BoardArticleRequest, BoardArticleResponse, ContentType } from '@/lib/types/board-article-api';
-import type { BoardCategory } from '@/lib/types/board';
+import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
 type BoardFormMode = 'create' | 'edit';
 
 type BoardFormProps = {
-  category: BoardCategory;
+  category: BoardManagerResponse;
   article?: BoardArticleResponse;
   mode: BoardFormMode;
   searchParams?: ReadonlyURLSearchParams;

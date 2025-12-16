@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
+import { getBoardNameByCode } from '@/lib/constants/board-menu';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
 import { BoardForm } from '../../_components/board-form';
@@ -11,6 +12,9 @@ import { BoardForm } from '../../_components/board-form';
 export default function BoardWritePage() {
   const params = useParams();
   const code = params.code as string;
+  const fallbackTitle = getBoardNameByCode(code) ?? '게시판';
+  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
+    boardSettings?.name ?? fallbackTitle;
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +44,7 @@ export default function BoardWritePage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
         </header>
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           로딩 중...
@@ -53,7 +57,7 @@ export default function BoardWritePage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">게시판</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
         </header>
         <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error || '게시판을 찾을 수 없습니다.'}
@@ -65,7 +69,7 @@ export default function BoardWritePage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{boardSettings.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
       </header>
       <BoardForm category={boardSettings} mode="create" />
     </div>

@@ -5,10 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { getBoardArticlePage } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
-import { DEFAULT_BOARD_CODE, getBoardNameByCode } from '@/lib/constants/board-menu';
+import { DEFAULT_BOARD_CODE, getBoardNameByCode, type BoardCode } from '@/lib/constants/board-menu';
 import type { BoardArticleResponse, SearchType } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
-import type { BoardCode } from '@/lib/types/board';
 
 import { BoardListView } from './_components/board-list-view';
 

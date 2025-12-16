@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { getBoardArticle } from '@/lib/api/board-article-api-client';
 import { getBoardManager } from '@/lib/api/board-manage-api-client';
+import { getBoardNameByCode } from '@/lib/constants/board-menu';
 import type { BoardArticleResponse } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
@@ -15,6 +16,9 @@ export default function BoardDetailPage() {
   const searchParams = useSearchParams();
   const code = params.code as string;
   const postId = Number(params.postId);
+  const fallbackTitle = getBoardNameByCode(code) ?? '게시판';
+  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
+    boardSettings?.name ?? fallbackTitle;
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [article, setArticle] = useState<BoardArticleResponse | null>(null);
@@ -66,7 +70,7 @@ export default function BoardDetailPage() {
     return (
       <>
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">{boardSettings?.name || '게시판'}</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
         </header>
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           로딩 중...
@@ -79,7 +83,7 @@ export default function BoardDetailPage() {
     return (
       <>
         <header>
-          <h1 className="text-3xl font-semibold text-foreground">{boardSettings?.name || '게시판'}</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
         </header>
         <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error || '게시글을 찾을 수 없습니다.'}
@@ -91,7 +95,7 @@ export default function BoardDetailPage() {
   return (
     <>
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">{boardSettings.name}</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings)}</h1>
       </header>
       <BoardDetailView category={boardSettings} article={article} searchParams={searchParams} />
     </>

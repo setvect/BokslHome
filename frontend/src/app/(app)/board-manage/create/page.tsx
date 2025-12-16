@@ -10,6 +10,7 @@ import { BoardForm, type BoardFormValues } from '../_components/board-manage-for
 export default function BoardCreatePage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const PAGE_TITLE = '게시판 관리';
 
   const handleSubmit = async (values: BoardFormValues) => {
     try {
@@ -36,7 +37,7 @@ export default function BoardCreatePage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-foreground">게시판 만들기</h1>
+        <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
       </header>
 
       {error && (
