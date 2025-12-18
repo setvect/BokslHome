@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useRouter, type ReadonlyURLSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import type * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { Button } from '@/components/ui/button';
 import { deleteBoardArticle } from '@/lib/api/board-article-api-client';
+import { API_BASE_URL } from '@/lib/api-client';
 import type { BoardArticleResponse } from '@/lib/types/board-article-api';
 import type { BoardManagerResponse } from '@/lib/types/board-manage-api';
 
@@ -19,6 +21,23 @@ type BoardDetailViewProps = {
   searchParams: ReadonlyURLSearchParams;
 };
 
+const IMAGE_FILE_EXTENSIONS = new Set([
+  'avif',
+  'bmp',
+  'gif',
+  'jpeg',
+  'jpg',
+  'png',
+  'svg',
+  'webp',
+]);
+
+function isImageFileName(fileName: string): boolean {
+  const match = /\.([a-z0-9]+)$/i.exec(fileName.trim());
+  if (!match) return false;
+  return IMAGE_FILE_EXTENSIONS.has(match[1].toLowerCase());
+}
+
 export function BoardDetailView({ category, article, searchParams }: BoardDetailViewProps) {
   const router = useRouter();
   const [currentArticle, setCurrentArticle] = useState(article);
@@ -26,6 +45,11 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoadingDecryption, setIsLoadingDecryption] = useState(false);
+
+  const imageAttachments = useMemo(() => {
+    const attachments = currentArticle.attachFileList ?? [];
+    return attachments.filter((file) => isImageFileName(file.originalName));
+  }, [currentArticle.attachFileList]);
 
   const handlePasswordSubmit = async (decryptKey: string) => {
     setIsLoadingDecryption(true);
@@ -169,6 +193,31 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
                   </div>
                 ))}
               </div>
+
+              {imageAttachments.length > 0 && (
+                <div className="space-y-3 pt-4">
+                  <h4 className="text-sm font-medium text-foreground">첨부 이미지</h4>
+                  <div className="space-y-5">
+                    {imageAttachments.map((file) => {
+                      const imageUrl = `${API_BASE_URL}/api/image/view/board/${currentArticle.boardArticleSeq}/${file.attachFileSeq}`;
+
+                      return (
+                        <figure key={file.attachFileSeq} className="space-y-2">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={imageUrl}
+                            alt={file.originalName}
+                            loading="lazy"
+                            className="max-h-[720px] w-full rounded-2xl border border-border bg-background object-contain"
+                          />
+
+                          <figcaption className="text-xs text-muted-foreground">{file.originalName}</figcaption>
+                        </figure>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

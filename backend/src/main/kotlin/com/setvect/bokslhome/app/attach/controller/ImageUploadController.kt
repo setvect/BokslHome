@@ -5,13 +5,13 @@ import com.setvect.bokslhome.app.attach.model.ImageUploadResponse
 import com.setvect.bokslhome.app.attach.service.AttachFileHelper
 import com.setvect.bokslhome.app.attach.service.AttachFileService
 import jakarta.servlet.http.HttpServletResponse
+import java.io.File
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -23,6 +23,27 @@ class ImageUploadController(
     private val attachFileService: AttachFileService
 ) {
     private val log = LoggerFactory.getLogger(ImageUploadController::class.java)
+
+    private fun writeInlineImage(response: HttpServletResponse, originalName: String, file: File) {
+        response.contentType = when (file.extension.lowercase()) {
+            "jpg", "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "gif" -> "image/gif"
+            "webp" -> "image/webp"
+            "svg" -> "image/svg+xml"
+            "avif" -> "image/avif"
+            "bmp" -> "image/bmp"
+            else -> "application/octet-stream"
+        }
+        response.setContentLength(file.length().toInt())
+        response.setHeader("Content-Disposition", "inline; filename=\"$originalName\"")
+
+        file.inputStream().use { input ->
+            response.outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
 
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,22 +81,27 @@ class ImageUploadController(
         val attachFile = attachFileService.getImageFile(attachFileSeq)
 
         // 이미지를 inline으로 표시 (다운로드가 아닌 브라우저에서 직접 표시)
-        response.contentType = attachFile.file.let { file ->
-            when (file.extension.lowercase()) {
-                "jpg", "jpeg" -> "image/jpeg"
-                "png" -> "image/png"
-                "gif" -> "image/gif"
-                "webp" -> "image/webp"
-                else -> "application/octet-stream"
-            }
-        }
-        response.setContentLength(attachFile.file.length().toInt())
-        response.setHeader("Content-Disposition", "inline; filename=\"${attachFile.originalName}\"")
+        writeInlineImage(response, attachFile.originalName, attachFile.file)
+    }
 
-        attachFile.file.inputStream().use { input ->
-            response.outputStream.use { output ->
-                input.copyTo(output)
-            }
+    @GetMapping("/view/board/{boardArticleSeq}/{attachFileSeq}")
+    fun viewBoardImage(
+        @PathVariable boardArticleSeq: Int,
+        @PathVariable attachFileSeq: Int,
+        response: HttpServletResponse
+    ) {
+        log.info("Board 이미지 조회 요청: boardArticleSeq=$boardArticleSeq, attachFileSeq=$attachFileSeq")
+        val attachFile = attachFileService.getAttachFile(
+            attachFileSeq,
+            AttachFileModule.BOARD,
+            boardArticleSeq.toString()
+        )
+        val ext = attachFile.file.extension.lowercase()
+        val imageExtensions = setOf("jpg", "jpeg", "png", "gif", "webp", "svg", "avif", "bmp")
+        if (ext !in imageExtensions) {
+            response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
+            return
         }
+        writeInlineImage(response, attachFile.originalName, attachFile.file)
     }
 }
