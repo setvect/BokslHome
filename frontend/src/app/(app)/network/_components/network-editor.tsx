@@ -888,6 +888,7 @@ function NodeEditorDialog({ state, node, onClose, onAdd, onUpdate }: NodeEditorD
 
   const title = isAdd ? '노드 추가' : '노드 수정';
   const showEdgeLabel = Boolean(connectFromNodeId);
+  const canOk = isAdd || Boolean(node);
 
   function handleOk() {
     if (isAdd) {
@@ -913,6 +914,26 @@ function NodeEditorDialog({ state, node, onClose, onAdd, onUpdate }: NodeEditorD
       color,
     });
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key !== 'Enter') {
+        return;
+      }
+      event.preventDefault();
+      if (canOk) {
+        handleOk();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, canOk, label, shape, color, edgeLabel, node?.id]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : null)}>
@@ -1013,7 +1034,7 @@ function NodeEditorDialog({ state, node, onClose, onAdd, onUpdate }: NodeEditorD
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="button" onClick={handleOk} disabled={!isAdd && !node}>
+          <Button type="button" onClick={handleOk} disabled={!canOk}>
             OK
           </Button>
         </DialogFooter>
@@ -1037,6 +1058,7 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
   const [to, setTo] = useState<string>('');
   const [dashes, setDashes] = useState(false);
   const [color, setColor] = useState<string>(EDGE_COLORS[0]);
+  const canOk = Boolean(edge);
 
   useEffect(() => {
     if (!isOpen || !edge) {
@@ -1062,6 +1084,26 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
       color,
     });
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key !== 'Enter') {
+        return;
+      }
+      event.preventDefault();
+      if (canOk) {
+        handleOk();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, canOk, label, from, to, dashes, color, edge?.id]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : null)}>
@@ -1164,7 +1206,7 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="button" onClick={handleOk} disabled={!edge}>
+          <Button type="button" onClick={handleOk} disabled={!canOk}>
             OK
           </Button>
         </DialogFooter>
