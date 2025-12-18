@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, CirclePlus, Link2, MousePointerClick, Redo2, Undo2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,6 +24,39 @@ const NODE_SHAPES: { label: string; value: RelationshipNodeData['shape'] }[] = [
 
 const NODE_COLORS = ['#ffffcc', '#ffffff', '#ccff66', '#d9f99d', '#bae6fd', '#fef9c3', '#fee2e2', '#e9d5ff', '#f97316', '#facc15', '#84cc16', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#ef4444'];
 const EDGE_COLORS = ['#777777', '#334155', '#0ea5e9', '#22c55e', '#f97316', '#b91c1c', '#a855f7', '#d946ef'];
+
+type GraphContextMenuState = {
+  open: boolean;
+  clientX: number;
+  clientY: number;
+  canvasX: number;
+  canvasY: number;
+};
+
+type NodeModalState =
+  | {
+      open: true;
+      mode: 'add';
+      position: { x: number; y: number };
+      connectFromNodeId: string | null;
+    }
+  | {
+      open: true;
+      mode: 'edit';
+      nodeId: string;
+    }
+  | {
+      open: false;
+    };
+
+type EdgeModalState =
+  | {
+      open: true;
+      edgeId: string;
+    }
+  | {
+      open: false;
+    };
 
 type NetworkEditorProps = {
   initialNodes: RelationshipNodeData[];
@@ -49,6 +84,15 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
   const [edgeDraft, setEdgeDraft] = useState<{ from: string | null }>({ from: null });
   const [editorHeight, setEditorHeight] = useState<number | null>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const [contextMenu, setContextMenu] = useState<GraphContextMenuState>({
+    open: false,
+    clientX: 0,
+    clientY: 0,
+    canvasX: 0,
+    canvasY: 0,
+  });
+  const [nodeModal, setNodeModal] = useState<NodeModalState>({ open: false });
+  const [edgeModal, setEdgeModal] = useState<EdgeModalState>({ open: false });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isInitialMount = useRef(true);
 
@@ -161,6 +205,44 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     setEdgeDraft({ from: null });
   }
 
+  function handleGraphContextMenu(params: {
+    clientX: number;
+    clientY: number;
+    pointer: { dom: { x: number; y: number }; canvas: { x: number; y: number } };
+    nodeId: string | null;
+    edgeId: string | null;
+  }) {
+    if (params.nodeId) {
+      setSelection({ type: 'node', id: params.nodeId });
+    } else if (params.edgeId) {
+      setSelection({ type: 'edge', id: params.edgeId });
+    }
+
+    setContextMenu({
+      open: true,
+      clientX: params.clientX,
+      clientY: params.clientY,
+      canvasX: params.pointer.canvas.x,
+      canvasY: params.pointer.canvas.y,
+    });
+  }
+
+  function handleGraphDoubleClick(params: { nodeId: string | null; edgeId: string | null }) {
+    handleModeChange('select');
+    closeContextMenu();
+
+    if (params.nodeId) {
+      setSelection({ type: 'node', id: params.nodeId });
+      setNodeModal({ open: true, mode: 'edit', nodeId: params.nodeId });
+      return;
+    }
+
+    if (params.edgeId) {
+      setSelection({ type: 'edge', id: params.edgeId });
+      setEdgeModal({ open: true, edgeId: params.edgeId });
+    }
+  }
+
   function handleNodeUpdate(nodeId: string, partial: Partial<RelationshipNodeData>) {
     setGraphData((prev) => ({
       ...prev,
@@ -218,6 +300,96 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     }
   }
 
+  function closeContextMenu() {
+    setContextMenu((prev) => ({ ...prev, open: false }));
+  }
+
+  function openAddNodeModal() {
+    handleModeChange('select');
+    const connectFromNodeId = selection?.type === 'node' ? selection.id : null;
+    setNodeModal({
+      open: true,
+      mode: 'add',
+      position: { x: contextMenu.canvasX, y: contextMenu.canvasY },
+      connectFromNodeId,
+    });
+  }
+
+  function openEditModal() {
+    handleModeChange('select');
+    if (selection?.type === 'node') {
+      setNodeModal({ open: true, mode: 'edit', nodeId: selection.id });
+      return;
+    }
+    if (selection?.type === 'edge') {
+      setEdgeModal({ open: true, edgeId: selection.id });
+    }
+  }
+
+  function handleDeleteSelection() {
+    if (selection?.type === 'node') {
+      handleDeleteNode(selection.id);
+      return;
+    }
+    if (selection?.type === 'edge') {
+      handleDeleteEdge(selection.id);
+    }
+  }
+
+  function startAddEdgeFromSelection() {
+    const from = selection?.type === 'node' ? selection.id : null;
+    setMode('addEdge');
+    setEdgeDraft({ from });
+  }
+
+  function handleAddNodeFromModal(values: {
+    label: string;
+    shape: RelationshipNodeData['shape'];
+    color: string;
+    position: { x: number; y: number };
+    connectFromNodeId: string | null;
+    edgeLabel: string;
+  }) {
+    const newNode: RelationshipNodeData = {
+      id: createId('node'),
+      label: values.label.trim() ? values.label : '노드',
+      shape: values.shape,
+      color: values.color,
+      x: values.position.x,
+      y: values.position.y,
+    };
+
+    const connectFrom = values.connectFromNodeId;
+    const newEdge: RelationshipEdgeData | null = connectFrom
+      ? {
+          id: createId('edge'),
+          from: connectFrom,
+          to: newNode.id,
+          label: values.edgeLabel ?? '',
+          color: EDGE_COLORS[0],
+          dashes: false,
+        }
+      : null;
+
+    setGraphData((prev) => ({
+      nodes: [...prev.nodes, newNode],
+      edges: newEdge ? [...prev.edges, newEdge] : prev.edges,
+    }));
+
+    setSelection({ type: 'node', id: newNode.id });
+    setNodeModal({ open: false });
+  }
+
+  function handleUpdateNodeFromModal(nodeId: string, partial: Partial<RelationshipNodeData>) {
+    handleNodeUpdate(nodeId, partial);
+    setNodeModal({ open: false });
+  }
+
+  function handleUpdateEdgeFromModal(edgeId: string, partial: Partial<RelationshipEdgeData>) {
+    handleEdgeUpdate(edgeId, partial);
+    setEdgeModal({ open: false });
+  }
+
   const edgeModeHint =
     mode === 'addEdge'
       ? edgeDraft.from
@@ -252,6 +424,67 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     <div ref={containerRef} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className="mt-2 flex flex-col gap-4 lg:flex-row" style={panelStyle}>
         <div className="flex-1 min-h-[420px]" style={panelStyle}>
+          <DropdownMenu
+            open={contextMenu.open}
+            onOpenChange={(open) => setContextMenu((prev) => ({ ...prev, open }))}
+          >
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-hidden="true"
+                tabIndex={-1}
+                className="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
+                style={{ left: contextMenu.clientX, top: contextMenu.clientY }}
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" side="right" sideOffset={2} className="w-40">
+              <DropdownMenuItem
+                className="text-sky-600 data-[highlighted]:text-sky-700"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  closeContextMenu();
+                  openAddNodeModal();
+                }}
+              >
+                노드 추가
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-sky-600 data-[highlighted]:text-sky-700"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  closeContextMenu();
+                  startAddEdgeFromSelection();
+                }}
+              >
+                연결선 추가
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                disabled={!selection}
+                className="text-sky-600 data-[highlighted]:text-sky-700"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  closeContextMenu();
+                  openEditModal();
+                }}
+              >
+                수정
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                disabled={!selection}
+                variant="destructive"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  closeContextMenu();
+                  handleDeleteSelection();
+                }}
+              >
+                제거
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <RelationshipGraph
             nodes={nodes}
             edges={edges}
@@ -260,6 +493,8 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
             onCanvasClick={handleCanvasClick}
             onNodeClick={handleNodeClick}
             onEdgeClick={handleEdgeClick}
+            onContextMenu={handleGraphContextMenu}
+            onDoubleClick={handleGraphDoubleClick}
             onNodePositionChange={handleNodePositionChange}
             className="h-full w-full rounded-2xl border border-dashed border-border bg-muted/30"
           />
@@ -356,6 +591,22 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
           </div>
         )}
       </div>
+
+      <NodeEditorDialog
+        state={nodeModal}
+        node={nodeModal.open && nodeModal.mode === 'edit' ? nodes.find((node) => node.id === nodeModal.nodeId) ?? null : null}
+        onClose={() => setNodeModal({ open: false })}
+        onAdd={handleAddNodeFromModal}
+        onUpdate={handleUpdateNodeFromModal}
+      />
+
+      <EdgeEditorDialog
+        state={edgeModal}
+        edge={edgeModal.open ? edges.find((edge) => edge.id === edgeModal.edgeId) ?? null : null}
+        nodes={sortedNodeOptions}
+        onClose={() => setEdgeModal({ open: false })}
+        onUpdate={handleUpdateEdgeFromModal}
+      />
     </div>
   );
 }
@@ -581,6 +832,344 @@ function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelPro
         연결선 삭제
       </Button>
     </div>
+  );
+}
+
+type NodeEditorDialogProps = {
+  state: NodeModalState;
+  node: RelationshipNodeData | null;
+  onClose: () => void;
+  onAdd: (values: {
+    label: string;
+    shape: RelationshipNodeData['shape'];
+    color: string;
+    position: { x: number; y: number };
+    connectFromNodeId: string | null;
+    edgeLabel: string;
+  }) => void;
+  onUpdate: (nodeId: string, partial: Partial<RelationshipNodeData>) => void;
+};
+
+function NodeEditorDialog({ state, node, onClose, onAdd, onUpdate }: NodeEditorDialogProps) {
+  const isOpen = state.open;
+  const isAdd = isOpen && state.mode === 'add';
+  const connectFromNodeId = isAdd ? state.connectFromNodeId : null;
+  const [label, setLabel] = useState('');
+  const [shape, setShape] = useState<RelationshipNodeData['shape']>('ellipse');
+  const [color, setColor] = useState<string>(NODE_COLORS[0]);
+  const [edgeLabel, setEdgeLabel] = useState('');
+  const labelInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (isAdd) {
+      setLabel('');
+      setShape('ellipse');
+      setColor(NODE_COLORS[0]);
+      setEdgeLabel('');
+    } else if (node) {
+      setLabel(node.label ?? '');
+      setShape(node.shape ?? 'ellipse');
+      setColor(typeof node.color === 'string' ? node.color : node.color?.background ?? NODE_COLORS[0]);
+      setEdgeLabel('');
+    }
+  }, [isOpen, isAdd, node?.id]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const id = requestAnimationFrame(() => labelInputRef.current?.focus());
+    return () => cancelAnimationFrame(id);
+  }, [isOpen]);
+
+  const title = isAdd ? '노드 추가' : '노드 수정';
+  const showEdgeLabel = Boolean(connectFromNodeId);
+
+  function handleOk() {
+    if (isAdd) {
+      onAdd({
+        label,
+        shape,
+        color,
+        position: state.position,
+        connectFromNodeId,
+        edgeLabel,
+      });
+      return;
+    }
+
+    if (!node) {
+      onClose();
+      return;
+    }
+
+    onUpdate(node.id, {
+      label: label.trim() ? label : '노드',
+      shape,
+      color,
+    });
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : null)}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-5">
+          <div>
+            <Label htmlFor="node-dialog-label" className="text-sm font-medium text-foreground">
+              레이블
+            </Label>
+            <Input
+              id="node-dialog-label"
+              ref={labelInputRef}
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+              className="mt-1 h-10"
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block text-sm font-medium text-foreground">모양</Label>
+            <div className="flex flex-wrap gap-4">
+              {NODE_SHAPES.map((option) => {
+                const selected = option.value === shape;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className="flex items-center gap-2"
+                    onClick={() => setShape(option.value)}
+                    aria-pressed={selected}
+                  >
+                    <span
+                      className={cn(
+                        'flex size-4 items-center justify-center rounded-full border',
+                        selected ? 'border-primary' : 'border-border'
+                      )}
+                      aria-hidden="true"
+                    >
+                      <span className={cn('size-2 rounded-full', selected ? 'bg-primary' : 'bg-transparent')} />
+                    </span>
+                    <span className="text-sm text-foreground">{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <Label className="mb-2 block text-sm font-medium text-foreground">색</Label>
+            <div className="flex flex-wrap gap-3">
+              {NODE_COLORS.map((option) => {
+                const selected = option === color;
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    className="flex items-center gap-2"
+                    onClick={() => setColor(option)}
+                    aria-pressed={selected}
+                  >
+                    <span
+                      className={cn(
+                        'flex size-4 items-center justify-center rounded-full border',
+                        selected ? 'border-primary' : 'border-border'
+                      )}
+                      aria-hidden="true"
+                    >
+                      <span className={cn('size-2 rounded-full', selected ? 'bg-primary' : 'bg-transparent')} />
+                    </span>
+                    <span className="h-5 w-5 rounded-sm border border-border" style={{ backgroundColor: option }} aria-hidden="true" />
+                    <span className="sr-only">{option}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {showEdgeLabel ? (
+            <div>
+              <Label htmlFor="node-dialog-edge-label" className="text-sm font-medium text-foreground">
+                연결선 레이블
+              </Label>
+              <Input
+                id="node-dialog-edge-label"
+                value={edgeLabel}
+                onChange={(event) => setEdgeLabel(event.target.value)}
+                className="mt-1 h-10"
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="button" onClick={handleOk} disabled={!isAdd && !node}>
+            OK
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+type EdgeEditorDialogProps = {
+  state: EdgeModalState;
+  edge: RelationshipEdgeData | null;
+  nodes: { value: string; label: string }[];
+  onClose: () => void;
+  onUpdate: (edgeId: string, partial: Partial<RelationshipEdgeData>) => void;
+};
+
+function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorDialogProps) {
+  const isOpen = state.open;
+  const [label, setLabel] = useState('');
+  const [from, setFrom] = useState<string>('');
+  const [to, setTo] = useState<string>('');
+  const [dashes, setDashes] = useState(false);
+  const [color, setColor] = useState<string>(EDGE_COLORS[0]);
+
+  useEffect(() => {
+    if (!isOpen || !edge) {
+      return;
+    }
+    setLabel(edge.label ?? '');
+    setFrom(edge.from);
+    setTo(edge.to);
+    setDashes(edge.dashes ?? false);
+    setColor(typeof edge.color === 'string' ? edge.color : edge.color?.color ?? EDGE_COLORS[0]);
+  }, [isOpen, edge?.id]);
+
+  function handleOk() {
+    if (!edge) {
+      onClose();
+      return;
+    }
+    onUpdate(edge.id, {
+      label,
+      from,
+      to,
+      dashes,
+      color,
+    });
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : null)}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>연결선 수정</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="edge-dialog-label" className="text-sm font-medium text-foreground">
+              레이블
+            </Label>
+            <Input
+              id="edge-dialog-label"
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+              className="mt-1 h-10"
+            />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <Label className="mb-2 block text-sm font-medium text-foreground">시작 노드</Label>
+              <Select value={from} onValueChange={setFrom}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="시작 노드" />
+                </SelectTrigger>
+                <SelectContent>
+                  {nodes.map((nodeOption) => (
+                    <SelectItem key={nodeOption.value} value={nodeOption.value}>
+                      {nodeOption.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="mb-2 block text-sm font-medium text-foreground">도착 노드</Label>
+              <Select value={to} onValueChange={setTo}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="도착 노드" />
+                </SelectTrigger>
+                <SelectContent>
+                  {nodes.map((nodeOption) => (
+                    <SelectItem key={nodeOption.value} value={nodeOption.value}>
+                      {nodeOption.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label className="mb-2 block text-sm font-medium text-foreground">스타일</Label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                className={cn(
+                  'flex-1 rounded-md border px-3 py-2 text-sm',
+                  dashes ? 'border-border text-muted-foreground' : 'border-primary bg-primary/10 text-primary'
+                )}
+                onClick={() => setDashes(false)}
+              >
+                실선
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  'flex-1 rounded-md border px-3 py-2 text-sm',
+                  dashes ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground'
+                )}
+                onClick={() => setDashes(true)}
+              >
+                점선
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <Label className="mb-2 block text-sm font-medium text-foreground">색</Label>
+            <div className="flex flex-wrap gap-3">
+              {EDGE_COLORS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={cn('h-8 w-8 rounded-full border-2', option === color ? 'border-primary' : 'border-border')}
+                  style={{ backgroundColor: option }}
+                  onClick={() => setColor(option)}
+                  aria-label={`edge color ${option}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="button" onClick={handleOk} disabled={!edge}>
+            OK
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

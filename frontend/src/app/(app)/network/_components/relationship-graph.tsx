@@ -22,6 +22,15 @@ type GraphEdge = Omit<RelationshipEdgeData, 'label'> & { label?: string };
 type NetworkPointer = { canvas: { x: number; y: number } };
 type NetworkClickParams = { nodes: Array<string | number>; edges: Array<string | number>; pointer: NetworkPointer };
 type NetworkDragEndParams = { nodes?: Array<string | number>; pointer: NetworkPointer };
+type NetworkDoubleClickParams = NetworkClickParams;
+
+type RelationshipGraphContextMenuParams = {
+  clientX: number;
+  clientY: number;
+  pointer: { dom: { x: number; y: number }; canvas: { x: number; y: number } };
+  nodeId: string | null;
+  edgeId: string | null;
+};
 
 type RelationshipGraphProps = {
   nodes: RelationshipNodeData[];
@@ -31,6 +40,8 @@ type RelationshipGraphProps = {
   onCanvasClick?: (position: { x: number; y: number }) => void;
   onNodeClick?: (nodeId: string, position: { x: number; y: number }) => void;
   onEdgeClick?: (edgeId: string) => void;
+  onContextMenu?: (params: RelationshipGraphContextMenuParams) => void;
+  onDoubleClick?: (params: { nodeId: string | null; edgeId: string | null }) => void;
   onNodePositionChange?: (updates: { id: string; x: number; y: number }[]) => void;
   className?: string;
 };
@@ -43,6 +54,8 @@ export function RelationshipGraph({
   onCanvasClick,
   onNodeClick,
   onEdgeClick,
+  onContextMenu,
+  onDoubleClick,
   onNodePositionChange,
   className,
 }: RelationshipGraphProps) {
@@ -53,6 +66,8 @@ export function RelationshipGraph({
   const onCanvasClickRef = useRef(onCanvasClick);
   const onNodeClickRef = useRef(onNodeClick);
   const onEdgeClickRef = useRef(onEdgeClick);
+  const onContextMenuRef = useRef(onContextMenu);
+  const onDoubleClickRef = useRef(onDoubleClick);
   const onNodePositionChangeRef = useRef(onNodePositionChange);
   const { resolvedTheme } = useTheme();
   const [isNetworkReady, setIsNetworkReady] = useState(false);
@@ -92,6 +107,14 @@ export function RelationshipGraph({
   useEffect(() => {
     onEdgeClickRef.current = onEdgeClick;
   }, [onEdgeClick]);
+
+  useEffect(() => {
+    onContextMenuRef.current = onContextMenu;
+  }, [onContextMenu]);
+
+  useEffect(() => {
+    onDoubleClickRef.current = onDoubleClick;
+  }, [onDoubleClick]);
 
   useEffect(() => {
     onNodePositionChangeRef.current = onNodePositionChange;
@@ -204,12 +227,46 @@ export function RelationshipGraph({
       }
     };
 
+    const handleDoubleClick = (params: NetworkDoubleClickParams) => {
+      const nodeId = params.nodes.length > 0 ? String(params.nodes[0]) : null;
+      const edgeId = nodeId ? null : params.edges.length > 0 ? String(params.edges[0]) : null;
+      onDoubleClickRef.current?.({ nodeId, edgeId });
+    };
+
     network.on('click', handleClick);
     network.on('dragEnd', handleDragEnd);
+    network.on('doubleClick', handleDoubleClick);
+
+    const handleContextMenu = (event: MouseEvent) => {
+      if (!networkRef.current || !containerRef.current) {
+        return;
+      }
+      event.preventDefault();
+      const rect = containerRef.current.getBoundingClientRect();
+      const pointerDom = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      const pointerCanvas = networkRef.current.DOMtoCanvas(pointerDom);
+      const nodeAtPointer = networkRef.current.getNodeAt(pointerDom);
+      const edgeAtPointer = networkRef.current.getEdgeAt(pointerDom);
+
+      const nodeId = nodeAtPointer ? String(nodeAtPointer) : null;
+      const edgeId = nodeId ? null : edgeAtPointer ? String(edgeAtPointer) : null;
+
+      onContextMenuRef.current?.({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        pointer: { dom: pointerDom, canvas: pointerCanvas },
+        nodeId,
+        edgeId,
+      });
+    };
+
+    containerRef.current.addEventListener('contextmenu', handleContextMenu);
 
     return () => {
       network.off('click', handleClick);
       network.off('dragEnd', handleDragEnd);
+      network.off('doubleClick', handleDoubleClick);
+      containerRef.current?.removeEventListener('contextmenu', handleContextMenu);
       network.destroy();
       networkRef.current = null;
     };
