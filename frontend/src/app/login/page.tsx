@@ -42,7 +42,7 @@ export default function LoginPage() {
       });
 
       // 토큰을 localStorage에 저장
-      localStorage.setItem('auth_token', response.token);
+      void response;
 
       // 메인 페이지로 이동
       router.push('/');
@@ -123,4 +123,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

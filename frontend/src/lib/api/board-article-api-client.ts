@@ -120,8 +120,8 @@ export async function downloadAttachment(
 ): Promise<void> {
   const url = `${API_BASE_URL}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
 
-  // Get token from localStorage (using the same key as api-client.ts)
-  const token = localStorage.getItem('auth_token');
+  // Auth via HttpOnly cookie
+  const token: string | null = null;
 
   console.log('🔑 Download Token:', token ? 'Token exists' : 'No token');
   console.log('📥 Download URL:', url);
@@ -129,9 +129,7 @@ export async function downloadAttachment(
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      credentials: 'include',
     });
 
     console.log('📡 Response Status:', response.status);

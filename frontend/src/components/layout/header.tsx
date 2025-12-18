@@ -6,6 +6,7 @@ import { Menu, Home, LogOut, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ChangePasswordDialog } from '@/components/user/change-password-dialog';
+import { apiClient } from '@/lib/api-client';
 
 export interface HeaderProps {
   onMenuToggle?: () => void;
@@ -16,9 +17,14 @@ export function Header({ onMenuToggle, showMenuButton = true }: HeaderProps) {
   const router = useRouter();
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    router.push('/login');
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/api/logout', {});
+    } catch {
+      // ignore
+    } finally {
+      router.push('/login');
+    }
   };
 
   return (

@@ -44,16 +44,10 @@ async function request<T>(endpoint: string, options: FetchOptions = {}): Promise
   }
 
   // 인증 토큰(JWT) 추가
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-  }
-
   const config: RequestInit = {
     ...init,
     headers,
+    credentials: 'include',
   };
 
   try {

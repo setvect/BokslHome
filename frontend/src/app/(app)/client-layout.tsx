@@ -24,19 +24,12 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
     let cancelled = false;
 
     const verifyAuth = async () => {
-      const token = localStorage.getItem('auth_token');
-      if (!token) {
-        router.replace('/login');
-        return;
-      }
-
       try {
         await apiClient.get('/api/auth/me');
         if (!cancelled) {
           setIsInitialized(true);
         }
       } catch (error) {
-        localStorage.removeItem('auth_token');
         if (!cancelled) {
           router.replace('/login');
         }
@@ -102,4 +95,3 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
     </div>
   );
 }
-
