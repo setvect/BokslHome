@@ -17,6 +17,9 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 DOMAIN="${1:-example.com}"
 EMAIL="${2:-}"
+# 기본값은 apex 도메인에 대해 www 서브도메인을 함께 설정합니다.
+# 필요 없으면 3번째 인자를 false 로 전달하세요.
+INCLUDE_WWW="${3:-true}"
 WEBROOT="/var/www/bokslhome"
 # nginx.org 패키지(1.28.x)는 conf.d/*.conf를 사용하므로 여기로 작성
 NGINX_SITE="/etc/nginx/conf.d/${DOMAIN}.conf"
@@ -24,11 +27,26 @@ NGINX_SITE="/etc/nginx/conf.d/${DOMAIN}.conf"
 if [ -z "${EMAIL}" ]; then
   error "사용법: sudo $0 <domain> <email>"
   echo "예시: sudo $0 example.com admin@example.com"
+  echo "예시: sudo $0 example.com admin@example.com false   # www 미포함"
   exit 1
 fi
 
 info "도메인: ${DOMAIN}"
 info "이메일: ${EMAIL}"
+
+if [[ "${INCLUDE_WWW}" == "true" || "${INCLUDE_WWW}" == "1" || "${INCLUDE_WWW}" == "yes" ]]; then
+  WWW_DOMAIN="www.${DOMAIN}"
+  SERVER_NAMES="${DOMAIN} ${WWW_DOMAIN}"
+  CERTBOT_DOMAINS=(-d "${DOMAIN}" -d "${WWW_DOMAIN}")
+  info "www 도메인 포함: ${WWW_DOMAIN}"
+else
+  WWW_DOMAIN=""
+  SERVER_NAMES="${DOMAIN}"
+  CERTBOT_DOMAINS=(-d "${DOMAIN}")
+  info "www 도메인 미포함"
+fi
+
+CERTBOT_EXTRA_ARGS=(--expand)
 
 info "1) nginx 설치 및 기본 준비"
 sudo apt update
@@ -43,7 +61,7 @@ info "3) HTTP용 nginx 서버블록 작성 (ACME challenge 포함)"
 sudo tee "${NGINX_SITE}" > /dev/null <<EOF
 server {
     listen 80;
-    server_name ${DOMAIN};
+    server_name ${SERVER_NAMES};
 
     root ${WEBROOT};
 
@@ -104,7 +122,7 @@ success "HTTP 서버블록 적용 완료 (ACME 준비)"
 
 info "4) certbot 설치 및 SSL 발급 (webroot 모드)"
 sudo apt install -y certbot python3-certbot-nginx
-if sudo certbot certonly --webroot -w "${WEBROOT}" -d "${DOMAIN}" --email "${EMAIL}" --agree-tos --non-interactive --rsa-key-size 4096; then
+if sudo certbot certonly --webroot -w "${WEBROOT}" "${CERTBOT_DOMAINS[@]}" "${CERTBOT_EXTRA_ARGS[@]}" --email "${EMAIL}" --agree-tos --non-interactive --rsa-key-size 4096; then
   success "SSL 인증서 발급 완료"
 else
   error "SSL 인증서 발급 실패"
@@ -115,13 +133,13 @@ info "5) HTTPS 리다이렉트 + 인증서 적용 구성으로 업데이트"
 sudo tee "${NGINX_SITE}" > /dev/null <<EOF
 server {
     listen 80;
-    server_name ${DOMAIN};
+    server_name ${SERVER_NAMES};
     return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name ${DOMAIN};
+    server_name ${SERVER_NAMES};
 
     root ${WEBROOT};
 
@@ -202,4 +220,8 @@ info "7) 인증서 자동 갱신 cron 등록"
 success "cron 등록 완료"
 
 echo ""
-success "SSL 설정 완료! https://${DOMAIN} 에서 확인하세요."
+if [ -n "${WWW_DOMAIN}" ]; then
+  success "SSL 설정 완료! https://${DOMAIN} 및 https://${WWW_DOMAIN} 에서 확인하세요."
+else
+  success "SSL 설정 완료! https://${DOMAIN} 에서 확인하세요."
+fi
