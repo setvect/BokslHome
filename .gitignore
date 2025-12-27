@@ -43,3 +43,4 @@ data
 
 # etc
 migration/
+scripts/local

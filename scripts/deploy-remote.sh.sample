@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ARCHIVE_PATH="./offline-dist/bokslhome-latest.tar.gz"
+REMOTE_USER="<remote_user>"
+REMOTE_HOST="<remote_host>"
+REMOTE_DIR="<remote_directory>"
+
+if [[ ! -f "$ARCHIVE_PATH" ]]; then
+  echo "Missing archive: $ARCHIVE_PATH" >&2
+  exit 1
+fi
+
+echo "Uploading $ARCHIVE_PATH to $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
+scp "$ARCHIVE_PATH" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/"
+
+echo "Running remote install.sh in $REMOTE_DIR"
+ssh "${REMOTE_USER}@${REMOTE_HOST}" "cd \"$REMOTE_DIR\" && ./install.sh"
+
+echo "Done."
