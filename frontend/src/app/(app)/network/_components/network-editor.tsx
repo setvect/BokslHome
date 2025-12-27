@@ -421,7 +421,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
   };
 
   return (
-    <div ref={containerRef} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+    <div ref={containerRef}>
       <div className="mt-2 flex flex-col gap-4 lg:flex-row" style={panelStyle}>
         <div className="flex-1 min-h-[420px]" style={panelStyle}>
           <DropdownMenu
