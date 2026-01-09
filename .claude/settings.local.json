@@ -57,7 +57,8 @@
       "Bash(npx:*)",
       "Bash(ls:*)",
       "Read(///**)",
-      "Read(//home/setve/**)"
+      "Read(//home/setve/**)",
+      "Bash(./gradlew compileKotlin:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

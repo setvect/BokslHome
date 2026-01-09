@@ -176,8 +176,8 @@ class BoardArticleService(
         val boardArticlePage = boardArticleRepository.findBySearch(
             pageable = pageable,
             boardCode = search.boardCode,
-            title = CommonUtil.emptyStringNull(search.title),
-            content = CommonUtil.emptyStringNull(search.content)
+            title = CommonUtil.emptyStringNull(search.getTitle()),
+            content = CommonUtil.emptyStringNull(search.getContent())
         )
         val attachFileList =
             attachFileService.getAttachFileList(
