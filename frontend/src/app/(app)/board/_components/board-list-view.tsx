@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { Paperclip } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -244,6 +245,11 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
                   <TableCell className="max-w-0">
                     <Link href={detailHref} className="flex min-w-0 items-center gap-2 text-sky-600 hover:underline">
                       <span className="truncate">{article.title}</span>
+                      {article.attachFileList && article.attachFileList.length > 0 ? (
+                        <span className="flex-shrink-0 text-muted-foreground" title={`첨부파일 ${article.attachFileList.length}개`}>
+                          <Paperclip className="h-4 w-4" />
+                        </span>
+                      ) : null}
                       {article.encryptF ? (
                         <span className="flex-shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
                       ) : null}
