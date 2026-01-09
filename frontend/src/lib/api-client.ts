@@ -2,8 +2,8 @@
 function resolveApiBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
   if (process.env.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL; // backwards compatibility
-  if (typeof window !== 'undefined') return window.location.origin;
-  return 'http://localhost:8080';
+  // Next.js rewrites를 사용하므로 상대 경로로 요청
+  return '';
 }
 
 export const API_BASE_URL = resolveApiBaseUrl();
@@ -27,14 +27,21 @@ export class ApiError extends Error {
 async function request<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { params, ...init } = options;
 
-  // URL 파라미터 처리 (예: /api/board?page=1&size=10)
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  // URL 생성 (절대 URL 또는 상대 경로)
+  let url = API_BASE_URL ? `${API_BASE_URL}${endpoint}` : endpoint;
+
+  // URL 파라미터 처리
   if (params) {
+    const searchParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        url.searchParams.append(key, String(value));
+        searchParams.append(key, String(value));
       }
     });
+    const paramString = searchParams.toString();
+    if (paramString) {
+      url = `${url}?${paramString}`;
+    }
   }
 
   // 기본 헤더 설정
@@ -51,7 +58,7 @@ async function request<T>(endpoint: string, options: FetchOptions = {}): Promise
   };
 
   try {
-    const response = await fetch(url.toString(), config);
+    const response = await fetch(url, config);
 
     if (!response.ok) {
       // 에러 응답 파싱 시도 - clone을 사용하여 body를 여러 번 읽을 수 있도록 함

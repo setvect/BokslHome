@@ -36,14 +36,12 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post<LoginResponse>('/api/login', {
+      await apiClient.post<LoginResponse>('/api/login', {
         username,
         password,
       });
 
-      // 토큰을 localStorage에 저장
-      void response;
-
+      // 쿠키(auth_token)는 백엔드에서 자동으로 설정됨
       // 메인 페이지로 이동
       router.push('/');
     } catch (err) {
