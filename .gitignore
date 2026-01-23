@@ -44,3 +44,6 @@ data
 # etc
 migration/
 scripts/local
+
+# Claude Code 임시 파일
+tmpclaude-*

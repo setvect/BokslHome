@@ -58,7 +58,14 @@
       "Bash(ls:*)",
       "Read(///**)",
       "Read(//home/setve/**)",
-      "Bash(./gradlew compileKotlin:*)"
+      "Bash(./gradlew compileKotlin:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(ip route show:*)",
+      "Read(//d/intellij-project/BokslHome/**)",
+      "Bash(route:*)",
+      "Bash(file:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -21,11 +21,11 @@ BokslHome/
 
 ## 🛠 기술 스택
 
-| 영역     | 기술                                                    |
-| -------- | ------------------------------------------------------- |
+| 영역     | 기술                                                   | 영역 | 기술 |
+| -------- | ------------------------------------------------------ |
 | Backend  | Kotlin 1.9.25, Spring Boot 3.4.0, H2 DB, JWT, Gradle   |
 | Frontend | Next.js 15.5.2, TypeScript 5, React 19, Tailwind CSS 4 |
-| Infra    | Docker, Java 21, Node.js 20                             |
+| Infra    | Docker, Java 21, Node.js 20                            |
 
 ## 🚀 빠른 시작
 
@@ -64,19 +64,16 @@ cd frontend && npm install && npm run dev
 
 ## 📦 주요 모듈
 
-| 모듈      | 엔드포인트                    | 특징                      |
-| --------- | ----------------------------- | ------------------------- |
-| User/Auth | `POST /api/login`             | BCrypt + JWT              |
+| 모듈      | 엔드포인트                       | 특징                      |
+| --------- | -------------------------------- | ------------------------- |
+| User/Auth | `POST /api/login`                | BCrypt + JWT              |
 | Board     | `/api/board-manager`, `-article` | 게시판 메타 & 게시물      |
-| Note      | `/api/note-category`, `-note` | 계층형 카테고리, markdown |
-| Memo      | `/api/memo-category`, `-memo` | 칸반 스타일 메모          |
-| Knowledge | `/api/knowledge`              | 문제/해결 지식            |
-| Network   | `/api/network`                | 관계 그래프 (vis-network) |
-| Code      | `/api/code`                   | 공통 코드 관리            |
-| Comment   | `/api/comments`               | 다중 모듈 댓글            |
-
-자세한 API 목록은 [docs/rules/api-endpoints.md](docs/rules/api-endpoints.md) 참고
-
+| Note      | `/api/note-category`, `-note`    | 계층형 카테고리, markdown |
+| Memo      | `/api/memo-category`, `-memo`    | 칸반 스타일 메모          |
+| Knowledge | `/api/knowledge`                 | 문제/해결 지식            |
+| Network   | `/api/network`                   | 관계 그래프 (vis-network) |
+| Code      | `/api/code`                      | 공통 코드 관리            |
+| Comment   | `/api/comments`                  | 다중 모듈 댓글            |
 ## 💾 데이터 관리
 
 ```bash
@@ -122,6 +119,11 @@ docker start bokslhome-app 2>/dev/null || true
 
 ### 분석 문서
 - [backend/doc/backend-analysis.md](backend/doc/backend-analysis.md) - 백엔드 상세 분석
+
+
+## 커밋 메시지 규칙
+- 한국어를 사용
+- 단 전문 용어는 영문으로 사용 가능함
 
 ---
 

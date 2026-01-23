@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe \"ipconfig\")",
+      "Read(//d/intellij-project/BokslHome/**)"
+    ]
+  },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true
   }
