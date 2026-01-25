@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { Loader2, Plus, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { Loader2, Plus, Search, Settings } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
+import { PaginationNav } from '@/components/ui/pagination-nav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { apiClient } from '@/lib/api-client';
@@ -22,7 +23,14 @@ type MemoListViewProps = {
   memos: MemoResponse[];
   selectedCategorySeq: number;
   isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  pageSize: number;
+  searchWord: string;
   onCategoryChange: (categorySeq: number) => void;
+  onSearch: (word: string) => void;
+  onPageChange: (page: number) => void;
   onMemoDeleted: () => void;
   onCategoryUpdated: () => void;
 };
@@ -32,21 +40,27 @@ export function MemoListView({
   memos,
   selectedCategorySeq,
   isLoading,
+  currentPage,
+  totalPages,
+  totalElements,
+  pageSize,
+  searchWord,
   onCategoryChange,
+  onSearch,
+  onPageChange,
   onMemoDeleted,
   onCategoryUpdated,
 }: MemoListViewProps) {
-  const [keyword, setKeyword] = useState('');
+  const [inputKeyword, setInputKeyword] = useState(searchWord);
   const [deleteTarget, setDeleteTarget] = useState<MemoResponse | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
 
-  // 키워드로 필터링
-  const filteredMemos = useMemo(() => {
-    if (!keyword.trim()) return memos;
-    const lowerKeyword = keyword.trim().toLowerCase();
-    return memos.filter((memo) => memo.content.toLowerCase().includes(lowerKeyword));
-  }, [memos, keyword]);
+  // 검색 제출 처리
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(inputKeyword);
+  };
 
   // 메모 삭제 처리
   const handleDelete = async () => {
@@ -87,10 +101,15 @@ export function MemoListView({
     }
   };
 
+  // 행 번호 계산 (전체 기준 역순)
+  const getRowNumber = (index: number) => {
+    return totalElements - (currentPage - 1) * pageSize - index;
+  };
+
   return (
     <section className="space-y-4">
       {/* 검색/필터 영역 */}
-      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+      <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <Select
           value={selectedCategorySeq.toString()}
           onValueChange={(value) => onCategoryChange(Number(value))}
@@ -109,11 +128,16 @@ export function MemoListView({
         </Select>
 
         <Input
-          value={keyword}
-          onChange={(event) => setKeyword(event.target.value)}
+          value={inputKeyword}
+          onChange={(event) => setInputKeyword(event.target.value)}
           placeholder="검색어"
           className="h-10 min-w-[200px] flex-1"
         />
+
+        <Button type="submit" variant="outline" className="h-10">
+          <Search className="mr-2 h-4 w-4" />
+          검색
+        </Button>
 
         <Button
           type="button"
@@ -131,7 +155,7 @@ export function MemoListView({
             만들기
           </Link>
         </Button>
-      </div>
+      </form>
 
       {/* 메모 목록 테이블 */}
       <div className="rounded-2xl border border-border bg-card shadow-sm">
@@ -151,17 +175,17 @@ export function MemoListView({
                   <Loader2 className="mx-auto h-6 w-6 animate-spin" />
                 </TableCell>
               </TableRow>
-            ) : filteredMemos.length === 0 ? (
+            ) : memos.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
-                  {keyword ? '검색 결과가 없습니다.' : '등록된 메모가 없습니다.'}
+                  {searchWord ? '검색 결과가 없습니다.' : '등록된 메모가 없습니다.'}
                 </TableCell>
               </TableRow>
             ) : (
-              filteredMemos.map((memo, index) => (
+              memos.map((memo, index) => (
                 <TableRow key={memo.memoSeq} className="text-sm">
                   <TableCell className="text-center font-semibold text-muted-foreground">
-                    {filteredMemos.length - index}
+                    {getRowNumber(index)}
                   </TableCell>
                   <TableCell className="max-w-0">
                     <Link href={`/memo/${memo.memoSeq}`} className="block truncate text-sky-600 hover:underline">
@@ -186,6 +210,18 @@ export function MemoListView({
           </TableBody>
         </Table>
       </div>
+
+      {/* 페이징 */}
+      {totalPages > 0 && (
+        <div className="flex justify-center">
+          <PaginationNav
+            page={currentPage}
+            pageSize={pageSize}
+            total={totalElements}
+            onPageChange={onPageChange}
+          />
+        </div>
+      )}
 
       {/* 삭제 확인 다이얼로그 */}
       <ConfirmDialog

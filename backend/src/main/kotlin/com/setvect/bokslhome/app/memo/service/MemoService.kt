@@ -3,10 +3,14 @@ package com.setvect.bokslhome.app.memo.service
 import com.setvect.bokslhome.app.memo.entity.MemoEntity
 import com.setvect.bokslhome.app.memo.model.MemoRequest
 import com.setvect.bokslhome.app.memo.model.MemoResponse
+import com.setvect.bokslhome.app.memo.model.MemoSearchRequest
 import com.setvect.bokslhome.app.memo.repository.MemoCategoryRepository
 import com.setvect.bokslhome.app.memo.repository.MemoRepository
+import com.setvect.bokslhome.util.CommonUtil
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 
 @Service
@@ -60,5 +64,15 @@ class MemoService(
     fun listAll(): List<MemoResponse> {
         val memoList = memoRepository.findAllActive()
         return memoList.map { MemoResponse.from(it) }
+    }
+
+    fun page(pageable: Pageable, search: MemoSearchRequest): PagedModel<MemoResponse> {
+        val memoPage = memoRepository.findBySearch(
+            pageable = pageable,
+            categorySeq = search.categorySeq,
+            word = CommonUtil.emptyStringNull(search.word)
+        )
+        val page = memoPage.map { MemoResponse.from(it) }
+        return PagedModel(page)
     }
 }
