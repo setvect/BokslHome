@@ -73,7 +73,9 @@ export default function HomePage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = newComment.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -169,9 +171,7 @@ export default function HomePage() {
           disabled={loadingMore}
           onClick={() => loadComments(pageInfo.number + 1, true)}
         >
-          {loadingMore
-            ? '불러오는 중...'
-            : `더 보기 (${comments.length}/${pageInfo.totalElements || comments.length})`}
+          {loadingMore ? '불러오는 중...' : `더 보기 (${comments.length}/${pageInfo.totalElements || comments.length})`}
         </Button>
       )}
 

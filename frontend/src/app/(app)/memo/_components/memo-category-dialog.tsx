@@ -5,14 +5,7 @@ import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { apiClient, ApiError } from '@/lib/api-client';
 import type { MemoCategoryResponse } from '@/lib/types/memo';
@@ -24,12 +17,7 @@ interface MemoCategoryDialogProps {
   onUpdated: () => void;
 }
 
-export function MemoCategoryDialog({
-  open,
-  onOpenChange,
-  categories: initialCategories,
-  onUpdated,
-}: MemoCategoryDialogProps) {
+export function MemoCategoryDialog({ open, onOpenChange, categories: initialCategories, onUpdated }: MemoCategoryDialogProps) {
   const extractApiMessage = (err: ApiError): string | undefined => {
     const data = err.data;
     if (data && typeof data === 'object' && 'message' in data) {
@@ -82,7 +70,9 @@ export function MemoCategoryDialog({
 
   // 카테고리 추가
   const handleAdd = async () => {
-    if (!newCategoryName.trim()) return;
+    if (!newCategoryName.trim()) {
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -111,7 +101,9 @@ export function MemoCategoryDialog({
 
   // 카테고리 수정 저장
   const handleSaveEdit = async () => {
-    if (!editingCategory || !editingName.trim()) return;
+    if (!editingCategory || !editingName.trim()) {
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -142,7 +134,9 @@ export function MemoCategoryDialog({
 
   // 카테고리 삭제
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget) {
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -182,9 +176,7 @@ export function MemoCategoryDialog({
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-            )}
+            {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
 
             {/* 새 카테고리 추가 */}
             <div className="flex gap-2">
@@ -208,67 +200,51 @@ export function MemoCategoryDialog({
                 </div>
               ) : (
                 categories.map((category) => (
-                <div
-                  key={category.categorySeq}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 p-2"
-                >
-                  {editingCategory?.categorySeq === category.categorySeq ? (
-                    <>
-                      <Input
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                        className="flex-1"
-                        disabled={isLoading}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
-                      />
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={handleSaveEdit}
-                        disabled={isLoading || !editingName.trim()}
-                      >
-                        저장
-                      </Button>
-                      <Button type="button" size="sm" variant="outline" onClick={handleCancelEdit}>
-                        취소
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <span className="flex-1 text-sm">
-                        {category.name}
-                        <span className="ml-2 text-xs text-muted-foreground">({category.memoCount}건)</span>
-                      </span>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => handleStartEdit(category)}
-                        disabled={isLoading}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      {category.memoCount === 0 && (
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => setDeleteTarget(category)}
+                  <div key={category.categorySeq} className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 p-2">
+                    {editingCategory?.categorySeq === category.categorySeq ? (
+                      <>
+                        <Input
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          className="flex-1"
                           disabled={isLoading}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
+                          onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
+                        />
+                        <Button type="button" size="sm" onClick={handleSaveEdit} disabled={isLoading || !editingName.trim()}>
+                          저장
                         </Button>
-                      )}
-                    </>
-                  )}
-                </div>
+                        <Button type="button" size="sm" variant="outline" onClick={handleCancelEdit}>
+                          취소
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="flex-1 text-sm">
+                          {category.name}
+                          <span className="ml-2 text-xs text-muted-foreground">({category.memoCount}건)</span>
+                        </span>
+                        <Button type="button" size="icon" variant="ghost" onClick={() => handleStartEdit(category)} disabled={isLoading}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        {category.memoCount === 0 && (
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => setDeleteTarget(category)}
+                            disabled={isLoading}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </div>
                 ))
               )}
               {!isLoadingCategories && categories.length === 0 && (
-                <p className="py-4 text-center text-sm text-muted-foreground">
-                  등록된 카테고리가 없습니다.
-                </p>
+                <p className="py-4 text-center text-sm text-muted-foreground">등록된 카테고리가 없습니다.</p>
               )}
             </div>
           </div>

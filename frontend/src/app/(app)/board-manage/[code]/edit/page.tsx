@@ -70,9 +70,7 @@ export default function BoardEditPage() {
         <header>
           <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
         </header>
-        <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
-          로딩 중...
-        </div>
+        <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">로딩 중...</div>
       </div>
     );
   }

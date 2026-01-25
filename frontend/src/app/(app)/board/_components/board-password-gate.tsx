@@ -42,11 +42,7 @@ export function BoardPasswordGate({ onPasswordSubmit, isLoading, listUrl }: Boar
           className="h-14 flex-1 rounded-xl text-lg"
           disabled={isLoading}
         />
-        <Button
-          type="submit"
-          className="h-14 min-w-[120px] rounded-xl text-lg font-semibold"
-          disabled={isLoading}
-        >
+        <Button type="submit" className="h-14 min-w-[120px] rounded-xl text-lg font-semibold" disabled={isLoading}>
           {isLoading ? '확인 중...' : '확인'}
         </Button>
       </form>

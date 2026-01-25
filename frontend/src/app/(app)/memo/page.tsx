@@ -180,9 +180,7 @@ export default function MemoPage() {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
         <MemoListView
           categories={categories}

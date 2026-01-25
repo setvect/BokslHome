@@ -30,7 +30,9 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
   }, [params]);
 
   useEffect(() => {
-    if (noteId === null) return;
+    if (noteId === null) {
+      return;
+    }
 
     const fetchNote = async () => {
       try {
@@ -56,10 +58,18 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
     const keyword = searchParams.get('keyword');
     const page = searchParams.get('page');
 
-    if (category) params.set('category', category);
-    if (field) params.set('field', field);
-    if (keyword) params.set('keyword', keyword);
-    if (page) params.set('page', page);
+    if (category) {
+      params.set('category', category);
+    }
+    if (field) {
+      params.set('field', field);
+    }
+    if (keyword) {
+      params.set('keyword', keyword);
+    }
+    if (page) {
+      params.set('page', page);
+    }
 
     const queryString = params.toString();
     return `/note${queryString ? `?${queryString}` : ''}`;
@@ -91,4 +101,3 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
     </div>
   );
 }
-

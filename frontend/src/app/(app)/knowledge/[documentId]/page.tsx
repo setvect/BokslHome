@@ -43,9 +43,7 @@ export default function KnowledgeDetailPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-semibold text-foreground">지식</h1>
-        <div className="flex h-64 items-center justify-center text-muted-foreground">
-          로딩 중...
-        </div>
+        <div className="flex h-64 items-center justify-center text-muted-foreground">로딩 중...</div>
       </div>
     );
   }
@@ -54,9 +52,7 @@ export default function KnowledgeDetailPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-semibold text-foreground">지식</h1>
-        <div className="flex h-64 items-center justify-center text-destructive">
-          {error || '데이터를 찾을 수 없습니다.'}
-        </div>
+        <div className="flex h-64 items-center justify-center text-destructive">{error || '데이터를 찾을 수 없습니다.'}</div>
       </div>
     );
   }
@@ -68,4 +64,3 @@ export default function KnowledgeDetailPage() {
     </div>
   );
 }
-

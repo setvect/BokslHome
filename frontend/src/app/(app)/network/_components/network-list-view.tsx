@@ -57,14 +57,16 @@ export function NetworkListView({
   };
 
   const handleConfirmDelete = async () => {
-    if (!deleteId) return;
+    if (!deleteId) {
+      return;
+    }
     await onDelete(deleteId);
     setDeleteId(null);
   };
 
   // Calculate row number (역순으로 표시)
   const getRowNumber = (index: number) => {
-    return totalElements - (currentPage * pageSize) - index;
+    return totalElements - currentPage * pageSize - index;
   };
 
   // Format date
@@ -129,20 +131,13 @@ export function NetworkListView({
               ) : (
                 networks.map((network, index) => (
                   <TableRow key={network.networkSeq} className="text-sm">
-                    <TableCell className="text-center font-semibold text-muted-foreground">
-                      {getRowNumber(index)}
-                    </TableCell>
+                    <TableCell className="text-center font-semibold text-muted-foreground">{getRowNumber(index)}</TableCell>
                     <TableCell className="max-w-0">
-                      <Link
-                        href={buildDetailUrl(network.networkSeq)}
-                        className="block truncate text-sky-600 hover:underline"
-                      >
+                      <Link href={buildDetailUrl(network.networkSeq)} className="block truncate text-sky-600 hover:underline">
                         {network.title}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-center text-muted-foreground">
-                      {formatDate(network.editDate)}
-                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">{formatDate(network.editDate)}</TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2 text-primary">
                         <button
@@ -174,7 +169,9 @@ export function NetworkListView({
       <ConfirmDialog
         open={!!deleteId}
         onOpenChange={(open) => {
-          if (!open) setDeleteId(null);
+          if (!open) {
+            setDeleteId(null);
+          }
         }}
         title="관계 삭제"
         description="정말로 이 관계 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."

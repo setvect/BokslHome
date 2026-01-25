@@ -79,7 +79,12 @@
       "Bash(pkill:*)",
       "mcp__plugin_playwright_playwright__browser_type",
       "mcp__plugin_playwright_playwright__browser_close",
-      "Bash(ss:*)"
+      "Bash(ss:*)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__fill",
+      "mcp__chrome-devtools__click"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

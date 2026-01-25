@@ -11,4 +11,3 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return <ClientAppLayout initialSidebarOpen={initialSidebarOpen}>{children}</ClientAppLayout>;
 }
-

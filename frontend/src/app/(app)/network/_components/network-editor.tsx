@@ -5,7 +5,13 @@ import { ChevronLeft, ChevronRight, CirclePlus, Link2, MousePointerClick, Redo2,
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,7 +28,26 @@ const NODE_SHAPES: { label: string; value: RelationshipNodeData['shape'] }[] = [
   { label: '원', value: 'circle' },
 ];
 
-const NODE_COLORS = ['#ffffcc', '#ffffff', '#ccff66', '#d9f99d', '#bae6fd', '#fef9c3', '#fee2e2', '#e9d5ff', '#f97316', '#facc15', '#84cc16', '#22c55e', '#14b8a6', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#ef4444'];
+const NODE_COLORS = [
+  '#ffffcc',
+  '#ffffff',
+  '#ccff66',
+  '#d9f99d',
+  '#bae6fd',
+  '#fef9c3',
+  '#fee2e2',
+  '#e9d5ff',
+  '#f97316',
+  '#facc15',
+  '#84cc16',
+  '#22c55e',
+  '#14b8a6',
+  '#0ea5e9',
+  '#6366f1',
+  '#a855f7',
+  '#ec4899',
+  '#ef4444',
+];
 const EDGE_COLORS = ['#777777', '#334155', '#0ea5e9', '#22c55e', '#f97316', '#b91c1c', '#a855f7', '#d946ef'];
 
 type GraphContextMenuState = {
@@ -96,13 +121,10 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isInitialMount = useRef(true);
 
-  const selectedNode = selection?.type === 'node' ? nodes.find((node) => node.id === selection.id) ?? null : null;
-  const selectedEdge = selection?.type === 'edge' ? edges.find((edge) => edge.id === selection.id) ?? null : null;
+  const selectedNode = selection?.type === 'node' ? (nodes.find((node) => node.id === selection.id) ?? null) : null;
+  const selectedEdge = selection?.type === 'edge' ? (edges.find((edge) => edge.id === selection.id) ?? null) : null;
 
-  const sortedNodeOptions = useMemo(
-    () => nodes.map((node) => ({ value: node.id, label: node.label || node.id })),
-    [nodes]
-  );
+  const sortedNodeOptions = useMemo(() => nodes.map((node) => ({ value: node.id, label: node.label || node.id })), [nodes]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -114,10 +136,14 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
       if (event.ctrlKey || event.metaKey) {
         if (event.key === 'z' && !event.shiftKey) {
           event.preventDefault();
-          if (canUndo) undo();
+          if (canUndo) {
+            undo();
+          }
         } else if ((event.key === 'z' && event.shiftKey) || event.key === 'y') {
           event.preventDefault();
-          if (canRedo) redo();
+          if (canRedo) {
+            redo();
+          }
         }
       }
     };
@@ -390,12 +416,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     setEdgeModal({ open: false });
   }
 
-  const edgeModeHint =
-    mode === 'addEdge'
-      ? edgeDraft.from
-        ? '끝 노드를 선택하세요.'
-        : '시작 노드를 선택하세요.'
-      : null;
+  const edgeModeHint = mode === 'addEdge' ? (edgeDraft.from ? '끝 노드를 선택하세요.' : '시작 노드를 선택하세요.') : null;
 
   useEffect(() => {
     function updateHeight() {
@@ -424,10 +445,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
     <div ref={containerRef}>
       <div className="mt-2 flex flex-col gap-4 lg:flex-row" style={panelStyle}>
         <div className="flex-1 min-h-[420px]" style={panelStyle}>
-          <DropdownMenu
-            open={contextMenu.open}
-            onOpenChange={(open) => setContextMenu((prev) => ({ ...prev, open }))}
-          >
+          <DropdownMenu open={contextMenu.open} onOpenChange={(open) => setContextMenu((prev) => ({ ...prev, open }))}>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
@@ -501,7 +519,10 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
         </div>
 
         {isPanelVisible && (
-          <aside className="relative w-full rounded-2xl border border-border bg-background/40 p-4 shadow-sm lg:w-80 lg:max-w-xs" style={panelStyle}>
+          <aside
+            className="relative w-full rounded-2xl border border-border bg-background/40 p-4 shadow-sm lg:w-80 lg:max-w-xs"
+            style={panelStyle}
+          >
             {/* Toggle button on left edge - hidden on mobile */}
             <button
               onClick={() => setIsPanelVisible(false)}
@@ -535,20 +556,8 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
 
                   <div className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
 
-                  <EditorModeButton
-                    active={false}
-                    icon={Undo2}
-                    label="실행 취소 (Ctrl+Z)"
-                    onClick={undo}
-                    disabled={!canUndo}
-                  />
-                  <EditorModeButton
-                    active={false}
-                    icon={Redo2}
-                    label="다시 실행 (Ctrl+Y)"
-                    onClick={redo}
-                    disabled={!canRedo}
-                  />
+                  <EditorModeButton active={false} icon={Undo2} label="실행 취소 (Ctrl+Z)" onClick={undo} disabled={!canUndo} />
+                  <EditorModeButton active={false} icon={Redo2} label="다시 실행 (Ctrl+Y)" onClick={redo} disabled={!canRedo} />
                 </div>
                 {edgeModeHint ? <p className="mt-2 text-xs text-amber-500">{edgeModeHint}</p> : null}
               </div>
@@ -594,7 +603,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
 
       <NodeEditorDialog
         state={nodeModal}
-        node={nodeModal.open && nodeModal.mode === 'edit' ? nodes.find((node) => node.id === nodeModal.nodeId) ?? null : null}
+        node={nodeModal.open && nodeModal.mode === 'edit' ? (nodes.find((node) => node.id === nodeModal.nodeId) ?? null) : null}
         onClose={() => setNodeModal({ open: false })}
         onAdd={handleAddNodeFromModal}
         onUpdate={handleUpdateNodeFromModal}
@@ -602,7 +611,7 @@ export function NetworkEditor({ initialNodes, initialEdges, onSave, isSaving }: 
 
       <EdgeEditorDialog
         state={edgeModal}
-        edge={edgeModal.open ? edges.find((edge) => edge.id === edgeModal.edgeId) ?? null : null}
+        edge={edgeModal.open ? (edges.find((edge) => edge.id === edgeModal.edgeId) ?? null) : null}
         nodes={sortedNodeOptions}
         onClose={() => setEdgeModal({ open: false })}
         onUpdate={handleUpdateEdgeFromModal}
@@ -663,13 +672,7 @@ function NodeEditorPanel({ node, onChange, onDelete }: NodeEditorPanelProps) {
     <div className="space-y-3">
       <div>
         <Label htmlFor="node-label">레이블</Label>
-        <Input
-          id="node-label"
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-          onBlur={handleLabelBlur}
-          className="mt-1"
-        />
+        <Input id="node-label" value={label} onChange={(event) => setLabel(event.target.value)} onBlur={handleLabelBlur} className="mt-1" />
       </div>
 
       <div>
@@ -700,7 +703,7 @@ function NodeEditorPanel({ node, onChange, onDelete }: NodeEditorPanelProps) {
               type="button"
               className={cn(
                 'h-8 w-8 rounded-full border-2',
-                node.color === color ? 'border-primary' : 'border-border', // border-transparent -> border-border
+                node.color === color ? 'border-primary' : 'border-border' // border-transparent -> border-border
               )}
               style={{ backgroundColor: color }}
               onClick={() => onChange({ color })}
@@ -727,7 +730,7 @@ function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelPro
   const [label, setLabel] = useState(edge.label ?? '');
   const fromValue = edge.from;
   const toValue = edge.to;
-  const edgeColor = typeof edge.color === 'string' ? edge.color : edge.color?.color ?? EDGE_COLORS[0];
+  const edgeColor = typeof edge.color === 'string' ? edge.color : (edge.color?.color ?? EDGE_COLORS[0]);
 
   useEffect(() => {
     setLabel(edge.label ?? '');
@@ -743,13 +746,7 @@ function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelPro
     <div className="space-y-3">
       <div>
         <Label htmlFor="edge-label">레이블</Label>
-        <Input
-          id="edge-label"
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-          onBlur={handleLabelBlur}
-          className="mt-1"
-        />
+        <Input id="edge-label" value={label} onChange={(event) => setLabel(event.target.value)} onBlur={handleLabelBlur} className="mt-1" />
       </div>
 
       <div>
@@ -817,10 +814,7 @@ function EdgeEditorPanel({ edge, nodes, onChange, onDelete }: EdgeEditorPanelPro
             <button
               key={color}
               type="button"
-              className={cn(
-                'h-8 w-8 rounded-full border-2',
-                edgeColor === color ? 'border-primary' : 'border-transparent'
-              )}
+              className={cn('h-8 w-8 rounded-full border-2', edgeColor === color ? 'border-primary' : 'border-transparent')}
               style={{ backgroundColor: color }}
               onClick={() => onChange({ color })}
             />
@@ -873,7 +867,7 @@ function NodeEditorDialog({ state, node, onClose, onAdd, onUpdate }: NodeEditorD
     } else if (node) {
       setLabel(node.label ?? '');
       setShape(node.shape ?? 'ellipse');
-      setColor(typeof node.color === 'string' ? node.color : node.color?.background ?? NODE_COLORS[0]);
+      setColor(typeof node.color === 'string' ? node.color : (node.color?.background ?? NODE_COLORS[0]));
       setEdgeLabel('');
     }
   }, [isOpen, isAdd, node?.id]);
@@ -1068,7 +1062,7 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
     setFrom(edge.from);
     setTo(edge.to);
     setDashes(edge.dashes ?? false);
-    setColor(typeof edge.color === 'string' ? edge.color : edge.color?.color ?? EDGE_COLORS[0]);
+    setColor(typeof edge.color === 'string' ? edge.color : (edge.color?.color ?? EDGE_COLORS[0]));
   }, [isOpen, edge?.id]);
 
   function handleOk() {
@@ -1117,12 +1111,7 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
             <Label htmlFor="edge-dialog-label" className="text-sm font-medium text-foreground">
               레이블
             </Label>
-            <Input
-              id="edge-dialog-label"
-              value={label}
-              onChange={(event) => setLabel(event.target.value)}
-              className="mt-1 h-10"
-            />
+            <Input id="edge-dialog-label" value={label} onChange={(event) => setLabel(event.target.value)} className="mt-1 h-10" />
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -1216,12 +1205,12 @@ function EdgeEditorDialog({ state, edge, nodes, onClose, onUpdate }: EdgeEditorD
 }
 
 function normalizeNode(node: RelationshipNodeData): RelationshipNodeData {
-  const color = typeof node.color === 'string' ? node.color : node.color?.background ?? NODE_COLORS[0];
+  const color = typeof node.color === 'string' ? node.color : (node.color?.background ?? NODE_COLORS[0]);
   return { ...node, color };
 }
 
 function normalizeEdge(edge: RelationshipEdgeData): RelationshipEdgeData {
-  const color = typeof edge.color === 'string' ? edge.color : edge.color?.color ?? EDGE_COLORS[0];
+  const color = typeof edge.color === 'string' ? edge.color : (edge.color?.color ?? EDGE_COLORS[0]);
   return {
     ...edge,
     color,

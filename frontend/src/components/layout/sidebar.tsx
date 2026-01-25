@@ -21,7 +21,7 @@ import {
   Sparkles,
   Dice6,
   Code2,
-  PawPrint
+  PawPrint,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BOARD_MENU_ITEMS } from '@/lib/constants/board-menu';
@@ -92,15 +92,9 @@ function MenuItemComponent({ item, level = 0, onClose }: { item: MenuItem; level
 
   // 현재 경로가 이 메뉴나 하위 메뉴에 해당하는지 확인
   // 루트 경로('/')는 정확한 일치만 확인, 다른 경로는 하위 경로도 포함
-  const isCurrentPath = item.href && (
-    pathname === item.href ||
-    (item.href !== '/' && pathname.startsWith(item.href + '/'))
-  );
-  const isChildActive = item.children?.some((child) =>
-    child.href && (
-      pathname === child.href ||
-      (child.href !== '/' && pathname.startsWith(child.href + '/'))
-    )
+  const isCurrentPath = item.href && (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/')));
+  const isChildActive = item.children?.some(
+    (child) => child.href && (pathname === child.href || (child.href !== '/' && pathname.startsWith(child.href + '/')))
   );
 
   // 현재 경로가 이 메뉴의 하위 경로인지 확인 (예: /board/posts는 /board의 하위)

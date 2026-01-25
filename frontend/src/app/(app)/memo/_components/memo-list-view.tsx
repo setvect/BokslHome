@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2, Plus, Search, Settings } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,11 @@ export function MemoListView({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
 
+  // searchWord prop이 변경되면 inputKeyword 동기화 (뒤로가기 등)
+  useEffect(() => {
+    setInputKeyword(searchWord);
+  }, [searchWord]);
+
   // 검색 제출 처리
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +69,9 @@ export function MemoListView({
 
   // 메모 삭제 처리
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget) {
+      return;
+    }
 
     try {
       setIsDeleting(true);
@@ -106,14 +113,30 @@ export function MemoListView({
     return totalElements - (currentPage - 1) * pageSize - index;
   };
 
+  // 메모 상세 링크 URL 생성 (검색 조건 포함)
+  const getMemoDetailUrl = (memoSeq: number) => {
+    const urlParams = new URLSearchParams();
+    if (selectedCategorySeq !== ALL_CATEGORY_SEQ) {
+      urlParams.set('category', selectedCategorySeq.toString());
+    }
+    if (searchWord) {
+      urlParams.set('word', searchWord);
+    }
+    if (currentPage > 1) {
+      urlParams.set('page', (currentPage - 1).toString());
+    }
+    const queryString = urlParams.toString();
+    return `/memo/${memoSeq}${queryString ? `?${queryString}` : ''}`;
+  };
+
   return (
     <section className="space-y-4">
       {/* 검색/필터 영역 */}
-      <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
-        <Select
-          value={selectedCategorySeq.toString()}
-          onValueChange={(value) => onCategoryChange(Number(value))}
-        >
+      <form
+        onSubmit={handleSearchSubmit}
+        className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
+      >
+        <Select value={selectedCategorySeq.toString()} onValueChange={(value) => onCategoryChange(Number(value))}>
           <SelectTrigger className="h-10 w-48">
             <SelectValue placeholder="카테고리 선택" />
           </SelectTrigger>
@@ -139,18 +162,13 @@ export function MemoListView({
           검색
         </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setIsCategoryDialogOpen(true)}
-          className="h-10"
-        >
+        <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(true)} className="h-10">
           <Settings className="mr-2 h-4 w-4" />
           카테고리 관리
         </Button>
 
         <Button asChild type="button" className="h-10 bg-teal-500 text-white hover:bg-teal-600">
-          <Link href={selectedCategorySeq === ALL_CATEGORY_SEQ ? "/memo/create" : `/memo/create?category=${selectedCategorySeq}`}>
+          <Link href={selectedCategorySeq === ALL_CATEGORY_SEQ ? '/memo/create' : `/memo/create?category=${selectedCategorySeq}`}>
             <Plus className="mr-2 h-4 w-4" />
             만들기
           </Link>
@@ -184,23 +202,15 @@ export function MemoListView({
             ) : (
               memos.map((memo, index) => (
                 <TableRow key={memo.memoSeq} className="text-sm">
-                  <TableCell className="text-center font-semibold text-muted-foreground">
-                    {getRowNumber(index)}
-                  </TableCell>
+                  <TableCell className="text-center font-semibold text-muted-foreground">{getRowNumber(index)}</TableCell>
                   <TableCell className="max-w-0">
-                    <Link href={`/memo/${memo.memoSeq}`} className="block truncate text-sky-600 hover:underline">
+                    <Link href={getMemoDetailUrl(memo.memoSeq)} className="block truncate text-sky-600 hover:underline">
                       {getContentPreview(memo.content)}
                     </Link>
                   </TableCell>
-                  <TableCell className="text-center text-muted-foreground">
-                    {formatDate(memo.editDate)}
-                  </TableCell>
+                  <TableCell className="text-center text-muted-foreground">{formatDate(memo.editDate)}</TableCell>
                   <TableCell className="text-center">
-                    <button
-                      type="button"
-                      onClick={() => setDeleteTarget(memo)}
-                      className="text-sky-600 hover:underline"
-                    >
+                    <button type="button" onClick={() => setDeleteTarget(memo)} className="text-sky-600 hover:underline">
                       삭제
                     </button>
                   </TableCell>
@@ -214,12 +224,7 @@ export function MemoListView({
       {/* 페이징 */}
       {totalPages > 0 && (
         <div className="flex justify-center">
-          <PaginationNav
-            page={currentPage}
-            pageSize={pageSize}
-            total={totalElements}
-            onPageChange={onPageChange}
-          />
+          <PaginationNav page={currentPage} pageSize={pageSize} total={totalElements} onPageChange={onPageChange} />
         </div>
       )}
 

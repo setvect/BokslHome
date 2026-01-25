@@ -4,12 +4,7 @@
  */
 
 import { apiClient, API_BASE_URL } from '../api-client';
-import type {
-  BoardArticleRequest,
-  BoardArticleResponse,
-  BoardArticlePageResponse,
-  SearchType,
-} from '../types/board-article-api';
+import type { BoardArticleRequest, BoardArticleResponse, BoardArticlePageResponse, SearchType } from '../types/board-article-api';
 
 /**
  * Get paginated list of board articles with optional search
@@ -39,10 +34,7 @@ export async function getBoardArticlePage(params: {
  * @param boardArticleSeq - Article ID
  * @param decryptKey - Optional decryption key for encrypted articles
  */
-export async function getBoardArticle(
-  boardArticleSeq: number,
-  decryptKey?: string
-): Promise<BoardArticleResponse> {
+export async function getBoardArticle(boardArticleSeq: number, decryptKey?: string): Promise<BoardArticleResponse> {
   return apiClient.get<BoardArticleResponse>(`/api/board-article/${boardArticleSeq}`, {
     params: decryptKey ? { decryptKey } : undefined,
   });
@@ -51,17 +43,11 @@ export async function getBoardArticle(
 /**
  * Create a new board article with optional file attachments
  */
-export async function createBoardArticle(
-  request: BoardArticleRequest,
-  attachFiles?: File[]
-): Promise<BoardArticleResponse> {
+export async function createBoardArticle(request: BoardArticleRequest, attachFiles?: File[]): Promise<BoardArticleResponse> {
   const formData = new FormData();
 
   // Add request as JSON blob
-  formData.append(
-    'request',
-    new Blob([JSON.stringify(request)], { type: 'application/json' })
-  );
+  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
   // Add attachment files
   if (attachFiles && attachFiles.length > 0) {
@@ -84,10 +70,7 @@ export async function updateBoardArticle(
   const formData = new FormData();
 
   // Add request as JSON blob
-  formData.append(
-    'request',
-    new Blob([JSON.stringify(request)], { type: 'application/json' })
-  );
+  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
   // Add attachment files
   if (attachFiles && attachFiles.length > 0) {
@@ -96,10 +79,7 @@ export async function updateBoardArticle(
     });
   }
 
-  return apiClient.put<BoardArticleResponse>(
-    `/api/board-article/${boardArticleSeq}`,
-    formData
-  );
+  return apiClient.put<BoardArticleResponse>(`/api/board-article/${boardArticleSeq}`, formData);
 }
 
 /**
@@ -113,11 +93,7 @@ export async function deleteBoardArticle(boardArticleSeq: number): Promise<void>
  * Download an attachment file with authentication
  * This function handles the download with proper authentication headers
  */
-export async function downloadAttachment(
-  boardArticleSeq: number,
-  attachFileSeq: number,
-  fileName: string
-): Promise<void> {
+export async function downloadAttachment(boardArticleSeq: number, attachFileSeq: number, fileName: string): Promise<void> {
   const url = `${API_BASE_URL}/api/board-article/download/${boardArticleSeq}/${attachFileSeq}`;
 
   // Auth via HttpOnly cookie

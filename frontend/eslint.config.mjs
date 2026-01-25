@@ -20,6 +20,12 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      // 모든 제어문에 중괄호 블록 강제
+      curly: ["error", "all"],
+    },
+  },
 ];
 
 export default eslintConfig;

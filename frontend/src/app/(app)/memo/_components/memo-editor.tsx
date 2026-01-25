@@ -18,9 +18,10 @@ type MemoEditorProps = {
   categories: MemoCategoryResponse[];
   mode: 'create' | 'edit';
   defaultCategorySeq?: number;
+  listUrl?: string;
 };
 
-export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoEditorProps) {
+export function MemoEditor({ memo, categories, mode, defaultCategorySeq, listUrl = '/memo' }: MemoEditorProps) {
   const router = useRouter();
   const isEdit = mode === 'edit';
   const extractApiMessage = (err: ApiError): string | undefined => {
@@ -34,9 +35,7 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
     return undefined;
   };
 
-  const [categorySeq, setCategorySeq] = useState<number | undefined>(
-    memo?.categorySeq ?? defaultCategorySeq ?? categories[0]?.categorySeq
-  );
+  const [categorySeq, setCategorySeq] = useState<number | undefined>(memo?.categorySeq ?? defaultCategorySeq ?? categories[0]?.categorySeq);
   const [content, setContent] = useState(memo?.content ?? '');
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -84,7 +83,9 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
 
   // 삭제 처리
   const handleDelete = async () => {
-    if (!memo) return;
+    if (!memo) {
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -106,20 +107,14 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
 
   return (
     <section className="space-y-6 rounded-3xl border border-border bg-card p-6 shadow-sm">
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-      )}
+      {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
 
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="memo-editor-category" className="text-sm font-semibold text-muted-foreground">
             카테고리
           </Label>
-          <Select
-            value={categorySeq?.toString() ?? ''}
-            onValueChange={(value) => setCategorySeq(Number(value))}
-            disabled={isLoading}
-          >
+          <Select value={categorySeq?.toString() ?? ''} onValueChange={(value) => setCategorySeq(Number(value))} disabled={isLoading}>
             <SelectTrigger id="memo-editor-category" className="h-10">
               <SelectValue placeholder="카테고리 선택" />
             </SelectTrigger>
@@ -150,15 +145,10 @@ export function MemoEditor({ memo, categories, mode, defaultCategorySeq }: MemoE
 
       <footer className="flex flex-wrap justify-end gap-2 border-t border-border pt-4">
         <Button variant="outline" asChild className="w-full sm:w-28" disabled={isLoading}>
-          <Link href="/memo">목록</Link>
+          <Link href={listUrl}>목록</Link>
         </Button>
         {isEdit && (
-          <Button
-            variant="destructive"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="w-full sm:w-28"
-            disabled={isLoading}
-          >
+          <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)} className="w-full sm:w-28" disabled={isLoading}>
             삭제
           </Button>
         )}

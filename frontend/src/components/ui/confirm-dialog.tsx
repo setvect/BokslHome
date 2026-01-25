@@ -65,5 +65,3 @@ export function ConfirmDialog({
     </AlertDialog>
   );
 }
-
-

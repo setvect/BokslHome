@@ -23,13 +23,8 @@ export function CodeMajorListView({ majorCodes, isLoading, onRefresh }: CodeMajo
       {/* 액션 바 */}
       <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex justify-end">
-          <Button
-            type="button"
-            onClick={() => setIsCreateDialogOpen(true)}
-            className="h-10"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            새 코드 추가
+          <Button type="button" onClick={() => setIsCreateDialogOpen(true)} className="h-10">
+            <Plus className="mr-2 h-4 w-4" />새 코드 추가
           </Button>
         </div>
       </section>
@@ -61,14 +56,9 @@ export function CodeMajorListView({ majorCodes, isLoading, onRefresh }: CodeMajo
             ) : (
               majorCodes.map((code, index) => (
                 <TableRow key={code.majorCode} className="transition-colors hover:bg-muted/60">
-                  <TableCell className="text-center font-semibold text-muted-foreground">
-                    {index + 1}
-                  </TableCell>
+                  <TableCell className="text-center font-semibold text-muted-foreground">{index + 1}</TableCell>
                   <TableCell>
-                    <Link
-                      href={`/misc/code/${code.majorCode}`}
-                      className="flex items-center gap-2 text-primary hover:underline"
-                    >
+                    <Link href={`/misc/code/${code.majorCode}`} className="flex items-center gap-2 text-primary hover:underline">
                       <FolderOpen className="h-4 w-4" />
                       {code.majorCode}
                     </Link>
@@ -79,10 +69,7 @@ export function CodeMajorListView({ majorCodes, isLoading, onRefresh }: CodeMajo
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Link
-                      href={`/misc/code/${code.majorCode}`}
-                      className="text-sm text-primary hover:underline"
-                    >
+                    <Link href={`/misc/code/${code.majorCode}`} className="text-sm text-primary hover:underline">
                       상세보기
                     </Link>
                   </TableCell>
@@ -94,12 +81,7 @@ export function CodeMajorListView({ majorCodes, isLoading, onRefresh }: CodeMajo
       </div>
 
       {/* 새 코드 추가 다이얼로그 */}
-      <CodeMajorFormDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        onSuccess={onRefresh}
-      />
+      <CodeMajorFormDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} onSuccess={onRefresh} />
     </div>
   );
 }
-

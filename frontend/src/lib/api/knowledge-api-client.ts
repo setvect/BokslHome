@@ -10,50 +10,47 @@ import type { KnowledgeRequest, KnowledgeResponse, KnowledgePageResponse } from 
  * Knowledge 생성
  */
 export async function createKnowledge(request: KnowledgeRequest): Promise<KnowledgeResponse> {
-    return apiClient.post<KnowledgeResponse>('/api/knowledge', request);
+  return apiClient.post<KnowledgeResponse>('/api/knowledge', request);
 }
 
 /**
  * Knowledge 수정
  */
-export async function updateKnowledge(
-    knowledgeSeq: number,
-    request: KnowledgeRequest
-): Promise<KnowledgeResponse> {
-    return apiClient.put<KnowledgeResponse>(`/api/knowledge/${knowledgeSeq}`, request);
+export async function updateKnowledge(knowledgeSeq: number, request: KnowledgeRequest): Promise<KnowledgeResponse> {
+  return apiClient.put<KnowledgeResponse>(`/api/knowledge/${knowledgeSeq}`, request);
 }
 
 /**
  * Knowledge 삭제
  */
 export async function deleteKnowledge(knowledgeSeq: number): Promise<void> {
-    return apiClient.delete<void>(`/api/knowledge/${knowledgeSeq}`);
+  return apiClient.delete<void>(`/api/knowledge/${knowledgeSeq}`);
 }
 
 /**
  * 특정 Knowledge 조회
  */
 export async function getKnowledge(knowledgeSeq: number): Promise<KnowledgeResponse> {
-    return apiClient.get<KnowledgeResponse>(`/api/knowledge/${knowledgeSeq}`);
+  return apiClient.get<KnowledgeResponse>(`/api/knowledge/${knowledgeSeq}`);
 }
 
 /**
  * Knowledge 목록 페이징 조회
  */
 export async function getKnowledgePage(params: {
-    classifyC?: string;
-    content?: string;
-    page?: number;
-    size?: number;
+  classifyC?: string;
+  content?: string;
+  page?: number;
+  size?: number;
 }): Promise<KnowledgePageResponse> {
-    const { classifyC, content, page = 0, size = 10 } = params;
+  const { classifyC, content, page = 0, size = 10 } = params;
 
-    return apiClient.get<KnowledgePageResponse>('/api/knowledge/page', {
-        params: {
-            classifyC,
-            content,
-            page,
-            size,
-        },
-    });
+  return apiClient.get<KnowledgePageResponse>('/api/knowledge/page', {
+    params: {
+      classifyC,
+      content,
+      page,
+      size,
+    },
+  });
 }

@@ -62,7 +62,9 @@ export default function NetworkPage() {
 
     // Update URL
     const params = new URLSearchParams();
-    if (title) params.set('title', title);
+    if (title) {
+      params.set('title', title);
+    }
     params.set('page', '0');
     router.replace(`/network?${params.toString()}`);
 
@@ -75,7 +77,9 @@ export default function NetworkPage() {
 
     // Update URL
     const params = new URLSearchParams();
-    if (searchTitle) params.set('title', searchTitle);
+    if (searchTitle) {
+      params.set('title', searchTitle);
+    }
     params.set('page', page.toString());
     router.replace(`/network?${params.toString()}`);
 
@@ -106,9 +110,7 @@ export default function NetworkPage() {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
         <NetworkListView
           networks={networks}

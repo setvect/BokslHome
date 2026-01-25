@@ -17,8 +17,7 @@ export default function BoardPage() {
 
   const code: BoardCode = DEFAULT_BOARD_CODE;
   const defaultBoardName = getBoardNameByCode(code) ?? '게시판';
-  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
-    boardSettings?.name ?? defaultBoardName;
+  const headerTitle = (boardSettings: BoardManagerResponse | null) => boardSettings?.name ?? defaultBoardName;
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [articles, setArticles] = useState<BoardArticleResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,9 +152,7 @@ export default function BoardPage() {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
         <BoardListView
           category={boardSettings}

@@ -128,9 +128,7 @@ export function NoteDetailView({ note, listUrl }: NoteDetailViewProps) {
                   >
                     {attachment.fileName}
                   </a>
-                  <span className="text-muted-foreground">
-                    ({(attachment.fileSize / 1024).toFixed(1)} KB)
-                  </span>
+                  <span className="text-muted-foreground">({(attachment.fileSize / 1024).toFixed(1)} KB)</span>
                 </li>
               ))}
             </ul>

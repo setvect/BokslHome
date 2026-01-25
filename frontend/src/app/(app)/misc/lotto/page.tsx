@@ -27,15 +27,11 @@ export default function LottoPage() {
 
       <div className="rounded-2xl border border-border bg-card/60 p-6 shadow-sm">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <p className="text-sm text-muted-foreground">
-            생성 시각: {generatedAt ?? '계산 중...'}
-          </p>
+          <p className="text-sm text-muted-foreground">생성 시각: {generatedAt ?? '계산 중...'}</p>
         </div>
 
         {error ? (
-          <div className="mt-6 text-sm text-red-500">
-            로또 번호를 불러오는 중 오류가 발생했습니다: {error}
-          </div>
+          <div className="mt-6 text-sm text-red-500">로또 번호를 불러오는 중 오류가 발생했습니다: {error}</div>
         ) : games ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {games.map((game) => (
@@ -79,7 +75,7 @@ function useLotto() {
     const fetchLotto = async () => {
       try {
         const data = await apiClient.get<LottoResponse>('/api/lotto');
-        
+
         const generatedGames: LottoGame[] = data.setList.map((set, index) => ({
           id: index + 1,
           numbers: set.numberList,

@@ -59,9 +59,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>비밀번호 변경</DialogTitle>
-          <DialogDescription>
-            계정을 보호하기 위해 주기적으로 비밀번호를 변경해 주세요.
-          </DialogDescription>
+          <DialogDescription>계정을 보호하기 위해 주기적으로 비밀번호를 변경해 주세요.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -124,4 +122,3 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
     </Dialog>
   );
 }
-

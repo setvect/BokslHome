@@ -4,14 +4,7 @@ import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { apiClient, ApiError } from '@/lib/api-client';
@@ -25,13 +18,7 @@ interface CodeFormDialogProps {
   onSuccess: () => void;
 }
 
-export function CodeFormDialog({
-  open,
-  onOpenChange,
-  majorCode,
-  editingCode,
-  onSuccess,
-}: CodeFormDialogProps) {
+export function CodeFormDialog({ open, onOpenChange, majorCode, editingCode, onSuccess }: CodeFormDialogProps) {
   const isEditing = !!editingCode;
   const extractApiMessage = (err: ApiError): string | undefined => {
     const data = err.data;
@@ -113,18 +100,12 @@ export function CodeFormDialog({
         <DialogHeader>
           <DialogTitle>{isEditing ? '코드 수정' : '마이너 코드 추가'}</DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? '코드 정보를 수정합니다.'
-              : `${majorCode} 그룹에 새로운 마이너 코드를 추가합니다.`}
+            {isEditing ? '코드 정보를 수정합니다.' : `${majorCode} 그룹에 새로운 마이너 코드를 추가합니다.`}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
-            {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
+            {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
             <div className="space-y-2">
               <Label htmlFor="edit-majorCode">메이저 코드</Label>
               <Input id="edit-majorCode" value={majorCode} disabled className="bg-muted" />
@@ -163,12 +144,7 @@ export function CodeFormDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={isLoading}>
               취소
             </Button>
             <Button type="submit" disabled={isLoading}>
@@ -189,4 +165,3 @@ export function CodeFormDialog({
     </Dialog>
   );
 }
-

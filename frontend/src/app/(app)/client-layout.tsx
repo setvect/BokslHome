@@ -86,8 +86,9 @@ export function ClientAppLayout({ initialSidebarOpen, children }: ClientAppLayou
       </div>
 
       <div
-        className={`flex flex-1 flex-col pt-14 ${isInitialized ? 'transition-all duration-300' : ''} ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'
-          }`}
+        className={`flex flex-1 flex-col pt-14 ${isInitialized ? 'transition-all duration-300' : ''} ${
+          sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'
+        }`}
         suppressHydrationWarning
       >
         <MainContent>{children}</MainContent>

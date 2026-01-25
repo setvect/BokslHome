@@ -53,12 +53,7 @@ export function BoardListView({
     return (
       <div className="space-y-4">
         <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-          <BoardListFilterBar
-            category={category}
-            searchType={searchType}
-            searchWord={searchWord}
-            onSearch={onSearch}
-          />
+          <BoardListFilterBar category={category} searchType={searchType} searchWord={searchWord} onSearch={onSearch} />
         </section>
         <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground">
           로딩 중...
@@ -70,12 +65,7 @@ export function BoardListView({
   return (
     <div className="space-y-4">
       <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-        <BoardListFilterBar
-          category={category}
-          searchType={searchType}
-          searchWord={searchWord}
-          onSearch={onSearch}
-        />
+        <BoardListFilterBar category={category} searchType={searchType} searchWord={searchWord} onSearch={onSearch} />
       </section>
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
@@ -189,9 +179,15 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
     const word = searchParams.get('word');
     const pageParam = searchParams.get('page');
 
-    if (searchType) params.set('searchType', searchType);
-    if (word) params.set('word', word);
-    if (pageParam) params.set('page', pageParam);
+    if (searchType) {
+      params.set('searchType', searchType);
+    }
+    if (word) {
+      params.set('word', word);
+    }
+    if (pageParam) {
+      params.set('page', pageParam);
+    }
 
     const queryString = params.toString();
     return queryString ? `?${queryString}` : '';
@@ -202,7 +198,9 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
   };
 
   const handleDeleteConfirm = async () => {
-    if (deleteTarget === null) return;
+    if (deleteTarget === null) {
+      return;
+    }
 
     setIsDeleting(true);
     try {
@@ -251,7 +249,9 @@ function BoardTable({ category, articles, page, pageSize, totalCount, onDelete }
                         </span>
                       ) : null}
                       {article.encryptF ? (
-                        <span className="flex-shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">암호화</span>
+                        <span className="flex-shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive">
+                          암호화
+                        </span>
                       ) : null}
                     </Link>
                   </TableCell>

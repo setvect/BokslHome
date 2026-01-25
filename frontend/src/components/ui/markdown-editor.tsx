@@ -76,7 +76,9 @@ export function MarkdownEditor({
 
   // 실시간 마크다운 렌더링 (메모화로 성능 최적화)
   const previewHtml = useMemo(() => {
-    if (!showPreview || !value.trim()) return '';
+    if (!showPreview || !value.trim()) {
+      return '';
+    }
     return renderMarkdown(value, { sanitize: true, enableMermaid: false });
   }, [value, showPreview]);
 
@@ -88,22 +90,10 @@ export function MarkdownEditor({
           <span className="text-sm font-medium text-foreground">Markdown Editor</span>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowPreview(!showPreview)}
-            className="h-8 px-2"
-          >
+          <Button type="button" variant="ghost" size="sm" onClick={() => setShowPreview(!showPreview)} className="h-8 px-2">
             {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="h-8 px-2"
-          >
+          <Button type="button" variant="ghost" size="sm" onClick={() => setIsFullscreen(!isFullscreen)} className="h-8 px-2">
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
         </div>

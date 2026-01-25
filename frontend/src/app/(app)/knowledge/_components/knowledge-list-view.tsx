@@ -57,9 +57,15 @@ export function KnowledgeListView() {
   // Update URL when search params change
   const updateURL = (newCategory: string, newKeyword: string, newPage: number) => {
     const params = new URLSearchParams();
-    if (newCategory) params.set('category', newCategory);
-    if (newKeyword) params.set('keyword', newKeyword);
-    if (newPage > 0) params.set('page', newPage.toString());
+    if (newCategory) {
+      params.set('category', newCategory);
+    }
+    if (newKeyword) {
+      params.set('keyword', newKeyword);
+    }
+    if (newPage > 0) {
+      params.set('page', newPage.toString());
+    }
 
     const queryString = params.toString();
     router.push(`/knowledge${queryString ? `?${queryString}` : ''}`, { scroll: false });
@@ -72,10 +78,10 @@ export function KnowledgeListView() {
         const codeResponse = await getCodePage({
           majorCode: 'KNOW_TYPE',
           size: 100,
-          sort: 'orderNo,asc'
+          sort: 'orderNo,asc',
         });
         // Remove duplicates using Set
-        const uniqueCategories = Array.from(new Set(codeResponse.content.map(code => code.minorCode)));
+        const uniqueCategories = Array.from(new Set(codeResponse.content.map((code) => code.minorCode)));
         setCategories(uniqueCategories);
 
         // Only set default category if URL doesn't have one
@@ -167,9 +173,15 @@ export function KnowledgeListView() {
   // 검색 조건을 포함한 상세 페이지 URL 생성
   const getDetailUrl = (knowledgeSeq: number) => {
     const params = new URLSearchParams();
-    if (category) params.set('category', category);
-    if (searchKeyword) params.set('keyword', searchKeyword);
-    if (currentPage > 0) params.set('page', currentPage.toString());
+    if (category) {
+      params.set('category', category);
+    }
+    if (searchKeyword) {
+      params.set('keyword', searchKeyword);
+    }
+    if (currentPage > 0) {
+      params.set('page', currentPage.toString());
+    }
 
     const queryString = params.toString();
     return `/knowledge/${knowledgeSeq}${queryString ? `?${queryString}` : ''}`;
@@ -219,9 +231,7 @@ export function KnowledgeListView() {
             ) : (
               documents.map((document) => (
                 <TableRow key={document.knowledgeSeq} className="text-sm">
-                  <TableCell className="text-center font-medium text-muted-foreground">
-                    {document.knowledgeSeq}
-                  </TableCell>
+                  <TableCell className="text-center font-medium text-muted-foreground">{document.knowledgeSeq}</TableCell>
                   <TableCell className="text-center">{document.classifyC}</TableCell>
                   <TableCell className="max-w-0">
                     <Link href={getDetailUrl(document.knowledgeSeq)} className="block truncate text-sky-600 hover:underline">
@@ -243,13 +253,7 @@ export function KnowledgeListView() {
         </Table>
       </div>
 
-      {totalPages > 0 && (
-        <KnowledgePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
+      {totalPages > 0 && <KnowledgePagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </section>
   );
 }
@@ -347,11 +351,7 @@ function KnowledgePagination({ currentPage, totalPages, onPageChange }: Knowledg
 
         {pageNumbers.map((pageNum) => (
           <PaginationItem key={pageNum}>
-            <PaginationLink
-              onClick={() => onPageChange(pageNum)}
-              isActive={pageNum === currentPage}
-              className="cursor-pointer"
-            >
+            <PaginationLink onClick={() => onPageChange(pageNum)} isActive={pageNum === currentPage} className="cursor-pointer">
               {pageNum + 1}
             </PaginationLink>
           </PaginationItem>

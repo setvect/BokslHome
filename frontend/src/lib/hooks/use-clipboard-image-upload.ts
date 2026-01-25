@@ -37,8 +37,7 @@ export const useClipboardImageUpload = ({ onImageInsert, onError }: ClipboardIma
         let errorMessage = '이미지 업로드에 실패했습니다.';
 
         if (error instanceof ApiError) {
-          errorMessage =
-            error.status === 0 ? '네트워크 오류가 발생했습니다.' : `업로드 실패: ${error.message}`;
+          errorMessage = error.status === 0 ? '네트워크 오류가 발생했습니다.' : `업로드 실패: ${error.message}`;
         } else if (error instanceof Error && error.message) {
           errorMessage = error.message;
         }
@@ -53,7 +52,9 @@ export const useClipboardImageUpload = ({ onImageInsert, onError }: ClipboardIma
     (e: React.ClipboardEvent | ClipboardEvent) => {
       const clipboard = e.clipboardData;
       const items = clipboard?.items;
-      if (!clipboard || !items) return;
+      if (!clipboard || !items) {
+        return;
+      }
 
       const hasHtml = Boolean(clipboard.getData('text/html'));
       const hasRichText = Boolean(clipboard.getData('text/rtf'));

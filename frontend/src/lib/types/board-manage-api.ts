@@ -8,14 +8,14 @@
  * Matches backend BoardManagerResponse
  */
 export interface BoardManagerResponse {
-    boardCode: string;
-    name: string;
-    uploadLimit: number;
-    replyF: boolean;
-    commentF: boolean;
-    attachF: boolean;
-    encryptF: boolean;
-    deleteF: boolean;
+  boardCode: string;
+  name: string;
+  uploadLimit: number;
+  replyF: boolean;
+  commentF: boolean;
+  attachF: boolean;
+  encryptF: boolean;
+  deleteF: boolean;
 }
 
 /**
@@ -23,14 +23,14 @@ export interface BoardManagerResponse {
  * For create and update operations
  */
 export interface BoardManagerRequest {
-    boardCode: string;
-    name: string;
-    uploadLimit: number;
-    replyF: boolean;
-    commentF: boolean;
-    attachF: boolean;
-    encryptF: boolean;
-    deleteF: boolean;
+  boardCode: string;
+  name: string;
+  uploadLimit: number;
+  replyF: boolean;
+  commentF: boolean;
+  attachF: boolean;
+  encryptF: boolean;
+  deleteF: boolean;
 }
 
 /**
@@ -38,8 +38,8 @@ export interface BoardManagerRequest {
  * Search parameters for filtering boards
  */
 export interface BoardManagerSearchRequest {
-    boardCode?: string;
-    name?: string;
+  boardCode?: string;
+  name?: string;
 }
 
 /**
@@ -47,11 +47,11 @@ export interface BoardManagerSearchRequest {
  * Paginated response wrapper
  */
 export interface BoardManagerPageResponse {
-    content: BoardManagerResponse[];
-    page: {
-        size: number;
-        number: number;
-        totalElements: number;
-        totalPages: number;
-    };
+  content: BoardManagerResponse[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
 }

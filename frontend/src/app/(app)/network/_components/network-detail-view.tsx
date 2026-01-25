@@ -64,9 +64,7 @@ export function NetworkDetailView({ network }: NetworkDetailViewProps) {
   return (
     <section className="space-y-3">
       {saveError && (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-          {saveError}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">{saveError}</div>
       )}
 
       <div className="rounded-2xl border border-border bg-card p-3 shadow-sm md:p-4">
@@ -104,12 +102,7 @@ export function NetworkDetailView({ network }: NetworkDetailViewProps) {
         </div>
       </div>
 
-      <NetworkEditor
-        initialNodes={graphData.nodes}
-        initialEdges={graphData.edges}
-        onSave={handleSave}
-        isSaving={isSaving}
-      />
+      <NetworkEditor initialNodes={graphData.nodes} initialEdges={graphData.edges} onSave={handleSave} isSaving={isSaving} />
     </section>
   );
 }

@@ -18,8 +18,7 @@ export default function BoardEditPage() {
   const code = params.code as string;
   const postId = Number(params.postId);
   const fallbackTitle = getBoardNameByCode(code) ?? '게시판';
-  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
-    boardSettings?.name ?? fallbackTitle;
+  const headerTitle = (boardSettings: BoardManagerResponse | null) => boardSettings?.name ?? fallbackTitle;
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [article, setArticle] = useState<BoardArticleResponse | null>(null);
@@ -76,7 +75,9 @@ export default function BoardEditPage() {
 
   // Handle password submission for encrypted articles
   const handlePasswordSubmit = async (decryptKey: string) => {
-    if (!article) return;
+    if (!article) {
+      return;
+    }
 
     setIsLoadingDecryption(true);
 

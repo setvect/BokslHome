@@ -28,4 +28,3 @@ export function setCookie(name: string, value: string, days: number = 365): void
 export function deleteCookie(name: string): void {
   Cookies.remove(name, { path: '/' });
 }
-
