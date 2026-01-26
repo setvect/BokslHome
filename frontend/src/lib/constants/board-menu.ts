@@ -1,16 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import {
-  BookOpen,
-  Camera,
-  FileText,
-  Film,
-  Heart,
-  MessageCircle,
-  Music,
-  Sparkles,
-  StickyNote,
-  Users,
-} from 'lucide-react';
+import { BookOpen, Camera, FileText, Film, Heart, MessageCircle, Music, Sparkles, StickyNote, Users } from 'lucide-react';
 
 export type BoardCode = string;
 
@@ -35,5 +24,4 @@ export const BOARD_MENU_ITEMS: BoardMenuItem[] = [
   { code: 'BDAAAA12', name: '계획', icon: StickyNote },
 ];
 
-export const getBoardNameByCode = (code?: string | null) =>
-  code ? BOARD_MENU_ITEMS.find((item) => item.code === code)?.name : undefined;
+export const getBoardNameByCode = (code?: string | null) => (code ? BOARD_MENU_ITEMS.find((item) => item.code === code)?.name : undefined);

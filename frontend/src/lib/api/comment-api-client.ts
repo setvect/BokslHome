@@ -19,11 +19,7 @@ export async function getCommentPage(params: {
   });
 }
 
-export async function createComment(
-  request: CommentRequest,
-  module: CommentModule,
-  moduleId: string
-): Promise<CommentResponse> {
+export async function createComment(request: CommentRequest, module: CommentModule, moduleId: string): Promise<CommentResponse> {
   return apiClient.post<CommentResponse>('/api/comments', request, {
     params: { module, moduleId },
   });

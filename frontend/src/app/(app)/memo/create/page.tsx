@@ -51,9 +51,7 @@ export default function MemoCreatePage() {
         <header className="space-y-1">
           <h1 className="text-3xl font-semibold text-foreground">메모 작성</h1>
         </header>
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       </div>
     );
   }

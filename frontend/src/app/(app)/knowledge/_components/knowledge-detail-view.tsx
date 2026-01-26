@@ -29,9 +29,15 @@ export function KnowledgeDetailView({ document }: KnowledgeDetailViewProps) {
     const keyword = searchParams.get('keyword');
     const page = searchParams.get('page');
 
-    if (category) params.set('category', category);
-    if (keyword) params.set('keyword', keyword);
-    if (page) params.set('page', page);
+    if (category) {
+      params.set('category', category);
+    }
+    if (keyword) {
+      params.set('keyword', keyword);
+    }
+    if (page) {
+      params.set('page', page);
+    }
 
     const queryString = params.toString();
     return `/knowledge${queryString ? `?${queryString}` : ''}`;

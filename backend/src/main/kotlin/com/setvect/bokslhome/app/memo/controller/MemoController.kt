@@ -2,7 +2,10 @@ package com.setvect.bokslhome.app.memo.controller
 
 import com.setvect.bokslhome.app.memo.model.MemoRequest
 import com.setvect.bokslhome.app.memo.model.MemoResponse
+import com.setvect.bokslhome.app.memo.model.MemoSearchRequest
 import com.setvect.bokslhome.app.memo.service.MemoService
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -45,15 +48,8 @@ class MemoController(
         return ResponseEntity.ok(memoResponse)
     }
 
-    @GetMapping("/category/{categorySeq}")
-    fun listMemosByCategory(@PathVariable categorySeq: Int): ResponseEntity<List<MemoResponse>> {
-        val memoResponseList = memoService.listByCategory(categorySeq)
-        return ResponseEntity.ok(memoResponseList)
-    }
-
-    @GetMapping
-    fun listAllMemos(): ResponseEntity<List<MemoResponse>> {
-        val memoResponseList = memoService.listAll()
-        return ResponseEntity.ok(memoResponseList)
+    @GetMapping("/page")
+    fun page(search: MemoSearchRequest, pageable: Pageable): ResponseEntity<PagedModel<MemoResponse>> {
+        return ResponseEntity.ok(memoService.page(pageable, search))
     }
 }

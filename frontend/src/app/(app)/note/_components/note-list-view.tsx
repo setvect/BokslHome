@@ -66,10 +66,18 @@ export function NoteListView() {
   // Update URL when search params change
   const updateURL = (newCategory: string, newField: string, newKeyword: string, newPage: number) => {
     const params = new URLSearchParams();
-    if (newCategory) params.set('category', newCategory);
-    if (newField !== FIELD_OPTIONS[0].value) params.set('field', newField);
-    if (newKeyword) params.set('keyword', newKeyword);
-    if (newPage > 0) params.set('page', newPage.toString());
+    if (newCategory) {
+      params.set('category', newCategory);
+    }
+    if (newField !== FIELD_OPTIONS[0].value) {
+      params.set('field', newField);
+    }
+    if (newKeyword) {
+      params.set('keyword', newKeyword);
+    }
+    if (newPage > 0) {
+      params.set('page', newPage.toString());
+    }
 
     const queryString = params.toString();
     router.push(`/note${queryString ? `?${queryString}` : ''}`, { scroll: false });
@@ -225,10 +233,18 @@ export function NoteListView() {
   // 검색 조건을 포함한 상세 페이지 URL 생성
   const getDetailUrl = (noteSeq: number) => {
     const params = new URLSearchParams();
-    if (category) params.set('category', category);
-    if (field !== FIELD_OPTIONS[0].value) params.set('field', field);
-    if (searchKeyword) params.set('keyword', searchKeyword);
-    if (currentPage > 0) params.set('page', currentPage.toString());
+    if (category) {
+      params.set('category', category);
+    }
+    if (field !== FIELD_OPTIONS[0].value) {
+      params.set('field', field);
+    }
+    if (searchKeyword) {
+      params.set('keyword', searchKeyword);
+    }
+    if (currentPage > 0) {
+      params.set('page', currentPage.toString());
+    }
 
     const queryString = params.toString();
     return `/note/${noteSeq}${queryString ? `?${queryString}` : ''}`;
@@ -284,7 +300,7 @@ export function NoteListView() {
             ) : (
               documents.map((note) => {
                 // 카테고리 이름 찾기
-                const categoryName = categories.find(cat => cat.noteCategorySeq === note.noteCategorySeq)?.name || '-';
+                const categoryName = categories.find((cat) => cat.noteCategorySeq === note.noteCategorySeq)?.name || '-';
 
                 return (
                   <TableRow key={note.noteSeq} className="text-sm">
@@ -295,7 +311,9 @@ export function NoteListView() {
                         {note.title}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-center">{note.content.includes('```') || note.content.includes('#') ? '예' : '아니요'}</TableCell>
+                    <TableCell className="text-center">
+                      {note.content.includes('```') || note.content.includes('#') ? '예' : '아니요'}
+                    </TableCell>
                     <TableCell className="text-center">{formatDate(note.regDate)}</TableCell>
                   </TableRow>
                 );
@@ -305,13 +323,7 @@ export function NoteListView() {
         </Table>
       </div>
 
-      {totalPages > 0 && (
-        <NotePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
+      {totalPages > 0 && <NotePagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </section>
   );
 }
@@ -327,7 +339,16 @@ type NoteSearchBarProps = {
   onSearch: () => void;
 };
 
-function NoteSearchBar({ categories, category, field, keyword, onCategoryChange, onFieldChange, onKeywordChange, onSearch }: NoteSearchBarProps) {
+function NoteSearchBar({
+  categories,
+  category,
+  field,
+  keyword,
+  onCategoryChange,
+  onFieldChange,
+  onKeywordChange,
+  onSearch,
+}: NoteSearchBarProps) {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       onSearch();
@@ -363,7 +384,13 @@ function NoteSearchBar({ categories, category, field, keyword, onCategoryChange,
         </SelectContent>
       </Select>
 
-      <Input value={keyword} onChange={(event) => onKeywordChange(event.target.value)} onKeyDown={handleKeyDown} placeholder="검색어" className="h-10 flex-1 min-w-[160px]" />
+      <Input
+        value={keyword}
+        onChange={(event) => onKeywordChange(event.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="검색어"
+        className="h-10 flex-1 min-w-[160px]"
+      />
 
       <Button type="button" onClick={onSearch} className="h-10 bg-sky-500 text-white hover:bg-sky-600">
         검색
@@ -418,11 +445,7 @@ function NotePagination({ currentPage, totalPages, onPageChange }: NotePaginatio
 
         {pageNumbers.map((pageNum) => (
           <PaginationItem key={pageNum}>
-            <PaginationLink
-              onClick={() => onPageChange(pageNum)}
-              isActive={pageNum === currentPage}
-              className="cursor-pointer"
-            >
+            <PaginationLink onClick={() => onPageChange(pageNum)} isActive={pageNum === currentPage} className="cursor-pointer">
               {pageNum + 1}
             </PaginationLink>
           </PaginationItem>

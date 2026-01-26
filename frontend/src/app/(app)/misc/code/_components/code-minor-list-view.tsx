@@ -21,15 +21,7 @@ interface CodeMinorListViewProps {
   onRefresh: () => void;
 }
 
-export function CodeMinorListView({
-  majorCode,
-  codes,
-  isLoading,
-  page,
-  totalPages,
-  onPageChange,
-  onRefresh,
-}: CodeMinorListViewProps) {
+export function CodeMinorListView({ majorCode, codes, isLoading, page, totalPages, onPageChange, onRefresh }: CodeMinorListViewProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingCode, setEditingCode] = useState<CodeResponse | null>(null);
   const [deletingCode, setDeletingCode] = useState<CodeResponse | null>(null);
@@ -81,12 +73,8 @@ export function CodeMinorListView({
             ) : (
               codes.map((code, index) => (
                 <TableRow key={code.codeSeq} className="transition-colors hover:bg-muted/60">
-                  <TableCell className="text-center font-semibold text-muted-foreground">
-                    {(page - 1) * 10 + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center text-xs text-muted-foreground">
-                    {code.codeSeq}
-                  </TableCell>
+                  <TableCell className="text-center font-semibold text-muted-foreground">{(page - 1) * 10 + index + 1}</TableCell>
+                  <TableCell className="text-center text-xs text-muted-foreground">{code.codeSeq}</TableCell>
                   <TableCell className="font-medium">{code.minorCode}</TableCell>
                   <TableCell>{code.codeValue}</TableCell>
                   <TableCell className="text-center">{code.orderNo}</TableCell>
@@ -121,21 +109,11 @@ export function CodeMinorListView({
 
       {/* 페이지네이션 */}
       <div className="flex justify-center">
-        <PaginationNav
-          page={page}
-          total={Math.max(totalPages, 1) * 10}
-          pageSize={10}
-          onPageChange={onPageChange}
-        />
+        <PaginationNav page={page} total={Math.max(totalPages, 1) * 10} pageSize={10} onPageChange={onPageChange} />
       </div>
 
       {/* 생성 다이얼로그 */}
-      <CodeFormDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        majorCode={majorCode}
-        onSuccess={onRefresh}
-      />
+      <CodeFormDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} majorCode={majorCode} onSuccess={onRefresh} />
 
       {/* 수정 다이얼로그 */}
       <CodeFormDialog
@@ -156,4 +134,3 @@ export function CodeMinorListView({
     </div>
   );
 }
-

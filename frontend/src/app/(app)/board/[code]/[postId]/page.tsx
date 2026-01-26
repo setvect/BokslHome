@@ -17,8 +17,7 @@ export default function BoardDetailPage() {
   const code = params.code as string;
   const postId = Number(params.postId);
   const fallbackTitle = getBoardNameByCode(code) ?? '게시판';
-  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
-    boardSettings?.name ?? fallbackTitle;
+  const headerTitle = (boardSettings: BoardManagerResponse | null) => boardSettings?.name ?? fallbackTitle;
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [article, setArticle] = useState<BoardArticleResponse | null>(null);

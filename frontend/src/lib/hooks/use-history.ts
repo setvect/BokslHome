@@ -6,18 +6,16 @@ interface HistoryState<T> {
   future: T[];
 }
 
-type HistoryAction<T> =
-  | { type: 'UNDO' }
-  | { type: 'REDO' }
-  | { type: 'SET'; newPresent: T }
-  | { type: 'RESET'; initialPresent: T };
+type HistoryAction<T> = { type: 'UNDO' } | { type: 'REDO' } | { type: 'SET'; newPresent: T } | { type: 'RESET'; initialPresent: T };
 
 function historyReducer<T>(state: HistoryState<T>, action: HistoryAction<T>): HistoryState<T> {
   const { past, present, future } = state;
 
   switch (action.type) {
     case 'UNDO': {
-      if (past.length === 0) return state;
+      if (past.length === 0) {
+        return state;
+      }
       const previous = past[past.length - 1];
       const newPast = past.slice(0, past.length - 1);
       return {
@@ -27,7 +25,9 @@ function historyReducer<T>(state: HistoryState<T>, action: HistoryAction<T>): Hi
       };
     }
     case 'REDO': {
-      if (future.length === 0) return state;
+      if (future.length === 0) {
+        return state;
+      }
       const next = future[0];
       const newFuture = future.slice(1);
       return {
@@ -38,7 +38,9 @@ function historyReducer<T>(state: HistoryState<T>, action: HistoryAction<T>): Hi
     }
     case 'SET': {
       const { newPresent } = action;
-      if (newPresent === present) return state;
+      if (newPresent === present) {
+        return state;
+      }
       return {
         past: [...past, present],
         present: newPresent,
@@ -108,4 +110,3 @@ export function useHistory<T>(initialPresent: T) {
     reset,
   };
 }
-

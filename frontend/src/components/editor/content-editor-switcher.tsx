@@ -84,7 +84,9 @@ export function ContentEditorSwitcher({
   }
 
   function requestEditorSwitch(nextType: ContentEditorType) {
-    if (nextType === editorType) return;
+    if (nextType === editorType) {
+      return;
+    }
 
     if (shouldConfirmSwitch()) {
       openConfirmation(nextType);
@@ -164,5 +166,3 @@ export function ContentEditorSwitcher({
     </div>
   );
 }
-
-

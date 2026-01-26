@@ -45,7 +45,9 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
   // Fetch board settings
   useEffect(() => {
     const fetchBoardSettings = async () => {
-      if (!code) return;
+      if (!code) {
+        return;
+      }
 
       try {
         const settings = await getBoardManager(code);
@@ -63,7 +65,9 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
 
   // Fetch articles from API
   const fetchArticles = async (type: SearchType, word: string, page: number = 0) => {
-    if (!code) return;
+    if (!code) {
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -90,7 +94,9 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
 
   // Initial data load
   useEffect(() => {
-    if (!code) return;
+    if (!code) {
+      return;
+    }
 
     const pageParam = searchParams.get('page');
     const page = pageParam ? parseInt(pageParam, 10) : 0;
@@ -100,7 +106,9 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
 
   // Handle search
   const handleSearch = (type: SearchType, word: string) => {
-    if (!code) return;
+    if (!code) {
+      return;
+    }
 
     setSearchType(type);
     setSearchWord(word);
@@ -120,7 +128,9 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
 
   // Handle page change
   const handlePageChange = (page: number) => {
-    if (!code) return;
+    if (!code) {
+      return;
+    }
 
     // PaginationNav uses 1-based page numbers, API uses 0-based
     const apiPage = page - 1;
@@ -171,9 +181,7 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
         <header>
           <h1 className="text-3xl font-semibold text-foreground">{headerTitle(boardSettings, code)}</h1>
         </header>
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       </div>
     );
   }
@@ -185,9 +193,7 @@ export default function BoardCodePage({ params }: BoardCodePageProps) {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
         <BoardListView
           category={boardSettings}

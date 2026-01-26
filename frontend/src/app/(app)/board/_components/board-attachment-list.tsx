@@ -22,10 +22,7 @@ export function BoardAttachmentList({ attachments, showDownload = false }: Board
       </div>
       <ul className="space-y-1 text-sm text-muted-foreground">
         {attachments.map((file) => (
-          <li
-            key={file.attachFileSeq}
-            className="flex items-center justify-between rounded-md bg-card px-3 py-2 shadow-sm"
-          >
+          <li key={file.attachFileSeq} className="flex items-center justify-between rounded-md bg-card px-3 py-2 shadow-sm">
             <span>{file.originalName}</span>
             <div className="flex items-center gap-3 text-xs text-muted-foreground/70">
               <span>{formatSize(file.size)}</span>

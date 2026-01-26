@@ -25,9 +25,8 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
   const router = useRouter();
 
   // Use article's contentType for initial editor type, default to markdown for new articles
-  const initialEditorType: ContentEditorType = mode === 'edit' && article?.contentType
-    ? (article.contentType.toLowerCase() as ContentEditorType)
-    : 'markdown';
+  const initialEditorType: ContentEditorType =
+    mode === 'edit' && article?.contentType ? (article.contentType.toLowerCase() as ContentEditorType) : 'markdown';
 
   const [title, setTitle] = useState(article?.title ?? '');
   const [content, setContent] = useState(article?.content ?? '');
@@ -116,38 +115,41 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
 
   // Build query string to preserve search params
   const buildQueryString = () => {
-    if (!searchParams) return '';
+    if (!searchParams) {
+      return '';
+    }
 
     const params = new URLSearchParams();
     const searchType = searchParams.get('searchType');
     const word = searchParams.get('word');
     const page = searchParams.get('page');
 
-    if (searchType) params.set('searchType', searchType);
-    if (word) params.set('word', word);
-    if (page) params.set('page', page);
+    if (searchType) {
+      params.set('searchType', searchType);
+    }
+    if (word) {
+      params.set('word', word);
+    }
+    if (page) {
+      params.set('page', page);
+    }
 
     const queryString = params.toString();
     return queryString ? `?${queryString}` : '';
   };
 
   const queryString = buildQueryString();
-  const cancelHref = mode === 'edit' && article
-    ? `/board/${category.boardCode}/${article.boardArticleSeq}${queryString}`
-    : `/board/${category.boardCode}${queryString}`;
+  const cancelHref =
+    mode === 'edit' && article
+      ? `/board/${category.boardCode}/${article.boardArticleSeq}${queryString}`
+      : `/board/${category.boardCode}${queryString}`;
 
   // Filter out deleted attachments
-  const existingAttachments = article?.attachFileList?.filter(
-    (file) => !deleteAttachFileSeqList.includes(file.attachFileSeq)
-  ) ?? [];
+  const existingAttachments = article?.attachFileList?.filter((file) => !deleteAttachFileSeqList.includes(file.attachFileSeq)) ?? [];
 
   return (
     <>
-      {error && (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <section className="rounded-3xl border border-border bg-card shadow-sm transition-colors">
@@ -195,13 +197,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
                 <Label htmlFor="board-attachments" className="text-sm font-medium text-foreground">
                   첨부파일
                 </Label>
-                <Input
-                  id="board-attachments"
-                  type="file"
-                  multiple
-                  onChange={handleAttachmentChange}
-                  className="w-full text-sm h-10"
-                />
+                <Input id="board-attachments" type="file" multiple onChange={handleAttachmentChange} className="w-full text-sm h-10" />
 
                 {/* Existing attachments (edit mode) */}
                 {mode === 'edit' && existingAttachments.length > 0 && (
@@ -214,9 +210,7 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-foreground">{file.originalName}</span>
-                          <span className="text-xs text-muted-foreground">
-                            ({(file.size / 1024).toFixed(2)} KB)
-                          </span>
+                          <span className="text-xs text-muted-foreground">({(file.size / 1024).toFixed(2)} KB)</span>
                         </div>
                         <button
                           type="button"
@@ -235,15 +229,10 @@ export function BoardForm({ category, article, mode, searchParams }: BoardFormPr
                   <div className="space-y-2">
                     <p className="text-xs text-muted-foreground">새 첨부파일</p>
                     {newFiles.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2"
-                      >
+                      <div key={index} className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2">
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-foreground">{file.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            ({(file.size / 1024).toFixed(2)} KB)
-                          </span>
+                          <span className="text-xs text-muted-foreground">({(file.size / 1024).toFixed(2)} KB)</span>
                         </div>
                       </div>
                     ))}

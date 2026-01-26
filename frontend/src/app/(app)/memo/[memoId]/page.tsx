@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
@@ -12,7 +12,27 @@ import { MemoEditor } from '../_components/memo-editor';
 // 동적 라우트 페이지
 export default function MemoDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const memoId = params.memoId as string;
+
+  // 목록으로 돌아갈 URL 생성 (검색 조건 유지)
+  const getListUrl = () => {
+    const listParams = new URLSearchParams();
+    const category = searchParams.get('category');
+    const word = searchParams.get('word');
+    const page = searchParams.get('page');
+    if (category) {
+      listParams.set('category', category);
+    }
+    if (word) {
+      listParams.set('word', word);
+    }
+    if (page) {
+      listParams.set('page', page);
+    }
+    const queryString = listParams.toString();
+    return `/memo${queryString ? `?${queryString}` : ''}`;
+  };
 
   const [memo, setMemo] = useState<MemoResponse | null>(null);
   const [categories, setCategories] = useState<MemoCategoryResponse[]>([]);
@@ -69,7 +89,7 @@ export default function MemoDetailPage() {
       <header className="space-y-1">
         <h1 className="text-3xl font-semibold text-foreground">메모</h1>
       </header>
-      <MemoEditor memo={memo} categories={categories} mode="edit" />
+      <MemoEditor memo={memo} categories={categories} mode="edit" listUrl={getListUrl()} />
     </div>
   );
 }

@@ -38,9 +38,7 @@ export default function NetworkDetailPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-semibold text-foreground">관계</h1>
-        <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
-          로딩 중...
-        </div>
+        <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">로딩 중...</div>
       </div>
     );
   }

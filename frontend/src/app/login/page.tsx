@@ -69,17 +69,11 @@ export default function LoginPage() {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-center">로그인</CardTitle>
-          <CardDescription className="text-center">
-            서비스를 이용하시려면 로그인이 필요합니다.
-          </CardDescription>
+          <CardDescription className="text-center">서비스를 이용하시려면 로그인이 필요합니다.</CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
-            {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-md">
-                {error}
-              </div>
-            )}
+            {error && <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-md">{error}</div>}
             <div className="space-y-2">
               <Label htmlFor="username">아이디</Label>
               <Input

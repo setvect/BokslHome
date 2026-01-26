@@ -40,11 +40,7 @@ export default function BoardCreatePage() {
         <h1 className="text-3xl font-semibold text-foreground">{PAGE_TITLE}</h1>
       </header>
 
-      {error && (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>}
 
       <BoardForm mode="create" onSubmit={handleSubmit} />
     </div>

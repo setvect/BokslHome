@@ -48,8 +48,12 @@ export function PaginationNav({
   const canGoNext = page < pageCount && !disabled;
 
   function handleChange(targetPage: number) {
-    if (targetPage === page || targetPage < 1 || targetPage > pageCount) return;
-    if (disabled) return;
+    if (targetPage === page || targetPage < 1 || targetPage > pageCount) {
+      return;
+    }
+    if (disabled) {
+      return;
+    }
     onPageChange?.(targetPage);
   }
 

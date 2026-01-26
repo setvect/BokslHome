@@ -21,20 +21,13 @@ type BoardDetailViewProps = {
   searchParams: ReadonlyURLSearchParams;
 };
 
-const IMAGE_FILE_EXTENSIONS = new Set([
-  'avif',
-  'bmp',
-  'gif',
-  'jpeg',
-  'jpg',
-  'png',
-  'svg',
-  'webp',
-]);
+const IMAGE_FILE_EXTENSIONS = new Set(['avif', 'bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp']);
 
 function isImageFileName(fileName: string): boolean {
   const match = /\.([a-z0-9]+)$/i.exec(fileName.trim());
-  if (!match) return false;
+  if (!match) {
+    return false;
+  }
   return IMAGE_FILE_EXTENSIONS.has(match[1].toLowerCase());
 }
 
@@ -68,13 +61,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
 
   if (!unlocked) {
     const listHref = `/board/${category.boardCode}`;
-    return (
-      <BoardPasswordGate
-        onPasswordSubmit={handlePasswordSubmit}
-        isLoading={isLoadingDecryption}
-        listUrl={listHref}
-      />
-    );
+    return <BoardPasswordGate onPasswordSubmit={handlePasswordSubmit} isLoading={isLoadingDecryption} listUrl={listHref} />;
   }
 
   // Build query string to preserve search params
@@ -84,9 +71,15 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
     const word = searchParams.get('word');
     const page = searchParams.get('page');
 
-    if (searchType) params.set('searchType', searchType);
-    if (word) params.set('word', word);
-    if (page) params.set('page', page);
+    if (searchType) {
+      params.set('searchType', searchType);
+    }
+    if (word) {
+      params.set('word', word);
+    }
+    if (page) {
+      params.set('page', page);
+    }
 
     const queryString = params.toString();
     return queryString ? `?${queryString}` : '';
@@ -127,7 +120,6 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
             </div>
           </header>
 
-
           {currentArticle.contentType === 'HTML' ? (
             <article
               className="prose prose-sm max-w-none rounded-3xl bg-muted/40 p-8 text-foreground transition-colors dark:bg-muted/60 dark:prose-invert"
@@ -138,10 +130,12 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  table: ({ ...props }) => (
-                    <table className="markdown-table" {...props} />
-                  ),
-                  code({ className, children, ...props }: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
+                  table: ({ ...props }) => <table className="markdown-table" {...props} />,
+                  code({
+                    className,
+                    children,
+                    ...props
+                  }: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) {
                     return (
                       <code className={className} {...props}>
                         {children}
@@ -155,7 +149,6 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
             </article>
           )}
 
-
           {currentArticle.attachFileList && currentArticle.attachFileList.length > 0 && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-foreground">첨부파일</h3>
@@ -167,20 +160,14 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-foreground">{file.originalName}</span>
-                      <span className="text-xs text-muted-foreground">
-                        ({(file.size / 1024).toFixed(2)} KB)
-                      </span>
+                      <span className="text-xs text-muted-foreground">({(file.size / 1024).toFixed(2)} KB)</span>
                     </div>
                     <button
                       type="button"
                       onClick={async () => {
                         try {
                           const { downloadAttachment } = await import('@/lib/api/board-article-api-client');
-                          await downloadAttachment(
-                            currentArticle.boardArticleSeq,
-                            file.attachFileSeq,
-                            file.originalName
-                          );
+                          await downloadAttachment(currentArticle.boardArticleSeq, file.attachFileSeq, file.originalName);
                         } catch (err) {
                           console.error('Failed to download file:', err);
                           alert('파일 다운로드에 실패했습니다.');
@@ -230,12 +217,7 @@ export function BoardDetailView({ category, article, searchParams }: BoardDetail
             <Button variant="secondary" asChild className="w-full sm:w-auto">
               <Link href={`/board/${category.boardCode}/${article.boardArticleSeq}/edit${queryString}`}>수정</Link>
             </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              className="w-full sm:w-auto"
-              onClick={() => setShowDeleteDialog(true)}
-            >
+            <Button type="button" variant="destructive" className="w-full sm:w-auto" onClick={() => setShowDeleteDialog(true)}>
               삭제
             </Button>
           </div>

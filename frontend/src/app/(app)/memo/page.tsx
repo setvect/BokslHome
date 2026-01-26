@@ -4,12 +4,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/lib/api-client';
+import { getMemoPage } from '@/lib/api/memo-api-client';
 import type { MemoCategoryResponse, MemoResponse } from '@/lib/types/memo';
 
 import { MemoListView } from './_components/memo-list-view';
 
 // 전체 카테고리를 나타내는 특수 값
 const ALL_CATEGORY_SEQ = -1;
+const PAGE_SIZE = 10;
 
 export default function MemoPage() {
   const router = useRouter();
@@ -18,11 +20,18 @@ export default function MemoPage() {
   const [categories, setCategories] = useState<MemoCategoryResponse[]>([]);
   const [memos, setMemos] = useState<MemoResponse[]>([]);
 
-  // URL에서 초기 카테고리 값 읽기
+  // URL에서 초기값 읽기
   const initialCategorySeq = Number(searchParams.get('category'));
+  const initialPage = Number(searchParams.get('page')) || 0;
+  const initialWord = searchParams.get('word') || '';
+
   const [selectedCategorySeq, setSelectedCategorySeq] = useState<number>(
     !isNaN(initialCategorySeq) && initialCategorySeq !== 0 ? initialCategorySeq : ALL_CATEGORY_SEQ
   );
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [searchWord, setSearchWord] = useState(initialWord);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,22 +48,39 @@ export default function MemoPage() {
     }
   };
 
-  // 메모 목록 조회 (전체 또는 카테고리별)
-  const fetchMemos = async (categorySeq: number) => {
+  // 메모 목록 조회 (페이징)
+  const fetchMemos = async (categorySeq: number, word: string, page: number) => {
     try {
-      let data: MemoResponse[];
-      if (categorySeq === ALL_CATEGORY_SEQ) {
-        // 전체 메모 조회
-        data = await apiClient.get<MemoResponse[]>('/api/memo');
-      } else {
-        // 카테고리별 메모 조회
-        data = await apiClient.get<MemoResponse[]>(`/api/memo/category/${categorySeq}`);
-      }
-      setMemos(data);
+      const response = await getMemoPage({
+        categorySeq: categorySeq === ALL_CATEGORY_SEQ ? undefined : categorySeq,
+        word: word || undefined,
+        page,
+        size: PAGE_SIZE,
+      });
+      setMemos(response.content);
+      setTotalPages(response.page.totalPages);
+      setTotalElements(response.page.totalElements);
+      setCurrentPage(response.page.number);
     } catch (err) {
       console.error('Failed to fetch memos:', err);
       throw err;
     }
+  };
+
+  // URL 업데이트 함수
+  const updateUrl = (categorySeq: number, word: string, page: number) => {
+    const params = new URLSearchParams();
+    if (categorySeq !== ALL_CATEGORY_SEQ) {
+      params.set('category', categorySeq.toString());
+    }
+    if (word) {
+      params.set('word', word);
+    }
+    if (page > 0) {
+      params.set('page', page.toString());
+    }
+    const queryString = params.toString();
+    router.replace(`/memo${queryString ? `?${queryString}` : ''}`);
   };
 
   // 초기 데이터 로드
@@ -63,8 +89,7 @@ export default function MemoPage() {
       try {
         setIsLoading(true);
         await fetchCategories();
-        // 초기에는 선택된 카테고리(또는 전체) 메모 조회
-        await fetchMemos(selectedCategorySeq);
+        await fetchMemos(selectedCategorySeq, searchWord, currentPage);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : '데이터를 불러오는데 실패했습니다.');
@@ -74,28 +99,52 @@ export default function MemoPage() {
     };
 
     loadInitialData();
-    // selectedCategorySeq가 변경될 때마다가 아니라, 마운트 시 한 번만 실행하고 싶은데
-    // selectedCategorySeq는 URL에서 가져온 초기값으로 설정되므로 의존성 배열에 넣어도 괜찮음 (초기값은 고정)
-    // 하지만 fetchMemos를 호출해야 하므로... 
-    // 여기서는 초기 로드만 담당하고, URL 변경에 따른 로드는 별도로 처리하거나
-    // 단순하게 가기 위해 의존성 배열을 비워둠. 
-    // 단, selectedCategorySeq가 URL에서 왔으므로 이걸로 fetchMemos 호출.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 카테고리 변경 시 메모 목록 조회 및 URL 업데이트
+  // 카테고리 변경 시
   const handleCategoryChange = async (categorySeq: number) => {
     setSelectedCategorySeq(categorySeq);
-
-    // URL 업데이트 (페이지 리로드 없이)
-    const newUrl = categorySeq === ALL_CATEGORY_SEQ
-      ? '/memo'
-      : `/memo?category=${categorySeq}`;
-    router.replace(newUrl);
+    setCurrentPage(0);
+    updateUrl(categorySeq, searchWord, 0);
 
     try {
       setIsLoading(true);
-      await fetchMemos(categorySeq);
+      await fetchMemos(categorySeq, searchWord, 0);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 검색 시
+  const handleSearch = async (word: string) => {
+    setSearchWord(word);
+    setCurrentPage(0);
+    updateUrl(selectedCategorySeq, word, 0);
+
+    try {
+      setIsLoading(true);
+      await fetchMemos(selectedCategorySeq, word, 0);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 페이지 변경 시 (1-based에서 0-based로 변환)
+  const handlePageChange = async (page: number) => {
+    const apiPage = page - 1;
+    setCurrentPage(apiPage);
+    updateUrl(selectedCategorySeq, searchWord, apiPage);
+
+    try {
+      setIsLoading(true);
+      await fetchMemos(selectedCategorySeq, searchWord, apiPage);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
@@ -107,9 +156,8 @@ export default function MemoPage() {
   // 메모 삭제 후 새로고침
   const handleMemoDeleted = async () => {
     try {
-      // 카테고리 목록도 갱신 (메모 건수 반영)
       await fetchCategories();
-      await fetchMemos(selectedCategorySeq);
+      await fetchMemos(selectedCategorySeq, searchWord, currentPage);
     } catch (err) {
       setError(err instanceof Error ? err.message : '메모를 불러오는데 실패했습니다.');
     }
@@ -119,7 +167,7 @@ export default function MemoPage() {
   const handleCategoryUpdated = async () => {
     try {
       await fetchCategories();
-      await fetchMemos(selectedCategorySeq);
+      await fetchMemos(selectedCategorySeq, searchWord, currentPage);
     } catch (err) {
       setError(err instanceof Error ? err.message : '데이터를 불러오는데 실패했습니다.');
     }
@@ -132,16 +180,21 @@ export default function MemoPage() {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
         <MemoListView
           categories={categories}
           memos={memos}
           selectedCategorySeq={selectedCategorySeq}
           isLoading={isLoading}
+          currentPage={currentPage + 1}
+          totalPages={totalPages}
+          totalElements={totalElements}
+          pageSize={PAGE_SIZE}
+          searchWord={searchWord}
           onCategoryChange={handleCategoryChange}
+          onSearch={handleSearch}
+          onPageChange={handlePageChange}
           onMemoDeleted={handleMemoDeleted}
           onCategoryUpdated={handleCategoryUpdated}
         />

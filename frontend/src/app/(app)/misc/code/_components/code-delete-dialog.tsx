@@ -4,14 +4,7 @@ import { useState } from 'react';
 import { Loader2, AlertTriangle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { apiClient, ApiError } from '@/lib/api-client';
 import type { CodeResponse } from '@/lib/types/code';
 
@@ -37,7 +30,9 @@ export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDe
   };
 
   const handleDelete = async () => {
-    if (!code) return;
+    if (!code) {
+      return;
+    }
 
     setError(null);
     setIsLoading(true);
@@ -72,16 +67,10 @@ export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDe
             <AlertTriangle className="h-5 w-5 text-destructive" />
             코드 삭제
           </DialogTitle>
-          <DialogDescription>
-            정말로 이 코드를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-          </DialogDescription>
+          <DialogDescription>정말로 이 코드를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          {error && (
-            <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
+          {error && <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
           {code && (
             <div className="rounded-lg border border-border bg-muted/50 p-4 space-y-2">
               <div className="flex justify-between">
@@ -100,12 +89,7 @@ export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDe
           )}
         </div>
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={isLoading}>
             취소
           </Button>
           <Button type="button" variant="destructive" onClick={handleDelete} disabled={isLoading}>
@@ -123,4 +107,3 @@ export function CodeDeleteDialog({ open, onOpenChange, code, onSuccess }: CodeDe
     </Dialog>
   );
 }
-

@@ -13,8 +13,7 @@ export default function BoardWritePage() {
   const params = useParams();
   const code = params.code as string;
   const fallbackTitle = getBoardNameByCode(code) ?? '게시판';
-  const headerTitle = (boardSettings: BoardManagerResponse | null) =>
-    boardSettings?.name ?? fallbackTitle;
+  const headerTitle = (boardSettings: BoardManagerResponse | null) => boardSettings?.name ?? fallbackTitle;
 
   const [boardSettings, setBoardSettings] = useState<BoardManagerResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);

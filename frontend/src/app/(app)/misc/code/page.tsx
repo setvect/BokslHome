@@ -35,17 +35,10 @@ export default function CodePage() {
       </header>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-2xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       ) : (
-        <CodeMajorListView
-          majorCodes={majorCodes}
-          isLoading={isLoading}
-          onRefresh={fetchMajorCodes}
-        />
+        <CodeMajorListView majorCodes={majorCodes} isLoading={isLoading} onRefresh={fetchMajorCodes} />
       )}
     </div>
   );
 }
-
