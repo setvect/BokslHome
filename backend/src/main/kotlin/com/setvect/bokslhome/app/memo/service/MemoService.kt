@@ -56,16 +56,6 @@ class MemoService(
         return MemoResponse.from(memoEntity)
     }
 
-    fun listByCategory(categorySeq: Int): List<MemoResponse> {
-        val memoList = memoRepository.findByCategory(categorySeq)
-        return memoList.map { MemoResponse.from(it) }
-    }
-
-    fun listAll(): List<MemoResponse> {
-        val memoList = memoRepository.findAllActive()
-        return memoList.map { MemoResponse.from(it) }
-    }
-
     fun page(pageable: Pageable, search: MemoSearchRequest): PagedModel<MemoResponse> {
         val memoPage = memoRepository.findBySearch(
             pageable = pageable,

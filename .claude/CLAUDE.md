@@ -1,6 +1,6 @@
 # BokslHome Project Rules
 
-_Last updated: 2026-01-09_
+_Last updated: 2026-01-26_
 
 이 문서는 Claude Code에서 BokslHome 프로젝트 작업 시 참고할 핵심 규칙과 빠른 참조 가이드입니다.
 
@@ -52,7 +52,7 @@ cd frontend && npm install && npm run dev
 - **HTTP 로깅**: `bokslhome.http-logging` 플래그 제어
 
 ### Frontend
-- **현재 상태**: Mock 데이터 사용 중 (백엔드 연동 전)
+- **현재 상태**: Memo 모듈 백엔드 연동 완료, 기타 모듈은 Mock 데이터 사용 중
 - **인증**: `localStorage.auth_token` 체크 → 없으면 `/login`
 - **컴포넌트**: 서버/클라이언트 분리, `_components/`에 클라이언트 컴포넌트
 - **스타일**: Tailwind + shadcn/ui, CSS 변수 사용
@@ -97,7 +97,7 @@ docker start bokslhome-app 2>/dev/null || true
 - 테스트 커버리지 부족
 
 ### Frontend
-- Mock 데이터만 사용 (백엔드 연동 전)
+- Memo 모듈 외 대부분 Mock 데이터 사용 (백엔드 연동 진행 중)
 - 실제 로그인/JWT 미연동
 - 파일 업로드 API 미연동
 - 테스트 부재

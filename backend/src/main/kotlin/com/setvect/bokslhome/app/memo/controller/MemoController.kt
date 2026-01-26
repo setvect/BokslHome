@@ -48,7 +48,7 @@ class MemoController(
         return ResponseEntity.ok(memoResponse)
     }
 
-    @GetMapping
+    @GetMapping("/page")
     fun page(search: MemoSearchRequest, pageable: Pageable): ResponseEntity<PagedModel<MemoResponse>> {
         return ResponseEntity.ok(memoService.page(pageable, search))
     }

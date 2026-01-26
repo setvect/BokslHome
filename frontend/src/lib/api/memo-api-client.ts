@@ -12,7 +12,7 @@ import type { MemoRequest, MemoResponse, MemoPageResponse, MemoSearchParams } fr
 export async function getMemoPage(params: MemoSearchParams): Promise<MemoPageResponse> {
   const { categorySeq, word, page = 0, size = 10 } = params;
 
-  return apiClient.get<MemoPageResponse>('/api/memo', {
+  return apiClient.get<MemoPageResponse>('/api/memo/page', {
     params: {
       categorySeq,
       word,
